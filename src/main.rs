@@ -25,7 +25,6 @@ async fn index() -> impl Responder {
 async fn main() -> std::io::Result<()> {
     fast_log::log::init_log("requests.log", &RuntimeType::Std).unwrap();
     RB.link(MYSQL_URL).await.unwrap();
-    println!("Hello, world!");
     HttpServer::new(|| {
         App::new()
             .route("/", web::get().to(index))
