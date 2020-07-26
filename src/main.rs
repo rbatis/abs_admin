@@ -13,6 +13,7 @@ pub mod dao;
 pub mod controller;
 pub mod vo;
 pub mod dto;
+pub mod service;
 
 
 async fn index() -> impl Responder {
