@@ -6,6 +6,7 @@ use fast_log::log::RuntimeType;
 use rbatis::plugin::logic_delete::RbatisLogicDeletePlugin;
 use rbatis::rbatis::Rbatis;
 use serde_json::json;
+
 use crate::controller::res;
 
 pub mod domain;
@@ -28,7 +29,7 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
         App::new()
             .route("/", web::get().to(index))
-         .route("/res_page", web::get().to(res::res_page))
+            .route("/res_page", web::get().to(res::res_page))
     })
         .bind("127.0.0.1:8000")?
         .run()
