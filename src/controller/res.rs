@@ -16,6 +16,5 @@ pub async fn res_page(page: web::Json<ResPageDTO>) -> impl Responder {
     if data.is_err() {
         return HttpResponse::Ok().body(data.err().unwrap().to_string());
     }
-    let result = serde_json::to_string(&data.unwrap()).unwrap();
-    HttpResponse::Ok().content_type("json").body(result)
+    HttpResponse::Ok().content_type("json").body(data.unwrap().to_string())
 }
