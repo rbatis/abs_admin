@@ -18,8 +18,8 @@ fast_log = "1.2.2"
 #runtime
 tokio = { version = "0.2", features = ["full"] }
 #rbatis orm dep
-rbatis-core = { version="1.2.8", default-features = false , features = ["runtime-async-std","all-type"] }
-rbatis = "1.2.8"
+rbatis-core = { version = "1.2.9", features = ["all"]}
+rbatis =  { version = "1.2.9" }
 
 #web server
 actix-web = "2.0"

@@ -3,7 +3,7 @@
 *  rust语言后台管理
 
 # dep crate(依赖库)
-* rbatis 1.2.8
+* rbatis 1.2.9
 * actix-web 2.0
 * tokio 0.2
 * serde 1.0
