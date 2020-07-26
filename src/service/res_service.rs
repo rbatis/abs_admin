@@ -5,7 +5,7 @@ use rbatis_core::db::DriverType;
 
 use crate::dao::RB;
 use crate::domain::BizRes;
-use crate::dto::ResPageDTO;
+use crate::bean::dto::ResPageDTO;
 
 
 /// 资源服务

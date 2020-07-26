@@ -2,8 +2,8 @@ use actix_web::{HttpResponse, Responder, web};
 use rbatis::plugin::page::{Page};
 use crate::dao::RB;
 use crate::domain::BizRes;
-use crate::dto::ResPageDTO;
 use crate::service::RES_SERVICE;
+use crate::bean::dto::ResPageDTO;
 
 /// 资源分页(json请求)
 pub async fn res_page(page: web::Json<ResPageDTO>) -> impl Responder {
