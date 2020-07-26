@@ -12,8 +12,8 @@
 * mysql
 
 # web view manager(web可视化管理)
-* vuejs
-* element ui
+* vuejs(基于Vuejs)
+* element ui(饿了么UI)
 
 # module(模块)
 * JWT token based auth(基于JWT token的权限鉴权)
