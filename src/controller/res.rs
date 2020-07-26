@@ -8,9 +8,6 @@ use crate::bean::dto::ResPageDTO;
 
 /// 资源分页(json请求)
 pub async fn res_page(page: web::Json<ResPageDTO>) -> impl Responder {
-
-
-
     let data = RES_SERVICE.page(&page.0).await;
     if data.is_err() {
         return HttpResponse::Ok().body(data.err().unwrap().to_string());
