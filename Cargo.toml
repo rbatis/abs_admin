@@ -24,3 +24,6 @@ rbatis =  { version = "1.3.6" }
 #web server
 actix-web = "2.0"
 actix-rt = "1.0"
+
+#redis
+redis = "0.16.0"

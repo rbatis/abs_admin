@@ -7,6 +7,7 @@
 * actix-web 2.0
 * tokio 0.2
 * serde 1.0
+* redis-rs 0.16.0
 
 # database（数据库）
 * mysql
@@ -19,3 +20,8 @@
 * JWT token based auth(基于JWT token的权限鉴权)
 * Role,User,Reource（角色，用户，权限）
 
+
+# sh(脚本)
+```cmd
+docker run -it -d --name redis -p 6379:6379 redis
+```
