@@ -11,7 +11,8 @@ use crate::dto::ResPageDTO;
 /// 资源分页(json请求)
 pub async fn res_page(page: web::Json<ResPageDTO>) -> impl Responder {
     let w = Wrapper::new(&DriverType::Mysql);
-    let data: rbatis_core::Result<Page<BizRes>> = RB.fetch_page_by_wrapper("", &w, &PageRequest::new(page.page.unwrap_or(1), page.size.unwrap_or(10))).await;
+    let page_req=PageRequest::new(page.page.unwrap_or(1), page.size.unwrap_or(10));
+    let data: rbatis_core::Result<Page<BizRes>> = RB.fetch_page_by_wrapper("", &w, &page_req).await;
     if data.is_err() {
         return HttpResponse::Ok().body(data.err().unwrap().to_string());
     }
