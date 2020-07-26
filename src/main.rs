@@ -3,6 +3,7 @@ extern crate lazy_static;
 
 use actix_web::{App, HttpResponse, HttpServer, Responder, web};
 use fast_log::log::RuntimeType;
+use rbatis::plugin::logic_delete::RbatisLogicDeletePlugin;
 use rbatis::rbatis::Rbatis;
 use serde_json::json;
 
@@ -12,7 +13,11 @@ pub const MYSQL_URL: &'static str = "mysql://root:123456@localhost:3306/test";
 
 // 示例-Rbatis示例初始化(必须)
 lazy_static! {
-  static ref RB:Rbatis<'static>=Rbatis::new();
+  static ref RB:Rbatis<'static>={
+     let mut rb = Rbatis::new();
+     rb.logic_plugin = Some(Box::new(RbatisLogicDeletePlugin::new("del")));
+     rb
+  };
 }
 
 async fn index() -> impl Responder {
