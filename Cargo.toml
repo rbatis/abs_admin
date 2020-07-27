@@ -30,3 +30,5 @@ redis = "0.16.0"
 
 #jwt
 jsonwebtoken = "7"
+#crypto encode
+rust-crypto = "^0.2"
