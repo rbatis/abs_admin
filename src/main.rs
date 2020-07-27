@@ -18,8 +18,6 @@ pub mod util;
 
 
 async fn index() -> impl Responder {
-    let v: serde_json::Value = dao::RB.fetch("", "SELECT count(1) FROM biz_activity where delete_flag = 1;").await.unwrap();
-    println!("{}", v.to_string());
     HttpResponse::Ok().body("Hello world!")
 }
 
