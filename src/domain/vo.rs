@@ -32,22 +32,17 @@ impl JWTToken {
             },
         };
     }
+    #[test]
+    fn test_verify() {
+        let key = "secret";
+        let my_claims =
+            JWTToken { id: "1".to_string(), account: "ACME".to_owned(), permissions: vec![], role_ids: vec![], exp: 10000000000 };
+        let token = my_claims.create_token(key).unwrap();
+        println!("token:{}", token);
+        let token_data = JWTToken::verify(key, &token).unwrap();
+        println!("{:?}", token_data);
+    }
 }
-
-
-#[test]
-fn valid() {
-    let key = "secret";
-    let my_claims =
-        JWTToken { id: "1".to_string(), account: "ACME".to_owned(), permissions: vec![], role_ids: vec![], exp: 10000000000 };
-    let token = my_claims.create_token(key).unwrap();
-    println!("token:{}", token);
-    let token_data = JWTToken::verify(key, &token).unwrap();
-    println!("{:?}", token_data);
-}
-
-
-
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct SignInVO {
