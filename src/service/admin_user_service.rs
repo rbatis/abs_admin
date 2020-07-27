@@ -12,7 +12,7 @@ pub struct AdminUserService {}
 
 impl AdminUserService {
     ///登陆
-    pub async fn sign_in(arg: &SignInDTO) -> Result<SignInVO> {
+    pub async fn sign_in(&self,arg: &SignInDTO) -> Result<SignInVO> {
         let w = Wrapper::new(&RB.driver_type()?).eq("account", &arg.account).check()?;
         let u: BizAdminUser = RB.fetch_by_wrapper("", &w).await?;
         let signVO = SignInVO {
@@ -25,5 +25,5 @@ impl AdminUserService {
     }
 
     ///登出
-    pub async fn sign_out() {}
+    pub async fn sign_out(&self) {}
 }
