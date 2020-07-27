@@ -1,28 +1,23 @@
-use crypto::bcrypt::bcrypt;
-use std::fmt::Write;
+use std::hash::{Hash, Hasher};
+use std::collections::hash_map::DefaultHasher;
 
-pub struct BCryptPasswordEncoder {}
+pub struct PasswordEncoder {}
 
-impl BCryptPasswordEncoder {
+impl PasswordEncoder {
     pub fn encode(raw_password: &str) -> String {
-        let mut output = [0u8; 24];
-        let salt = vec![0x10u8, 0x41u8, 0x04u8, 0x10u8, 0x41u8, 0x04u8, 0x10u8, 0x41u8, 0x04u8, 0x10u8, 0x41u8, 0x04u8, 0x10u8, 0x41u8, 0x04u8, 0x10u8];
-        bcrypt(5, &salt, (&raw_password).as_ref(), &mut output[..]);
-
-        let mut output_password = String::new();
-        for a in output.iter() {
-            write!(output_password, "{:02x}", a);
-        }
-        return output_password;
+        let mut hasher = DefaultHasher::new();
+        hasher.write(raw_password.as_bytes());
+        hasher.finish().to_string()
     }
     pub fn verify(password: &str, raw_password: &str) -> bool {
-        let s = BCryptPasswordEncoder::encode(raw_password);
-        password.eq(&s)
+        let hashed= PasswordEncoder::encode(raw_password);
+        password.eq(&hashed)
     }
 }
 
 #[test]
 fn test_encode() {
-    let s = BCryptPasswordEncoder::encode("123456");
+    let s = PasswordEncoder::encode("123456");
     println!("{}", s);
+    assert_eq!(PasswordEncoder::encode("123456"), PasswordEncoder::encode("123456"))
 }

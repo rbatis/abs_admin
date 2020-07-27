@@ -6,7 +6,7 @@ use rbatis::wrapper::Wrapper;
 use crate::domain::domain::BizAdminUser;
 use crate::domain::vo::SignInVO;
 use rbatis_core::Result;
-use crate::util::BCryptPasswordEncoder;
+use crate::util::PasswordEncoder;
 use uuid::Uuid;
 use chrono::Utc;
 
@@ -24,7 +24,7 @@ impl AdminUserService {
         let user = BizAdminUser {
             id: Some(id.to_string()),
             account: arg.account.clone(),
-            password: Some(BCryptPasswordEncoder::encode(arg.password.as_ref().unwrap())),
+            password: Some(PasswordEncoder::encode(arg.password.as_ref().unwrap())),
             name: arg.name.clone(),
             del: Some(1),
             create_time: Some(dt.format("%Y-%m-%d %H:%M:%S").to_string()),
@@ -44,7 +44,7 @@ impl AdminUserService {
         }
         let mut user = user.unwrap();
         // check pwd
-        if !BCryptPasswordEncoder::verify(user.password.as_ref().unwrap(), arg.password.as_ref().unwrap()) {
+        if !PasswordEncoder::verify(user.password.as_ref().unwrap(), arg.password.as_ref().unwrap()) {
             return Err(Error::from("密码不正确!"));
         }
         user.password = None;//去除密码，增加安全性
