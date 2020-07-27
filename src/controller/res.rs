@@ -12,6 +12,7 @@ pub async fn res_page(page: web::Json<ResPageDTO>) -> impl Responder {
     if data.is_err() {
         return HttpResponse::Ok().body(data.err().unwrap().to_string());
     }
-    CACHE_SERVICE.put("res_page",data.as_ref().unwrap().to_string().as_str()).await;
+    CACHE_SERVICE.put_json("res_page", &data.as_ref().unwrap().to_string()).await;
+    let cached_res: String = CACHE_SERVICE.get_json("res_page").await.unwrap();
     HttpResponse::Ok().content_type("json").body(data.unwrap().to_string())
 }
