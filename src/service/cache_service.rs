@@ -3,6 +3,7 @@ use log::info;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 
+///缓存服务
 pub struct CacheService {
     pub client: redis::Client
 }

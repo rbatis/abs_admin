@@ -3,6 +3,8 @@ use res_service::ResService;
 
 mod res_service;
 mod cache_service;
+mod admin_user_service;
+mod role_service;
 
 lazy_static! {
    pub static ref RES_SERVICE:ResService = ResService{};
