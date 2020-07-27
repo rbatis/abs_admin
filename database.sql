@@ -4,7 +4,6 @@
 --
 
 DROP TABLE IF EXISTS `biz_activity`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `biz_activity` (
   `id` varchar(50) NOT NULL DEFAULT '' COMMENT '唯一活动码',
@@ -21,16 +20,13 @@ CREATE TABLE `biz_activity` (
   `h5_banner_img` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='运营管理-活动管理';
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `biz_activity`
 --
 
 LOCK TABLES `biz_activity` WRITE;
-/*!40000 ALTER TABLE `biz_activity` DISABLE KEYS */;
 INSERT INTO `biz_activity` VALUES ('12312','null','null','null','null',1,1,'null','2020-02-09 00:00:00',1,'null','null'),('178','test_insret','','','1',1,0,'','2020-06-17 20:08:13',1,NULL,NULL),('221','test','','','0',0,0,'','2020-06-17 20:10:23',1,NULL,NULL),('222','test','','','0',0,0,'','2020-06-17 20:10:23',1,NULL,NULL),('223','test','','','0',0,0,'','2020-06-17 20:10:23',1,NULL,NULL);
-/*!40000 ALTER TABLE `biz_activity` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -38,7 +34,6 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `biz_admin_user`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `biz_admin_user` (
   `id` varchar(45) CHARACTER SET latin1 NOT NULL,
@@ -49,15 +44,12 @@ CREATE TABLE `biz_admin_user` (
   `create_time` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `biz_admin_user`
 --
 
 LOCK TABLES `biz_admin_user` WRITE;
-/*!40000 ALTER TABLE `biz_admin_user` DISABLE KEYS */;
-/*!40000 ALTER TABLE `biz_admin_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -65,7 +57,6 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `biz_admin_user_role`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `biz_admin_user_role` (
   `id` varchar(45) CHARACTER SET latin1 NOT NULL,
@@ -74,15 +65,12 @@ CREATE TABLE `biz_admin_user_role` (
   `create_time` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `biz_admin_user_role`
 --
 
 LOCK TABLES `biz_admin_user_role` WRITE;
-/*!40000 ALTER TABLE `biz_admin_user_role` DISABLE KEYS */;
-/*!40000 ALTER TABLE `biz_admin_user_role` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -90,7 +78,6 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `biz_res`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `biz_res` (
   `id` varchar(45) CHARACTER SET latin1 NOT NULL,
@@ -102,16 +89,13 @@ CREATE TABLE `biz_res` (
   `create_time` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `biz_res`
 --
 
 LOCK TABLES `biz_res` WRITE;
-/*!40000 ALTER TABLE `biz_res` DISABLE KEYS */;
 INSERT INTO `biz_res` VALUES ('1',NULL,'qx','res_page','/res_page',1,'2020-02-09 00:00:00');
-/*!40000 ALTER TABLE `biz_res` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -119,7 +103,6 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `biz_role`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `biz_role` (
   `id` varchar(45) CHARACTER SET latin1 NOT NULL,
@@ -128,15 +111,12 @@ CREATE TABLE `biz_role` (
   `create_time` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `biz_role`
 --
 
 LOCK TABLES `biz_role` WRITE;
-/*!40000 ALTER TABLE `biz_role` DISABLE KEYS */;
-/*!40000 ALTER TABLE `biz_role` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -144,7 +124,6 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `biz_role_res`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `biz_role_res` (
   `id` varchar(45) CHARACTER SET latin1 NOT NULL,
@@ -153,14 +132,10 @@ CREATE TABLE `biz_role_res` (
   `create_time` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `biz_role_res`
 --
 
 LOCK TABLES `biz_role_res` WRITE;
-/*!40000 ALTER TABLE `biz_role_res` DISABLE KEYS */;
-/*!40000 ALTER TABLE `biz_role_res` ENABLE KEYS */;
 UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
