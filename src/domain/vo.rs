@@ -2,6 +2,7 @@ use jsonwebtoken::errors::ErrorKind;
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
 use serde::{Deserialize, Serialize};
 use rbatis_core::Error;
+use crate::domain::domain::BizAdminUser;
 
 #[derive(Debug, Serialize, Deserialize)]
 struct JWTToken {
@@ -43,4 +44,13 @@ fn valid() {
     println!("token:{}", token);
     let token_data = JWTToken::verify(key, &token).unwrap();
     println!("{:?}", token_data);
+}
+
+
+
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct SignInVO {
+    pub user:Option<BizAdminUser>,
+    pub permissions:Vec<String>,
 }
