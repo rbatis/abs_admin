@@ -42,11 +42,12 @@ impl AdminUserService {
         if user.is_none() {
             return Err(Error::from(format!("账号:{} 不存在!", arg.account.as_ref().unwrap())));
         }
-        let user = user.unwrap();
+        let mut user = user.unwrap();
         // check pwd
         if !BCryptPasswordEncoder::verify(user.password.as_ref().unwrap(), arg.password.as_ref().unwrap()) {
             return Err(Error::from("密码不正确!"));
         }
+        user.password = None;//去除密码，增加安全性
         let sign_vo = SignInVO {
             user: Some(user),
             permissions: vec![],
