@@ -12,7 +12,6 @@ use crate::controller::res;
 pub mod domain;
 pub mod dao;
 pub mod controller;
-pub mod bean;
 pub mod service;
 
 

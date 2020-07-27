@@ -4,8 +4,8 @@ use rbatis::wrapper::Wrapper;
 use rbatis_core::db::DriverType;
 
 use crate::dao::RB;
-use crate::domain::BizRes;
-use crate::bean::dto::ResPageDTO;
+use crate::domain::dto::ResPageDTO;
+use crate::domain::domain::BizRes;
 
 
 /// 资源服务

@@ -27,3 +27,6 @@ actix-rt = "1.0"
 
 #redis
 redis = "0.16.0"
+
+#jwt
+jsonwebtoken = "7"
