@@ -54,3 +54,9 @@ pub struct SignInVO {
     pub user:Option<BizAdminUser>,
     pub permissions:Vec<String>,
 }
+
+impl ToString for SignInVO{
+    fn to_string(&self) -> String {
+        serde_json::to_string(self).unwrap()
+    }
+}

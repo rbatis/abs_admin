@@ -7,7 +7,7 @@ use rbatis::plugin::logic_delete::RbatisLogicDeletePlugin;
 use rbatis::rbatis::Rbatis;
 use serde_json::json;
 
-use crate::controller::res;
+use crate::controller::{res, user};
 
 pub mod domain;
 pub mod dao;
@@ -30,7 +30,8 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
         App::new()
             .route("/", web::get().to(index))
-            .route("/res_page", web::get().to(res::res_page))
+            .route("/res_page", web::post().to(res::res_page))
+            .route("/login",web::post().to(user::user_login))
     })
         .bind("127.0.0.1:8000")?
         .run()

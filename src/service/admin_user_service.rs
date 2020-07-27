@@ -6,6 +6,7 @@ use rbatis::wrapper::Wrapper;
 use crate::domain::domain::BizAdminUser;
 use crate::domain::vo::SignInVO;
 use rbatis_core::Result;
+use crate::util::BCryptPasswordEncoder;
 
 ///后台用户服务
 pub struct AdminUserService {}
@@ -19,16 +20,15 @@ impl AdminUserService {
         let w = Wrapper::new(&RB.driver_type()?).eq("account", &arg.account).check()?;
         let user: Option<BizAdminUser> = RB.fetch_by_wrapper("", &w).await?;
         if user.is_none(){
-            return Err(Error::from(format!("账号:{} 不存在!",arg.account.as_ref().unwrap())))
+            return Err(Error::from(format!("账号:{} 不存在!",arg.account.as_ref().unwrap())));
         }
+        let user=user.unwrap();
         // check pwd
-
-        if user.as_ref().unwrap().password.eq(&Some("".to_string())){
-
+        if !BCryptPasswordEncoder::verify(user.password.as_ref().unwrap(),arg.password.as_ref().unwrap()){
+            return Err(Error::from("密码不正确!"));
         }
-
         let sign_vo = SignInVO {
-            user: user,
+            user: Some(user),
             permissions: vec![],
         };
         //TODO load permission
