@@ -47,4 +47,25 @@ impl CacheService {
         }
         Ok(data.unwrap())
     }
+
+    pub async fn put_string(&self, k: &str, v: &str) -> rbatis_core::Result<String>{
+        let mut conn = self.client.get_async_connection().await.unwrap();
+        let r: String = redis::cmd("SET")
+            .arg(&[k, v])
+            .query_async(&mut conn)
+            .await.unwrap();
+        Ok(r)
+    }
+
+    pub async fn get_string(&self, k: &str) -> rbatis_core::Result<String> {
+        let mut conn = self.client.get_async_connection().await.unwrap();
+        let r: String = redis::cmd("GET")
+            .arg(&[k])
+            .query_async(&mut conn)
+            .await.unwrap();
+        if r.is_empty(){
+            return Err(rbatis_core::Error::from("cache data is empty!"));
+        }
+        Ok(r)
+    }
 }
