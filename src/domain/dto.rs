@@ -17,3 +17,11 @@ pub struct SignInDTO{
     pub account: Option<String>,
     pub password: Option<String>,
 }
+
+/// 登陆
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct UserAddDTO{
+    pub account: Option<String>,
+    pub password: Option<String>,
+    pub name: Option<String>
+}

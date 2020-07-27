@@ -32,3 +32,5 @@ redis = "0.16.0"
 jsonwebtoken = "7"
 #crypto encode
 rust-crypto = "^0.2"
+#uuid
+uuid = "0.8"
