@@ -1,6 +1,4 @@
 
-
-
 use rbatis::crud::CRUDEnable;
 use serde::{Deserialize, Serialize};
 
