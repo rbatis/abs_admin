@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 use rbatis_core::Error;
 use crate::domain::domain::BizAdminUser;
 use serde::de::DeserializeOwned;
+use actix_web::{HttpResponse, Responder, web};
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 struct JWTToken {
@@ -78,6 +79,10 @@ impl<T> RespVO<T> where T: Serialize + DeserializeOwned + Clone {
             msg: Some(arg.to_string()),
             data: None,
         }
+    }
+
+    pub fn to_json_resp(&self) -> actix_http::Response {
+        return HttpResponse::Ok().content_type("json").body(self.to_string());
     }
 }
 

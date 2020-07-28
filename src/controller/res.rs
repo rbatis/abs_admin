@@ -14,5 +14,5 @@ pub async fn res_page(page: web::Json<ResPageDTO>) -> impl Responder {
     }
     // CACHE_SERVICE.put_json("res_page", &data.as_ref().unwrap().to_string()).await;
     // let cached_res: String = CACHE_SERVICE.get_json("res_page").await.unwrap();
-    HttpResponse::Ok().content_type("json").body(RespVO::from_result(&data).to_string())
+    RespVO::from_result(&data).to_json_resp()
 }
