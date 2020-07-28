@@ -32,3 +32,4 @@ redis = "0.16.0"
 jsonwebtoken = "7"
 #uuid
 uuid = "0.8"
+md5 = "0.7.0"
