@@ -15,10 +15,10 @@ struct JWTToken {
 
 impl JWTToken {
     pub fn create_token(&self, secret: &str) -> Result<String,Error> {
-         match encode(&Header::default(), self, &EncodingKey::from_secret(secret.as_ref())) {
-            Ok(t) => return Ok(t),
-            Err(_) =>  return Err(Error::from("JWTToken encode fail!")), // in practice you would return the error
-         }
+        return match encode(&Header::default(), self, &EncodingKey::from_secret(secret.as_ref())) {
+            Ok(t) => Ok(t),
+            Err(_) => Err(Error::from("JWTToken encode fail!")), // in practice you would return the error
+        }
     }
 
     pub fn verify(secret: &str, token: &str) -> Result<JWTToken, Error> {
