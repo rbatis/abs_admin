@@ -25,3 +25,12 @@ pub struct UserAddDTO{
     pub password: Option<String>,
     pub name: Option<String>
 }
+
+/// 用户分页
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct UserPageDTO{
+    pub page: Option<u64>,
+    pub size: Option<u64>,
+    pub account: Option<String>,
+    pub name: Option<String>
+}

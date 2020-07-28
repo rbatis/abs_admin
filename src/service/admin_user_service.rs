@@ -1,4 +1,4 @@
-use crate::domain::dto::{SignInDTO, UserAddDTO};
+use crate::domain::dto::{SignInDTO, UserAddDTO, UserPageDTO};
 use rbatis_core::Error;
 use crate::dao::RB;
 use rbatis::crud::CRUD;
@@ -9,11 +9,28 @@ use rbatis_core::Result;
 use crate::util::PasswordEncoder;
 use uuid::Uuid;
 use chrono::Utc;
+use rbatis::plugin::page::{Page, PageRequest};
 
 ///后台用户服务
 pub struct AdminUserService {}
 
 impl AdminUserService {
+    pub async fn page(&self, arg: &UserPageDTO) -> Result<Page<BizAdminUser>> {
+        let mut w = Wrapper::new(&RB.driver_type()?);
+        if arg.name.is_some() {
+            w.eq("name", &arg.name.clone().unwrap());
+        }
+        if arg.account.is_some() {
+            if w.args.len() > 0 {
+                w.and();
+            }
+            w.eq("account", &arg.account.clone().unwrap());
+        }
+        w = w.check()?;
+        return Ok(RB.fetch_page_by_wrapper("", &w, &PageRequest::new(arg.page.unwrap_or(1), arg.size.unwrap_or(10))).await?);
+    }
+
+
     ///添加
     pub async fn add(&self, arg: &UserAddDTO) -> Result<u64> {
         if arg.account.is_none() || arg.password.is_none() || arg.account.as_ref().unwrap().is_empty() || arg.password.as_ref().unwrap().is_empty() {
