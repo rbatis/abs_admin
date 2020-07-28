@@ -5,7 +5,7 @@ use rbatis_core::Error;
 use crate::domain::domain::BizAdminUser;
 use serde::de::DeserializeOwned;
 
-#[derive(Debug, Serialize, Deserialize,Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 struct JWTToken {
     id: String,
     account: String,
@@ -37,14 +37,14 @@ impl JWTToken {
 
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct RespVO<T>{
+pub struct RespVO<T> {
     pub code: Option<String>,
     pub msg: Option<String>,
-    pub data: Option<T>
+    pub data: Option<T>,
 }
 
 impl<T> RespVO<T> where T: Serialize + DeserializeOwned + Clone {
-    pub fn make(arg: &Result<T, Error>) -> Self {
+    pub fn from_result(arg: &Result<T, Error>) -> Self {
         if arg.is_ok() {
             Self {
                 code: Some("SUCCESS".to_string()),
@@ -59,6 +59,26 @@ impl<T> RespVO<T> where T: Serialize + DeserializeOwned + Clone {
             }
         }
     }
+
+    pub fn from(arg: &T) -> Self {
+        Self {
+            code: Some("SUCCESS".to_string()),
+            msg: None,
+            data: Some(arg.clone()),
+        }
+    }
+
+    pub fn from_error(code: &str, arg: &Error) -> Self {
+        let mut code_str = code.to_string();
+        if code_str.is_empty() {
+            code_str = "FAIL".to_string();
+        }
+        Self {
+            code: Some(code_str),
+            msg: Some(arg.to_string()),
+            data: None,
+        }
+    }
 }
 
 impl<T> ToString for RespVO<T> where T: Serialize + DeserializeOwned + Clone {
@@ -68,7 +88,7 @@ impl<T> ToString for RespVO<T> where T: Serialize + DeserializeOwned + Clone {
 }
 
 
-#[derive(Debug, Serialize, Deserialize,Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct SignInVO {
     pub user: Option<BizAdminUser>,
     pub permissions: Vec<String>,
