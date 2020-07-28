@@ -6,10 +6,10 @@ use rbatis::wrapper::Wrapper;
 use crate::domain::domain::BizAdminUser;
 use crate::domain::vo::SignInVO;
 use rbatis_core::Result;
-use crate::util::PasswordEncoder;
 use uuid::Uuid;
 use chrono::Utc;
 use rbatis::plugin::page::{Page, PageRequest};
+use crate::util::password_encoder::PasswordEncoder;
 
 ///后台用户服务
 pub struct AdminUserService {}
