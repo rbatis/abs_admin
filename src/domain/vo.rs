@@ -3,8 +3,9 @@ use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation}
 use serde::{Deserialize, Serialize};
 use rbatis_core::Error;
 use crate::domain::domain::BizAdminUser;
+use serde::de::DeserializeOwned;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize,Clone)]
 struct JWTToken {
     id: String,
     account: String,
@@ -14,11 +15,11 @@ struct JWTToken {
 }
 
 impl JWTToken {
-    pub fn create_token(&self, secret: &str) -> Result<String,Error> {
+    pub fn create_token(&self, secret: &str) -> Result<String, Error> {
         return match encode(&Header::default(), self, &EncodingKey::from_secret(secret.as_ref())) {
             Ok(t) => Ok(t),
             Err(_) => Err(Error::from("JWTToken encode fail!")), // in practice you would return the error
-        }
+        };
     }
 
     pub fn verify(secret: &str, token: &str) -> Result<JWTToken, Error> {
@@ -34,13 +35,46 @@ impl JWTToken {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct SignInVO {
-    pub user:Option<BizAdminUser>,
-    pub permissions:Vec<String>,
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct RespVO<T>{
+    pub code: Option<String>,
+    pub msg: Option<String>,
+    pub data: Option<T>
 }
 
-impl ToString for SignInVO{
+impl<T> RespVO<T> where T: Serialize + DeserializeOwned + Clone {
+    pub fn make(arg: &Result<T, Error>) -> Self {
+        if arg.is_ok() {
+            Self {
+                code: Some("SUCCESS".to_string()),
+                msg: None,
+                data: arg.clone().ok(),
+            }
+        } else {
+            Self {
+                code: Some("FAIL".to_string()),
+                msg: Some(arg.clone().err().unwrap().to_string()),
+                data: None,
+            }
+        }
+    }
+}
+
+impl<T> ToString for RespVO<T> where T: Serialize + DeserializeOwned + Clone {
+    fn to_string(&self) -> String {
+        serde_json::to_string(self).unwrap()
+    }
+}
+
+
+#[derive(Debug, Serialize, Deserialize,Clone)]
+pub struct SignInVO {
+    pub user: Option<BizAdminUser>,
+    pub permissions: Vec<String>,
+}
+
+impl ToString for SignInVO {
     fn to_string(&self) -> String {
         serde_json::to_string(self).unwrap()
     }
