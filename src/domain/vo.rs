@@ -16,13 +16,16 @@ struct JWTToken {
 }
 
 impl JWTToken {
+    /// create token
+    /// secret: your secret string
     pub fn create_token(&self, secret: &str) -> Result<String, Error> {
         return match encode(&Header::default(), self, &EncodingKey::from_secret(secret.as_ref())) {
             Ok(t) => Ok(t),
             Err(_) => Err(Error::from("JWTToken encode fail!")), // in practice you would return the error
         };
     }
-
+    /// verify token invalid
+    /// secret: your secret string
     pub fn verify(secret: &str, token: &str) -> Result<JWTToken, Error> {
         let validation = Validation { ..Validation::default() };
         return match decode::<JWTToken>(&token, &DecodingKey::from_secret(secret.as_ref()), &validation) {
