@@ -3,11 +3,11 @@
 *  rust语言后台管理
 
 # dep crate(依赖库)
-* rbatis 1.3.6
-* actix-web 2.0
-* tokio 0.2
-* serde 1.0
-* redis-rs 0.16.0
+* rbatis
+* actix-web
+* tokio
+* serde
+* redis-rs
 
 # database（数据库）
 * mysql
