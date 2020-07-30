@@ -16,6 +16,7 @@ use crate::util::password_encoder::PasswordEncoder;
 pub struct AdminUserService {}
 
 impl AdminUserService {
+    /// 后台用户分页
     pub async fn page(&self, arg: &UserPageDTO) -> Result<Page<BizAdminUser>> {
         let mut w = Wrapper::new(&RB.driver_type()?);
         if arg.name.is_some() {
@@ -28,7 +29,7 @@ impl AdminUserService {
         return Ok(RB.fetch_page_by_wrapper("", &w, &PageRequest::new(arg.page.unwrap_or(1), arg.size.unwrap_or(10))).await?);
     }
 
-
+    ///后台用户根据id查找
     pub async fn find(&self, id: &str) -> Result<Option<BizAdminUser>> {
         let mut w = Wrapper::new(&RB.driver_type()?)
             .eq("id",id)
@@ -36,6 +37,7 @@ impl AdminUserService {
        return RB.fetch_by_wrapper("",&w).await;
     }
 
+    ///根据账户名查找
     pub async fn find_by_account(&self, account: &str) -> Result<Option<BizAdminUser>> {
         let mut w = Wrapper::new(&RB.driver_type()?)
             .eq("account",account)
@@ -44,7 +46,7 @@ impl AdminUserService {
     }
 
 
-    ///添加
+    ///添加后台账号
     pub async fn add(&self, arg: &UserAddDTO) -> Result<u64> {
         if arg.account.is_none() || arg.password.is_none() || arg.account.as_ref().unwrap().is_empty() || arg.password.as_ref().unwrap().is_empty() {
             return Err(Error::from("用户名密码不能为空!"));
@@ -66,7 +68,7 @@ impl AdminUserService {
         return RB.save("", &user).await;
     }
 
-    ///登陆
+    ///登陆后台
     pub async fn sign_in(&self, arg: &SignInDTO) -> Result<SignInVO> {
         if arg.account.is_none() || arg.password.is_none() || arg.account.as_ref().unwrap().is_empty() || arg.password.as_ref().unwrap().is_empty() {
             return Err(Error::from("用户名密码不能为空!"));
@@ -93,9 +95,9 @@ impl AdminUserService {
         return Ok(sign_vo);
     }
 
-    ///登出
+    ///登出后台
     pub async fn sign_out(&self) {}
 
-
+    ///循环查找权限
     pub async fn loop_load_permission(&self, id: &str) {}
 }
