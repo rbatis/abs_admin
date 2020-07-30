@@ -21,9 +21,6 @@ impl AdminUserService {
             w.eq("name", &arg.name.clone().unwrap());
         }
         if arg.account.is_some() {
-            if w.args.len() > 0 {
-                w.and();
-            }
             w.eq("account", &arg.account.clone().unwrap());
         }
         w = w.check()?;
@@ -54,7 +51,9 @@ impl AdminUserService {
         if arg.account.is_none() || arg.password.is_none() || arg.account.as_ref().unwrap().is_empty() || arg.password.as_ref().unwrap().is_empty() {
             return Err(Error::from("用户名密码不能为空!"));
         }
-        let w = Wrapper::new(&RB.driver_type()?).eq("account", &arg.account).check()?;
+        let w = Wrapper::new(&RB.driver_type()?)
+            .eq("account", &arg.account)
+            .check()?;
         let user: Option<BizAdminUser> = RB.fetch_by_wrapper("", &w).await?;
         if user.is_none() {
             return Err(Error::from(format!("账号:{} 不存在!", arg.account.as_ref().unwrap())));
