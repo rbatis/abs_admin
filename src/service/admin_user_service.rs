@@ -26,7 +26,11 @@ impl AdminUserService {
             w.eq("account", &arg.account.clone().unwrap());
         }
         w = w.check()?;
-        return Ok(RB.fetch_page_by_wrapper("", &w, &PageRequest::new(arg.page.unwrap_or(1), arg.size.unwrap_or(10))).await?);
+        let mut result:Page<BizAdminUser> =RB.fetch_page_by_wrapper("", &w, &PageRequest::new(arg.page.unwrap_or(1), arg.size.unwrap_or(10))).await?;
+        for x in &mut result.records {
+            x.password = None;//屏蔽密码
+        }
+        return Ok(result);
     }
 
     ///后台用户根据id查找
