@@ -25,3 +25,8 @@
 ```cmd
 docker run -it -d --name redis -p 6379:6379 redis
 ```
+
+# PostMan  请求脚本导入
+```cmd
+打开postman,导入 abs_admini.postman_collection.json
+```
