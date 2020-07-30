@@ -1,14 +1,15 @@
-use crate::domain::dto::{SignInDTO, UserAddDTO, UserPageDTO};
-use rbatis_core::Error;
-use crate::dao::RB;
+use chrono::Utc;
 use rbatis::crud::CRUD;
+use rbatis::plugin::page::{Page, PageRequest};
 use rbatis::wrapper::Wrapper;
-use crate::domain::domain::BizAdminUser;
-use crate::domain::vo::SignInVO;
+use rbatis_core::Error;
 use rbatis_core::Result;
 use uuid::Uuid;
-use chrono::Utc;
-use rbatis::plugin::page::{Page, PageRequest};
+
+use crate::dao::RB;
+use crate::domain::domain::BizAdminUser;
+use crate::domain::dto::{SignInDTO, UserAddDTO, UserPageDTO};
+use crate::domain::vo::SignInVO;
 use crate::util::password_encoder::PasswordEncoder;
 
 ///后台用户服务
@@ -28,10 +29,29 @@ impl AdminUserService {
     }
 
 
+    pub async fn find(&self, id: &str) -> Result<Option<BizAdminUser>> {
+        let mut w = Wrapper::new(&RB.driver_type()?)
+            .eq("id",id)
+            .check()?;
+       return RB.fetch_by_wrapper("",&w).await;
+    }
+
+    pub async fn find_by_account(&self, account: &str) -> Result<Option<BizAdminUser>> {
+        let mut w = Wrapper::new(&RB.driver_type()?)
+            .eq("account",account)
+            .check()?;
+        return RB.fetch_by_wrapper("",&w).await;
+    }
+
+
     ///添加
     pub async fn add(&self, arg: &UserAddDTO) -> Result<u64> {
         if arg.account.is_none() || arg.password.is_none() || arg.account.as_ref().unwrap().is_empty() || arg.password.as_ref().unwrap().is_empty() {
             return Err(Error::from("用户名密码不能为空!"));
+        }
+        let old_user = self.find_by_account(arg.account.as_ref().unwrap_or(&"".to_string())).await?;
+        if old_user.is_some(){
+            return Err(Error::from(format!("用户账户:{}已存在!",arg.account.as_ref().unwrap())));
         }
         let id = Uuid::new_v4();
         let dt = Utc::now();
