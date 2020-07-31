@@ -1,18 +1,18 @@
 {
 	"info": {
-		"_postman_id": "d4713eee-35f3-4cdf-9b25-f6ac36d48891",
-		"name": "abs_admini",
+		"_postman_id": "0f38382a-7abd-4fa3-b14c-be85feb10f8d",
+		"name": "test",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "http://localhost:8000/res_page",
+			"name": "http://127.0.0.1:8000/res_page",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"page\":1,\r\n    \"size\":20\r\n}",
+					"raw": "{}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -34,13 +34,13 @@
 			"response": []
 		},
 		{
-			"name": "http://localhost:8000/admin_user_page",
+			"name": "http://127.0.0.1:8000/user_page",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"page\":1,\r\n    \"size\":20\r\n}",
+					"raw": "{\n    \"account\":\"18969542172\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -62,13 +62,41 @@
 			"response": []
 		},
 		{
-			"name": "http://localhost:8000/admin_user_add",
+			"name": "http://127.0.0.1:8000/login",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"account\":\"admin\",\r\n    \"name\":\"小明\",\r\n    \"password\":\"1234456\"\r\n}",
+					"raw": "{\n    \"account\":\"18969542172\",\n    \"password\":\"123456\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://127.0.0.1:8000/add",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"account\":\"18969542172\",\n    \"password\":\"123456\",\n    \"name\":\"xxxx\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
