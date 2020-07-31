@@ -100,8 +100,12 @@ impl AdminUserService {
     }
 
     ///登出后台
-    pub async fn sign_out(&self) {}
+    pub async fn sign_out(&self) {
+
+    }
 
     ///循环查找权限
-    pub async fn loop_load_permission(&self, id: &str) {}
+    pub async fn loop_load_permission(&self, id: &str) {
+
+    }
 }

@@ -34,3 +34,10 @@ pub struct UserPageDTO{
     pub account: Option<String>,
     pub name: Option<String>
 }
+
+/// 角色分页
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct RolePageDTO{
+    pub page: Option<u64>,
+    pub size: Option<u64>
+}
