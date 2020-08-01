@@ -14,7 +14,7 @@ chrono = { version = "0.4", features = ["serde"] }
 lazy_static = "1.4.0"
 #log
 log = "0.4"
-fast_log = "1.2.2"
+fast_log = "1.2.3"
 #runtime
 tokio = { version = "0.2", features = ["full"] }
 #rbatis orm dep
