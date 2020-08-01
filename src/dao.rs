@@ -1,15 +1,14 @@
-use actix_web::{App, HttpResponse, HttpServer, Responder, web};
-use fast_log::log::RuntimeType;
 use rbatis::plugin::logic_delete::RbatisLogicDeletePlugin;
 use rbatis::rbatis::Rbatis;
 use serde_json::json;
 use crate::config::BOOT_CONFIG;
+use fast_log::log::RuntimeType;
 
 // 示例-Rbatis示例初始化(必须)
 lazy_static! {
   pub static ref RB:Rbatis<'static>={
      let mut rb = Rbatis::new();
-     let mut del=RbatisLogicDeletePlugin::new("del");
+     let del = RbatisLogicDeletePlugin::new("del");
      rb.logic_plugin = Some(Box::new(del));
      rb
   };

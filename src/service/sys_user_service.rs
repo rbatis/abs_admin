@@ -36,7 +36,7 @@ impl SysUserService {
 
     ///后台用户根据id查找
     pub async fn find(&self, id: &str) -> Result<Option<SysUser>> {
-        let mut w = Wrapper::new(&RB.driver_type()?)
+        let w = Wrapper::new(&RB.driver_type()?)
             .eq("id",id)
             .check()?;
        return RB.fetch_by_wrapper("",&w).await;
@@ -44,7 +44,7 @@ impl SysUserService {
 
     ///根据账户名查找
     pub async fn find_by_account(&self, account: &str) -> Result<Option<SysUser>> {
-        let mut w = Wrapper::new(&RB.driver_type()?)
+        let w = Wrapper::new(&RB.driver_type()?)
             .eq("account",account)
             .check()?;
         return RB.fetch_by_wrapper("",&w).await;

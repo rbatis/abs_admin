@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use rbatis_core::Error;
 use crate::domain::domain::SysUser;
 use serde::de::DeserializeOwned;
-use actix_web::{HttpResponse, Responder, web};
+use actix_web::{HttpResponse};
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 struct JWTToken {

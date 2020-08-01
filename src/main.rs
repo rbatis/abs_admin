@@ -1,3 +1,7 @@
+#![allow(unused_imports)]//允许未使用的导入
+#![allow(unused_variables)]//允许未使用的变量
+#![allow(dead_code)]//允许未使用的代码
+
 #[macro_use]
 extern crate lazy_static;
 
@@ -24,11 +28,11 @@ async fn index() -> impl Responder {
 
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
-    ///初始化日志
+    //初始化日志
     fast_log::log::init_log(&BOOT_CONFIG.log_path, &RuntimeType::Std).unwrap();
-    ///初始化rbatis
+    //初始化rbatis
     dao::RB.link(&BOOT_CONFIG.mysql_url).await.unwrap();
-    ///初始化路由，启动http服务
+    //初始化路由，启动http服务
     HttpServer::new(|| {
         App::new()
             .route("/", web::get().to(index))
