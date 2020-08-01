@@ -1,20 +1,22 @@
-mod res_service;
+mod sys_res_service;
 mod cache_service;
-mod admin_user_service;
-mod role_service;
+mod sys_user_service;
+mod sys_role_service;
 
 use cache_service::CacheService;
-use res_service::ResService;
-use admin_user_service::AdminUserService;
+use sys_res_service::SysResService;
+use sys_user_service::SysUserService;
 use crate::config::BOOT_CONFIG;
-use role_service::RoleService;
+use sys_role_service::SysSYS_ROLE_SERVICE;
 
 
 
 
 lazy_static! {
-   pub static ref RES_SERVICE:ResService = ResService{};
+   ///chache
    pub static ref CACHE_SERVICE:CacheService = CacheService::new(&BOOT_CONFIG.redis_url);
-   pub static ref ADMIN_USER_SERVICE:AdminUserService = AdminUserService{};
-   pub static ref ROLESERVICE:RoleService = RoleService{};
+   ///sys services
+   pub static ref SYS_RES_SERVICE:SysResService = SysResService{};
+   pub static ref SYS_USER_SERVICE:SysUserService = SysUserService{};
+   pub static ref SYS_ROLE_SERVICE:SysSYS_ROLE_SERVICE = SysSYS_ROLE_SERVICE{};
 }

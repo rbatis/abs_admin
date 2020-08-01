@@ -2,7 +2,7 @@ use jsonwebtoken::errors::ErrorKind;
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
 use serde::{Deserialize, Serialize};
 use rbatis_core::Error;
-use crate::domain::domain::BizAdminUser;
+use crate::domain::domain::SysUser;
 use serde::de::DeserializeOwned;
 use actix_web::{HttpResponse, Responder, web};
 
@@ -98,7 +98,7 @@ impl<T> ToString for RespVO<T> where T: Serialize + DeserializeOwned + Clone {
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct SignInVO {
-    pub user: Option<BizAdminUser>,
+    pub user: Option<SysUser>,
     pub permissions: Vec<String>,
 }
 

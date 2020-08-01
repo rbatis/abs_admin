@@ -7,18 +7,18 @@ use rbatis_core::Result;
 use uuid::Uuid;
 
 use crate::dao::RB;
-use crate::domain::domain::BizAdminUser;
+use crate::domain::domain::SysUser;
 use crate::domain::dto::{SignInDTO, UserAddDTO, UserPageDTO};
 use crate::domain::vo::SignInVO;
 use crate::util::password_encoder::PasswordEncoder;
-use crate::service::ROLESERVICE;
+use crate::service::SYS_ROLE_SERVICE;
 
 ///后台用户服务
-pub struct AdminUserService {}
+pub struct SysUserService {}
 
-impl AdminUserService {
+impl SysUserService {
     /// 后台用户分页
-    pub async fn page(&self, arg: &UserPageDTO) -> Result<Page<BizAdminUser>> {
+    pub async fn page(&self, arg: &UserPageDTO) -> Result<Page<SysUser>> {
         let mut w = Wrapper::new(&RB.driver_type()?);
         if arg.name.is_some() {
             w.eq("name", &arg.name.clone().unwrap());
@@ -27,7 +27,7 @@ impl AdminUserService {
             w.eq("account", &arg.account.clone().unwrap());
         }
         w = w.check()?;
-        let mut result:Page<BizAdminUser> =RB.fetch_page_by_wrapper("", &w, &PageRequest::new(arg.page.unwrap_or(1), arg.size.unwrap_or(10))).await?;
+        let mut result:Page<SysUser> =RB.fetch_page_by_wrapper("", &w, &PageRequest::new(arg.page.unwrap_or(1), arg.size.unwrap_or(10))).await?;
         for x in &mut result.records {
             x.password = None;//屏蔽密码
         }
@@ -35,7 +35,7 @@ impl AdminUserService {
     }
 
     ///后台用户根据id查找
-    pub async fn find(&self, id: &str) -> Result<Option<BizAdminUser>> {
+    pub async fn find(&self, id: &str) -> Result<Option<SysUser>> {
         let mut w = Wrapper::new(&RB.driver_type()?)
             .eq("id",id)
             .check()?;
@@ -43,7 +43,7 @@ impl AdminUserService {
     }
 
     ///根据账户名查找
-    pub async fn find_by_account(&self, account: &str) -> Result<Option<BizAdminUser>> {
+    pub async fn find_by_account(&self, account: &str) -> Result<Option<SysUser>> {
         let mut w = Wrapper::new(&RB.driver_type()?)
             .eq("account",account)
             .check()?;
@@ -62,7 +62,7 @@ impl AdminUserService {
         }
         let id = Uuid::new_v4();
         let dt = Utc::now();
-        let user = BizAdminUser {
+        let user = SysUser {
             id: Some(id.to_string()),
             account: arg.account.clone(),
             password: Some(PasswordEncoder::encode(arg.password.as_ref().unwrap())),
@@ -81,7 +81,7 @@ impl AdminUserService {
         let w = Wrapper::new(&RB.driver_type()?)
             .eq("account", &arg.account)
             .check()?;
-        let user: Option<BizAdminUser> = RB.fetch_by_wrapper("", &w).await?;
+        let user: Option<SysUser> = RB.fetch_by_wrapper("", &w).await?;
         if user.is_none() {
             return Err(Error::from(format!("账号:{} 不存在!", arg.account.as_ref().unwrap())));
         }
