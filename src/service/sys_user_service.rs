@@ -1,4 +1,4 @@
-use chrono::Utc;
+use chrono::{Utc,NaiveDateTime};
 use rbatis::crud::CRUD;
 use rbatis::plugin::page::{Page, PageRequest};
 use rbatis::wrapper::Wrapper;
@@ -12,6 +12,8 @@ use crate::domain::dto::{SignInDTO, UserAddDTO, UserPageDTO};
 use crate::domain::vo::SignInVO;
 use crate::util::password_encoder::PasswordEncoder;
 use crate::service::SYS_ROLE_SERVICE;
+use std::str::FromStr;
+use std::time::SystemTime;
 
 ///后台用户服务
 pub struct SysUserService {}
@@ -68,7 +70,7 @@ impl SysUserService {
             password: Some(PasswordEncoder::encode(arg.password.as_ref().unwrap())),
             name: arg.name.clone(),
             del: Some(1),
-            create_time: Some(dt.format("%Y-%m-%d %H:%M:%S").to_string()),
+            create_time: Some(dt.naive_local()),
         };
         return RB.save("", &user).await;
     }

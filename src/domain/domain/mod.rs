@@ -1,6 +1,7 @@
 
 use rbatis::crud::CRUDEnable;
 use serde::{Deserialize, Serialize};
+use chrono::NaiveDateTime;
 
 ///权限资源表
 #[derive(Serialize, Deserialize, Clone, Debug)]
@@ -11,7 +12,7 @@ pub struct SysRes {
     pub permission: Option<String>,
     pub path: Option<String>,
     pub del: Option<i32>,
-    pub create_time: Option<String>,
+    pub create_time: Option<NaiveDateTime>,
 }
 
 impl CRUDEnable for SysRes {
@@ -24,7 +25,7 @@ pub struct SysRole {
     pub id: Option<String>,
     pub name: Option<String>,
     pub del: Option<i32>,
-    pub create_time: Option<String>,
+    pub create_time: Option<NaiveDateTime>,
 }
 
 impl CRUDEnable for SysRole {
@@ -39,7 +40,7 @@ pub struct SysRoleRes {
     pub role_id: Option<String>,
     //资源id
     pub res_id: Option<String>,
-    pub create_time: Option<String>,
+    pub create_time: Option<NaiveDateTime>,
 }
 
 impl CRUDEnable for SysRoleRes {
@@ -54,7 +55,7 @@ pub struct SysUser {
     pub password: Option<String>,
     pub name: Option<String>,
     pub del: Option<i32>,
-    pub create_time: Option<String>,
+    pub create_time: Option<NaiveDateTime>,
 }
 
 impl CRUDEnable for SysUser {
@@ -69,7 +70,7 @@ pub struct SysUserRole {
     pub user_id: Option<String>,
     //角色id
     pub role_id: Option<String>,
-    pub create_time: Option<String>,
+    pub create_time: Option<NaiveDateTime>,
 }
 
 impl CRUDEnable for SysUserRole {
