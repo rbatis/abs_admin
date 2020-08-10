@@ -6,7 +6,7 @@ use fast_log::log::RuntimeType;
 
 // 示例-Rbatis示例初始化(必须)
 lazy_static! {
-  pub static ref RB:Rbatis<'static>={
+  pub static ref RB:Rbatis={
      let mut rb = Rbatis::new();
      let del = RbatisLogicDeletePlugin::new("del");
      rb.logic_plugin = Some(Box::new(del));
