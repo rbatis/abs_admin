@@ -19,7 +19,7 @@ use rbatis::plugin::logic_delete::RbatisLogicDeletePlugin;
 use rbatis::rbatis::Rbatis;
 use serde_json::json;
 use crate::controller::{res, user};
-use config::BOOT_CONFIG;
+use config::CONFIG;
 
 
 async fn index() -> impl Responder {
@@ -29,9 +29,9 @@ async fn index() -> impl Responder {
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
     //初始化日志
-    fast_log::log::init_log(&BOOT_CONFIG.log_path, &RuntimeType::Std).unwrap();
+    fast_log::log::init_log(&CONFIG.log_path, &RuntimeType::Std).unwrap();
     //初始化rbatis
-    dao::RB.link(&BOOT_CONFIG.mysql_url).await.unwrap();
+    dao::RB.link(&CONFIG.mysql_url).await.unwrap();
     //初始化路由，启动http服务
     HttpServer::new(|| {
         App::new()
@@ -41,7 +41,7 @@ async fn main() -> std::io::Result<()> {
             .route("/admin_user_add",web::post().to(user::user_add))
             .route("/admin_user_page",web::post().to(user::user_page))
     })
-        .bind(&BOOT_CONFIG.server_url)?
+        .bind(&CONFIG.server_url)?
         .run()
         .await
 }

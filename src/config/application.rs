@@ -4,7 +4,7 @@ use std::io::Read;
 use yaml_rust::{Yaml, YamlLoader};
 
 ///服务启动配置
-pub struct BootConfig {
+pub struct ApplicationConfig {
     ///当前服务地址
     pub server_url: String,
     ///日志路径
@@ -16,17 +16,17 @@ pub struct BootConfig {
 }
 
 ///默认配置
-impl Default for BootConfig {
+impl Default for ApplicationConfig {
     fn default() -> Self {
-        let mut f = File::open("src/boot.yml").expect("boot.yml not exist!");
+        let mut f = File::open("src/application.yml").expect("application.yml not exist!");
         let mut data = String::new();
         f.read_to_string(&mut data);
 
         let docs = YamlLoader::load_from_str(&data).unwrap();
-        let server_url= get_cfg(&docs, "server_url").expect("boot.yml/server_url not exist!");
-        let log_path= get_cfg(&docs, "log_path").expect("boot.yml/log_path not exist!");
-        let redis_url= get_cfg(&docs, "redis_url").expect("boot.yml/redis_url not exist!");
-        let mysql_url= get_cfg(&docs, "mysql_url").expect("boot.yml/mysql_url not exist!");
+        let server_url= get_cfg(&docs, "server_url").expect("application.yml/ server_url not exist!");
+        let log_path= get_cfg(&docs, "log_path").expect("application.yml/ log_path not exist!");
+        let redis_url= get_cfg(&docs, "redis_url").expect("application.yml/ redis_url not exist!");
+        let mysql_url= get_cfg(&docs, "mysql_url").expect("application.yml/ mysql_url not exist!");
 
         Self {
             server_url: server_url.as_str().unwrap_or("").to_string(),

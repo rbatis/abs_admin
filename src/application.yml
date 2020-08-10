@@ -1,4 +1,8 @@
+#server 地址
 server_url: "127.0.0.1:8000"
+#log 地址
 log_path: "requests.log"
+#redis地址
 redis_url: "redis://127.0.0.1:6379"
+#mysql地址
 mysql_url: "mysql://root:123456@localhost:3306/test"

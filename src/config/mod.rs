@@ -1,8 +1,8 @@
-pub mod boot_config;
+pub mod application;
 
-use boot_config::BootConfig;
+use application::ApplicationConfig;
 
 //当前服务配置
 lazy_static! {
-      pub static ref BOOT_CONFIG:BootConfig=BootConfig::default();
+      pub static ref CONFIG:ApplicationConfig=ApplicationConfig::default();
 }
