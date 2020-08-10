@@ -23,8 +23,6 @@ impl Default for BootConfig {
         f.read_to_string(&mut data);
 
         let docs = YamlLoader::load_from_str(&data).unwrap();
-        println!("docs: {:?}", docs);
-
         let server_url= get_cfg(&docs, "server_url").expect("boot.yml/server_url not exist!");
         let log_path= get_cfg(&docs, "log_path").expect("boot.yml/log_path not exist!");
         let redis_url= get_cfg(&docs, "redis_url").expect("boot.yml/redis_url not exist!");
