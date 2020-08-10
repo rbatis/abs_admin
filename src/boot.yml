@@ -1,4 +1,4 @@
-server_url: 127.0.0.1:8000
-log_path: requests.log
-redis_url: redis://127.0.0.1:6379
-mysql_url: mysql://root:123456@localhost:3306/test
+server_url: "127.0.0.1:8000"
+log_path: "requests.log"
+redis_url: "redis://127.0.0.1:6379"
+mysql_url: "mysql://root:123456@localhost:3306/test"

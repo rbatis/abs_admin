@@ -34,3 +34,5 @@ jsonwebtoken = "7"
 #uuid
 uuid = "0.8"
 md5 = "0.7.0"
+
+yaml-rust = "0.4"
