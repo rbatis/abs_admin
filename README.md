@@ -2,6 +2,23 @@
 *  rust  common admin server
 *  rust语言后台管理
 
+
+# 快速安装教程
+* 使用docker启动mysql和redis
+```cmd
+docker run -it -d --name redis -p 6379:6379 redis
+docker run -p 3306:3306 --name mysql -e MYSQL_ROOT_PASSWORD=123456 -d mysql:5.7
+```
+* PostMan  请求脚本导入
+```cmd
+打开postman,导入 abs_admini.postman_collection.json
+```
+* 使用Clion导入abs_admin运行或者命令行执行
+```cmd
+cargo run
+```
+
+
 # dep crate(依赖库)
 * rbatis
 * actix-web
@@ -21,12 +38,3 @@
 * Role,User,Reource（角色，用户，权限）
 
 
-# sh(脚本)
-```cmd
-docker run -it -d --name redis -p 6379:6379 redis
-```
-
-# PostMan  请求脚本导入
-```cmd
-打开postman,导入 abs_admini.postman_collection.json
-```
