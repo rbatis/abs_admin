@@ -1,6 +1,6 @@
 # abs_admin
 *  rust  common admin server
-*  rust语言后台管理
+*  rust语言后台管理模板项目，为了急速开发而生
 
 
 # 快速安装教程
