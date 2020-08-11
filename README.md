@@ -9,6 +9,8 @@
 docker run -it -d --name redis -p 6379:6379 redis
 docker run -p 3306:3306 --name mysql -e MYSQL_ROOT_PASSWORD=123456 -d mysql:5.7
 ```
+* 使用mysql workbench或者navcat导入database.sql脚本到mysql
+
 * PostMan  请求脚本导入
 ```cmd
 打开postman,导入 abs_admini.postman_collection.json
