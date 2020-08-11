@@ -21,7 +21,7 @@ pub struct SysUserService {}
 impl SysUserService {
     /// 后台用户分页
     pub async fn page(&self, arg: &UserPageDTO) -> Result<Page<SysUser>> {
-        let mut w = Wrapper::new(&RB.driver_type()?);
+        let mut w = RB.new_wrapper();
         if arg.name.is_some() {
             w.eq("name", &arg.name.clone().unwrap());
         }
@@ -38,7 +38,7 @@ impl SysUserService {
 
     ///后台用户根据id查找
     pub async fn find(&self, id: &str) -> Result<Option<SysUser>> {
-        let w = Wrapper::new(&RB.driver_type()?)
+        let w = RB.new_wrapper()
             .eq("id",id)
             .check()?;
        return RB.fetch_by_wrapper("",&w).await;
@@ -46,7 +46,7 @@ impl SysUserService {
 
     ///根据账户名查找
     pub async fn find_by_account(&self, account: &str) -> Result<Option<SysUser>> {
-        let w = Wrapper::new(&RB.driver_type()?)
+        let w = RB.new_wrapper()
             .eq("account",account)
             .check()?;
         return RB.fetch_by_wrapper("",&w).await;
@@ -80,7 +80,7 @@ impl SysUserService {
         if arg.account.is_none() || arg.password.is_none() || arg.account.as_ref().unwrap().is_empty() || arg.password.as_ref().unwrap().is_empty() {
             return Err(Error::from("用户名密码不能为空!"));
         }
-        let w = Wrapper::new(&RB.driver_type()?)
+        let w = RB.new_wrapper()
             .eq("account", &arg.account)
             .check()?;
         let user: Option<SysUser> = RB.fetch_by_wrapper("", &w).await?;
