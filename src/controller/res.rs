@@ -14,7 +14,7 @@ use crate::service::SYS_RES_SERVICE;
 /// 资源分页(json请求)
 pub async fn res_page(page: web::Json<ResPageDTO>) -> impl Responder {
     let data = SYS_RES_SERVICE.page(&page.0).await;
-    RespVO::from_result(&data).to_json_resp()
+    RespVO::from_result(&data).resp()
     // CACHE_SERVICE.put_json("res_page", &data.as_ref().unwrap().to_string()).await;
     // let cached_res: String = CACHE_SERVICE.get_json("res_page").await.unwrap();
 }
@@ -22,10 +22,10 @@ pub async fn res_page(page: web::Json<ResPageDTO>) -> impl Responder {
 ///资源添加
 pub async fn res_add(mut arg: web::Json<ResAddDTO>) -> impl Responder {
     if arg.name.is_none() {
-        return RespVO::<u64>::from_error_info("", "资源名字不能为空!").to_json_resp();
+        return RespVO::<u64>::from_error_info("", "资源名字不能为空!").resp();
     }
     if arg.permission.is_none() {
-        return RespVO::<u64>::from_error_info("", "资源permission不能为空!").to_json_resp();
+        return RespVO::<u64>::from_error_info("", "资源permission不能为空!").resp();
     }
     if arg.path.is_none() {
         arg.path = Some("".to_string());
@@ -40,5 +40,5 @@ pub async fn res_add(mut arg: web::Json<ResAddDTO>) -> impl Responder {
         create_time: Some(NaiveDateTime::now()),
     };
     let data = SYS_RES_SERVICE.save(&res).await;
-    RespVO::from_result(&data).to_json_resp()
+    RespVO::from_result(&data).resp()
 }

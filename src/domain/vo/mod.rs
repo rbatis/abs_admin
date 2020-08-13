@@ -96,7 +96,7 @@ impl<T> RespVO<T> where T: Serialize + DeserializeOwned + Clone {
         }
     }
 
-    pub fn to_json_resp(&self) -> actix_http::Response {
+    pub fn resp(&self) -> actix_http::Response {
         return HttpResponse::Ok().content_type("json").body(self.to_string());
     }
 }
