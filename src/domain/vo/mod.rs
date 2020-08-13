@@ -84,6 +84,18 @@ impl<T> RespVO<T> where T: Serialize + DeserializeOwned + Clone {
         }
     }
 
+    pub fn from_error_info(code: &str, info: &str) -> Self {
+        let mut code_str = code.to_string();
+        if code_str.is_empty() {
+            code_str = "FAIL".to_string();
+        }
+        Self {
+            code: Some(code_str),
+            msg: Some(info.to_string()),
+            data: None,
+        }
+    }
+
     pub fn to_json_resp(&self) -> actix_http::Response {
         return HttpResponse::Ok().content_type("json").body(self.to_string());
     }

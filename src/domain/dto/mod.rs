@@ -10,6 +10,15 @@ pub struct ResPageDTO{
     pub size: Option<u64>,
 }
 
+/// 资源添加DTO
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct ResAddDTO{
+    pub parent_id: Option<String>,
+    pub name: Option<String>,
+    pub permission: Option<String>,
+    pub path: Option<String>,
+}
+
 
 /// 登陆
 #[derive(Serialize, Deserialize, Clone, Debug)]

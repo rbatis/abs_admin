@@ -17,4 +17,8 @@ impl SysResService {
         let data: rbatis_core::Result<Page<SysRes>> = RB.fetch_page_by_wrapper("", &RB.new_wrapper(), &page_req).await;
         data
     }
+
+    pub async fn save(&self,arg:&SysRes)->rbatis_core::Result<u64>{
+        RB.save("",arg).await
+    }
 }

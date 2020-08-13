@@ -36,10 +36,11 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
         App::new()
             .route("/", web::get().to(index))
+            .route("/res_add", web::post().to(res::res_add))
             .route("/res_page", web::post().to(res::res_page))
             .route("/login",web::post().to(user::user_login))
-            .route("/admin_user_add",web::post().to(user::user_add))
-            .route("/admin_user_page",web::post().to(user::user_page))
+            .route("/user_add",web::post().to(user::user_add))
+            .route("/user_page",web::post().to(user::user_page))
     })
         .bind(&CONFIG.server_url)?
         .run()
