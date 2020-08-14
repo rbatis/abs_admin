@@ -37,23 +37,13 @@ impl CacheService {
         if data.is_err() {
             return Err(rbatis_core::Error::from(data.err().unwrap().to_string()));
         }
-        let data = data.unwrap();
-        let r: String = redis::cmd("SET")
-            .arg(&[k, data.as_str()])
-            .query_async(&mut conn)
-            .await.unwrap_or(String::new());
-        Ok(r)
+        let data = self.set_string(k,data.unwrap().as_str()).await?;
+        Ok(data)
     }
 
     pub async fn get_json<T>(&self, k: &str) -> rbatis_core::Result<T> where T: DeserializeOwned {
         let mut conn = self.get_conn().await?;
-        let r: String = redis::cmd("GET")
-            .arg(&[k])
-            .query_async(&mut conn)
-            .await.unwrap();
-        if r.is_empty() {
-            return Err(rbatis_core::Error::from("cache data is empty!"));
-        }
+        let r = self.get_string(k).await?;
         let data: serde_json::Result<T> = serde_json::from_str(r.as_str());
         if data.is_err() {
             return Err(rbatis_core::Error::from(data.err().unwrap().to_string()));
