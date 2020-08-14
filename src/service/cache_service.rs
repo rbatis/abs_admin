@@ -2,6 +2,7 @@ use redis::AsyncCommands;
 use log::info;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
+use redis::aio::Connection;
 
 ///缓存服务
 pub struct CacheService {
@@ -17,9 +18,19 @@ impl CacheService {
         }
     }
 
+    pub async fn get_conn(&self)->rbatis_core::Result<Connection>{
+        let mut conn = self.client.get_async_connection().await;
+        if conn.is_err(){
+            return Err(rbatis_core::Error::from(conn.err().unwrap().to_string()));
+        }
+        return Ok(conn.unwrap());
+    }
+
+
+
     pub async fn put_json<T>(&self, k: &str, v: &T) -> rbatis_core::Result<String>
     where T:Serialize{
-        let mut conn = self.client.get_async_connection().await.unwrap();
+        let mut conn = self.get_conn().await?;
         let data=serde_json::to_string(v);
         if data.is_err(){
             return Err(rbatis_core::Error::from(data.err().unwrap().to_string()));
@@ -28,12 +39,12 @@ impl CacheService {
         let r: String = redis::cmd("SET")
             .arg(&[k, data.as_str()])
             .query_async(&mut conn)
-            .await.unwrap();
+            .await.unwrap_or(String::new());
         Ok(r)
     }
 
     pub async fn get_json<T>(&self, k: &str) -> rbatis_core::Result<T> where T: DeserializeOwned {
-        let mut conn = self.client.get_async_connection().await.unwrap();
+        let mut conn = self.get_conn().await?;
         let r: String = redis::cmd("GET")
             .arg(&[k])
             .query_async(&mut conn)
@@ -49,20 +60,20 @@ impl CacheService {
     }
 
     pub async fn put_string(&self, k: &str, v: &str) -> rbatis_core::Result<String>{
-        let mut conn = self.client.get_async_connection().await.unwrap();
+        let mut conn = self.get_conn().await?;
         let r: String = redis::cmd("SET")
             .arg(&[k, v])
             .query_async(&mut conn)
-            .await.unwrap();
+            .await.unwrap_or(String::new());
         Ok(r)
     }
 
     pub async fn get_string(&self, k: &str) -> rbatis_core::Result<String> {
-        let mut conn = self.client.get_async_connection().await.unwrap();
+        let mut conn = self.get_conn().await?;
         let r: String = redis::cmd("GET")
             .arg(&[k])
             .query_async(&mut conn)
-            .await.unwrap();
+            .await.unwrap_or(String::new());
         if r.is_empty(){
             return Err(rbatis_core::Error::from("cache data is empty!"));
         }
