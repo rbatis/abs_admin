@@ -20,7 +20,7 @@ impl CacheService {
     }
 
     pub async fn get_conn(&self) -> rbatis_core::Result<Connection> {
-        let mut conn = self.client.get_async_connection().await;
+        let conn = self.client.get_async_connection().await;
         if conn.is_err() {
             let err = conn.err().unwrap().to_string();
             error!("CacheService get_conn fail! {}",err.as_str());
@@ -32,7 +32,7 @@ impl CacheService {
 
     pub async fn set_json<T>(&self, k: &str, v: &T) -> rbatis_core::Result<String>
         where T: Serialize {
-        let mut conn = self.get_conn().await?;
+        let conn = self.get_conn().await?;
         let data = serde_json::to_string(v);
         if data.is_err() {
             return Err(rbatis_core::Error::from(data.err().unwrap().to_string()));
@@ -42,7 +42,7 @@ impl CacheService {
     }
 
     pub async fn get_json<T>(&self, k: &str) -> rbatis_core::Result<T> where T: DeserializeOwned {
-        let mut conn = self.get_conn().await?;
+        let conn = self.get_conn().await?;
         let r = self.get_string(k).await?;
         let data: serde_json::Result<T> = serde_json::from_str(r.as_str());
         if data.is_err() {

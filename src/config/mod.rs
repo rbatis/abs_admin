@@ -1,6 +1,6 @@
-pub mod application;
+pub mod app_config;
 
-use application::ApplicationConfig;
+use app_config::ApplicationConfig;
 
 //当前服务配置
 lazy_static! {

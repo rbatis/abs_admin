@@ -18,11 +18,13 @@ pub struct ApplicationConfig {
 ///默认配置
 impl Default for ApplicationConfig {
     fn default() -> Self {
-        let mut f = File::open("src/application.yml").expect("application.yml not exist!");
-        let mut data = String::new();
-        f.read_to_string(&mut data);
 
-        let docs = YamlLoader::load_from_str(&data).unwrap();
+        let mut yml_data = String::new();
+        File::open("src/application.yml")
+            .expect("application.yml not exist!")
+            .read_to_string(&mut yml_data);
+
+        let docs = YamlLoader::load_from_str(&yml_data).unwrap();
         let server_url= get_cfg(&docs, "server_url").expect("application.yml/ server_url not exist!");
         let log_path= get_cfg(&docs, "log_path").expect("application.yml/ log_path not exist!");
         let redis_url= get_cfg(&docs, "redis_url").expect("application.yml/ redis_url not exist!");
