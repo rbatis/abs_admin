@@ -28,7 +28,7 @@ impl CacheService {
 
 
 
-    pub async fn put_json<T>(&self, k: &str, v: &T) -> rbatis_core::Result<String>
+    pub async fn set_json<T>(&self, k: &str, v: &T) -> rbatis_core::Result<String>
     where T:Serialize{
         let mut conn = self.get_conn().await?;
         let data=serde_json::to_string(v);
@@ -59,7 +59,7 @@ impl CacheService {
         Ok(data.unwrap())
     }
 
-    pub async fn put_string(&self, k: &str, v: &str) -> rbatis_core::Result<String>{
+    pub async fn set_string(&self, k: &str, v: &str) -> rbatis_core::Result<String>{
         let mut conn = self.get_conn().await?;
         let r: String = redis::cmd("SET")
             .arg(&[k, v])
