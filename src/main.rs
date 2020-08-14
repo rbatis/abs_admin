@@ -20,6 +20,7 @@ use rbatis::rbatis::Rbatis;
 use serde_json::json;
 use crate::controller::{res, user};
 use config::CONFIG;
+use dao::RB;
 
 
 async fn index() -> impl Responder {
@@ -28,11 +29,11 @@ async fn index() -> impl Responder {
 
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
-    //初始化日志
+    //日志
     fast_log::log::init_log(&CONFIG.log_path, &RuntimeType::Std).unwrap();
-    //初始化rbatis
-    dao::RB.link(&CONFIG.mysql_url).await.unwrap();
-    //初始化路由，启动http服务
+    //ORM
+    RB.link(&CONFIG.mysql_url).await.unwrap();
+    //http路由
     HttpServer::new(|| {
         App::new()
             .route("/", web::get().to(index))
