@@ -39,6 +39,6 @@ pub async fn res_add(mut arg: web::Json<ResAddDTO>) -> impl Responder {
         del: Some(1),
         create_time: Some(NaiveDateTime::now()),
     };
-    let data = SYS_RES_SERVICE.save(&res).await;
+    let data = SYS_RES_SERVICE.add(&res).await;
     RespVO::from_result(&data).resp()
 }
