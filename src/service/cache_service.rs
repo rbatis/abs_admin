@@ -4,6 +4,7 @@ use redis::aio::Connection;
 use redis::AsyncCommands;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
+use rbatis_core::Result;
 
 ///缓存服务
 pub struct CacheService {
@@ -19,7 +20,7 @@ impl CacheService {
         }
     }
 
-    pub async fn get_conn(&self) -> rbatis_core::Result<Connection> {
+    pub async fn get_conn(&self) -> Result<Connection> {
         let conn = self.client.get_async_connection().await;
         if conn.is_err() {
             let err = conn.err().unwrap().to_string();
@@ -30,7 +31,7 @@ impl CacheService {
     }
 
 
-    pub async fn set_json<T>(&self, k: &str, v: &T) -> rbatis_core::Result<String>
+    pub async fn set_json<T>(&self, k: &str, v: &T) -> Result<String>
         where T: Serialize {
         let conn = self.get_conn().await?;
         let data = serde_json::to_string(v);
@@ -41,7 +42,7 @@ impl CacheService {
         Ok(data)
     }
 
-    pub async fn get_json<T>(&self, k: &str) -> rbatis_core::Result<T> where T: DeserializeOwned {
+    pub async fn get_json<T>(&self, k: &str) -> Result<T> where T: DeserializeOwned {
         let conn = self.get_conn().await?;
         let r = self.get_string(k).await?;
         let data: serde_json::Result<T> = serde_json::from_str(r.as_str());
@@ -51,7 +52,7 @@ impl CacheService {
         Ok(data.unwrap())
     }
 
-    pub async fn set_string(&self, k: &str, v: &str) -> rbatis_core::Result<String> {
+    pub async fn set_string(&self, k: &str, v: &str) -> Result<String> {
         let mut conn = self.get_conn().await?;
         let r: String = redis::cmd("SET")
             .arg(&[k, v])
@@ -60,7 +61,7 @@ impl CacheService {
         Ok(r)
     }
 
-    pub async fn get_string(&self, k: &str) -> rbatis_core::Result<String> {
+    pub async fn get_string(&self, k: &str) -> Result<String> {
         let mut conn = self.get_conn().await?;
         let r: String = redis::cmd("GET")
             .arg(&[k])
