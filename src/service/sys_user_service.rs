@@ -23,10 +23,10 @@ impl SysUserService {
     pub async fn page(&self, arg: &UserPageDTO) -> Result<Page<SysUser>> {
         let mut w = RB.new_wrapper();
         if arg.name.is_some() {
-            w.eq("name", &arg.name.clone().unwrap());
+            w.eq("name", &arg.name);
         }
         if arg.account.is_some() {
-            w.eq("account", &arg.account.clone().unwrap());
+            w.eq("account", &arg.account);
         }
         w = w.check()?;
         let mut result:Page<SysUser> =RB.fetch_page_by_wrapper("", &w, &PageRequest::new(arg.page.unwrap_or(1), arg.size.unwrap_or(10))).await?;
