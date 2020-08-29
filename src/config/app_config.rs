@@ -55,5 +55,5 @@ fn get_cfg<'a>(docs: &'a Vec<Yaml>, key: &str) -> &'a Yaml {
             _ => {}
         }
     }
-    panic!(format!("application.yml/ {} not exist!",key))
+    panic!(format!("in application.yml key: '{}' not exist!",key))
 }
