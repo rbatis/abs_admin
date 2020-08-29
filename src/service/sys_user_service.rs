@@ -1,4 +1,7 @@
-use chrono::{Utc,NaiveDateTime};
+use std::str::FromStr;
+use std::time::SystemTime;
+
+use chrono::{NaiveDateTime, Utc};
 use rbatis::crud::CRUD;
 use rbatis::plugin::page::{Page, PageRequest};
 use rbatis::wrapper::Wrapper;
@@ -10,10 +13,8 @@ use crate::dao::RB;
 use crate::domain::domain::SysUser;
 use crate::domain::dto::{SignInDTO, UserAddDTO, UserPageDTO};
 use crate::domain::vo::SignInVO;
-use crate::util::password_encoder::PasswordEncoder;
 use crate::service::SYS_ROLE_SERVICE;
-use std::str::FromStr;
-use std::time::SystemTime;
+use crate::util::password_encoder::PasswordEncoder;
 
 ///后台用户服务
 pub struct SysUserService {}
@@ -21,15 +22,13 @@ pub struct SysUserService {}
 impl SysUserService {
     /// 后台用户分页
     pub async fn page(&self, arg: &UserPageDTO) -> Result<Page<SysUser>> {
-        let mut w = RB.new_wrapper();
-        if arg.name.is_some() {
-            w.eq("name", &arg.name);
-        }
-        if arg.account.is_some() {
-            w.eq("account", &arg.account);
-        }
-        w = w.check()?;
-        let mut result:Page<SysUser> =RB.fetch_page_by_wrapper("", &w, &PageRequest::new(arg.page.unwrap_or(1), arg.size.unwrap_or(10))).await?;
+        let w = RB.new_wrapper()
+            .do_if(&arg.name, arg.name.is_some(),
+                   |w, arg| w.eq("name", arg))
+            .do_if(&arg.account, arg.account.is_some(),
+                   |w, arg| w.eq("account", arg))
+            .check()?;
+        let mut result: Page<SysUser> = RB.fetch_page_by_wrapper("", &w, &PageRequest::new(arg.page.unwrap_or(1), arg.size.unwrap_or(10))).await?;
         for x in &mut result.records {
             x.password = None;//屏蔽密码
         }
@@ -39,17 +38,17 @@ impl SysUserService {
     ///后台用户根据id查找
     pub async fn find(&self, id: &str) -> Result<Option<SysUser>> {
         let w = RB.new_wrapper()
-            .eq("id",id)
+            .eq("id", id)
             .check()?;
-       return RB.fetch_by_wrapper("",&w).await;
+        return RB.fetch_by_wrapper("", &w).await;
     }
 
     ///根据账户名查找
     pub async fn find_by_account(&self, account: &str) -> Result<Option<SysUser>> {
         let w = RB.new_wrapper()
-            .eq("account",account)
+            .eq("account", account)
             .check()?;
-        return RB.fetch_by_wrapper("",&w).await;
+        return RB.fetch_by_wrapper("", &w).await;
     }
 
 
@@ -59,8 +58,8 @@ impl SysUserService {
             return Err(Error::from("用户名密码不能为空!"));
         }
         let old_user = self.find_by_account(arg.account.as_ref().unwrap_or(&"".to_string())).await?;
-        if old_user.is_some(){
-            return Err(Error::from(format!("用户账户:{}已存在!",arg.account.as_ref().unwrap())));
+        if old_user.is_some() {
+            return Err(Error::from(format!("用户账户:{}已存在!", arg.account.as_ref().unwrap())));
         }
         let id = Uuid::new_v4();
         let dt = Utc::now();
@@ -103,12 +102,8 @@ impl SysUserService {
     }
 
     ///登出后台
-    pub async fn sign_out(&self) {
-
-    }
+    pub async fn sign_out(&self) {}
 
     ///循环查找权限
-    pub async fn loop_load_permission(&self, id: &str) {
-
-    }
+    pub async fn loop_load_permission(&self, id: &str) {}
 }
