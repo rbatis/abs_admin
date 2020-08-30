@@ -1,7 +1,6 @@
 use log::error;
 use log::info;
 use redis::aio::Connection;
-use redis::AsyncCommands;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 use rbatis_core::Result;

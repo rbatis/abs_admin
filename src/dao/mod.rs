@@ -1,7 +1,5 @@
 use rbatis::plugin::logic_delete::RbatisLogicDeletePlugin;
 use rbatis::rbatis::Rbatis;
-use serde_json::json;
-use fast_log::log::RuntimeType;
 
 // 示例-Rbatis示例初始化(必须)
 lazy_static! {
@@ -14,12 +12,12 @@ lazy_static! {
 }
 
 
-#[tokio::main]
-#[test]
-async fn test_rbatis() {
-    fast_log::log::init_log("requests.log", &RuntimeType::Std).unwrap();
-    RB.link(&CONFIG.mysql_url).await.unwrap();
-    let arg = &vec![json!(1)];
-    let v: serde_json::Value = RB.fetch_prepare("", "SELECT count(1) FROM biz_activity where delete_flag = ?;", arg).await.unwrap();
-    println!("{}", v.to_string());
-}
+// #[tokio::main]
+// #[test]
+// async fn test_rbatis() {
+//     fast_log::log::init_log("requests.log", &RuntimeType::Std).unwrap();
+//     RB.link(&CONFIG.mysql_url).await.unwrap();
+//     let arg = &vec![json!(1)];
+//     let v: serde_json::Value = RB.fetch_prepare("", "SELECT count(1) FROM biz_activity where delete_flag = ?;", arg).await.unwrap();
+//     println!("{}", v.to_string());
+// }

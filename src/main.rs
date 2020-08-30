@@ -1,4 +1,3 @@
-#![allow(unused_imports)]//允许未使用的导入
 #![allow(unused_variables)]//允许未使用的变量
 #![allow(dead_code)]//允许未使用的代码
 #![allow(unused_must_use)]
@@ -16,9 +15,6 @@ pub mod util;
 
 use actix_web::{App, HttpResponse, HttpServer, Responder, web};
 use fast_log::log::RuntimeType;
-use rbatis::plugin::logic_delete::RbatisLogicDeletePlugin;
-use rbatis::rbatis::Rbatis;
-use serde_json::json;
 use crate::controller::{res, user};
 use config::CONFIG;
 use dao::RB;

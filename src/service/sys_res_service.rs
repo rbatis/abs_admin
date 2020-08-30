@@ -1,7 +1,5 @@
 use rbatis::crud::CRUD;
 use rbatis::plugin::page::{Page, PageRequest};
-use rbatis::wrapper::Wrapper;
-use rbatis_core::db::DriverType;
 use rbatis_core::Result;
 
 use crate::dao::RB;
