@@ -12,12 +12,22 @@ lazy_static! {
 }
 
 
-// #[tokio::main]
-// #[test]
-// async fn test_rbatis() {
-//     fast_log::log::init_log("requests.log", &RuntimeType::Std).unwrap();
-//     RB.link(&CONFIG.mysql_url).await.unwrap();
-//     let arg = &vec![json!(1)];
-//     let v: serde_json::Value = RB.fetch_prepare("", "SELECT count(1) FROM biz_activity where delete_flag = ?;", arg).await.unwrap();
-//     println!("{}", v.to_string());
-// }
+#[test]
+mod test {
+    use fast_log::log::RuntimeType;
+    use serde_json::json;
+    use crate::dao::RB;
+    use crate::config::CONFIG;
+
+    #[tokio::main]
+    #[test]
+    async fn test_rbatis() {
+        fast_log::log::init_log("requests.log", &RuntimeType::Std).unwrap();
+        RB.link(&CONFIG.mysql_url).await.unwrap();
+        let arg = &vec![json!(1)];
+        let v: serde_json::Value = RB.fetch_prepare("", "SELECT count(1) FROM biz_activity where delete_flag = ?;", arg).await.unwrap();
+        println!("{}", v.to_string());
+    }
+}
+
+
