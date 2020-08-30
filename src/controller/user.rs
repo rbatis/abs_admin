@@ -1,7 +1,7 @@
-use actix_web::{web, Responder, HttpResponse};
+use actix_web::{web, Responder};
 use crate::domain::dto::{SignInDTO, UserAddDTO, UserPageDTO};
 use crate::service::SYS_USER_SERVICE;
-use crate::domain::vo::{RespVO, SignInVO};
+use crate::domain::vo::{RespVO};
 
 /// 用户登陆
 pub async fn user_login(arg: web::Json<SignInDTO>) -> impl Responder {

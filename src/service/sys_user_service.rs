@@ -1,7 +1,7 @@
 use std::str::FromStr;
 use std::time::SystemTime;
 
-use chrono::{NaiveDateTime, Utc};
+use chrono::{NaiveDateTime};
 use rbatis::crud::CRUD;
 use rbatis::plugin::page::{Page, PageRequest};
 use rbatis::wrapper::Wrapper;
@@ -15,6 +15,7 @@ use crate::domain::dto::{SignInDTO, UserAddDTO, UserPageDTO};
 use crate::domain::vo::SignInVO;
 use crate::service::SYS_ROLE_SERVICE;
 use crate::util::password_encoder::PasswordEncoder;
+use rbatis_core::value::DateTimeNow;
 
 ///后台用户服务
 pub struct SysUserService {}
@@ -60,14 +61,13 @@ impl SysUserService {
             return Err(Error::from(format!("用户账户:{}已存在!", arg.account.as_ref().unwrap())));
         }
         let id = Uuid::new_v4();
-        let dt = Utc::now();
         let user = SysUser {
             id: Some(id.to_string()),
             account: arg.account.clone(),
             password: Some(PasswordEncoder::encode(arg.password.as_ref().unwrap())),
             name: arg.name.clone(),
             del: Some(1),
-            create_time: Some(dt.naive_local()),
+            create_time: Some(NaiveDateTime::now()),
         };
         return RB.save("", &user).await;
     }

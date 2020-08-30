@@ -33,7 +33,6 @@ impl CacheService {
 
     pub async fn set_json<T>(&self, k: &str, v: &T) -> Result<String>
         where T: Serialize {
-        let conn = self.get_conn().await?;
         let data = serde_json::to_string(v);
         if data.is_err() {
             return Err(rbatis_core::Error::from(data.err().unwrap().to_string()));
@@ -43,7 +42,6 @@ impl CacheService {
     }
 
     pub async fn get_json<T>(&self, k: &str) -> Result<T> where T: DeserializeOwned {
-        let conn = self.get_conn().await?;
         let r = self.get_string(k).await?;
         let data: serde_json::Result<T> = serde_json::from_str(r.as_str());
         if data.is_err() {

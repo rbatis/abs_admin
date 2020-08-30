@@ -1,7 +1,6 @@
 use rbatis::plugin::logic_delete::RbatisLogicDeletePlugin;
 use rbatis::rbatis::Rbatis;
 use serde_json::json;
-use crate::config::CONFIG;
 use fast_log::log::RuntimeType;
 
 // 示例-Rbatis示例初始化(必须)
