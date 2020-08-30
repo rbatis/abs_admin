@@ -23,10 +23,8 @@ impl SysUserService {
     /// 后台用户分页
     pub async fn page(&self, arg: &UserPageDTO) -> Result<Page<SysUser>> {
         let w = RB.new_wrapper()
-            .do_if(&arg.name, arg.name.is_some(),
-                   |w, arg| w.eq("name", arg))
-            .do_if(&arg.account, arg.account.is_some(),
-                   |w, arg| w.eq("account", arg))
+            .do_if(arg.name.is_some(), |w| w.eq("name", &arg.name))
+            .do_if(arg.account.is_some(), |w| w.eq("account", &arg.account))
             .check()?;
         let mut result: Page<SysUser> = RB.fetch_page_by_wrapper("", &w, &PageRequest::new(arg.page.unwrap_or(1), arg.size.unwrap_or(10))).await?;
         for x in &mut result.records {
