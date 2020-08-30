@@ -6,6 +6,7 @@ use crate::domain::domain::SysUser;
 use serde::de::DeserializeOwned;
 use actix_web::{HttpResponse};
 
+/// JWT 鉴权 Token结构
 #[derive(Debug, Serialize, Deserialize, Clone)]
 struct JWTToken {
     id: String,
@@ -39,7 +40,7 @@ impl JWTToken {
     }
 }
 
-
+/// http接口返回模型结构，提供基础的 code，msg，data 等json数据结构
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct RespVO<T> {
     pub code: Option<String>,
@@ -107,7 +108,7 @@ impl<T> ToString for RespVO<T> where T: Serialize + DeserializeOwned + Clone {
     }
 }
 
-
+///登录数据
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct SignInVO {
     pub user: Option<SysUser>,
