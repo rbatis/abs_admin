@@ -11,9 +11,14 @@ impl PasswordEncoder {
     }
 }
 
-// #[test]
-// fn test_encode() {
-//     let s = PasswordEncoder::encode("123456");
-//     println!("{}", s);
-//     assert_eq!(PasswordEncoder::encode("123456"), PasswordEncoder::encode("123456"))
-// }
+mod test {
+    #![allow(unused_imports)]
+    use crate::util::password_encoder::PasswordEncoder;
+
+    #[test]
+    fn test_encode() {
+        let s = PasswordEncoder::encode("123456");
+        println!("{}", s);
+        assert_eq!(PasswordEncoder::encode("123456"), PasswordEncoder::encode("123456"))
+    }
+}
