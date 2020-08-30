@@ -40,7 +40,7 @@ cargo run
 * element ui(饿了么UI)
 
 # module(模块)
-* JWT token based auth(基于JWT token的权限鉴权)
+* JWT token Auth(基于JWT token的权限鉴权)
 * Role,User,Reource（角色，用户，权限）
 
 
