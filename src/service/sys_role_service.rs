@@ -11,9 +11,9 @@ impl SysRoleService {
 
     ///角色分页
     pub async fn page(&self,arg: &RolePageDTO) -> Result<Page<SysRole>> {
-        let w=RB.new_wrapper()
+        let wrapper=RB.new_wrapper()
             .check()?;
-        let data=RB.fetch_page_by_wrapper("",&w,&PageRequest::new(arg.page.unwrap_or(0),arg.size.unwrap_or(0))).await?;
+        let data=RB.fetch_page_by_wrapper("",&wrapper,&PageRequest::new(arg.page.unwrap_or(0),arg.size.unwrap_or(0))).await?;
         return Ok(data);
     }
 
