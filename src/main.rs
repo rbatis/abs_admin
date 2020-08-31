@@ -5,6 +5,9 @@
 #[macro_use]
 extern crate lazy_static;
 
+#[macro_use]
+extern crate rbatis_macro_driver;
+
 pub mod domain;
 pub mod dao;
 pub mod controller;

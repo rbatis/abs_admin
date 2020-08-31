@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use chrono::NaiveDateTime;
 
 ///权限资源表
-#[derive(Serialize, Deserialize, Clone, Debug)]
+#[derive(CRUDEnable, Serialize, Deserialize, Clone, Debug)]
 pub struct SysRes {
     pub id: Option<String>,
     pub parent_id: Option<String>,
@@ -15,12 +15,8 @@ pub struct SysRes {
     pub create_time: Option<NaiveDateTime>,
 }
 
-impl CRUDEnable for SysRes {
-    type IdType = String;
-}
-
 ///角色表
-#[derive(Serialize, Deserialize, Clone, Debug)]
+#[derive(CRUDEnable, Serialize, Deserialize, Clone, Debug)]
 pub struct SysRole {
     pub id: Option<String>,
     pub name: Option<String>,
@@ -28,12 +24,8 @@ pub struct SysRole {
     pub create_time: Option<NaiveDateTime>,
 }
 
-impl CRUDEnable for SysRole {
-    type IdType = String;
-}
-
 ///角色资源关系表
-#[derive(Serialize, Deserialize, Clone, Debug)]
+#[derive(CRUDEnable, Serialize, Deserialize, Clone, Debug)]
 pub struct SysRoleRes {
     pub id: Option<String>,
     //角色id
@@ -43,12 +35,8 @@ pub struct SysRoleRes {
     pub create_time: Option<NaiveDateTime>,
 }
 
-impl CRUDEnable for SysRoleRes {
-    type IdType = String;
-}
-
 ///后台用户表
-#[derive(Serialize, Deserialize, Clone, Debug)]
+#[derive(CRUDEnable, Serialize, Deserialize, Clone, Debug)]
 pub struct SysUser {
     pub id: Option<String>,
     pub account: Option<String>,
@@ -58,12 +46,8 @@ pub struct SysUser {
     pub create_time: Option<NaiveDateTime>,
 }
 
-impl CRUDEnable for SysUser {
-    type IdType = String;
-}
-
 ///用户角色关系表
-#[derive(Serialize, Deserialize, Clone, Debug)]
+#[derive(CRUDEnable, Serialize, Deserialize, Clone, Debug)]
 pub struct SysUserRole {
     pub id: Option<String>,
     //用户id
@@ -71,8 +55,4 @@ pub struct SysUserRole {
     //角色id
     pub role_id: Option<String>,
     pub create_time: Option<NaiveDateTime>,
-}
-
-impl CRUDEnable for SysUserRole {
-    type IdType = String;
 }
