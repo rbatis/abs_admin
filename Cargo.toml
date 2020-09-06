@@ -18,9 +18,9 @@ fast_log = "1.2.3"
 #runtime
 tokio = { version = "0.2", features = ["full"] }
 #rbatis orm dep
-rbatis-core = { version = "1.5.0", features = ["all"]}
-rbatis =  { version = "1.5.0" }
-rbatis-macro-driver = { version = "1.5.0" }
+rbatis-core = { version = "1.5.1", features = ["all"]}
+rbatis =  { version = "1.5.1" }
+rbatis-macro-driver = { version = "1.5.1" }
 
 #web server
 actix-web = "2.0"
