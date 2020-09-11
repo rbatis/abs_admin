@@ -6,11 +6,11 @@ use serde::Serialize;
 use rbatis_core::Result;
 
 ///缓存服务
-pub struct CacheService {
+pub struct RedisService {
     pub client: redis::Client
 }
 
-impl CacheService {
+impl RedisService {
     pub fn new(url: &str) -> Self {
         let client = redis::Client::open(url).unwrap();
         info!("connect redis success!");

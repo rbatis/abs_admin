@@ -12,8 +12,8 @@ use crate::service::SYS_RES_SERVICE;
 pub async fn res_page(page: web::Json<ResPageDTO>) -> impl Responder {
     let data = SYS_RES_SERVICE.page(&page.0).await;
     RespVO::from_result(&data).resp()
-    // CACHE_SERVICE.put_json("res_page", &data.as_ref().unwrap().to_string()).await;
-    // let cached_res: String = CACHE_SERVICE.get_json("res_page").await.unwrap();
+    // REDIS_SERVICE.put_json("res_page", &data.as_ref().unwrap().to_string()).await;
+    // let cached_res: String = REDIS_SERVICE.get_json("res_page").await.unwrap();
 }
 
 ///资源添加
