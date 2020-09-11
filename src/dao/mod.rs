@@ -5,7 +5,7 @@ use rbatis::rbatis::Rbatis;
 lazy_static! {
   pub static ref RB:Rbatis={
      let mut rb = Rbatis::new();
-     let del = RbatisLogicDeletePlugin::new("del");
+     let del = RbatisLogicDeletePlugin::new_opt("del",1,0);
      rb.logic_plugin = Some(Box::new(del));
      rb
   };
