@@ -5,8 +5,8 @@ use rbatis::rbatis::Rbatis;
 lazy_static! {
   pub static ref RB:Rbatis={
      let mut rbatis = Rbatis::new();
-     let plugin = RbatisLogicDeletePlugin::new_opt("del",1,0);
-     rbatis.logic_plugin = Some(Box::new(plugin));
+     //logic plugin 设置逻辑删除插件
+     rbatis.logic_plugin = Some(Box::new(RbatisLogicDeletePlugin::new_opt("del",1,0)));
      return rbatis;
   };
 }
