@@ -11,7 +11,7 @@
 * 使用docker启动mysql和redis
 ```cmd
 docker run -it -d --name redis -p 6379:6379 redis
-docker run -p 3306:3306 --name mysql -e MYSQL_ROOT_PASSWORD=123456 -d mysql:5.7
+docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 --name mysql -e TZ=Asia/Shanghai mysql:5.7
 ```
 * 使用mysql workbench或者navcat导入database.sql脚本到mysql
 
