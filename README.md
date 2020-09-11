@@ -8,7 +8,7 @@
 * 为初次使用Rbatis和actix_web的用户提供学习案例
 
 # 快速安装教程
-* 使用docker启动mysql和redis
+* 使用docker启动redis和mysql(用户名root密码123456)
 ```cmd
 docker run -it -d --name redis -p 6379:6379 redis
 docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 --name mysql -e TZ=Asia/Shanghai mysql:5.7
