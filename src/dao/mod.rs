@@ -4,10 +4,10 @@ use rbatis::rbatis::Rbatis;
 // 示例-Rbatis示例初始化(必须)
 lazy_static! {
   pub static ref RB:Rbatis={
-     let mut rb = Rbatis::new();
-     let del = RbatisLogicDeletePlugin::new_opt("del",1,0);
-     rb.logic_plugin = Some(Box::new(del));
-     rb
+     let mut rbatis = Rbatis::new();
+     let plugin = RbatisLogicDeletePlugin::new_opt("del",1,0);
+     rbatis.logic_plugin = Some(Box::new(plugin));
+     return rbatis;
   };
 }
 
