@@ -11,10 +11,9 @@ lazy_static! {
   };
 }
 
-
-
+///测试
+#[cfg(test)]
 mod test {
-    #![allow(unused_imports)]
     use fast_log::log::RuntimeType;
     use serde_json::json;
     use crate::dao::RB;
