@@ -4,9 +4,16 @@
 
 #[macro_use]
 extern crate lazy_static;
-
 #[macro_use]
 extern crate rbatis_macro_driver;
+
+use actix_web::{App, HttpResponse, HttpServer, Responder, web};
+use fast_log::log::RuntimeType;
+
+use config::CONFIG;
+use dao::RB;
+
+use crate::controller::{res_controller, role_controller, user_controller};
 
 pub mod domain;
 pub mod dao;
@@ -14,13 +21,6 @@ pub mod controller;
 pub mod service;
 pub mod config;
 pub mod util;
-
-
-use actix_web::{App, HttpResponse, HttpServer, Responder, web};
-use fast_log::log::RuntimeType;
-use crate::controller::{res, user};
-use config::CONFIG;
-use dao::RB;
 
 
 async fn index() -> impl Responder {
@@ -37,11 +37,13 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
         App::new()
             .route("/", web::get().to(index))
-            .route("/res_add", web::post().to(res::res_add))
-            .route("/res_page", web::post().to(res::res_page))
-            .route("/login",web::post().to(user::user_login))
-            .route("/user_add",web::post().to(user::user_add))
-            .route("/user_page",web::post().to(user::user_page))
+            .route("/res_add", web::post().to(res_controller::add))
+            .route("/res_page", web::post().to(res_controller::page))
+            .route("/login", web::post().to(user_controller::login))
+            .route("/user_add", web::post().to(user_controller::add))
+            .route("/user_page", web::post().to(user_controller::page))
+            .route("/role_add", web::post().to(role_controller::add))
+            .route("/role_page", web::post().to(role_controller::page))
     })
         .bind(&CONFIG.server_url)?
         .run()

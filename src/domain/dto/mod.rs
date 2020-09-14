@@ -50,3 +50,10 @@ pub struct RolePageDTO{
     pub page: Option<u64>,
     pub size: Option<u64>
 }
+
+/// 角色添加
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct RoleAddDTO{
+    pub name: Option<String>,
+    pub auths: Vec<String>
+}

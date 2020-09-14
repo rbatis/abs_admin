@@ -9,7 +9,7 @@ use crate::domain::vo::RespVO;
 use crate::service::SYS_RES_SERVICE;
 
 /// 资源分页(json请求)
-pub async fn res_page(page: web::Json<ResPageDTO>) -> impl Responder {
+pub async fn page(page: web::Json<ResPageDTO>) -> impl Responder {
     let data = SYS_RES_SERVICE.page(&page.0).await;
     RespVO::from_result(&data).resp()
     // REDIS_SERVICE.put_json("res_page", &data.as_ref().unwrap().to_string()).await;
@@ -17,7 +17,7 @@ pub async fn res_page(page: web::Json<ResPageDTO>) -> impl Responder {
 }
 
 ///资源添加
-pub async fn res_add(mut arg: web::Json<ResAddDTO>) -> impl Responder {
+pub async fn add(mut arg: web::Json<ResAddDTO>) -> impl Responder {
     if arg.name.is_none() {
         return RespVO::<u64>::from_error_info("", "资源名字不能为空!").resp();
     }
