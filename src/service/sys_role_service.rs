@@ -1,10 +1,11 @@
-use rbatis::crud::{CRUD};
+use rbatis::crud::CRUD;
 use rbatis::plugin::page::{Page, PageRequest};
 use rbatis_core::Result;
 
 use crate::dao::RB;
-use crate::domain::domain::{SysRole, SysUserRole};
+use crate::domain::domain::{SysRole, SysRoleRes, SysUserRole};
 use crate::domain::dto::{RoleAddDTO, RoleEditDTO, RolePageDTO};
+use crate::service::SYS_RES_SERVICE;
 
 ///角色服务
 pub struct SysRoleService {}
@@ -37,14 +38,28 @@ impl SysRoleService {
         RB.list_by_wrapper("", RB.new_wrapper().in_array("id", ids)).await
     }
 
+    pub async fn find_role_res(&self, ids: &Vec<String>) -> Result<Vec<SysRoleRes>> {
+        RB.list_by_wrapper("", RB.new_wrapper().in_array("role_id", ids)).await
+    }
+
+
     pub async fn find_user_permission(&self, user_id: &str) -> Result<Vec<String>> {
         let user_roles: Vec<SysUserRole> = RB.list_by_wrapper("", RB.new_wrapper().eq("user_id", user_id)).await?;
         let mut role_ids = vec![];
         for item in &user_roles {
             role_ids.push(item.role_id.clone().unwrap_or("".to_string()));
         }
-        let roles = self.finds(&role_ids).await?;
-
-        unimplemented!()
+        let role_res = self.find_role_res(&role_ids).await?;
+        let mut res_ids = vec![];
+        for item in role_res {
+            res_ids.push(item.res_id.clone().unwrap_or("".to_string()));
+        }
+        let all_res=SYS_RES_SERVICE.finds_all().await?;
+        let res = SYS_RES_SERVICE.finds_layer(&res_ids,&all_res).await?;
+        let mut permissons = vec![];
+        for item in res {
+            permissons.push(item.permission.clone().unwrap_or("".to_string()));
+        }
+        return Ok(permissons);
     }
 }

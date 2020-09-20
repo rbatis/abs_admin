@@ -16,6 +16,8 @@ pub struct SysRes {
     pub path: Option<String>,
     pub del: Option<i32>,
     pub create_time: Option<NaiveDateTime>,
+
+    pub childs: Option<Vec<SysRes>>
 }
 
 ///角色表
