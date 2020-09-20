@@ -7,9 +7,12 @@ use chrono::NaiveDateTime;
 #[derive(CRUDEnable, Serialize, Deserialize, Clone, Debug)]
 pub struct SysRes {
     pub id: Option<String>,
+    //父id(可空)
     pub parent_id: Option<String>,
     pub name: Option<String>,
+    //权限
     pub permission: Option<String>,
+    //前端-菜单路径
     pub path: Option<String>,
     pub del: Option<i32>,
     pub create_time: Option<NaiveDateTime>,
@@ -28,6 +31,8 @@ pub struct SysRole {
 #[derive(CRUDEnable, Serialize, Deserialize, Clone, Debug)]
 pub struct SysRoleRes {
     pub id: Option<String>,
+    //父id(可空)
+    pub parent_id:Option<String>,
     //角色id
     pub role_id: Option<String>,
     //资源id

@@ -57,11 +57,11 @@ DROP TABLE IF EXISTS `sys_res`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sys_res` (
-  `id` varchar(45) CHARACTER SET latin1 NOT NULL,
-  `parent_id` varchar(45) CHARACTER SET latin1 DEFAULT NULL,
-  `name` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
-  `permission` varchar(45) CHARACTER SET latin1 NOT NULL,
-  `path` varchar(45) CHARACTER SET latin1 DEFAULT NULL,
+  `id` varchar(45)  NOT NULL,
+  `parent_id` varchar(45)  DEFAULT NULL,
+  `name` varchar(255)  DEFAULT NULL,
+  `permission` varchar(45)  NOT NULL,
+  `path` varchar(45)  DEFAULT NULL,
   `del` int(1) NOT NULL DEFAULT '1',
   `create_time` datetime NOT NULL,
   PRIMARY KEY (`id`)
@@ -86,8 +86,9 @@ DROP TABLE IF EXISTS `sys_role`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sys_role` (
-  `id` varchar(45) CHARACTER SET latin1 NOT NULL,
-  `name` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
+  `id` varchar(45)  NOT NULL,
+  `parent_id` varchar(255)  DEFAULT NULL,
+  `name` varchar(255)  DEFAULT NULL,
   `del` int(1) NOT NULL DEFAULT '1',
   `create_time` datetime NOT NULL,
   PRIMARY KEY (`id`)
@@ -111,9 +112,9 @@ DROP TABLE IF EXISTS `sys_role_res`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sys_role_res` (
-  `id` varchar(45) CHARACTER SET latin1 NOT NULL,
-  `role_id` varchar(45) CHARACTER SET latin1 NOT NULL,
-  `res_id` varchar(45) CHARACTER SET latin1 NOT NULL,
+  `id` varchar(45)  NOT NULL,
+  `role_id` varchar(45)  NOT NULL,
+  `res_id` varchar(45)  NOT NULL,
   `create_time` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -136,10 +137,10 @@ DROP TABLE IF EXISTS `sys_user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sys_user` (
-  `id` varchar(45) CHARACTER SET latin1 NOT NULL,
-  `account` varchar(45) CHARACTER SET latin1 NOT NULL,
-  `password` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `name` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
+  `id` varchar(45)  NOT NULL,
+  `account` varchar(45)  NOT NULL,
+  `password` varchar(255)  NOT NULL,
+  `name` varchar(255)  DEFAULT NULL,
   `del` int(1) NOT NULL DEFAULT '1',
   `create_time` datetime NOT NULL,
   PRIMARY KEY (`id`)
@@ -164,9 +165,9 @@ DROP TABLE IF EXISTS `sys_user_role`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sys_user_role` (
-  `id` varchar(45) CHARACTER SET latin1 NOT NULL,
-  `user_id` varchar(45) CHARACTER SET latin1 NOT NULL,
-  `role_id` varchar(45) CHARACTER SET latin1 NOT NULL,
+  `id` varchar(45)  NOT NULL,
+  `user_id` varchar(45)  NOT NULL,
+  `role_id` varchar(45)  NOT NULL,
   `create_time` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
