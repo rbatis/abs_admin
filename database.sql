@@ -1,4 +1,4 @@
--- MySQL dump 10.13  Distrib 8.0.19, for macos10.15 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.16, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: test
 -- ------------------------------------------------------
@@ -7,7 +7,7 @@
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8 */;
+ SET NAMES utf8 ;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -21,7 +21,7 @@
 
 DROP TABLE IF EXISTS `biz_activity`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `biz_activity` (
   `id` varchar(50) NOT NULL DEFAULT '' COMMENT '唯一活动码',
   `name` varchar(255) NOT NULL,
@@ -45,7 +45,7 @@ CREATE TABLE `biz_activity` (
 
 LOCK TABLES `biz_activity` WRITE;
 /*!40000 ALTER TABLE `biz_activity` DISABLE KEYS */;
-INSERT INTO `biz_activity` VALUES ('12312','null','null','null','null',1,1,'null','2020-02-09 00:00:00',1,'null','null'),('178','test_insret','','','1',1,0,'','2020-06-17 20:08:13',1,NULL,NULL),('221','test','','','0',0,0,'','2020-06-17 20:10:23',1,NULL,NULL),('222','test','','','0',0,0,'','2020-06-17 20:10:23',1,NULL,NULL),('223','test','','','0',0,0,'','2020-06-17 20:10:23',1,NULL,NULL);
+INSERT INTO `biz_activity` VALUES ('1','test','','','0',0,0,'','2020-06-17 20:10:23',1,NULL,NULL),('12312','123',NULL,NULL,'1',1,1,NULL,'2020-09-06 16:09:02',0,NULL,NULL),('178','test_insret','','','1',1,0,'','2020-06-17 20:08:13',0,NULL,NULL),('221','test','','','0',0,0,'','2020-06-17 20:10:23',0,NULL,NULL),('222','test','','','0',0,0,'','2020-06-17 20:10:23',0,NULL,NULL);
 /*!40000 ALTER TABLE `biz_activity` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -55,13 +55,13 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `sys_res`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `sys_res` (
-  `id` varchar(45)  NOT NULL,
-  `parent_id` varchar(45)  DEFAULT NULL,
-  `name` varchar(255)  DEFAULT NULL,
-  `permission` varchar(45)  NOT NULL,
-  `path` varchar(45)  DEFAULT NULL,
+  `id` varchar(45) CHARACTER SET latin1 NOT NULL,
+  `parent_id` varchar(45) CHARACTER SET latin1 DEFAULT NULL,
+  `name` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `permission` varchar(45) CHARACTER SET latin1 NOT NULL,
+  `path` varchar(45) CHARACTER SET latin1 DEFAULT NULL,
   `del` int(1) NOT NULL DEFAULT '1',
   `create_time` datetime NOT NULL,
   PRIMARY KEY (`id`)
@@ -74,7 +74,7 @@ CREATE TABLE `sys_res` (
 
 LOCK TABLES `sys_res` WRITE;
 /*!40000 ALTER TABLE `sys_res` DISABLE KEYS */;
-INSERT INTO `sys_res` VALUES ('1',NULL,'qx','res_page','/res_page',1,'2020-02-09 00:00:00');
+INSERT INTO `sys_res` VALUES ('1',NULL,'qx','res_page','/res_page',0,'2020-02-09 00:00:00'),('dbe65c81-8688-4e24-bc88-b6ba108a33bc',NULL,'超级管理员权限','SuperPower','',0,'2020-08-13 11:43:26');
 /*!40000 ALTER TABLE `sys_res` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -84,13 +84,13 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `sys_role`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `sys_role` (
-  `id` varchar(45)  NOT NULL,
-  `parent_id` varchar(255)  DEFAULT NULL,
-  `name` varchar(255)  DEFAULT NULL,
+  `id` varchar(45) CHARACTER SET latin1 NOT NULL,
+  `name` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
   `del` int(1) NOT NULL DEFAULT '1',
   `create_time` datetime NOT NULL,
+  `parent_id` varchar(255) DEFAULT NULL COMMENT '父id',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -101,6 +101,7 @@ CREATE TABLE `sys_role` (
 
 LOCK TABLES `sys_role` WRITE;
 /*!40000 ALTER TABLE `sys_role` DISABLE KEYS */;
+INSERT INTO `sys_role` VALUES ('1','super',0,'2020-07-28 08:34:40',NULL);
 /*!40000 ALTER TABLE `sys_role` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -110,11 +111,11 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `sys_role_res`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `sys_role_res` (
-  `id` varchar(45)  NOT NULL,
-  `role_id` varchar(45)  NOT NULL,
-  `res_id` varchar(45)  NOT NULL,
+  `id` varchar(45) CHARACTER SET latin1 NOT NULL,
+  `role_id` varchar(45) CHARACTER SET latin1 NOT NULL,
+  `res_id` varchar(45) CHARACTER SET latin1 NOT NULL,
   `create_time` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -126,6 +127,7 @@ CREATE TABLE `sys_role_res` (
 
 LOCK TABLES `sys_role_res` WRITE;
 /*!40000 ALTER TABLE `sys_role_res` DISABLE KEYS */;
+INSERT INTO `sys_role_res` VALUES ('1','1','1','2020-07-28 08:34:40');
 /*!40000 ALTER TABLE `sys_role_res` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -135,12 +137,12 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `sys_user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `sys_user` (
-  `id` varchar(45)  NOT NULL,
-  `account` varchar(45)  NOT NULL,
-  `password` varchar(255)  NOT NULL,
-  `name` varchar(255)  DEFAULT NULL,
+  `id` varchar(45) CHARACTER SET latin1 NOT NULL,
+  `account` varchar(45) CHARACTER SET latin1 NOT NULL,
+  `password` varchar(255) CHARACTER SET latin1 NOT NULL,
+  `name` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
   `del` int(1) NOT NULL DEFAULT '1',
   `create_time` datetime NOT NULL,
   PRIMARY KEY (`id`)
@@ -153,7 +155,7 @@ CREATE TABLE `sys_user` (
 
 LOCK TABLES `sys_user` WRITE;
 /*!40000 ALTER TABLE `sys_user` DISABLE KEYS */;
-INSERT INTO `sys_user` VALUES ('2d4886bd-ad2a-4644-86b9-460afad05cbf','18969542172','e10adc3949ba59abbe56e057f20f883e','xxxx',1,'2020-07-28 08:34:40'),('f63ef5b6-171e-47ab-8aad-832ff4323056','18969542173','e10adc3949ba59abbe56e057f20f883e','xxxx',1,'2020-07-31 05:47:28');
+INSERT INTO `sys_user` VALUES ('2d4886bd-ad2a-4644-86b9-460afad05cbf','18969542172','e10adc3949ba59abbe56e057f20f883e','xxxx',0,'2020-07-28 08:34:40'),('7c0591a3-41f9-423b-943e-6944d7760192','18969542174','e10adc3949ba59abbe56e057f20f883e','xxxx',0,'2020-08-07 17:01:02'),('91095081-1966-491d-a95d-bd1bc36d204f','1896954211','e10adc3949ba59abbe56e057f20f883e','xxxx',0,'2020-08-31 20:05:26'),('f63ef5b6-171e-47ab-8aad-832ff4323056','18969542173','e10adc3949ba59abbe56e057f20f883e','xxxx',0,'2020-07-31 05:47:28'),('f84ad1fe-1d96-4776-bb2b-45fc990a9975','18969542171','e10adc3949ba59abbe56e057f20f883e','xxxx',0,'2020-08-07 16:54:45');
 /*!40000 ALTER TABLE `sys_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -163,11 +165,11 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `sys_user_role`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `sys_user_role` (
-  `id` varchar(45)  NOT NULL,
-  `user_id` varchar(45)  NOT NULL,
-  `role_id` varchar(45)  NOT NULL,
+  `id` varchar(45) CHARACTER SET latin1 NOT NULL,
+  `user_id` varchar(45) CHARACTER SET latin1 NOT NULL,
+  `role_id` varchar(45) CHARACTER SET latin1 NOT NULL,
   `create_time` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -179,6 +181,7 @@ CREATE TABLE `sys_user_role` (
 
 LOCK TABLES `sys_user_role` WRITE;
 /*!40000 ALTER TABLE `sys_user_role` DISABLE KEYS */;
+INSERT INTO `sys_user_role` VALUES ('1','2d4886bd-ad2a-4644-86b9-460afad05cbf','1','2020-07-28 08:34:40');
 /*!40000 ALTER TABLE `sys_user_role` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -191,4 +194,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-08-01 15:38:51
+-- Dump completed on 2020-09-21  2:02:12
