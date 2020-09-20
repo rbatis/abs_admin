@@ -47,9 +47,9 @@ impl SysRoleService {
 
     pub async fn find_user_permission(&self, user_id: &str) -> Result<Vec<String>> {
         let user_roles: Vec<SysUserRole> = RB.list_by_wrapper("", &RB.new_wrapper().eq("user_id", user_id).check()?).await?;
-        let role_ids = make_string_vec!(&user_roles,role_id);
+        let role_ids = make_field_vec!(&user_roles,role_id);
         let role_res = self.find_role_res(&role_ids).await?;
-        let res_ids = make_string_vec!(&role_res,res_id);
+        let res_ids = make_field_vec!(&role_res,res_id);
         let all_res = SYS_RES_SERVICE.finds_all().await?;
         let res = SYS_RES_SERVICE.finds_layer(&res_ids, &all_res).await?;
         let mut permissons = vec![];
