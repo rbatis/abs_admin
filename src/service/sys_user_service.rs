@@ -7,7 +7,7 @@ use uuid::Uuid;
 
 use crate::dao::RB;
 use crate::domain::domain::SysUser;
-use crate::domain::dto::{SignInDTO, UserAddDTO, UserPageDTO};
+use crate::domain::dto::{SignInDTO, UserAddDTO, UserPageDTO, UserEditDTO};
 use crate::domain::vo::SignInVO;
 use crate::util::password_encoder::PasswordEncoder;
 use rbatis_core::value::DateTimeNow;
@@ -92,6 +92,18 @@ impl SysUserService {
         //TODO load permission
         self.loop_load_permission("").await;
         return Ok(sign_vo);
+    }
+
+
+    pub async fn edit(&self,arg:&UserEditDTO)-> Result<u64> {
+        unimplemented!()
+    }
+
+    pub async fn remove(&self,id:&str)-> Result<u64> {
+      if id.is_empty(){
+          return Err(Error::from("id 不能为空！"));
+      }
+      unimplemented!()
     }
 
     ///登出后台

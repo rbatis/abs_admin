@@ -1,5 +1,5 @@
 use actix_web::{web, Responder};
-use crate::domain::dto::{SignInDTO, UserAddDTO, UserPageDTO};
+use crate::domain::dto::{SignInDTO, UserAddDTO, UserPageDTO, IdDTO, UserEditDTO};
 use crate::service::SYS_USER_SERVICE;
 use crate::domain::vo::{RespVO};
 
@@ -19,5 +19,17 @@ pub async fn add(arg: web::Json<UserAddDTO>) -> impl Responder {
 ///用户分页
 pub async fn page(arg: web::Json<UserPageDTO>)-> impl Responder {
     let vo=SYS_USER_SERVICE.page(&arg.0).await;
+    return RespVO::from_result(&vo).resp();
+}
+
+///用户修改
+pub async fn edit(arg: web::Json<UserEditDTO>) -> impl Responder {
+    let vo=SYS_USER_SERVICE.edit(&arg.0).await;
+    return RespVO::from_result(&vo).resp();
+}
+
+///用户删除
+pub async fn remove(arg: web::Json<IdDTO>) -> impl Responder {
+    let vo=SYS_USER_SERVICE.remove(&arg.0.id.unwrap_or("".to_string())).await;
     return RespVO::from_result(&vo).resp();
 }

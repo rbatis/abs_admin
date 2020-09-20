@@ -4,7 +4,7 @@ use rbatis_core::value::DateTimeNow;
 use uuid::Uuid;
 
 use crate::domain::domain::SysRes;
-use crate::domain::dto::{ResAddDTO, ResPageDTO};
+use crate::domain::dto::{ResAddDTO, ResPageDTO, IdDTO, ResEditDTO};
 use crate::domain::vo::RespVO;
 use crate::service::SYS_RES_SERVICE;
 
@@ -37,5 +37,18 @@ pub async fn add(mut arg: web::Json<ResAddDTO>) -> impl Responder {
         create_time: Some(NaiveDateTime::now()),
     };
     let data = SYS_RES_SERVICE.add(&res).await;
+    RespVO::from_result(&data).resp()
+}
+
+///资源修改
+pub async fn edit(arg: web::Json<ResEditDTO>) -> impl Responder {
+    let data = SYS_RES_SERVICE.edit(&arg.0).await;
+    RespVO::from_result(&data).resp()
+}
+
+
+///资源删除
+pub async fn remove(arg: web::Json<IdDTO>) -> impl Responder {
+    let data = SYS_RES_SERVICE.remove(&arg.0.id.unwrap_or("".to_string())).await;
     RespVO::from_result(&data).resp()
 }

@@ -3,7 +3,7 @@ use rbatis::plugin::page::{Page, PageRequest};
 use rbatis_core::Result;
 
 use crate::dao::RB;
-use crate::domain::dto::ResPageDTO;
+use crate::domain::dto::{ResPageDTO, ResEditDTO};
 use crate::domain::domain::SysRes;
 
 
@@ -21,5 +21,15 @@ impl SysResService {
     ///添加资源
     pub async fn add(&self, arg:&SysRes) ->Result<u64>{
         RB.save("",arg).await
+    }
+
+    ///添加资源
+    pub async fn edit(&self, arg:&ResEditDTO) ->Result<u64>{
+        unimplemented!()
+    }
+
+    ///添加资源
+    pub async fn remove(&self, id:&str) ->Result<u64>{
+        unimplemented!()
     }
 }

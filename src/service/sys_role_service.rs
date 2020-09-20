@@ -4,7 +4,7 @@ use rbatis_core::Result;
 
 use crate::dao::RB;
 use crate::domain::domain::SysRole;
-use crate::domain::dto::{RoleAddDTO, RolePageDTO};
+use crate::domain::dto::{RoleAddDTO, RolePageDTO, RoleEditDTO};
 
 ///角色服务
 pub struct SysRoleService {}
@@ -19,7 +19,17 @@ impl SysRoleService {
     }
 
     ///角色添加
-    pub async fn add(&self, arg: &RoleAddDTO) -> Result<()> {
+    pub async fn add(&self, arg: &RoleAddDTO) -> Result<u64> {
+        unimplemented!();
+    }
+
+    ///角色修改
+    pub async fn edit(&self, arg: &RoleEditDTO) -> Result<u64> {
+        unimplemented!();
+    }
+
+    ///角色删除
+    pub async fn remove(&self, arg: &str) -> Result<u64> {
         unimplemented!();
     }
 }
