@@ -49,7 +49,8 @@ impl SysResService {
         //find tops
         let mut tops = vec![];
         for item in res {
-            if item.id.is_none() {
+            //parent id null, it is an top resource
+            if item.parent_id.is_none() {
                 tops.push(SysResVO::from(&item));
             }
         }
