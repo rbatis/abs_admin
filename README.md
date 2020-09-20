@@ -42,8 +42,8 @@ cargo run
 * redis-rs
 
 # database（数据库）
-* mysql
-
+* mysql 5.7
+* redis 
 # web view manager(web后台页面js框架)
 * vuejs(基于Vuejs)
 * element ui(饿了么UI)
