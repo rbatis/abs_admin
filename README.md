@@ -2,7 +2,7 @@
 *  rust  common admin server
 *  基于Rust语言，急速开发，高性能，无内存泄漏，协程竞争，坚如磐石
 *  DDD领域驱动设计，基于后台开发最常见领域驱动设计
-*  基于ActixWeb，屠榜国外web框架压测网站的框架，Tokio,常用的serde json
+*  基于ActixWeb，常年屠榜web框架压测网站的框架，Tokio,常用的serde json
 *  基于Mysql,Redis，最通用的中间件和数据库
 *  基于VueJs，最简单通用低成本的前端解决方案
 *  基于[Rbatis](https://github.com/rbatis/rbatis)，和Mybatis-Plus一样的好用，简洁，易扩展的ORM框架
