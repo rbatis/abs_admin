@@ -7,6 +7,17 @@ extern crate lazy_static;
 #[macro_use]
 extern crate rbatis_macro_driver;
 
+#[macro_use]
+pub mod util;
+pub mod domain;
+pub mod dao;
+pub mod controller;
+pub mod service;
+pub mod config;
+
+
+
+
 use actix_web::{App, HttpResponse, HttpServer, Responder, web};
 use fast_log::log::RuntimeType;
 
@@ -15,12 +26,6 @@ use dao::RB;
 
 use crate::controller::{res_controller, role_controller, user_controller};
 
-pub mod domain;
-pub mod dao;
-pub mod controller;
-pub mod service;
-pub mod config;
-pub mod util;
 
 
 async fn index() -> impl Responder {
