@@ -15,9 +15,7 @@ pub struct SysRes {
     //前端-菜单路径
     pub path: Option<String>,
     pub del: Option<i32>,
-    pub create_time: Option<NaiveDateTime>,
-
-    pub childs: Option<Vec<SysRes>>
+    pub create_time: Option<NaiveDateTime>
 }
 
 ///角色表
@@ -25,6 +23,8 @@ pub struct SysRes {
 pub struct SysRole {
     pub id: Option<String>,
     pub name: Option<String>,
+    //父id(可空)
+    pub parent_id:Option<String>,
     pub del: Option<i32>,
     pub create_time: Option<NaiveDateTime>,
 }
@@ -33,8 +33,6 @@ pub struct SysRole {
 #[derive(CRUDEnable, Serialize, Deserialize, Clone, Debug)]
 pub struct SysRoleRes {
     pub id: Option<String>,
-    //父id(可空)
-    pub parent_id:Option<String>,
     //角色id
     pub role_id: Option<String>,
     //资源id

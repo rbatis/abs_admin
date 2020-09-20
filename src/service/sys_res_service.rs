@@ -5,6 +5,7 @@ use rbatis_core::Result;
 use crate::dao::RB;
 use crate::domain::domain::SysRes;
 use crate::domain::dto::{ResEditDTO, ResPageDTO};
+use crate::domain::vo::SysResVO;
 
 /// 资源服务
 pub struct SysResService {}
@@ -43,27 +44,27 @@ impl SysResService {
     }
 
     ///带有层级结构的 res数组
-    pub async fn finds_layer(&self, ids: &Vec<String>, all: &Vec<SysRes>) -> Result<Vec<SysRes>> {
+    pub async fn finds_layer(&self, ids: &Vec<String>, all: &Vec<SysRes>) -> Result<Vec<SysResVO>> {
         let res = self.finds(&ids).await?;
         //find tops
         let mut tops = vec![];
         for item in res {
             if item.id.is_none() {
-                tops.push(item.clone());
+                tops.push(SysResVO::from(&item));
             }
         }
         //find child
-        for item in &mut tops {
-            self.loop_find_childs(item, all);
+        for mut item in &mut tops {
+            self.loop_find_childs(&mut item, all);
         }
         Ok(tops)
     }
 
-    pub fn loop_find_childs(&self, arg: &mut SysRes, all: &Vec<SysRes>) {
-        let mut childs = None;
+    pub fn loop_find_childs(&self, arg: &mut SysResVO, all: &Vec<SysRes>) {
+        let mut childs = Option::<Vec<SysResVO>>::None;
         for x in all {
             if x.parent_id.eq(&x.id) {
-                let mut item = x.clone();
+                let mut item = SysResVO::from(&x.clone());
                 self.loop_find_childs(&mut item, all);
                 if childs.is_none() {
                     childs = Some(vec![]);

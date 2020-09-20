@@ -35,7 +35,6 @@ pub async fn add(mut arg: web::Json<ResAddDTO>) -> impl Responder {
         path: arg.path.clone(),
         del: Some(1),
         create_time: Some(NaiveDateTime::now()),
-        childs: None
     };
     let data = SYS_RES_SERVICE.add(&res).await;
     RespVO::from_result(&data).resp()

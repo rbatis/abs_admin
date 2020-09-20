@@ -2,9 +2,11 @@ use jsonwebtoken::errors::ErrorKind;
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
 use serde::{Deserialize, Serialize};
 use rbatis_core::Error;
-use crate::domain::domain::SysUser;
+use crate::domain::domain::{SysUser, SysRes};
 use serde::de::DeserializeOwned;
 use actix_web::{HttpResponse};
+use rbatis_core::types::chrono::NaiveDateTime;
+use rbatis::crud::CRUDEnable;
 
 /// JWT 鉴权 Token结构
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -118,5 +120,49 @@ pub struct SignInVO {
 impl ToString for SignInVO {
     fn to_string(&self) -> String {
         serde_json::to_string(self).unwrap()
+    }
+}
+
+
+///权限资源表
+#[derive( Serialize, Deserialize, Clone, Debug)]
+pub struct SysResVO {
+    pub id: Option<String>,
+    //父id(可空)
+    pub parent_id: Option<String>,
+    pub name: Option<String>,
+    //权限
+    pub permission: Option<String>,
+    //前端-菜单路径
+    pub path: Option<String>,
+    pub del: Option<i32>,
+    pub create_time: Option<NaiveDateTime>,
+    pub childs : Option::<Vec<SysResVO>>
+}
+
+impl From<&SysRes> for SysResVO{
+    fn from(arg: &SysRes) -> Self {
+        Self{
+            id: arg.id.clone(),
+            parent_id: arg.parent_id.clone(),
+            name: arg.name.clone(),
+            permission: arg.permission.clone(),
+            path: arg.path.clone(),
+            del: arg.del.clone(),
+            create_time: arg.create_time.clone(),
+            childs: None
+        }
+    }
+}
+
+impl CRUDEnable for SysResVO{
+    type IdType = String;
+
+    fn table_name() -> String {
+       "sys_res".to_string()
+    }
+
+    fn table_fields() -> String {
+        "id,parent_id,name,permission,path,del".to_string()
     }
 }
