@@ -1,7 +1,7 @@
 pub mod password_encoder;
 
 ///取源对象数组的String属性数组，
-/// vec_ref: vec的引用，field: 结构体的field名称
+/// vec_ref: vec的引用，field_name: 结构体的field名称
 ///
 /// for example:
 ///      struct SysUserRole{
@@ -15,11 +15,11 @@ pub mod password_encoder;
 #[allow(unused_macros)]
 #[macro_export]
 macro_rules! make_field_vec {
-        ($vec_ref:expr,$field:ident) => {
+        ($vec_ref:expr,$field_name:ident) => {
          {
             let mut ids = vec![];
             for item in $vec_ref {
-              ids.push(item.$field.clone().unwrap_or("".to_string()));
+              ids.push(item.$field_name.clone().unwrap_or("".to_string()));
             }
             ids
          }
