@@ -17,18 +17,18 @@
 * 符合传统Java后台设计模式，习惯（Mybatis+Spring+SrpingMVC,前者支持，后2者不需要）。同时还保持安全+高性能
 
 # 快速安装教程
-* 使用docker启动redis和mysql(用户名root密码123456)
+* 1.docker（需安装docker）命令快速启动redis和mysql(用户名root密码123456)
 ```cmd
 docker run -it -d --name redis -p 6379:6379 redis
 docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 --name mysql -e TZ=Asia/Shanghai mysql:5.7
 ```
-* 使用mysql workbench或者navcat导入database.sql脚本到mysql
+* 2.使用mysql workbench或者navcat导入database.sql脚本到Mysql数据库中
 
-* PostMan  请求脚本导入
+* 3.安装打开PostMan ，导入postman.json到postman中即可使用写好的请求
 ```cmd
 打开postman,导入 postman.json
 ```
-* 使用Clion导入abs_admin运行或者命令行执行
+* 4.使用Clion克隆导入abs_admin项目，命令行执行或者点开main.rs点击按钮运行
 ```cmd
 cargo run
 ```
