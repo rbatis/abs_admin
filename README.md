@@ -5,6 +5,7 @@
 *  基于ActixWeb，屠榜国外web框架压测网站的框架，Tokio,常用的serde json
 *  基于Mysql,Redis，最通用的中间件和数据库
 *  基于VueJs，最简单通用低成本的前端解决方案
+*  基于Rbatis，和Mybatis-Plus一样好用的ORM框架
 
 # 此项目存在的意义
 * 快速开发迭代无忧，后台系统几乎是每个应用必须的。rust的优势即 编写完毕，无bug，无内存溢出，泄漏
