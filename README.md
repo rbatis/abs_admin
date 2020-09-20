@@ -17,7 +17,7 @@
 * 符合传统Java后台设计模式，习惯（Mybatis+Spring+SrpingMVC,前者支持，后2者不需要）。同时还保持安全+高性能
 
 # 快速安装教程
-* 1.docker（需安装docker）命令快速启动redis和mysql(用户名root密码123456)。docker启动最快速，生产不建议用docker部署数据库，但是生产可以建议部署服务
+* 1.docker（需安装docker）命令快速启动redis和mysql(用户名root密码123456)。生产docker可以建议部署http服务，原则上生产环境不建议用docker部署数据库
 ```cmd
 docker run -it -d --name redis -p 6379:6379 redis
 docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 --name mysql -e TZ=Asia/Shanghai mysql:5.7
