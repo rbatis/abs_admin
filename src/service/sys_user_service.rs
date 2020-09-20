@@ -110,7 +110,7 @@ impl SysUserService {
     ///登出后台
     pub async fn sign_out(&self) {}
 
-    ///TODO 循环查找权限
+    ///循环查找权限
     pub async fn loop_load_permission(&self, user_id: &str) -> Result<Vec<String>> {
        return SYS_ROLE_SERVICE.find_user_permission(user_id).await;
     }
