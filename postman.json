@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "0f38382a-7abd-4fa3-b14c-be85feb10f8d",
+		"_postman_id": "d25db9a8-7f03-4460-acf6-15ba897b8a8a",
 		"name": "test",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -34,13 +34,13 @@
 			"response": []
 		},
 		{
-			"name": "http://127.0.0.1:8000/user_page",
+			"name": "http://127.0.0.1:8000/res_add",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"account\":\"18969542172\"\n}",
+					"raw": "{\r\n    \"parent_id\":null,\r\n    \"name\":\"超级管理员权限\",\r\n    \"path\":null,\r\n    \"permission\":\"SuperPower\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -48,14 +48,42 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8000/admin_user_page",
+					"raw": "http://localhost:8000/res_add",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8000",
 					"path": [
-						"admin_user_page"
+						"res_add"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://127.0.0.1:8000/user_page",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/user_page",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"user_page"
 					]
 				}
 			},
@@ -96,7 +124,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"account\":\"18969542172\",\n    \"password\":\"123456\",\n    \"name\":\"xxxx\"\n}",
+					"raw": "{\n    \"account\":\"1896954211\",\n    \"password\":\"123456\",\n    \"name\":\"xxxx\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -104,14 +132,14 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8000/admin_user_add",
+					"raw": "http://localhost:8000/user_add",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8000",
 					"path": [
-						"admin_user_add"
+						"user_add"
 					]
 				}
 			},
