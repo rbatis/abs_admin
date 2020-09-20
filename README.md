@@ -1,10 +1,10 @@
 # abs_admin  语言后台管理模板项目。 此版本接口火热进行中，前端模块开发进行中
 *  rust  common admin server
 *  基于Rust语言，急速开发，高性能，无内存泄漏，协程竞争，坚如磐石
-*  DDD领域驱动设计，基于后台开发最常见领域驱动设计
-*  基于ActixWeb，常年屠榜web框架压测网站的框架，Tokio,常用的serde json
-*  基于Mysql,Redis，最通用的中间件和数据库
-*  基于VueJs，最简单通用低成本的前端解决方案
+*  采用DDD领域驱动设计，基于后台开发最常见领域驱动设计
+*  采用ActixWeb，常年屠榜web框架压测网站的框架，Tokio,常用的serde json
+*  采用Mysql,Redis，最通用的中间件和数据库
+*  采用VueJs，最简单通用低成本的前端解决方案
 *  基于[Rbatis](https://github.com/rbatis/rbatis)，和Mybatis-Plus一样的好用，简洁，易扩展的ORM框架
 *  提供现成的权限-角色-资源 关系映射，权限支持父子级关系，角色支持父子级关系。支持权限，角色 层级 勾选，多选，单选
 *  提供现成的Jwt Token登录模式
