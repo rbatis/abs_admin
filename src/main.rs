@@ -24,7 +24,7 @@ pub mod util;
 
 
 async fn index() -> impl Responder {
-    HttpResponse::Ok().body("Hello ! Please use Post(Json) request /login,/role_page,/res_page....more http interface")
+    HttpResponse::Ok().body("Hello ! Please use Post(Json) request /login,/role_page,/res_page....more http interface,you can install postman for import postman.json ")
 }
 
 #[actix_rt::main]

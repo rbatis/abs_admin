@@ -18,7 +18,7 @@ docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 --name mysql -e TZ=Asia
 
 * PostMan  请求脚本导入
 ```cmd
-打开postman,导入 abs_admini.postman_collection.json
+打开postman,导入 postman.json
 ```
 * 使用Clion导入abs_admin运行或者命令行执行
 ```cmd
