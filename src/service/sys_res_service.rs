@@ -44,7 +44,7 @@ impl SysResService {
     }
 
     ///带有层级结构的 res数组
-    pub async fn finds_layer(&self, ids: &Vec<String>, all: &Vec<SysRes>) -> Result<Vec<SysResVO>> {
+    pub async fn finds_layer(&self, ids: &Vec<String>, all_res: &Vec<SysRes>) -> Result<Vec<SysResVO>> {
         let res = self.finds(&ids).await?;
         //find tops
         let mut tops = vec![];
@@ -56,17 +56,18 @@ impl SysResService {
         }
         //find child
         for mut item in &mut tops {
-            self.loop_find_childs(&mut item, all);
+            self.loop_find_childs(&mut item, all_res);
         }
         Ok(tops)
     }
 
-    pub fn loop_find_childs(&self, arg: &mut SysResVO, all: &Vec<SysRes>) {
+    ///死循环找出父-子 关联关系数组
+    pub fn loop_find_childs(&self, arg: &mut SysResVO, all_res: &Vec<SysRes>) {
         let mut childs = Option::<Vec<SysResVO>>::None;
-        for x in all {
+        for x in all_res {
             if x.parent_id.eq(&x.id) {
                 let mut item = SysResVO::from(&x.clone());
-                self.loop_find_childs(&mut item, all);
+                self.loop_find_childs(&mut item, all_res);
                 if childs.is_none() {
                     childs = Some(vec![]);
                 }
