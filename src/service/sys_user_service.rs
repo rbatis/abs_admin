@@ -1,16 +1,17 @@
-use chrono::{NaiveDateTime};
+use chrono::NaiveDateTime;
 use rbatis::crud::CRUD;
 use rbatis::plugin::page::{Page, PageRequest};
 use rbatis_core::Error;
 use rbatis_core::Result;
+use rbatis_core::value::DateTimeNow;
 use uuid::Uuid;
 
 use crate::dao::RB;
 use crate::domain::domain::SysUser;
-use crate::domain::dto::{SignInDTO, UserAddDTO, UserPageDTO, UserEditDTO};
+use crate::domain::dto::{SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO};
 use crate::domain::vo::SignInVO;
 use crate::util::password_encoder::PasswordEncoder;
-use rbatis_core::value::DateTimeNow;
+use crate::service::SYS_ROLE_SERVICE;
 
 ///后台用户服务
 pub struct SysUserService {}
@@ -85,30 +86,32 @@ impl SysUserService {
             return Err(Error::from("密码不正确!"));
         }
         user.password = None;//去除密码，增加安全性
-        let sign_vo = SignInVO {
+        let user_id = user.id.clone().unwrap_or("".to_string());
+        let mut sign_vo = SignInVO {
             user: Some(user),
             permissions: vec![],
         };
-        //TODO load permission
-        self.loop_load_permission("").await;
+        sign_vo.permissions = self.loop_load_permission(&user_id).await?;
         return Ok(sign_vo);
     }
 
 
-    pub async fn edit(&self,arg:&UserEditDTO)-> Result<u64> {
+    pub async fn edit(&self, arg: &UserEditDTO) -> Result<u64> {
         unimplemented!()
     }
 
-    pub async fn remove(&self,id:&str)-> Result<u64> {
-      if id.is_empty(){
-          return Err(Error::from("id 不能为空！"));
-      }
-      unimplemented!()
+    pub async fn remove(&self, id: &str) -> Result<u64> {
+        if id.is_empty() {
+            return Err(Error::from("id 不能为空！"));
+        }
+        unimplemented!()
     }
 
     ///登出后台
     pub async fn sign_out(&self) {}
 
-    ///循环查找权限
-    pub async fn loop_load_permission(&self, id: &str) {}
+    ///TODO 循环查找权限
+    pub async fn loop_load_permission(&self, user_id: &str) -> Result<Vec<String>> {
+       return SYS_ROLE_SERVICE.find_user_permission(user_id).await;
+    }
 }

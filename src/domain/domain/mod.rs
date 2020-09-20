@@ -1,5 +1,5 @@
 
-use rbatis::crud::CRUDEnable;
+use rbatis::crud::{CRUDEnable};
 use serde::{Deserialize, Serialize};
 use chrono::NaiveDateTime;
 
