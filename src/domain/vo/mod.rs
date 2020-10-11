@@ -162,7 +162,7 @@ impl CRUDEnable for SysResVO{
        "sys_res".to_string()
     }
 
-    fn table_fields() -> String {
+    fn table_columns() -> String {
         "id,parent_id,name,permission,path,del".to_string()
     }
 }
