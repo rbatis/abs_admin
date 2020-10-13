@@ -1,3 +1,4 @@
+pub mod mapper;
 use rbatis::plugin::logic_delete::RbatisLogicDeletePlugin;
 use rbatis::rbatis::Rbatis;
 
