@@ -14,10 +14,6 @@ pub mod dao;
 pub mod controller;
 pub mod service;
 pub mod config;
-
-
-
-
 use actix_web::{App, HttpResponse, HttpServer, Responder, web};
 use fast_log::log::RuntimeType;
 
@@ -32,7 +28,7 @@ async fn index() -> impl Responder {
     HttpResponse::Ok().body("Hello ! Please use Post(Json) request /login,/role_page,/res_page....more http interface,you can install postman for import postman.json ")
 }
 
-#[actix_rt::main]
+#[actix_web::main]
 async fn main() -> std::io::Result<()> {
     //日志
     fast_log::log::init_log(&CONFIG.log_path, &RuntimeType::Std).unwrap();
