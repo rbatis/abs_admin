@@ -28,7 +28,7 @@ async fn index() -> impl Responder {
     HttpResponse::Ok().body("Hello ! Please use Post(Json) request /login,/role_page,/res_page....more http interface,you can install postman for import postman.json ")
 }
 
-#[actix_web::main]
+#[async_std::main]
 async fn main() -> std::io::Result<()> {
     //日志
     fast_log::log::init_log(&CONFIG.log_path, &RuntimeType::Std).unwrap();
