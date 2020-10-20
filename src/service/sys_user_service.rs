@@ -104,7 +104,7 @@ impl SysUserService {
         if id.is_empty() {
             return Err(Error::from("id 不能为空！"));
         }
-        unimplemented!()
+        RB.remove_by_id::<SysUser>("",&id.to_string()).await
     }
 
     ///登出后台
