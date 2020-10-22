@@ -20,8 +20,7 @@ mod test {
     use crate::dao::RB;
     use crate::config::CONFIG;
 
-    #[tokio::main]
-    #[test]
+    #[async_std::test]
     async fn test_rbatis() {
         fast_log::log::init_log("requests.log", &RuntimeType::Std).unwrap();
         RB.link(&CONFIG.mysql_url).await.unwrap();
