@@ -16,10 +16,10 @@ lazy_static = "1.4.0"
 log = "0.4"
 fast_log = "1.2.4"
 #runtime
-async-std = { version = "1.6", features = ["attributes","tokio02"] }
+async-std = { version = "1.6", default-features = false, features = ["attributes", "tokio02"] }
 #rbatis orm dep
-rbatis-core = { version = "1.7.24", features = ["all"]}
-rbatis =  { version = "1.7.24" }
+rbatis-core = { version = "1.7.24", default-features = false, features = ["all", "tokio02"] }
+rbatis = { version = "1.7.24", default-features = false, features = ["tokio02"] }
 rbatis-macro-driver = { version = "1.7.24" }
 
 #web server
