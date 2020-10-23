@@ -16,7 +16,7 @@ lazy_static = "1.4.0"
 log = "0.4"
 fast_log = "1.2.4"
 #runtime
-async-std = { version = "1.6", default-features = false, features = ["attributes"] }
+async-std = { version = "1.6", features = ["attributes"] }
 #rbatis orm dep
 rbatis-core = { version = "1.7.24" }
 rbatis = { version = "1.7.24" }
