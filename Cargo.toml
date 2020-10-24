@@ -20,7 +20,7 @@ async-std = { version = "1.6", features = ["attributes"] }
 #rbatis orm dep
 rbatis-core = { version = "1.7.25" }
 rbatis = { version = "1.7.25" }
-rbatis-macro-driver = { version = "1.7.25" }
+rbatis-macro-driver = { version = "1.7.25", default-features = false, features = ["no_print"] }
 
 #web server
 actix-web = "3"
