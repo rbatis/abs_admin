@@ -18,9 +18,9 @@ fast_log = "1.2.5"
 #runtime
 async-std = { version = "1.6", features = ["attributes"] }
 #rbatis orm dep
-rbatis-core = { version = "1.7.24" }
-rbatis = { version = "1.7.24" }
-rbatis-macro-driver = { version = "1.7.24" }
+rbatis-core = { version = "1.7.25" }
+rbatis = { version = "1.7.25" }
+rbatis-macro-driver = { version = "1.7.25" }
 
 #web server
 actix-web = "3"
