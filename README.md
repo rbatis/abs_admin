@@ -3,7 +3,7 @@
 *  DDD领域驱动设计
 *  ActixWeb，常年屠榜web框架压测网站的框架，Tokio,常用的serde json
 *  Mysql,Redis，通用中间件和数据库
-*  VueJs，最简单通用低成本的前端解决方案
+*  VueJs，前端解决方案(未启动)
 *  基于[Rbatis](https://github.com/rbatis/rbatis)，和Mybatis-Plus一样的好用，简洁，易扩展的ORM框架
 *  JWT Token用户登录模式
 
