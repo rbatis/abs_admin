@@ -14,7 +14,7 @@ pub mod password_encoder;
 ///
 #[allow(unused_macros)]
 #[macro_export]
-macro_rules! make_field_vec {
+macro_rules! to_field_vec {
         ($vec_ref:expr,$field_name:ident) => {
          {
             let mut ids = vec![];
