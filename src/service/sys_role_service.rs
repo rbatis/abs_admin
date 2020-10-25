@@ -1,13 +1,12 @@
 use rbatis::crud::CRUD;
 use rbatis::plugin::page::{Page, PageRequest};
 use rbatis_core::Result;
+use uuid::Uuid;
 
 use crate::dao::RB;
 use crate::domain::domain::{SysRole, SysRoleRes, SysUserRole};
 use crate::domain::dto::{RoleAddDTO, RoleEditDTO, RolePageDTO};
 use crate::service::SYS_RES_SERVICE;
-use uuid::Uuid;
-
 
 ///角色服务
 pub struct SysRoleService {}
@@ -23,31 +22,31 @@ impl SysRoleService {
 
     ///角色添加
     pub async fn add(&self, arg: &RoleAddDTO) -> Result<u64> {
-        let role=SysRole{
+        let role = SysRole {
             id: Some(Uuid::new_v4().to_string()),
             name: arg.name.clone(),
             parent_id: arg.parent_id.clone(),
             del: Some(0),
-            create_time: None
+            create_time: None,
         };
-        RB.save("",&role).await
+        RB.save("", &role).await
     }
 
     ///角色修改
     pub async fn edit(&self, arg: &RoleEditDTO) -> Result<u64> {
-        let role=SysRole{
+        let role = SysRole {
             id: arg.id.clone(),
             name: arg.name.clone(),
             parent_id: arg.parent_id.clone(),
             del: None,
-            create_time: None
+            create_time: None,
         };
-        RB.update_by_id("",&role).await
+        RB.update_by_id("", &role).await
     }
 
     ///角色删除
     pub async fn remove(&self, arg: &str) -> Result<u64> {
-        RB.remove_by_id::<SysRole>("",&arg.to_string()).await
+        RB.remove_by_id::<SysRole>("", &arg.to_string()).await
     }
 
     pub async fn finds(&self, ids: &Vec<String>) -> Result<Vec<SysRole>> {
@@ -60,7 +59,9 @@ impl SysRoleService {
 
 
     pub async fn find_user_permission(&self, user_id: &str) -> Result<Vec<String>> {
-        let user_roles: Vec<SysUserRole> = RB.list_by_wrapper("", &RB.new_wrapper().eq("user_id", user_id).check()?).await?;
+        let user_roles: Vec<SysUserRole> = RB.list_by_wrapper("", &RB.new_wrapper()
+            .eq("user_id", user_id)
+            .check()?).await?;
         let role_res = self.find_role_res(&to_field_vec!(&user_roles,role_id)).await?;
         let all_res = SYS_RES_SERVICE.finds_all().await?;
         let res = SYS_RES_SERVICE.finds_layer(&to_field_vec!(&role_res,res_id), &all_res).await?;
