@@ -6,7 +6,7 @@ use crate::dao::RB;
 use crate::domain::domain::{SysRole, SysRoleRes, SysUserRole};
 use crate::domain::dto::{RoleAddDTO, RoleEditDTO, RolePageDTO};
 use crate::service::SYS_RES_SERVICE;
-
+use uuid::Uuid;
 
 
 ///角色服务
@@ -23,17 +23,31 @@ impl SysRoleService {
 
     ///角色添加
     pub async fn add(&self, arg: &RoleAddDTO) -> Result<u64> {
-        unimplemented!();
+        let role=SysRole{
+            id: Some(Uuid::new_v4().to_string()),
+            name: arg.name.clone(),
+            parent_id: arg.parent_id.clone(),
+            del: Some(0),
+            create_time: None
+        };
+        RB.save("",&role).await
     }
 
     ///角色修改
     pub async fn edit(&self, arg: &RoleEditDTO) -> Result<u64> {
-        unimplemented!();
+        let role=SysRole{
+            id: arg.id.clone(),
+            name: arg.name.clone(),
+            parent_id: arg.parent_id.clone(),
+            del: None,
+            create_time: None
+        };
+        RB.update_by_id("",&role).await
     }
 
     ///角色删除
     pub async fn remove(&self, arg: &str) -> Result<u64> {
-        unimplemented!();
+        RB.remove_by_id::<SysRole>("",&arg.to_string()).await
     }
 
     pub async fn finds(&self, ids: &Vec<String>) -> Result<Vec<SysRole>> {

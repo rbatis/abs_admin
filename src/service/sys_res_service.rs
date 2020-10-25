@@ -23,14 +23,23 @@ impl SysResService {
         RB.save("", arg).await
     }
 
-    ///添加资源
+    ///修改资源
     pub async fn edit(&self, arg: &ResEditDTO) -> Result<u64> {
-        unimplemented!()
+        let data = SysRes {
+            id: arg.id.clone(),
+            parent_id: arg.parent_id.clone(),
+            name: arg.name.clone(),
+            permission: arg.permission.clone(),
+            path: arg.path.clone(),
+            del: None,
+            create_time: None,
+        };
+        RB.update_by_id("", &data).await
     }
 
-    ///添加资源
+    ///删除资源
     pub async fn remove(&self, id: &str) -> Result<u64> {
-        unimplemented!()
+        RB.remove_by_id::<SysRes>("",&id.to_string()).await
     }
 
     /// 查找res数组

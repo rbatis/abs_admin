@@ -10,8 +10,8 @@ use crate::dao::RB;
 use crate::domain::domain::SysUser;
 use crate::domain::dto::{SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO};
 use crate::domain::vo::SignInVO;
-use crate::util::password_encoder::PasswordEncoder;
 use crate::service::SYS_ROLE_SERVICE;
+use crate::util::password_encoder::PasswordEncoder;
 
 ///后台用户服务
 pub struct SysUserService {}
@@ -62,7 +62,7 @@ impl SysUserService {
             account: arg.account.clone(),
             password: Some(PasswordEncoder::encode(arg.password.as_ref().unwrap())),
             name: arg.name.clone(),
-            del: Some(1),
+            del: Some(0),
             create_time: Some(NaiveDateTime::now()),
         };
         return RB.save("", &user).await;
@@ -97,14 +97,27 @@ impl SysUserService {
 
 
     pub async fn edit(&self, arg: &UserEditDTO) -> Result<u64> {
-        unimplemented!()
+        let mut pwd = None;
+        //源密码加密后再存储
+        if arg.password.is_some() {
+            pwd = Some(PasswordEncoder::encode(arg.password.as_ref().unwrap()));
+        }
+        let user = SysUser {
+            id: arg.id.clone(),
+            account: arg.account.clone(),
+            password: pwd,
+            name: arg.name.clone(),
+            del: None,
+            create_time: None,
+        };
+        RB.update_by_id("", &user).await
     }
 
     pub async fn remove(&self, id: &str) -> Result<u64> {
         if id.is_empty() {
             return Err(Error::from("id 不能为空！"));
         }
-        RB.remove_by_id::<SysUser>("",&id.to_string()).await
+        RB.remove_by_id::<SysUser>("", &id.to_string()).await
     }
 
     ///登出后台
@@ -112,6 +125,6 @@ impl SysUserService {
 
     ///循环查找权限
     pub async fn loop_load_permission(&self, user_id: &str) -> Result<Vec<String>> {
-       return SYS_ROLE_SERVICE.find_user_permission(user_id).await;
+        return SYS_ROLE_SERVICE.find_user_permission(user_id).await;
     }
 }
