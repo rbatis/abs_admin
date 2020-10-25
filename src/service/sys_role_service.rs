@@ -50,11 +50,11 @@ impl SysRoleService {
     }
 
     pub async fn finds(&self, ids: &Vec<String>) -> Result<Vec<SysRole>> {
-        RB.list_by_wrapper("", &RB.new_wrapper().in_array("id", ids).check()?).await
+        RB.list_by_wrapper("", &RB.new_wrapper().r#in("id", ids).check()?).await
     }
 
     pub async fn find_role_res(&self, ids: &Vec<String>) -> Result<Vec<SysRoleRes>> {
-        RB.list_by_wrapper("", &RB.new_wrapper().in_array("role_id", ids).check()?).await
+        RB.list_by_wrapper("", &RB.new_wrapper().r#in("role_id", ids).check()?).await
     }
 
 
