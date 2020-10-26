@@ -5,6 +5,7 @@ use yaml_rust::{Yaml, YamlLoader};
 
 ///服务启动配置
 pub struct ApplicationConfig {
+    pub debug: bool,
     ///当前服务地址
     pub server_url: String,
     ///日志路径
@@ -26,16 +27,12 @@ impl Default for ApplicationConfig {
 
         let docs = YamlLoader::load_from_str(&yml_data).unwrap();
         //读取配置
-        let server_url= get_cfg(&docs, "server_url");
-        let log_path= get_cfg(&docs, "log_path");
-        let redis_url= get_cfg(&docs, "redis_url");
-        let mysql_url= get_cfg(&docs, "mysql_url");
-
         Self {
-            server_url: server_url.as_str().unwrap_or("").to_string(),
-            log_path: log_path.as_str().unwrap_or("").to_string(),
-            redis_url: redis_url.as_str().unwrap_or("").to_string(),
-            mysql_url: mysql_url.as_str().unwrap_or("").to_string(),
+            debug:  get_cfg(&docs, "debug").as_bool().unwrap_or(true),
+            server_url: get_cfg(&docs, "server_url").as_str().unwrap_or("").to_owned(),
+            log_path: get_cfg(&docs, "log_path").as_str().unwrap_or("").to_owned(),
+            redis_url: get_cfg(&docs, "redis_url").as_str().unwrap_or("").to_owned(),
+            mysql_url: get_cfg(&docs, "mysql_url").as_str().unwrap_or("").to_owned(),
         }
     }
 }

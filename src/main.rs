@@ -15,8 +15,6 @@ pub mod controller;
 pub mod service;
 pub mod config;
 use actix_web::{App, HttpResponse, HttpServer, Responder, web};
-use fast_log::log::RuntimeType;
-
 use config::CONFIG;
 use dao::RB;
 
@@ -31,7 +29,7 @@ async fn index() -> impl Responder {
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     //日志
-    fast_log::log::init_log(&CONFIG.log_path, &RuntimeType::Std).unwrap();
+    fast_log::init_log("requests.log", 1000,log::Level::Info,CONFIG.debug);
     //ORM
     RB.link(&CONFIG.mysql_url).await.unwrap();
     //http路由
