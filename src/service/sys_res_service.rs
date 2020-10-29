@@ -20,7 +20,7 @@ impl SysResService {
 
     ///添加资源
     pub async fn add(&self, arg: &SysRes) -> Result<u64> {
-        RB.save("", arg).await
+        Ok(RB.save("", arg).await?.rows_affected)
     }
 
     ///修改资源

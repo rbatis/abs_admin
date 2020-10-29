@@ -65,7 +65,7 @@ impl SysUserService {
             del: Some(0),
             create_time: Some(NaiveDateTime::now()),
         };
-        return RB.save("", &user).await;
+        return Ok(RB.save("", &user).await?.rows_affected);
     }
 
     ///登陆后台

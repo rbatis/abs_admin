@@ -5,9 +5,9 @@ use rbatis_core::Error;
 use crate::domain::domain::{SysUser, SysRes};
 use serde::de::DeserializeOwned;
 use actix_web::{HttpResponse};
-use rbatis_core::types::chrono::NaiveDateTime;
 use rbatis::crud::CRUDEnable;
 use actix_http::Response;
+use chrono::NaiveDateTime;
 
 /// JWT 鉴权 Token结构
 #[derive(Debug, Serialize, Deserialize, Clone)]

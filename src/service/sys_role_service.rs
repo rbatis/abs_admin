@@ -29,7 +29,7 @@ impl SysRoleService {
             del: Some(0),
             create_time: None,
         };
-        RB.save("", &role).await
+        Ok(RB.save("", &role).await?.rows_affected)
     }
 
     ///角色修改
