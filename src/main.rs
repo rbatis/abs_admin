@@ -22,7 +22,7 @@ use dao::RB;
 use crate::controller::{res_controller, role_controller, user_controller};
 use fast_log::plugin::file::FileAppender;
 use fast_log::plugin::console::ConsoleAppender;
-use fast_log::filter::{ModuleFilter, NoFilter};
+use fast_log::filter::{ModuleFilter};
 use fast_log::fast_log::LogAppender;
 
 
