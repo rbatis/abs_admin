@@ -14,6 +14,7 @@ pub mod dao;
 pub mod controller;
 pub mod service;
 pub mod config;
+
 use actix_web::{App, HttpResponse, HttpServer, Responder, web};
 use config::CONFIG;
 use dao::RB;
@@ -32,25 +33,10 @@ async fn index() -> impl Responder {
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     //日志追加器
-    let mut appenders: Vec<Box<dyn LogAppender>> = vec![
-        Box::new(FileAppender::new("requests.log"))
-    ];
-    if CONFIG.debug {
-        appenders.push(Box::new(ConsoleAppender {}));
-    }
-    //自定义日志过滤
-    fast_log::init_custom_log(appenders, 1000, log::Level::Info, Box::new(
-        //NoFilter{}
-        ModuleFilter{ contains: vec!["rbatis".to_string(),
-                                     "actix".to_string(),
-                                     "crate".to_string(),
-                                     "abs_admin".to_string()] }
-    ));
-
-
+    init_fast_log();
     //ORM
     RB.link(&CONFIG.mysql_url).await.unwrap();
-    //http路由
+    //路由
     HttpServer::new(|| {
         App::new()
             .route("/", web::get().to(index))
@@ -65,6 +51,28 @@ async fn main() -> std::io::Result<()> {
         .bind(&CONFIG.server_url)?
         .run()
         .await
+}
+
+fn init_fast_log() {
+    //自定义日志追加器
+    let mut appenders: Vec<Box<dyn LogAppender>> = vec![
+        Box::new(FileAppender::new("requests.log"))
+    ];
+    if CONFIG.debug {
+        appenders.push(Box::new(ConsoleAppender {}));
+    }
+    //自定义日志过滤
+    fast_log::init_custom_log(appenders, 1000, log::Level::Info, Box::new(
+           //NoFilter{}//无过滤
+
+           //按模块过滤
+        ModuleFilter {
+            contains: vec!["rbatis".to_string(),
+                           "actix".to_string(),
+                           "crate".to_string(),
+                           "abs_admin".to_string()]
+        }
+    ));
 }
 
 
