@@ -26,7 +26,7 @@ async fn index() -> impl Responder {
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     //日志追加器
-    crate::config::log::init_fast_log();
+    crate::config::log::init_log();
     //ORM
     RB.link(&CONFIG.mysql_url).await.unwrap();
     //路由
