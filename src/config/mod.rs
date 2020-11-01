@@ -1,4 +1,5 @@
 pub mod app_config;
+pub mod log;
 
 use app_config::ApplicationConfig;
 
