@@ -54,7 +54,7 @@ impl SysUserService {
         if old_user.is_some() {
             return Err(Error::from(format!("用户账户:{}已存在!", arg.account.as_ref().unwrap())));
         }
-        let id = crate::util::id::new_id().to_string();
+        let id = crate::util::new_id().to_string();
         let user = SysUser {
             id: Some(id.to_string()),
             account: arg.account.clone(),

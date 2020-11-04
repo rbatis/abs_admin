@@ -21,7 +21,7 @@ impl SysRoleService {
     ///角色添加
     pub async fn add(&self, arg: &RoleAddDTO) -> Result<u64> {
         let role = SysRole {
-            id: Some(crate::util::id::new_id().to_string()),
+            id: Some(crate::util::new_id().to_string()),
             name: arg.name.clone(),
             parent_id: arg.parent_id.clone(),
             del: Some(0),
