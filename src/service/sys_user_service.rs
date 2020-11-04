@@ -4,8 +4,6 @@ use rbatis::plugin::page::{Page, PageRequest};
 use rbatis_core::Error;
 use rbatis_core::Result;
 use rbatis_core::value::DateTimeNow;
-use uuid::Uuid;
-
 use crate::dao::RB;
 use crate::domain::domain::SysUser;
 use crate::domain::dto::{SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO};
@@ -56,7 +54,7 @@ impl SysUserService {
         if old_user.is_some() {
             return Err(Error::from(format!("用户账户:{}已存在!", arg.account.as_ref().unwrap())));
         }
-        let id = Uuid::new_v4();
+        let id = crate::util::id::new_id().to_string();
         let user = SysUser {
             id: Some(id.to_string()),
             account: arg.account.clone(),

@@ -1,7 +1,6 @@
 use actix_web::{Responder, web};
 use chrono::NaiveDateTime;
 use rbatis_core::value::DateTimeNow;
-use uuid::Uuid;
 
 use crate::domain::domain::SysRes;
 use crate::domain::dto::{ResAddDTO, ResPageDTO, IdDTO, ResEditDTO};
@@ -26,7 +25,7 @@ pub async fn add(mut arg: web::Json<ResAddDTO>) -> impl Responder {
         arg.path = Some("".to_string());
     }
     let res = SysRes {
-        id: Some(Uuid::new_v4().to_string()),
+        id: Some(crate::util::id::new_id().to_string()),
         parent_id: arg.parent_id.clone(),
         name: arg.name.clone(),
         permission: arg.permission.clone(),

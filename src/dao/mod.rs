@@ -15,14 +15,13 @@ lazy_static! {
 ///测试
 #[cfg(test)]
 mod test {
-    use fast_log::log::RuntimeType;
     use serde_json::json;
     use crate::dao::RB;
     use crate::config::CONFIG;
 
     #[async_std::test]
     async fn test_rbatis() {
-        fast_log::log::init_log("requests.log", &RuntimeType::Std).unwrap();
+        fast_log::init_log("requests.log", 1000,log::Level::Info,true).unwrap();
         RB.link(&CONFIG.mysql_url).await.unwrap();
         let arg = &vec![json!(1)];
         let v: serde_json::Value = RB.fetch_prepare("", "SELECT count(1) FROM biz_activity where delete_flag = ?;", arg).await.unwrap();

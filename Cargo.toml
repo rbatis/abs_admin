@@ -31,8 +31,7 @@ redis = "0.16.0"
 
 #jwt
 jsonwebtoken = "7"
-#uuid
-uuid = "0.8"
+#snowflake
+rustflake = "0.1.0"
 md5 = "0.7.0"
-
 yaml-rust = "0.4"

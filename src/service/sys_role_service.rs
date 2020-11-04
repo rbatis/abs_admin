@@ -1,8 +1,6 @@
 use rbatis::crud::CRUD;
 use rbatis::plugin::page::{Page, PageRequest};
 use rbatis_core::Result;
-use uuid::Uuid;
-
 use crate::dao::RB;
 use crate::domain::domain::{SysRole, SysRoleRes, SysUserRole};
 use crate::domain::dto::{RoleAddDTO, RoleEditDTO, RolePageDTO};
@@ -23,7 +21,7 @@ impl SysRoleService {
     ///角色添加
     pub async fn add(&self, arg: &RoleAddDTO) -> Result<u64> {
         let role = SysRole {
-            id: Some(Uuid::new_v4().to_string()),
+            id: Some(crate::util::id::new_id().to_string()),
             name: arg.name.clone(),
             parent_id: arg.parent_id.clone(),
             del: Some(0),
