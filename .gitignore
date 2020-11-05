@@ -18,3 +18,5 @@ Cargo.lock
 #log
 *.log
 /idea
+/.idea
+
