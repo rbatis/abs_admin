@@ -1,7 +1,8 @@
 use actix_web::{App, HttpResponse, HttpServer, Responder, web};
+
 use abs_admin::config::CONFIG;
-use abs_admin::dao::RB;
 use abs_admin::controller::{res_controller, role_controller, user_controller};
+use abs_admin::dao::RB;
 
 async fn index() -> impl Responder {
     HttpResponse::Ok().body("Hello ! Please use Post(Json) request /login,/role_page,/res_page....more http interface,you can install postman for import postman.json ")
@@ -30,3 +31,51 @@ async fn main() -> std::io::Result<()> {
         .await
 }
 
+#[cfg(test)]
+mod test {
+    use std::collections::HashMap;
+
+    fn time(start: std::time::Instant, total: i32) {
+        let times = start.elapsed();
+        println!("use Time: {:?} ,each:{} ns/op", &times, times.as_nanos() / (total as u128));
+    }
+
+    #[async_std::test]
+    pub async fn test_http_req() {
+        let resp = reqwest::get("http://127.0.0.1:8000").await.unwrap();
+        let data = resp.bytes().await.unwrap();
+        println!("data:{:#?}", String::from_utf8(data.to_vec()).unwrap());
+    }
+
+    //use Time: 4.3116499s ,each:431164 ns/op
+    #[async_std::test]
+    pub async fn bench_http_req() {
+        let client = reqwest::Client::new();
+        let resp = client.get("http://127.0.0.1:8000").send().await.unwrap();
+        let data = resp.bytes().await.unwrap();
+        println!("data:{:#?}", String::from_utf8(data.to_vec()).unwrap());
+        let total = 10000;
+        let now = std::time::Instant::now();
+        for _ in 0..total {
+            let resp = client.get("http://127.0.0.1:8000").send().await.unwrap();
+            let data = resp.bytes().await.unwrap();
+        }
+        time(now, total);
+    }
+
+    //use Time: 4.8274562s ,each:482745 ns/op
+    #[test]
+    pub fn bench_http_block_req() {
+        let client = reqwest::blocking::Client::new();
+        let resp = client.get("http://127.0.0.1:8000").send().unwrap();
+        let data = resp.bytes().unwrap();
+        println!("data:{:#?}", String::from_utf8(data.to_vec()).unwrap());
+        let total = 10000;
+        let now = std::time::Instant::now();
+        for _ in 0..total {
+            let resp = client.get("http://127.0.0.1:8000").send().unwrap();
+            let data = resp.bytes().unwrap();
+        }
+        time(now, total);
+    }
+}
