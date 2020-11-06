@@ -1,23 +1,7 @@
-#![allow(unused_variables)]//允许未使用的变量
-#![allow(dead_code)]//允许未使用的代码
-#![allow(unused_must_use)]
-
-#[macro_use]
-extern crate lazy_static;
-#[macro_use]
-extern crate rbatis_macro_driver;
-
-#[macro_use]
-pub mod util;
-pub mod domain;
-pub mod dao;
-pub mod controller;
-pub mod service;
-pub mod config;
 use actix_web::{App, HttpResponse, HttpServer, Responder, web};
-use config::CONFIG;
-use dao::RB;
-use crate::controller::{res_controller, role_controller, user_controller};
+use abs_admin::config::CONFIG;
+use abs_admin::dao::RB;
+use abs_admin::controller::{res_controller, role_controller, user_controller};
 
 async fn index() -> impl Responder {
     HttpResponse::Ok().body("Hello ! Please use Post(Json) request /login,/role_page,/res_page....more http interface,you can install postman for import postman.json ")
@@ -26,7 +10,7 @@ async fn index() -> impl Responder {
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     //日志追加器
-    crate::config::log::init_log();
+    abs_admin::config::log::init_log();
     //ORM
     RB.link(&CONFIG.mysql_url).await.unwrap();
     //路由
