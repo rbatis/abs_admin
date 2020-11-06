@@ -33,12 +33,8 @@ async fn main() -> std::io::Result<()> {
 
 #[cfg(test)]
 mod test {
-    use std::collections::HashMap;
+    use abs_admin::util::bencher::QPS;
 
-    fn time(start: std::time::Instant, total: i32) {
-        let times = start.elapsed();
-        println!("use Time: {:?} ,each:{} ns/op", &times, times.as_nanos() / (total as u128));
-    }
 
     #[async_std::test]
     pub async fn test_http_req() {
@@ -60,7 +56,7 @@ mod test {
             let resp = client.get("http://127.0.0.1:8000").send().await.unwrap();
             let data = resp.bytes().await.unwrap();
         }
-        time(now, total);
+        now.time(total);
     }
 
     //use Time: 4.8274562s ,each:482745 ns/op
@@ -76,6 +72,6 @@ mod test {
             let resp = client.get("http://127.0.0.1:8000").send().unwrap();
             let data = resp.bytes().unwrap();
         }
-        time(now, total);
+        now.time( total);
     }
 }
