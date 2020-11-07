@@ -33,14 +33,34 @@ async fn main() -> std::io::Result<()> {
 
 #[cfg(test)]
 mod test {
+    use serde::de::DeserializeOwned;
+    use serde_json::json;
+
     use abs_admin::util::bencher::QPS;
 
+    //post get string
+    pub async fn post(path: &str, arg: &serde_json::Value) -> String {
+        let client = reqwest::Client::new();
+        println!("body:{}", arg.to_string());
+        let resp = client.post(&format!("http://127.0.0.1:8000{}", path))
+            .header("content-type", "json")
+            .json(arg)
+            .send().await.unwrap();
+        let data = resp.bytes().await.unwrap();
+        let data = String::from_utf8(data.to_vec()).unwrap();
+        println!("data:{:#?}", &data);
+        data
+    }
+
+    //post get json
+    pub async fn post_json<R>(path: &str, arg: &serde_json::Value) -> R where R: DeserializeOwned {
+        serde_json::from_str(&post(path, arg).await).unwrap()
+    }
 
     #[async_std::test]
-    pub async fn test_http_req() {
-        let resp = reqwest::get("http://127.0.0.1:8000").await.unwrap();
-        let data = resp.bytes().await.unwrap();
-        println!("data:{:#?}", String::from_utf8(data.to_vec()).unwrap());
+    pub async fn test_res_page() {
+        let v: serde_json::Value = post_json("/res_page", &json!({ })).await;
+        println!("{:#?}", v);
     }
 
     //use Time: 4.3116499s ,each:431164 ns/op
@@ -54,7 +74,7 @@ mod test {
         let now = std::time::Instant::now();
         for _ in 0..total {
             let resp = client.get("http://127.0.0.1:8000").send().await.unwrap();
-            let data = resp.bytes().await.unwrap();
+             resp.bytes().await.unwrap();
         }
         now.time(total);
     }
@@ -70,8 +90,8 @@ mod test {
         let now = std::time::Instant::now();
         for _ in 0..total {
             let resp = client.get("http://127.0.0.1:8000").send().unwrap();
-            let data = resp.bytes().unwrap();
+            resp.bytes().unwrap();
         }
-        now.time( total);
+        now.time(total);
     }
 }
