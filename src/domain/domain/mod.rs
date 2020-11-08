@@ -1,7 +1,6 @@
-
-use rbatis::crud::{CRUDEnable};
-use serde::{Deserialize, Serialize};
 use chrono::NaiveDateTime;
+use rbatis::crud::CRUDEnable;
+use serde::{Deserialize, Serialize};
 
 ///权限资源表
 #[derive(CRUDEnable, Serialize, Deserialize, Clone, Debug)]
@@ -15,7 +14,7 @@ pub struct SysRes {
     //前端-菜单路径
     pub path: Option<String>,
     pub del: Option<i32>,
-    pub create_time: Option<NaiveDateTime>
+    pub create_time: Option<NaiveDateTime>,
 }
 
 ///角色表
@@ -24,7 +23,7 @@ pub struct SysRole {
     pub id: Option<String>,
     pub name: Option<String>,
     //父id(可空)
-    pub parent_id:Option<String>,
+    pub parent_id: Option<String>,
     pub del: Option<i32>,
     pub create_time: Option<NaiveDateTime>,
 }

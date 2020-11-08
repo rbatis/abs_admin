@@ -74,7 +74,7 @@ mod test {
         let now = std::time::Instant::now();
         for _ in 0..total {
             let resp = client.get("http://127.0.0.1:8000").send().await.unwrap();
-             resp.bytes().await.unwrap();
+            resp.bytes().await.unwrap();
         }
         now.time(total);
     }

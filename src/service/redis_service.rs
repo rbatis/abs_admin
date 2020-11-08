@@ -1,9 +1,9 @@
 use log::error;
 use log::info;
+use rbatis_core::Result;
 use redis::aio::Connection;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
-use rbatis_core::Result;
 
 ///缓存服务
 pub struct RedisService {
@@ -23,7 +23,7 @@ impl RedisService {
         let conn = self.client.get_async_connection().await;
         if conn.is_err() {
             let err = conn.err().unwrap().to_string();
-            error!("CacheService get_conn fail! {}",err.as_str());
+            error!("CacheService get_conn fail! {}", err.as_str());
             return Err(rbatis_core::Error::from(err));
         }
         return Ok(conn.unwrap());
@@ -36,7 +36,7 @@ impl RedisService {
         if data.is_err() {
             return Err(rbatis_core::Error::from(data.err().unwrap().to_string()));
         }
-        let data = self.set_string(k,data.unwrap().as_str()).await?;
+        let data = self.set_string(k, data.unwrap().as_str()).await?;
         Ok(data)
     }
 

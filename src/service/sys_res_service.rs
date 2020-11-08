@@ -39,7 +39,7 @@ impl SysResService {
 
     ///删除资源
     pub async fn remove(&self, id: &str) -> Result<u64> {
-        RB.remove_by_id::<SysRes>("",&id.to_string()).await
+        RB.remove_by_id::<SysRes>("", &id.to_string()).await
     }
 
     /// 查找res数组

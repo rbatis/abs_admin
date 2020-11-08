@@ -1,13 +1,14 @@
-use jsonwebtoken::errors::ErrorKind;
-use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
-use serde::{Deserialize, Serialize};
-use rbatis_core::Error;
-use crate::domain::domain::{SysUser, SysRes};
-use serde::de::DeserializeOwned;
-use actix_web::{HttpResponse};
-use rbatis::crud::CRUDEnable;
 use actix_http::Response;
+use actix_web::HttpResponse;
 use chrono::NaiveDateTime;
+use jsonwebtoken::{decode, DecodingKey, encode, EncodingKey, Header, Validation};
+use jsonwebtoken::errors::ErrorKind;
+use rbatis::crud::CRUDEnable;
+use rbatis_core::Error;
+use serde::{Deserialize, Serialize};
+use serde::de::DeserializeOwned;
+
+use crate::domain::domain::{SysRes, SysUser};
 
 /// JWT 鉴权 Token结构
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -126,7 +127,7 @@ impl ToString for SignInVO {
 
 
 ///权限资源表
-#[derive( Serialize, Deserialize, Clone, Debug)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct SysResVO {
     pub id: Option<String>,
     //父id(可空)
@@ -138,12 +139,12 @@ pub struct SysResVO {
     pub path: Option<String>,
     pub del: Option<i32>,
     pub create_time: Option<NaiveDateTime>,
-    pub childs : Option::<Vec<SysResVO>>
+    pub childs: Option::<Vec<SysResVO>>,
 }
 
-impl From<&SysRes> for SysResVO{
+impl From<&SysRes> for SysResVO {
     fn from(arg: &SysRes) -> Self {
-        Self{
+        Self {
             id: arg.id.clone(),
             parent_id: arg.parent_id.clone(),
             name: arg.name.clone(),
@@ -151,16 +152,16 @@ impl From<&SysRes> for SysResVO{
             path: arg.path.clone(),
             del: arg.del.clone(),
             create_time: arg.create_time.clone(),
-            childs: None
+            childs: None,
         }
     }
 }
 
-impl CRUDEnable for SysResVO{
+impl CRUDEnable for SysResVO {
     type IdType = String;
 
     fn table_name() -> String {
-       "sys_res".to_string()
+        "sys_res".to_string()
     }
 
     fn table_columns() -> String {

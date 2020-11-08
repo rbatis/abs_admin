@@ -19,7 +19,6 @@ pub struct ApplicationConfig {
 ///默认配置
 impl Default for ApplicationConfig {
     fn default() -> Self {
-
         let mut yml_data = String::new();
         File::open("src/application.yml")
             .expect("application.yml not exist!")
@@ -28,7 +27,7 @@ impl Default for ApplicationConfig {
         let docs = YamlLoader::load_from_str(&yml_data).unwrap();
         //读取配置
         Self {
-            debug:  get_cfg(&docs, "debug").as_bool().unwrap_or(true),
+            debug: get_cfg(&docs, "debug").as_bool().unwrap_or(true),
             server_url: get_cfg(&docs, "server_url").as_str().unwrap_or("").to_owned(),
             log_path: get_cfg(&docs, "log_path").as_str().unwrap_or("").to_owned(),
             redis_url: get_cfg(&docs, "redis_url").as_str().unwrap_or("").to_owned(),
@@ -52,5 +51,5 @@ fn get_cfg<'a>(docs: &'a Vec<Yaml>, key: &str) -> &'a Yaml {
             _ => {}
         }
     }
-    panic!(format!("in application.yml key: '{}' not exist!",key))
+    panic!(format!("in application.yml key: '{}' not exist!", key))
 }
