@@ -35,9 +35,6 @@ async fn main() -> std::io::Result<()> {
 mod test {
     use serde::de::DeserializeOwned;
     use serde_json::json;
-
-    use abs_admin::util::bencher::QPS;
-
     //post get string
     pub async fn post(path: &str, arg: &serde_json::Value) -> String {
         let client = reqwest::Client::new();
