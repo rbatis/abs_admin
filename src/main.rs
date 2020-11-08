@@ -62,36 +62,4 @@ mod test {
         let v: serde_json::Value = post_json("/res_page", &json!({ })).await;
         println!("{:#?}", v);
     }
-
-    //use Time: 4.3116499s ,each:431164 ns/op
-    #[async_std::test]
-    pub async fn bench_http_req() {
-        let client = reqwest::Client::new();
-        let resp = client.get("http://127.0.0.1:8000").send().await.unwrap();
-        let data = resp.bytes().await.unwrap();
-        println!("data:{:#?}", String::from_utf8(data.to_vec()).unwrap());
-        let total = 10000;
-        let now = std::time::Instant::now();
-        for _ in 0..total {
-            let resp = client.get("http://127.0.0.1:8000").send().await.unwrap();
-            resp.bytes().await.unwrap();
-        }
-        now.time(total);
-    }
-
-    //use Time: 4.8274562s ,each:482745 ns/op
-    #[test]
-    pub fn bench_http_block_req() {
-        let client = reqwest::blocking::Client::new();
-        let resp = client.get("http://127.0.0.1:8000").send().unwrap();
-        let data = resp.bytes().unwrap();
-        println!("data:{:#?}", String::from_utf8(data.to_vec()).unwrap());
-        let total = 10000;
-        let now = std::time::Instant::now();
-        for _ in 0..total {
-            let resp = client.get("http://127.0.0.1:8000").send().unwrap();
-            resp.bytes().unwrap();
-        }
-        now.time(total);
-    }
 }
