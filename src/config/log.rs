@@ -1,4 +1,4 @@
-use fast_log::fast_log::LogAppender;
+use fast_log::appender::LogAppender;
 use fast_log::filter::ModuleFilter;
 use fast_log::plugin::console::ConsoleAppender;
 use fast_log::plugin::file_split::FileSplitAppender;
