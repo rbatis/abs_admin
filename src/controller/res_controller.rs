@@ -1,6 +1,6 @@
 use actix_web::{Responder, web};
 use chrono::NaiveDateTime;
-use rbatis_core::value::DateTimeNow;
+use rbatis::core::value::DateTimeNow;
 
 use crate::domain::domain::SysRes;
 use crate::domain::dto::{IdDTO, ResAddDTO, ResEditDTO, ResPageDTO};

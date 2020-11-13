@@ -1,6 +1,6 @@
 use log::error;
 use log::info;
-use rbatis_core::Result;
+use rbatis::core::Result;
 use redis::aio::Connection;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
@@ -24,7 +24,7 @@ impl RedisService {
         if conn.is_err() {
             let err = conn.err().unwrap().to_string();
             error!("CacheService get_conn fail! {}", err.as_str());
-            return Err(rbatis_core::Error::from(err));
+            return Err(rbatis::core::Error::from(err));
         }
         return Ok(conn.unwrap());
     }
@@ -34,7 +34,7 @@ impl RedisService {
         where T: Serialize {
         let data = serde_json::to_string(v);
         if data.is_err() {
-            return Err(rbatis_core::Error::from(data.err().unwrap().to_string()));
+            return Err(rbatis::core::Error::from(data.err().unwrap().to_string()));
         }
         let data = self.set_string(k, data.unwrap().as_str()).await?;
         Ok(data)
@@ -44,7 +44,7 @@ impl RedisService {
         let r = self.get_string(k).await?;
         let data: serde_json::Result<T> = serde_json::from_str(r.as_str());
         if data.is_err() {
-            return Err(rbatis_core::Error::from(data.err().unwrap().to_string()));
+            return Err(rbatis::core::Error::from(data.err().unwrap().to_string()));
         }
         Ok(data.unwrap())
     }
@@ -65,7 +65,7 @@ impl RedisService {
             .query_async(&mut conn)
             .await.unwrap_or(String::new());
         if r.is_empty() {
-            return Err(rbatis_core::Error::from("cache data is empty!"));
+            return Err(rbatis::core::Error::from("cache data is empty!"));
         }
         Ok(r)
     }

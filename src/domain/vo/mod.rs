@@ -4,7 +4,7 @@ use chrono::NaiveDateTime;
 use jsonwebtoken::{decode, DecodingKey, encode, EncodingKey, Header, Validation};
 use jsonwebtoken::errors::ErrorKind;
 use rbatis::crud::CRUDEnable;
-use rbatis_core::Error;
+use rbatis::core::Error;
 use serde::{Deserialize, Serialize};
 use serde::de::DeserializeOwned;
 

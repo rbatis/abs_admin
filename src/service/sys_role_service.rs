@@ -1,6 +1,6 @@
 use rbatis::crud::CRUD;
 use rbatis::plugin::page::{Page, PageRequest};
-use rbatis_core::Result;
+use rbatis::core::Result;
 
 use crate::dao::RB;
 use crate::domain::domain::{SysRole, SysRoleRes, SysUserRole};

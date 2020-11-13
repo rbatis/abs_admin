@@ -1,9 +1,9 @@
 use chrono::NaiveDateTime;
 use rbatis::crud::CRUD;
 use rbatis::plugin::page::{Page, PageRequest};
-use rbatis_core::Error;
-use rbatis_core::Result;
-use rbatis_core::value::DateTimeNow;
+use rbatis::core::Error;
+use rbatis::core::Result;
+use rbatis::core::value::DateTimeNow;
 
 use crate::dao::RB;
 use crate::domain::domain::SysUser;
