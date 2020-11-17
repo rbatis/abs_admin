@@ -42,34 +42,3 @@ async fn main() -> std::io::Result<()> {
         .run()
         .await
 }
-
-#[cfg(test)]
-mod test {
-    use serde::de::DeserializeOwned;
-    use serde_json::json;
-
-    //post get string
-    pub async fn post(path: &str, arg: &serde_json::Value) -> String {
-        let client = reqwest::Client::new();
-        println!("body:{}", arg.to_string());
-        let resp = client.post(&format!("http://127.0.0.1:8000{}", path))
-            .header("content-type", "json")
-            .json(arg)
-            .send().await.unwrap();
-        let data = resp.bytes().await.unwrap();
-        let data = String::from_utf8(data.to_vec()).unwrap();
-        println!("data:{:#?}", &data);
-        data
-    }
-
-    //post get json
-    pub async fn post_json<R>(path: &str, arg: &serde_json::Value) -> R where R: DeserializeOwned {
-        serde_json::from_str(&post(path, arg).await).unwrap()
-    }
-
-    #[async_std::test]
-    pub async fn test_res_page() {
-        let v: serde_json::Value = post_json("/res_page", &json!({ })).await;
-        println!("{:#?}", v);
-    }
-}
