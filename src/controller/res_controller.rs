@@ -38,7 +38,7 @@ pub async fn add(mut arg: web::Json<ResAddDTO>) -> impl Responder {
 }
 
 ///资源修改
-pub async fn edit(arg: web::Json<ResEditDTO>) -> impl Responder {
+pub async fn update(arg: web::Json<ResEditDTO>) -> impl Responder {
     let data = SYS_RES_SERVICE.edit(&arg.0).await;
     RespVO::from_result(&data).resp()
 }
@@ -49,3 +49,4 @@ pub async fn remove(arg: web::Json<IdDTO>) -> impl Responder {
     let data = SYS_RES_SERVICE.remove(&arg.0.id.unwrap_or("".to_string())).await;
     RespVO::from_result(&data).resp()
 }
+
