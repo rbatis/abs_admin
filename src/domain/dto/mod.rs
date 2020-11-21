@@ -90,3 +90,29 @@ pub struct RoleEditDTO {
     pub auths: Vec<String>,
     pub parent_id: Option<String>,
 }
+
+
+
+
+/// 用户角色添加
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct UserRoleAddDTO {
+    pub id: Option<String>,
+    pub user_id: Option<String>,
+    pub role_id: Option<String>,
+}
+
+/// 用户角色修改
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct UserRoleEditDTO {
+    pub id: Option<String>,
+    pub user_id: Option<String>,
+    pub role_id: Option<String>,
+}
+
+/// 用户角色分页
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct UserRolePageDTO {
+    pub page: Option<u64>,
+    pub size: Option<u64>,
+}

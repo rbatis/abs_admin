@@ -6,6 +6,8 @@ use crate::dao::RB;
 use crate::domain::domain::{SysRole, SysRoleRes, SysUserRole};
 use crate::domain::dto::{RoleAddDTO, RoleEditDTO, RolePageDTO};
 use crate::service::SYS_RES_SERVICE;
+use chrono::NaiveDateTime;
+use rbatis::core::value::DateTimeNow;
 
 ///角色服务
 pub struct SysRoleService {}
@@ -26,7 +28,7 @@ impl SysRoleService {
             name: arg.name.clone(),
             parent_id: arg.parent_id.clone(),
             del: Some(0),
-            create_time: None,
+            create_time: Some(NaiveDateTime::now())
         };
         Ok(RB.save("", &role).await?.rows_affected)
     }
