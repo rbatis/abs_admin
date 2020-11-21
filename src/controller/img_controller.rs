@@ -5,7 +5,11 @@ use captcha::filters::{Dots, Noise, Wave};
 use crate::domain::dto::CatpchaDTO;
 use crate::service::REDIS_SERVICE;
 
-///用户角色分页
+///图形验证码接口
+/// 请求方式 GET
+/// 例子：
+/// http://localhost:8000/captcha?account=18900000000
+///
 pub async fn captcha(arg: web::Query<CatpchaDTO>) -> impl Responder {
     let mut captcha = Captcha::new();
     captcha.add_chars(4)
