@@ -94,6 +94,11 @@ impl SysUserService {
         return Ok(sign_vo);
     }
 
+    ///登出后台
+    pub async fn sign_out(&self) {
+
+    }
+
 
     pub async fn edit(&self, arg: &UserEditDTO) -> Result<u64> {
         let mut pwd = None;
@@ -118,9 +123,6 @@ impl SysUserService {
         }
         RB.remove_by_id::<SysUser>("", &id.to_string()).await
     }
-
-    ///登出后台
-    pub async fn sign_out(&self) {}
 
     ///循环查找权限
     pub async fn loop_load_permission(&self, user_id: &str) -> Result<Vec<String>> {

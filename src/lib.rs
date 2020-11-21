@@ -14,3 +14,4 @@ pub mod dao;
 pub mod controller;
 pub mod service;
 pub mod config;
+pub mod middleware;
