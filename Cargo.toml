@@ -35,3 +35,6 @@ jsonwebtoken = "7"
 rustflake = "0.1.0"
 md5 = "0.7.0"
 yaml-rust = "0.4"
+
+#captcha
+captcha = "*"

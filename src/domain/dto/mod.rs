@@ -116,3 +116,10 @@ pub struct UserRolePageDTO {
     pub page: Option<u64>,
     pub size: Option<u64>,
 }
+
+/// 验证码
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct CatpchaDTO {
+    pub page: Option<u64>,
+    pub size: Option<u64>,
+}
