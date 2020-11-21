@@ -23,7 +23,7 @@ pub async fn captcha(arg: web::Query<CatpchaDTO>) -> impl Responder {
     let captcha_str = captcha.chars_as_string();
     println!("account:{},captcha:{}", arg.account.as_ref().unwrap_or(&"".to_string()), &captcha_str);
     if arg.account.is_some() {
-        let result=REDIS_SERVICE.set_string(&format!("captch:account-{}", &arg.account.as_ref().unwrap()), captcha_str.as_str()).await;
+        let result=REDIS_SERVICE.set_string(&format!("captch:account_{}", &arg.account.as_ref().unwrap()), captcha_str.as_str()).await;
         println!("{:?}",result);
     }
     HttpResponse::Ok().content_type("image/png").body(png)
