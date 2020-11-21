@@ -8,12 +8,12 @@ use captcha::filters::{Noise, Wave, Dots};
 pub async fn captcha(arg: web::Path<CatpchaDTO>) -> impl Responder {
 
     let png=Captcha::new()
-    .add_chars(5)
-    .apply_filter(Noise::new(0.4))
-    .apply_filter(Wave::new(2.0, 20.0).horizontal())
-    .apply_filter(Wave::new(2.0, 20.0).vertical())
-    .view(220, 120)
-    .apply_filter(Dots::new(15))
+    .add_chars(4)
+    .apply_filter(Noise::new(0.1))
+    .apply_filter(Wave::new(1.0, 10.0).horizontal())
+    // .apply_filter(Wave::new(2.0, 20.0).vertical())
+    .view(160, 60)
+    .apply_filter(Dots::new(4))
     .as_png();
 
     HttpResponse::Ok().content_type("image/png").body(png.unwrap())
