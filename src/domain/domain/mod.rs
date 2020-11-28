@@ -3,7 +3,8 @@ use rbatis::crud::CRUDEnable;
 use serde::{Deserialize, Serialize};
 
 ///权限资源表
-#[derive(CRUDEnable, Serialize, Deserialize, Clone, Debug)]
+#[crud_enable]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct SysRes {
     pub id: Option<String>,
     //父id(可空)
@@ -18,7 +19,8 @@ pub struct SysRes {
 }
 
 ///角色表
-#[derive(CRUDEnable, Serialize, Deserialize, Clone, Debug)]
+#[crud_enable]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct SysRole {
     pub id: Option<String>,
     pub name: Option<String>,
@@ -29,7 +31,8 @@ pub struct SysRole {
 }
 
 ///角色资源关系表
-#[derive(CRUDEnable, Serialize, Deserialize, Clone, Debug)]
+#[crud_enable]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct SysRoleRes {
     pub id: Option<String>,
     //角色id
@@ -40,7 +43,8 @@ pub struct SysRoleRes {
 }
 
 ///后台用户表
-#[derive(CRUDEnable, Serialize, Deserialize, Clone, Debug)]
+#[crud_enable]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct SysUser {
     pub id: Option<String>,
     pub account: Option<String>,
@@ -51,7 +55,8 @@ pub struct SysUser {
 }
 
 ///用户角色关系表
-#[derive(CRUDEnable, Serialize, Deserialize, Clone, Debug)]
+#[crud_enable]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct SysUserRole {
     pub id: Option<String>,
     //用户id
