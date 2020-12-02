@@ -32,7 +32,7 @@ impl SysResService {
             permission: arg.permission.clone(),
             path: arg.path.clone(),
             del: None,
-            create_time: None,
+            create_date: None,
         };
         RB.update_by_id("", &data).await
     }

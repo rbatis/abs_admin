@@ -14,7 +14,7 @@ pub struct SysRes {
     //前端-菜单路径
     pub path: Option<String>,
     pub del: Option<i32>,
-    pub create_time: Option<NaiveDateTime>,
+    pub create_date: Option<NaiveDateTime>,
 }
 
 ///角色表
@@ -25,7 +25,7 @@ pub struct SysRole {
     //父id(可空)
     pub parent_id: Option<String>,
     pub del: Option<i32>,
-    pub create_time: Option<NaiveDateTime>,
+    pub create_date: Option<NaiveDateTime>,
 }
 
 ///角色资源关系表
@@ -36,7 +36,7 @@ pub struct SysRoleRes {
     pub role_id: Option<String>,
     //资源id
     pub res_id: Option<String>,
-    pub create_time: Option<NaiveDateTime>,
+    pub create_date: Option<NaiveDateTime>,
 }
 
 ///后台用户表
@@ -47,7 +47,7 @@ pub struct SysUser {
     pub password: Option<String>,
     pub name: Option<String>,
     pub del: Option<i32>,
-    pub create_time: Option<NaiveDateTime>,
+    pub create_date: Option<NaiveDateTime>,
 }
 
 ///用户角色关系表
@@ -58,5 +58,5 @@ pub struct SysUserRole {
     pub user_id: Option<String>,
     //角色id
     pub role_id: Option<String>,
-    pub create_time: Option<NaiveDateTime>,
+    pub create_date: Option<NaiveDateTime>,
 }

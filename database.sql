@@ -31,7 +31,7 @@ CREATE TABLE `biz_activity` (
   `status` int(11) NOT NULL COMMENT '状态（0：已下线，1：已上线）',
   `version` int(11) NOT NULL,
   `remark` varchar(255) DEFAULT NULL,
-  `create_time` datetime NOT NULL,
+  `create_date` datetime NOT NULL,
   `delete_flag` int(1) NOT NULL,
   `pc_banner_img` varchar(255) DEFAULT NULL,
   `h5_banner_img` varchar(255) DEFAULT NULL,
@@ -63,7 +63,7 @@ CREATE TABLE `sys_res` (
   `permission` varchar(45) CHARACTER SET latin1 NOT NULL,
   `path` varchar(45) CHARACTER SET latin1 DEFAULT NULL,
   `del` int(1) NOT NULL DEFAULT '1',
-  `create_time` datetime NOT NULL,
+  `create_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -89,7 +89,7 @@ CREATE TABLE `sys_role` (
   `id` varchar(45) CHARACTER SET latin1 NOT NULL,
   `name` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
   `del` int(1) NOT NULL DEFAULT '1',
-  `create_time` datetime NOT NULL,
+  `create_date` datetime NOT NULL,
   `parent_id` varchar(255) DEFAULT NULL COMMENT '父id',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -116,7 +116,7 @@ CREATE TABLE `sys_role_res` (
   `id` varchar(45) CHARACTER SET latin1 NOT NULL,
   `role_id` varchar(45) CHARACTER SET latin1 NOT NULL,
   `res_id` varchar(45) CHARACTER SET latin1 NOT NULL,
-  `create_time` datetime NOT NULL,
+  `create_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -144,7 +144,7 @@ CREATE TABLE `sys_user` (
   `password` varchar(255) CHARACTER SET latin1 NOT NULL,
   `name` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
   `del` int(1) NOT NULL DEFAULT '1',
-  `create_time` datetime NOT NULL,
+  `create_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -170,7 +170,7 @@ CREATE TABLE `sys_user_role` (
   `id` varchar(45) CHARACTER SET latin1 NOT NULL,
   `user_id` varchar(45) CHARACTER SET latin1 NOT NULL,
   `role_id` varchar(45) CHARACTER SET latin1 NOT NULL,
-  `create_time` datetime NOT NULL,
+  `create_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;

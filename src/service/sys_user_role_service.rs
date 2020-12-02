@@ -25,7 +25,7 @@ impl SysUserRoleService{
             id: Some(rbatis::plugin::snowflake::async_snowflake_id().await.to_string()),
             user_id: arg.user_id.clone(),
             role_id: arg.role_id.clone(),
-            create_time: Some(NaiveDateTime::now())
+            create_date: Some(NaiveDateTime::now())
         };
         Ok(RB.save("", &role).await?.rows_affected)
     }
@@ -36,7 +36,7 @@ impl SysUserRoleService{
             id: arg.id.clone(),
             user_id: arg.user_id.clone(),
             role_id: arg.role_id.clone(),
-            create_time: None,
+            create_date: None,
         };
         RB.update_by_id("", &role).await
     }

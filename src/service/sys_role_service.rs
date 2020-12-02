@@ -28,7 +28,7 @@ impl SysRoleService {
             name: arg.name.clone(),
             parent_id: arg.parent_id.clone(),
             del: Some(0),
-            create_time: Some(NaiveDateTime::now())
+            create_date: Some(NaiveDateTime::now())
         };
         Ok(RB.save("", &role).await?.rows_affected)
     }
@@ -40,7 +40,7 @@ impl SysRoleService {
             name: arg.name.clone(),
             parent_id: arg.parent_id.clone(),
             del: None,
-            create_time: None,
+            create_date: None,
         };
         RB.update_by_id("", &role).await
     }

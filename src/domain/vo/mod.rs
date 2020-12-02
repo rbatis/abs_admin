@@ -138,7 +138,7 @@ pub struct SysResVO {
     //前端-菜单路径
     pub path: Option<String>,
     pub del: Option<i32>,
-    pub create_time: Option<NaiveDateTime>,
+    pub create_date: Option<NaiveDateTime>,
     pub childs: Option::<Vec<SysResVO>>,
 }
 
@@ -151,7 +151,7 @@ impl From<&SysRes> for SysResVO {
             permission: arg.permission.clone(),
             path: arg.path.clone(),
             del: arg.del.clone(),
-            create_time: arg.create_time.clone(),
+            create_date: arg.create_date.clone(),
             childs: None,
         }
     }

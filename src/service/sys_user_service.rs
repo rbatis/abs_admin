@@ -62,7 +62,7 @@ impl SysUserService {
             password: Some(PasswordEncoder::encode(arg.password.as_ref().unwrap())),
             name: arg.name.clone(),
             del: Some(0),
-            create_time: Some(NaiveDateTime::now()),
+            create_date: Some(NaiveDateTime::now()),
         };
         return Ok(RB.save("", &user).await?.rows_affected);
     }
@@ -112,7 +112,7 @@ impl SysUserService {
             password: pwd,
             name: arg.name.clone(),
             del: None,
-            create_time: None,
+            create_date: None,
         };
         RB.update_by_id("", &user).await
     }
