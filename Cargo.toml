@@ -9,7 +9,7 @@ edition = "2018"
 [dependencies]
 futures="0.3"
 #rbatis orm dep
-rbatis = { version = "1.8", default-features = false, features = ["async-io-mysql","snowflake"] }
+rbatis = { version = "1.8", default-features = false, features = ["actix-mysql","snowflake"] }
 rbatis-macro-driver = { version = "1.8", features = ["no_print"] }
 
 #serde and base types
