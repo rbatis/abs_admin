@@ -11,6 +11,7 @@ pub fn init_log() {
     let mut appenders: Vec<Box<dyn LogAppender>> = vec![
         Box::new(FileSplitAppender::new("target/logs/", LogSize::MB(100), true))
     ];
+    //非Debug模式不输出控制台
     if CONFIG.debug {
         appenders.push(Box::new(ConsoleAppender {}));
     }
