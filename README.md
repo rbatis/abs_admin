@@ -18,7 +18,7 @@
 docker run -it -d --name redis -p 6379:6379 redis
 docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 --name mysql -e TZ=Asia/Shanghai mysql:5.7
 ```
-* 2.使用MysqlWorkBench或Navcat等工具 导入database.sql脚本到Mysql数据库（mysql用户名密码root  123456）（redis无密码）中
+* 2.使用MysqlWorkBench或Navicat等工具 导入database.sql脚本到Mysql数据库（mysql用户名密码root  123456）（redis无密码）中
 
 * 3.安装打开PostMan ，导入postman.json到postman中即可使用写好的请求
 ```cmd
