@@ -7,7 +7,7 @@ use crate::service::REDIS_SERVICE;
 use crate::domain::vo::RespVO;
 use crate::config::CONFIG;
 
-///图形验证码接口
+///图形验证码接口(注意，debug模式无论redis是否连接成功都返回图片，release模式则校验redis是否存储成功)
 /// 请求方式 GET
 /// 例子：
 /// http://localhost:8000/captcha?account=18900000000
