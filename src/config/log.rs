@@ -5,11 +5,12 @@ use fast_log::plugin::file_split::FileSplitAppender;
 
 use crate::config::CONFIG;
 use fast_log::consts::LogSize;
+use fast_log::plugin::file_split::RollingType;
 
 pub fn init_log() {
     //自定义日志追加器
     let mut appenders: Vec<Box<dyn LogAppender>> = vec![
-        Box::new(FileSplitAppender::new("target/logs/", LogSize::MB(10), true, 1))
+        Box::new(FileSplitAppender::new("target/logs/", LogSize::MB(100), RollingType::KeepNum(20),true, 1))
     ];
     //非Debug模式不输出控制台
     if CONFIG.debug {
