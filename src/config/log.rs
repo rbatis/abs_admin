@@ -1,4 +1,4 @@
-use fast_log::appender::LogAppender;
+use fast_log::appender::{LogAppender, FastLogFormatRecord};
 use fast_log::filter::ModuleFilter;
 use fast_log::plugin::console::ConsoleAppender;
 use fast_log::plugin::file_split::FileSplitAppender;
@@ -10,7 +10,7 @@ use fast_log::plugin::file_split::RollingType;
 pub fn init_log() {
     //自定义日志追加器
     let mut appenders: Vec<Box<dyn LogAppender>> = vec![
-        Box::new(FileSplitAppender::new("target/logs/", LogSize::MB(100), RollingType::KeepNum(20),true, 1))
+        Box::new(FileSplitAppender::new("target/logs/", LogSize::MB(100), RollingType::KeepNum(20), true, 1))
     ];
     //非Debug模式不输出控制台
     if CONFIG.debug {
@@ -21,7 +21,7 @@ pub fn init_log() {
                               1000,
                               log::Level::Info,
                               Box::new(ModuleFilter::new_exclude(vec!["sqlx".to_string()])),
-    );
+                              Box::new(FastLogFormatRecord {}));
 }
 
 
