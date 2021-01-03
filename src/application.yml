@@ -10,3 +10,20 @@ log_path: "requests.log"
 redis_url: "redis://127.0.0.1:6379"
 #mysql地址
 mysql_url: "mysql://root:123456@localhost:3306/test"
+
+
+#日志目录
+log_dir: "target/logs/"
+#日志通道最大缓存日志条数
+log_cup: 1000
+#日志分割尺寸
+log_temp_size: "100MB"
+log_zip: true
+#日志滚动配置   保留全部: All,按时间保留(秒): KeepTime(i64),按版本保留: KeepNum(i64)
+log_rolling_type: "KeepNum(20)"
+#日志等级
+log_level: "info"
+
+
+
+

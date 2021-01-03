@@ -14,6 +14,19 @@ pub struct ApplicationConfig {
     pub redis_url: String,
     ///mysql地址
     pub mysql_url: String,
+
+    ///日志目录 "target/logs/"
+    pub log_dir: String,
+    ///1000
+    pub log_cup: i64,
+    ///"100MB"
+    pub log_temp_size: String,
+    ///true
+    pub log_zip: bool,
+    ///日志滚动配置   保留全部:All,按时间保留:KeepTime(Duration),按版本保留:KeepNum(i64)
+    pub log_rolling_type: String,
+    ///日志等级
+    pub log_level: String,
 }
 
 ///默认配置
@@ -32,6 +45,13 @@ impl Default for ApplicationConfig {
             log_path: get_cfg(&docs, "log_path").as_str().unwrap_or("").to_owned(),
             redis_url: get_cfg(&docs, "redis_url").as_str().unwrap_or("").to_owned(),
             mysql_url: get_cfg(&docs, "mysql_url").as_str().unwrap_or("").to_owned(),
+
+            log_dir: get_cfg(&docs, "log_dir").as_str().unwrap_or("target/logs/").to_owned(),
+            log_cup: get_cfg(&docs, "log_cup").as_i64().unwrap_or(10000).to_owned(),
+            log_temp_size: get_cfg(&docs, "log_temp_size").as_str().unwrap_or("100MB").to_owned(),
+            log_zip: get_cfg(&docs, "log_zip").as_bool().unwrap_or(false),
+            log_rolling_type: get_cfg(&docs, "log_rolling_type").as_str().unwrap_or("All").to_owned(),
+            log_level: get_cfg(&docs, "log_level").as_str().unwrap_or("info").to_owned(),
         }
     }
 }
