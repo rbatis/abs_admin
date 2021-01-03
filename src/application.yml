@@ -20,7 +20,7 @@ log_cup: 1000
 log_temp_size: "100MB"
 #使用zip压缩
 log_zip: true
-#日志滚动配置-保留全部: All,按时间保留(秒): KeepTime(i64),按版本保留: KeepNum(i64)
+#日志滚动保留-保留全部: All,按时间保留(秒): KeepTime(i64),按版本保留: KeepNum(i64)
 log_rolling_type: "KeepNum(20)"
 #日志等级-info,error,warn,debug,trace
 log_level: "info"
