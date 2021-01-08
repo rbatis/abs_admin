@@ -5,7 +5,7 @@
 #[macro_use]
 extern crate lazy_static;
 #[macro_use]
-extern crate rbatis_macro_driver;
+extern crate rbatis;
 
 #[macro_use]
 pub mod util;
