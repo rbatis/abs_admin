@@ -49,7 +49,7 @@ impl SysResService {
 
     /// 查找res数组
     pub async fn finds(&self, ids: &Vec<String>) -> Result<Vec<SysRes>> {
-        RB.list_by_wrapper("", RB.new_wrapper().r#in("id", ids)).await
+        RB.list_by_wrapper("", &RB.new_wrapper().r#in("id", ids)).await
     }
 
     ///带有层级结构的 res数组
