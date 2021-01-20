@@ -1,7 +1,9 @@
-use actix_web::{App, HttpResponse, HttpServer, Responder, web};
+use actix_web::{web, App, HttpResponse, HttpServer, Responder};
 
 use abs_admin::config::CONFIG;
-use abs_admin::controller::{res_controller, role_controller, user_controller, user_role_controller, img_controller};
+use abs_admin::controller::{
+    img_controller, res_controller, role_controller, user_controller, user_role_controller,
+};
 use abs_admin::dao::RB;
 
 async fn index() -> impl Responder {
@@ -32,14 +34,22 @@ async fn main() -> std::io::Result<()> {
             .route("/role_update", web::post().to(role_controller::edit))
             .route("/role_delete", web::post().to(role_controller::remove))
             .route("/role_page", web::post().to(role_controller::page))
-
             .route("/user_role_add", web::post().to(user_role_controller::add))
-            .route("/user_role_delete", web::post().to(user_role_controller::remove))
-            .route("/user_role_update", web::post().to(user_role_controller::edit))
-            .route("/user_role_page", web::post().to(user_role_controller::page))
+            .route(
+                "/user_role_delete",
+                web::post().to(user_role_controller::remove),
+            )
+            .route(
+                "/user_role_update",
+                web::post().to(user_role_controller::edit),
+            )
+            .route(
+                "/user_role_page",
+                web::post().to(user_role_controller::page),
+            )
             .route("/captcha", web::get().to(img_controller::captcha))
     })
-        .bind(&CONFIG.server_url)?
-        .run()
-        .await
+    .bind(&CONFIG.server_url)?
+    .run()
+    .await
 }

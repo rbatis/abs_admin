@@ -1,10 +1,8 @@
-use actix_web::{Responder, web};
+use actix_web::{web, Responder};
 
 use crate::domain::dto::{IdDTO, UserRoleAddDTO, UserRoleEditDTO, UserRolePageDTO};
 use crate::domain::vo::RespVO;
 use crate::service::SYS_USER_ROLE_SERVICE;
-
-
 
 /// 用户角色添加
 pub async fn add(arg: web::Json<UserRoleAddDTO>) -> impl Responder {
@@ -26,6 +24,8 @@ pub async fn edit(arg: web::Json<UserRoleEditDTO>) -> impl Responder {
 
 ///用户角色删除
 pub async fn remove(arg: web::Json<IdDTO>) -> impl Responder {
-    let vo = SYS_USER_ROLE_SERVICE.remove(&arg.0.id.unwrap_or("".to_string())).await;
+    let vo = SYS_USER_ROLE_SERVICE
+        .remove(&arg.0.id.unwrap_or("".to_string()))
+        .await;
     return RespVO::from_result(&vo).resp();
 }

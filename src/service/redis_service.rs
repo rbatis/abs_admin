@@ -7,16 +7,14 @@ use serde::Serialize;
 
 ///缓存服务
 pub struct RedisService {
-    pub client: redis::Client
+    pub client: redis::Client,
 }
 
 impl RedisService {
     pub fn new(url: &str) -> Self {
         let client = redis::Client::open(url).unwrap();
         info!("connect redis success!");
-        Self {
-            client
-        }
+        Self { client }
     }
 
     pub async fn get_conn(&self) -> Result<Connection> {
@@ -29,9 +27,10 @@ impl RedisService {
         return Ok(conn.unwrap());
     }
 
-
     pub async fn set_json<T>(&self, k: &str, v: &T) -> Result<String>
-        where T: Serialize {
+    where
+        T: Serialize,
+    {
         let data = serde_json::to_string(v);
         if data.is_err() {
             return Err(rbatis::core::Error::from(data.err().unwrap().to_string()));
@@ -40,7 +39,10 @@ impl RedisService {
         Ok(data)
     }
 
-    pub async fn get_json<T>(&self, k: &str) -> Result<T> where T: DeserializeOwned {
+    pub async fn get_json<T>(&self, k: &str) -> Result<T>
+    where
+        T: DeserializeOwned,
+    {
         let r = self.get_string(k).await?;
         let data: serde_json::Result<T> = serde_json::from_str(r.as_str());
         if data.is_err() {
@@ -54,7 +56,8 @@ impl RedisService {
         let r: String = redis::cmd("SET")
             .arg(&[k, v])
             .query_async(&mut conn)
-            .await.unwrap_or(String::new());
+            .await
+            .unwrap_or(String::new());
         Ok(r)
     }
 
@@ -63,7 +66,8 @@ impl RedisService {
         let r: String = redis::cmd("GET")
             .arg(&[k])
             .query_async(&mut conn)
-            .await.unwrap_or(String::new());
+            .await
+            .unwrap_or(String::new());
         if r.is_empty() {
             return Err(rbatis::core::Error::from("cache data is empty!"));
         }

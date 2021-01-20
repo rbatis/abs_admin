@@ -1,12 +1,12 @@
 use actix_http::Response;
 use actix_web::HttpResponse;
 use chrono::NaiveDateTime;
-use jsonwebtoken::{decode, DecodingKey, encode, EncodingKey, Header, Validation};
 use jsonwebtoken::errors::ErrorKind;
-use rbatis::crud::CRUDEnable;
+use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
 use rbatis::core::Error;
-use serde::{Deserialize, Serialize};
+use rbatis::crud::CRUDEnable;
 use serde::de::DeserializeOwned;
+use serde::{Deserialize, Serialize};
 
 use crate::domain::domain::{SysRes, SysUser};
 
@@ -24,7 +24,11 @@ impl JWTToken {
     /// create token
     /// secret: your secret string
     pub fn create_token(&self, secret: &str) -> Result<String, Error> {
-        return match encode(&Header::default(), self, &EncodingKey::from_secret(secret.as_ref())) {
+        return match encode(
+            &Header::default(),
+            self,
+            &EncodingKey::from_secret(secret.as_ref()),
+        ) {
             Ok(t) => Ok(t),
             Err(_) => Err(Error::from("JWTToken encode fail!")), // in practice you would return the error
         };
@@ -32,13 +36,19 @@ impl JWTToken {
     /// verify token invalid
     /// secret: your secret string
     pub fn verify(secret: &str, token: &str) -> Result<JWTToken, Error> {
-        let validation = Validation { ..Validation::default() };
-        return match decode::<JWTToken>(&token, &DecodingKey::from_secret(secret.as_ref()), &validation) {
+        let validation = Validation {
+            ..Validation::default()
+        };
+        return match decode::<JWTToken>(
+            &token,
+            &DecodingKey::from_secret(secret.as_ref()),
+            &validation,
+        ) {
             Ok(c) => Ok(c.claims),
             Err(err) => match *err.kind() {
                 ErrorKind::InvalidToken => return Err(Error::from("InvalidToken")), // Example on how to handle a specific error
                 ErrorKind::InvalidIssuer => return Err(Error::from("InvalidIssuer")), // Example on how to handle a specific error
-                _ => return Err(Error::from("InvalidToken other errors"))
+                _ => return Err(Error::from("InvalidToken other errors")),
             },
         };
     }
@@ -52,7 +62,10 @@ pub struct RespVO<T> {
     pub data: Option<T>,
 }
 
-impl<T> RespVO<T> where T: Serialize + DeserializeOwned + Clone {
+impl<T> RespVO<T>
+where
+    T: Serialize + DeserializeOwned + Clone,
+{
     pub fn from_result(arg: &Result<T, Error>) -> Self {
         if arg.is_ok() {
             Self {
@@ -102,11 +115,16 @@ impl<T> RespVO<T> where T: Serialize + DeserializeOwned + Clone {
     }
 
     pub fn resp(&self) -> Response {
-        return HttpResponse::Ok().content_type("json").body(self.to_string());
+        return HttpResponse::Ok()
+            .content_type("json")
+            .body(self.to_string());
     }
 }
 
-impl<T> ToString for RespVO<T> where T: Serialize + DeserializeOwned + Clone {
+impl<T> ToString for RespVO<T>
+where
+    T: Serialize + DeserializeOwned + Clone,
+{
     fn to_string(&self) -> String {
         serde_json::to_string(self).unwrap()
     }
@@ -125,7 +143,6 @@ impl ToString for SignInVO {
     }
 }
 
-
 ///权限资源表
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct SysResVO {
@@ -139,7 +156,7 @@ pub struct SysResVO {
     pub path: Option<String>,
     pub del: Option<i32>,
     pub create_date: Option<NaiveDateTime>,
-    pub childs: Option::<Vec<SysResVO>>,
+    pub childs: Option<Vec<SysResVO>>,
 }
 
 impl From<&SysRes> for SysResVO {

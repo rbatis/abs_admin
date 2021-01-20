@@ -4,14 +4,16 @@ use fast_log::plugin::file_split::RollingType;
 use std::time::Duration;
 
 pub fn init_log() {
-    fast_log::init_split_log(&CONFIG.log_dir,
-                             CONFIG.log_cup as usize,
-                             str_to_temp_size(&CONFIG.log_temp_size),
-                             CONFIG.log_zip,
-                             str_to_rolling(&CONFIG.log_rolling_type),
-                             str_to_log_level(&CONFIG.log_level),
-                             None,
-                             CONFIG.debug);
+    fast_log::init_split_log(
+        &CONFIG.log_dir,
+        CONFIG.log_cup as usize,
+        str_to_temp_size(&CONFIG.log_temp_size),
+        CONFIG.log_zip,
+        str_to_rolling(&CONFIG.log_rolling_type),
+        str_to_log_level(&CONFIG.log_level),
+        None,
+        CONFIG.debug,
+    );
 }
 
 fn str_to_temp_size(arg: &str) -> LogSize {
@@ -55,8 +57,6 @@ fn str_to_log_level(arg: &str) -> log::Level {
         "trace" => log::Level::Trace,
         "info" => log::Level::Info,
         "debug" => log::Level::Debug,
-        _ => { log::Level::Info }
+        _ => log::Level::Info,
     };
 }
-
-

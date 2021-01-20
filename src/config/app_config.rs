@@ -41,21 +41,44 @@ impl Default for ApplicationConfig {
         //读取配置
         Self {
             debug: get_cfg(&docs, "debug").as_bool().unwrap_or(true),
-            server_url: get_cfg(&docs, "server_url").as_str().unwrap_or("").to_owned(),
+            server_url: get_cfg(&docs, "server_url")
+                .as_str()
+                .unwrap_or("")
+                .to_owned(),
             log_path: get_cfg(&docs, "log_path").as_str().unwrap_or("").to_owned(),
-            redis_url: get_cfg(&docs, "redis_url").as_str().unwrap_or("").to_owned(),
-            mysql_url: get_cfg(&docs, "mysql_url").as_str().unwrap_or("").to_owned(),
+            redis_url: get_cfg(&docs, "redis_url")
+                .as_str()
+                .unwrap_or("")
+                .to_owned(),
+            mysql_url: get_cfg(&docs, "mysql_url")
+                .as_str()
+                .unwrap_or("")
+                .to_owned(),
 
-            log_dir: get_cfg(&docs, "log_dir").as_str().unwrap_or("target/logs/").to_owned(),
-            log_cup: get_cfg(&docs, "log_cup").as_i64().unwrap_or(10000).to_owned(),
-            log_temp_size: get_cfg(&docs, "log_temp_size").as_str().unwrap_or("100MB").to_owned(),
+            log_dir: get_cfg(&docs, "log_dir")
+                .as_str()
+                .unwrap_or("target/logs/")
+                .to_owned(),
+            log_cup: get_cfg(&docs, "log_cup")
+                .as_i64()
+                .unwrap_or(10000)
+                .to_owned(),
+            log_temp_size: get_cfg(&docs, "log_temp_size")
+                .as_str()
+                .unwrap_or("100MB")
+                .to_owned(),
             log_zip: get_cfg(&docs, "log_zip").as_bool().unwrap_or(false),
-            log_rolling_type: get_cfg(&docs, "log_rolling_type").as_str().unwrap_or("All").to_owned(),
-            log_level: get_cfg(&docs, "log_level").as_str().unwrap_or("info").to_owned(),
+            log_rolling_type: get_cfg(&docs, "log_rolling_type")
+                .as_str()
+                .unwrap_or("All")
+                .to_owned(),
+            log_level: get_cfg(&docs, "log_level")
+                .as_str()
+                .unwrap_or("info")
+                .to_owned(),
         }
     }
 }
-
 
 /// 获取配置
 /// key: 需要获取配置的key

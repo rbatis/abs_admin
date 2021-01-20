@@ -1,4 +1,4 @@
-use actix_web::{Responder, web};
+use actix_web::{web, Responder};
 use chrono::NaiveDateTime;
 use rbatis::core::value::DateTimeNow;
 
@@ -25,7 +25,11 @@ pub async fn add(mut arg: web::Json<ResAddDTO>) -> impl Responder {
         arg.path = Some("".to_string());
     }
     let res = SysRes {
-        id: Some(rbatis::plugin::snowflake::async_snowflake_id().await.to_string()),
+        id: Some(
+            rbatis::plugin::snowflake::async_snowflake_id()
+                .await
+                .to_string(),
+        ),
         parent_id: arg.parent_id.clone(),
         name: arg.name.clone(),
         permission: arg.permission.clone(),
@@ -43,10 +47,10 @@ pub async fn update(arg: web::Json<ResEditDTO>) -> impl Responder {
     RespVO::from_result(&data).resp()
 }
 
-
 ///资源删除
 pub async fn remove(arg: web::Json<IdDTO>) -> impl Responder {
-    let data = SYS_RES_SERVICE.remove(&arg.0.id.unwrap_or("".to_string())).await;
+    let data = SYS_RES_SERVICE
+        .remove(&arg.0.id.unwrap_or("".to_string()))
+        .await;
     RespVO::from_result(&data).resp()
 }
-

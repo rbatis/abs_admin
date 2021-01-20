@@ -32,7 +32,6 @@ pub struct ResEditDTO {
     pub path: Option<String>,
 }
 
-
 /// 登陆
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct SignInDTO {
@@ -91,9 +90,6 @@ pub struct RoleEditDTO {
     pub parent_id: Option<String>,
 }
 
-
-
-
 /// 用户角色添加
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct UserRoleAddDTO {
@@ -120,5 +116,5 @@ pub struct UserRolePageDTO {
 /// 验证码
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct CatpchaDTO {
-    pub account: Option<String>
+    pub account: Option<String>,
 }

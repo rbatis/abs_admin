@@ -1,16 +1,16 @@
 use redis_service::RedisService;
 use sys_res_service::SysResService;
 use sys_role_service::SysRoleService;
-use sys_user_service::SysUserService;
 use sys_user_role_service::SysUserRoleService;
+use sys_user_service::SysUserService;
 
 use crate::config::CONFIG;
 
-mod sys_res_service;
 mod redis_service;
-mod sys_user_service;
+mod sys_res_service;
 mod sys_role_service;
 mod sys_user_role_service;
+mod sys_user_service;
 
 lazy_static! {
    /// redis

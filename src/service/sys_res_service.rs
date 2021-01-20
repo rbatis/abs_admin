@@ -1,6 +1,6 @@
+use rbatis::core::Result;
 use rbatis::crud::CRUD;
 use rbatis::plugin::page::{Page, PageRequest};
-use rbatis::core::Result;
 
 use crate::dao::RB;
 use crate::domain::domain::SysRes;
@@ -14,7 +14,9 @@ impl SysResService {
     ///资源分页
     pub async fn page(&self, arg: &ResPageDTO) -> Result<Page<SysRes>> {
         let page_req = PageRequest::new(arg.page.unwrap_or(1), arg.size.unwrap_or(10));
-        let data = RB.fetch_page_by_wrapper("", &RB.new_wrapper(), &page_req).await?;
+        let data = RB
+            .fetch_page_by_wrapper("", &RB.new_wrapper(), &page_req)
+            .await?;
         Ok(data)
     }
 
@@ -49,11 +51,16 @@ impl SysResService {
 
     /// 查找res数组
     pub async fn finds(&self, ids: &Vec<String>) -> Result<Vec<SysRes>> {
-        RB.list_by_wrapper("", &RB.new_wrapper().r#in("id", ids)).await
+        RB.list_by_wrapper("", &RB.new_wrapper().r#in("id", ids))
+            .await
     }
 
     ///带有层级结构的 res数组
-    pub async fn finds_layer(&self, ids: &Vec<String>, all_res: &Vec<SysRes>) -> Result<Vec<SysResVO>> {
+    pub async fn finds_layer(
+        &self,
+        ids: &Vec<String>,
+        all_res: &Vec<SysRes>,
+    ) -> Result<Vec<SysResVO>> {
         let res = self.finds(&ids).await?;
         //find tops
         let mut tops = vec![];
