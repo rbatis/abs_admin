@@ -35,8 +35,9 @@ pub struct ResEditDTO {
 /// 登陆
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct SignInDTO {
-    pub account: Option<String>,
-    pub password: Option<String>,
+    pub account: String,
+    pub password: String,
+    pub img_code: String
 }
 
 /// 登陆

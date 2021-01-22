@@ -3,7 +3,6 @@ use actix_web::{web, Responder};
 use crate::domain::dto::{IdDTO, SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO};
 use crate::domain::vo::RespVO;
 use crate::service::SYS_USER_SERVICE;
-
 /// 用户登陆
 pub async fn login(arg: web::Json<SignInDTO>) -> impl Responder {
     let vo = SYS_USER_SERVICE.sign_in(&arg.0).await;

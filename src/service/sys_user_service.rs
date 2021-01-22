@@ -11,6 +11,7 @@ use crate::domain::dto::{SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO};
 use crate::domain::vo::SignInVO;
 use crate::service::SYS_ROLE_SERVICE;
 use crate::util::password_encoder::PasswordEncoder;
+use crate::service::REDIS_SERVICE;
 
 ///后台用户服务
 pub struct SysUserService {}
@@ -82,26 +83,20 @@ impl SysUserService {
 
     ///登陆后台
     pub async fn sign_in(&self, arg: &SignInDTO) -> Result<SignInVO> {
-        if arg.account.is_none()
-            || arg.password.is_none()
-            || arg.account.as_ref().unwrap().is_empty()
-            || arg.password.as_ref().unwrap().is_empty()
-        {
-            return Err(Error::from("用户名密码不能为空!"));
+        //check img code
+        let cache_img_code= REDIS_SERVICE.get_string(&format!("captch:account_{}", &arg.account)).await?;
+        if cache_img_code.eq(&arg.img_code){
+            return Err(Error::from("验证码不正确!"));
         }
-        let wrapper = RB.new_wrapper().eq("account", &arg.account).check()?;
-        let user: Option<SysUser> = RB.fetch_by_wrapper("", &wrapper).await?;
-        if user.is_none() {
-            return Err(Error::from(format!(
-                "账号:{} 不存在!",
-                arg.account.as_ref().unwrap()
-            )));
-        }
-        let mut user = user.unwrap();
+        let user: Option<SysUser> = RB.fetch_by_wrapper("", &RB.new_wrapper().eq("account", &arg.account).check()?).await?;
+        let mut user = user.ok_or_else(||Error::from(format!(
+            "账号:{} 不存在!",
+            arg.account
+        )))?;
         // check pwd
         if !PasswordEncoder::verify(
-            user.password.as_ref().unwrap(),
-            arg.password.as_ref().unwrap(),
+            user.password.as_ref().ok_or_else(||Error::from("用户密码为空!"))?,
+            &arg.password,
         ) {
             return Err(Error::from("密码不正确!"));
         }
