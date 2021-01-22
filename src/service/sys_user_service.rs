@@ -95,13 +95,13 @@ impl SysUserService {
         )))?;
         // check pwd
         if !PasswordEncoder::verify(
-            user.password.as_ref().ok_or_else(||Error::from("用户密码为空!"))?,
+            user.password.as_ref().ok_or_else(||Error::from("用户密码不能为空!"))?,
             &arg.password,
         ) {
             return Err(Error::from("密码不正确!"));
         }
         user.password = None; //去除密码，增加安全性
-        let user_id = user.id.clone().unwrap_or("".to_string());
+        let user_id = user.id.clone().ok_or_else(||Error::from("用户id不能为空!"))?;
         let mut sign_vo = SignInVO {
             user: Some(user),
             permissions: vec![],
