@@ -1,4 +1,5 @@
 use chrono::NaiveDateTime;
+use crate::domain::domain::LoginCheck;
 
 ///权限资源表
 #[crud_enable]
@@ -48,6 +49,7 @@ pub struct SysUser {
     pub account: Option<String>,
     pub password: Option<String>,
     pub name: Option<String>,
+    pub login_check: Option<LoginCheck>,
     pub del: Option<i32>,
     pub create_date: Option<NaiveDateTime>,
 }

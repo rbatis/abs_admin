@@ -57,11 +57,11 @@ DROP TABLE IF EXISTS `sys_res`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `sys_res` (
-  `id` varchar(45) CHARACTER SET latin1 NOT NULL,
-  `parent_id` varchar(45) CHARACTER SET latin1 DEFAULT NULL,
+  `id` varchar(45) CHARACTER SET utf8 NOT NULL,
+  `parent_id` varchar(45) CHARACTER SET utf8 DEFAULT NULL,
   `name` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `permission` varchar(45) CHARACTER SET latin1 NOT NULL,
-  `path` varchar(45) CHARACTER SET latin1 DEFAULT NULL,
+  `permission` varchar(45) CHARACTER SET utf8 NOT NULL,
+  `path` varchar(45) CHARACTER SET utf8 DEFAULT NULL,
   `del` int(1) NOT NULL DEFAULT '1',
   `create_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
@@ -86,8 +86,8 @@ DROP TABLE IF EXISTS `sys_role`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `sys_role` (
-  `id` varchar(45) CHARACTER SET latin1 NOT NULL,
-  `name` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
+  `id` varchar(45) CHARACTER SET utf8 NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `del` int(1) NOT NULL DEFAULT '1',
   `create_date` datetime NOT NULL,
   `parent_id` varchar(255) DEFAULT NULL COMMENT '父id',
@@ -113,9 +113,9 @@ DROP TABLE IF EXISTS `sys_role_res`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `sys_role_res` (
-  `id` varchar(45) CHARACTER SET latin1 NOT NULL,
-  `role_id` varchar(45) CHARACTER SET latin1 NOT NULL,
-  `res_id` varchar(45) CHARACTER SET latin1 NOT NULL,
+  `id` varchar(45) CHARACTER SET utf8 NOT NULL,
+  `role_id` varchar(45) CHARACTER SET utf8 NOT NULL,
+  `res_id` varchar(45) CHARACTER SET utf8 NOT NULL,
   `create_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -139,10 +139,11 @@ DROP TABLE IF EXISTS `sys_user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `sys_user` (
-  `id` varchar(45) CHARACTER SET latin1 NOT NULL,
-  `account` varchar(45) CHARACTER SET latin1 NOT NULL,
-  `password` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `name` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
+  `id` varchar(45) CHARACTER SET utf8 NOT NULL,
+  `account` varchar(45) CHARACTER SET utf8 NOT NULL,
+  `password` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `login_check` varchar(255) CHARACTER SET utf8 DEFAULT 'PasswordCheck',
   `del` int(1) NOT NULL DEFAULT '1',
   `create_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
@@ -155,7 +156,7 @@ CREATE TABLE `sys_user` (
 
 LOCK TABLES `sys_user` WRITE;
 /*!40000 ALTER TABLE `sys_user` DISABLE KEYS */;
-INSERT INTO `sys_user` VALUES ('2d4886bd-ad2a-4644-86b9-460afad05cbf','18969542172','e10adc3949ba59abbe56e057f20f883e','xxxx',0,'2020-07-28 08:34:40'),('7c0591a3-41f9-423b-943e-6944d7760192','18969542174','e10adc3949ba59abbe56e057f20f883e','xxxx',0,'2020-08-07 17:01:02'),('91095081-1966-491d-a95d-bd1bc36d204f','1896954211','e10adc3949ba59abbe56e057f20f883e','xxxx',0,'2020-08-31 20:05:26'),('f63ef5b6-171e-47ab-8aad-832ff4323056','18969542173','e10adc3949ba59abbe56e057f20f883e','xxxx',0,'2020-07-31 05:47:28'),('f84ad1fe-1d96-4776-bb2b-45fc990a9975','18969542171','e10adc3949ba59abbe56e057f20f883e','xxxx',0,'2020-08-07 16:54:45');
+INSERT INTO `sys_user` VALUES ('2d4886bd-ad2a-4644-86b9-460afad05cbf','18969542172','e10adc3949ba59abbe56e057f20f883e','xxxx','PasswordCheck',0,'2020-07-28 08:34:40'),('7c0591a3-41f9-423b-943e-6944d7760192','18969542174','e10adc3949ba59abbe56e057f20f883e','xxxx','PasswordCheck',0,'2020-08-07 17:01:02'),('91095081-1966-491d-a95d-bd1bc36d204f','1896954211','e10adc3949ba59abbe56e057f20f883e','xxxx','PasswordCheck',0,'2020-08-31 20:05:26'),('f63ef5b6-171e-47ab-8aad-832ff4323056','18969542173','e10adc3949ba59abbe56e057f20f883e','xxxx','PasswordCheck',0,'2020-07-31 05:47:28'),('f84ad1fe-1d96-4776-bb2b-45fc990a9975','18969542171','e10adc3949ba59abbe56e057f20f883e','xxxx','PasswordCheck',0,'2020-08-07 16:54:45');
 /*!40000 ALTER TABLE `sys_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -167,9 +168,9 @@ DROP TABLE IF EXISTS `sys_user_role`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `sys_user_role` (
-  `id` varchar(45) CHARACTER SET latin1 NOT NULL,
-  `user_id` varchar(45) CHARACTER SET latin1 NOT NULL,
-  `role_id` varchar(45) CHARACTER SET latin1 NOT NULL,
+  `id` varchar(45) CHARACTER SET utf8 NOT NULL,
+  `user_id` varchar(45) CHARACTER SET utf8 NOT NULL,
+  `role_id` varchar(45) CHARACTER SET utf8 NOT NULL,
   `create_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
