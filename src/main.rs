@@ -48,6 +48,7 @@ async fn main() -> std::io::Result<()> {
                 web::post().to(user_role_controller::page),
             )
             .route("/captcha", web::get().to(img_controller::captcha))
+            .route("/qrcode", web::get().to(img_controller::qrcode))
     })
     .bind(&CONFIG.server_url)?
     .run()

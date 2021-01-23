@@ -33,3 +33,7 @@ md5 = "0.7.0"
 yaml-rust = "0.4"
 #captcha
 captcha = "0.0.8"
+
+#qrcode
+qrcode = "0.12"
+image = "0.23"

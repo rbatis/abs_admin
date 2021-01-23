@@ -1,11 +1,14 @@
 use actix_web::{web, HttpResponse, Responder};
 use captcha::filters::{Dots, Noise, Wave};
 use captcha::Captcha;
+use qrcode::QrCode;
+use image::{Luma, ImageEncoder, ColorType, Pixel};
 
 use crate::config::CONFIG;
 use crate::domain::dto::CatpchaDTO;
 use crate::domain::vo::RespVO;
 use crate::service::REDIS_SERVICE;
+use image::codecs::png;
 
 ///图形验证码接口(注意，debug模式无论redis是否连接成功都返回图片，release模式则校验redis是否存储成功)
 /// 请求方式 GET
@@ -45,4 +48,17 @@ pub async fn captcha(arg: web::Query<CatpchaDTO>) -> impl Responder {
         }
     }
     HttpResponse::Ok().content_type("image/png").body(png)
+}
+
+///二维码
+///
+pub async fn qrcode(arg: web::Query<CatpchaDTO>) -> impl Responder {
+    // Encode some data into bits.
+    let code = QrCode::new(format!("http://{}?account={}",CONFIG.server_url,arg.account.as_ref().unwrap_or(&"".to_string())).as_bytes()).unwrap();
+    // Render the bits into an image.
+    let image = code.render::<Luma<u8>>()
+        .build();
+    let mut buffer: Vec<u8> = vec![]; // Generate the image data
+    png::PngEncoder::new(&mut buffer).write_image(&image, image.width(), image.height(), ColorType::L8).unwrap();
+    HttpResponse::Ok().content_type("image/png").body(buffer)
 }
