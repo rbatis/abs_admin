@@ -55,7 +55,9 @@ pub async fn captcha(arg: web::Query<CatpchaDTO>) -> impl Responder {
 pub async fn qrcode(arg: web::Query<CatpchaDTO>) -> impl Responder {
     // Encode some data into bits.
     let url=format!("http://{}?account={}",CONFIG.server_url,arg.account.as_ref().unwrap_or(&"".to_string()));
-    let url_str=url.as_str();
+    if CONFIG.debug{
+        println!("gen qrcode url:{}",url);
+    }
     let code = QrCode::new(url.as_bytes()).unwrap();
     // Render the bits into an image.
     let image = code.render::<Luma<u8>>()
