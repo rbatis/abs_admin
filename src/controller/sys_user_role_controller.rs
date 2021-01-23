@@ -17,7 +17,7 @@ pub async fn page(arg: web::Json<UserRolePageDTO>) -> impl Responder {
 }
 
 ///用户角色修改
-pub async fn edit(arg: web::Json<UserRoleEditDTO>) -> impl Responder {
+pub async fn update(arg: web::Json<UserRoleEditDTO>) -> impl Responder {
     let vo = SYS_USER_ROLE_SERVICE.edit(&arg.0).await;
     return RespVO::from_result(&vo).resp();
 }

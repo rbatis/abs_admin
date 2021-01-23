@@ -1,10 +1,5 @@
+pub struct ConfigService {}
 
-
-pub struct ConfigService {
-}
-
-impl ConfigService{
-    pub fn create(&self){
-
-    }
+impl ConfigService {
+    pub fn create(&self) {}
 }

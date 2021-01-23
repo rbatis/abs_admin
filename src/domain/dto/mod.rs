@@ -1,5 +1,5 @@
-use serde::{Deserialize, Serialize};
 use crate::domain::domain::LoginCheck;
+use serde::{Deserialize, Serialize};
 
 /// IdDTO
 #[derive(Serialize, Deserialize, Clone, Debug)]
@@ -38,7 +38,7 @@ pub struct ResEditDTO {
 pub struct SignInDTO {
     pub account: String,
     pub password: String,
-    pub img_code: String
+    pub img_code: String,
 }
 
 /// 登陆

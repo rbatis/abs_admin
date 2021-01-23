@@ -2,7 +2,8 @@ use actix_web::{web, App, HttpResponse, HttpServer, Responder};
 
 use abs_admin::config::CONFIG;
 use abs_admin::controller::{
-    img_controller, res_controller, role_controller, user_controller, user_role_controller,
+    img_controller, sys_res_controller, sys_role_controller, sys_user_controller,
+    sys_user_role_controller,
 };
 use abs_admin::dao::RB;
 
@@ -20,32 +21,53 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
         App::new()
             .route("/", web::get().to(index))
-            .route("/res_update", web::post().to(res_controller::update))
-            .route("/res_remove", web::post().to(res_controller::remove))
-            .route("/res_add", web::post().to(res_controller::add))
-            .route("/res_page", web::post().to(res_controller::page))
-            .route("/login", web::post().to(user_controller::login))
-            //TODO .route("/log_out", web::post().to(user_controller::log_out))
-            .route("/user_add", web::post().to(user_controller::add))
-            .route("/user_page", web::post().to(user_controller::page))
-            .route("/user_remove", web::post().to(user_controller::remove))
-            .route("/user_update", web::post().to(user_controller::edit))
-            .route("/role_add", web::post().to(role_controller::add))
-            .route("/role_update", web::post().to(role_controller::edit))
-            .route("/role_delete", web::post().to(role_controller::remove))
-            .route("/role_page", web::post().to(role_controller::page))
-            .route("/user_role_add", web::post().to(user_role_controller::add))
             .route(
-                "/user_role_delete",
-                web::post().to(user_role_controller::remove),
+                "/sys_res_update",
+                web::post().to(sys_res_controller::update),
             )
             .route(
-                "/user_role_update",
-                web::post().to(user_role_controller::edit),
+                "/sys_res_remove",
+                web::post().to(sys_res_controller::remove),
+            )
+            .route("/sys_res_add", web::post().to(sys_res_controller::add))
+            .route("/sys_res_page", web::post().to(sys_res_controller::page))
+            .route("/sys_login", web::post().to(sys_user_controller::login))
+            //TODO .route("/sys_log_out", web::post().to(user_controller::log_out))
+            .route("/sys_user_add", web::post().to(sys_user_controller::add))
+            .route("/sys_user_page", web::post().to(sys_user_controller::page))
+            .route(
+                "/sys_user_remove",
+                web::post().to(sys_user_controller::remove),
             )
             .route(
-                "/user_role_page",
-                web::post().to(user_role_controller::page),
+                "/sys_user_update",
+                web::post().to(sys_user_controller::update),
+            )
+            .route("/sys_role_add", web::post().to(sys_role_controller::add))
+            .route(
+                "/sys_role_update",
+                web::post().to(sys_role_controller::update),
+            )
+            .route(
+                "/sys_role_delete",
+                web::post().to(sys_role_controller::remove),
+            )
+            .route("/sys_role_page", web::post().to(sys_role_controller::page))
+            .route(
+                "/sys_user_role_add",
+                web::post().to(sys_user_role_controller::add),
+            )
+            .route(
+                "/sys_user_role_delete",
+                web::post().to(sys_user_role_controller::remove),
+            )
+            .route(
+                "/sys_user_role_update",
+                web::post().to(sys_user_role_controller::update),
+            )
+            .route(
+                "/sys_user_role_page",
+                web::post().to(sys_user_role_controller::page),
             )
             .route("/captcha", web::get().to(img_controller::captcha))
             .route("/qrcode", web::get().to(img_controller::qrcode))

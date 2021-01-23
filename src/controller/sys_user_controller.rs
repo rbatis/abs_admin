@@ -22,7 +22,7 @@ pub async fn page(arg: web::Json<UserPageDTO>) -> impl Responder {
 }
 
 ///用户修改
-pub async fn edit(arg: web::Json<UserEditDTO>) -> impl Responder {
+pub async fn update(arg: web::Json<UserEditDTO>) -> impl Responder {
     let vo = SYS_USER_SERVICE.edit(&arg.0).await;
     return RespVO::from_result(&vo).resp();
 }

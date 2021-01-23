@@ -1,5 +1,5 @@
 pub mod img_controller;
-pub mod res_controller;
-pub mod role_controller;
-pub mod user_controller;
-pub mod user_role_controller;
+pub mod sys_res_controller;
+pub mod sys_role_controller;
+pub mod sys_user_controller;
+pub mod sys_user_role_controller;
