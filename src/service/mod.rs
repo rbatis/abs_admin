@@ -11,6 +11,7 @@ mod sys_res_service;
 mod sys_role_service;
 mod sys_user_role_service;
 mod sys_user_service;
+mod sys_config_service;
 
 lazy_static! {
    /// redis
