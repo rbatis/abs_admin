@@ -37,7 +37,7 @@ sms_redis_resp_key: "sms:resp:"
 #    "Code":"OK"
 #  }
 # 这里只判断返回结果布尔值  “Code == 'OK'”
-sms_redis_send_resp_expr: ""
+sms_redis_resp_value_verify: ""
 
 
 
