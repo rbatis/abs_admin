@@ -43,7 +43,10 @@ impl RedisService {
     where
         T: DeserializeOwned,
     {
-        let r = self.get_string(k).await?;
+        let mut r = self.get_string(k).await?;
+        if r.is_empty() {
+            r = "null".to_string();
+        }
         let data: serde_json::Result<T> = serde_json::from_str(r.as_str());
         if data.is_err() {
             return Err(rbatis::core::Error::from(data.err().unwrap().to_string()));
