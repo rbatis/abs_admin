@@ -27,6 +27,8 @@ pub struct ApplicationConfig {
     pub log_rolling_type: String,
     ///日志等级
     pub log_level: String,
+
+    pub sms_redis_send_key_prefix: String,
 }
 
 ///默认配置
@@ -75,6 +77,10 @@ impl Default for ApplicationConfig {
             log_level: get_cfg(&docs, "log_level")
                 .as_str()
                 .unwrap_or("info")
+                .to_owned(),
+            sms_redis_send_key_prefix: get_cfg(&docs, "sms_redis_send_key_prefix")
+                .as_str()
+                .unwrap_or("")
                 .to_owned(),
         }
     }

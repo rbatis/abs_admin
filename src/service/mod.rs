@@ -10,6 +10,7 @@ mod redis_service;
 mod sys_config_service;
 mod sys_res_service;
 mod sys_role_service;
+mod sys_sms_service;
 mod sys_user_role_service;
 mod sys_user_service;
 

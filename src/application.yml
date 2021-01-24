@@ -25,19 +25,8 @@ log_rolling_type: "KeepNum(20)"
 #日志等级-info,error,warn,debug,trace
 log_level: "info"
 
-
 #短信通道redis缓存（系统先把数据放入redis队列sms:send:，第三方短信sdk或程序需要从队列获取并发送，获得回执存入sms:resp:*）,格式为sms:send:手机号和sms:resp:手机号
-sms_redis_send_key: "sms:send:"
-sms_redis_resp_key: "sms:resp:"
-#短信通道结果访问,例如阿里云短信rest api返回
-#json {
-#    "Message":"OK",
-#    "RequestId":"2184201F-BFB3-446B-B1F2-C746B7BF0657",
-#    "BizId":"197703245997295588^0",
-#    "Code":"OK"
-#  }
-# 这里只判断返回结果布尔值  “Code == 'OK'”
-sms_redis_resp_value_verify: ""
+sms_redis_send_key_prefix: "sms:send:"
 
 
 
