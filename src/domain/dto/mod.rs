@@ -38,8 +38,8 @@ pub struct ResEditDTO {
 pub struct SignInDTO {
     pub account: String,
     pub password: String,
-    pub img_code: String,
-    pub qr_code: String,
+    //验证码，可用是短信验证码，图片验证码,二维码验证码...
+    pub vcode: String
 }
 
 /// 登陆

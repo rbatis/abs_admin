@@ -1,7 +1,7 @@
 use chrono::NaiveDateTime;
-use rbatis::core::value::DateTimeNow;
 use rbatis::core::Error;
 use rbatis::core::Result;
+use rbatis::core::value::DateTimeNow;
 use rbatis::crud::CRUD;
 use rbatis::plugin::page::{Page, PageRequest};
 
@@ -9,6 +9,7 @@ use crate::dao::RB;
 use crate::domain::domain::{LoginCheck, SysUser};
 use crate::domain::dto::{SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO};
 use crate::domain::vo::SignInVO;
+use crate::service::CONFIG;
 use crate::service::REDIS_SERVICE;
 use crate::service::SYS_ROLE_SERVICE;
 use crate::util::password_encoder::PasswordEncoder;
@@ -89,7 +90,7 @@ impl SysUserService {
             .await?;
         let mut user = user.ok_or_else(|| Error::from(format!("账号:{} 不存在!", arg.account)))?;
 
-        match &user.login_check.unwrap_or(LoginCheck::PasswordCheck) {
+        match user.login_check.as_ref().unwrap_or(&LoginCheck::PasswordCheck) {
             LoginCheck::NoCheck => {
                 //无校验登录，适合Debug用
             }
@@ -106,10 +107,10 @@ impl SysUserService {
             }
             LoginCheck::PasswordQRCodeCheck | LoginCheck::PasswordImgCodeCheck => {
                 //check img code
-                let cache_img_code = REDIS_SERVICE
+                let cache_code = REDIS_SERVICE
                     .get_string(&format!("captch:account_{}", &arg.account))
                     .await?;
-                if cache_img_code.eq(&arg.img_code) {
+                if cache_code.eq(&arg.vcode) {
                     return Err(Error::from("验证码不正确!"));
                 }
                 // check pwd
@@ -123,7 +124,14 @@ impl SysUserService {
                 }
             }
             LoginCheck::PhoneCodeCheck => {
-                //TODO 短信验证码登录
+                //短信验证码登录
+                let sms_code = REDIS_SERVICE
+                    .get_string(&format!("{}{}", CONFIG.sms_redis_send_key_prefix, &arg.account))
+                    .await?;
+                if sms_code.eq(&arg.vcode) {
+                    return Err(Error::from("验证码不正确!"));
+                }
+                //TODO 是否需要删除redis的短信缓存？
             }
         }
         //去除密码，增加安全性
