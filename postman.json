@@ -27,7 +27,7 @@
 					],
 					"port": "8000",
 					"path": [
-						"res_page"
+						"sys_res_page"
 					]
 				}
 			},
@@ -55,7 +55,7 @@
 					],
 					"port": "8000",
 					"path": [
-						"res_add"
+						"sys_res_add"
 					]
 				}
 			},
@@ -83,7 +83,7 @@
 					],
 					"port": "8000",
 					"path": [
-						"user_page"
+						"sys_user_page"
 					]
 				}
 			},
@@ -111,7 +111,7 @@
 					],
 					"port": "8000",
 					"path": [
-						"login"
+						"sys_login"
 					]
 				}
 			},
@@ -139,7 +139,7 @@
 					],
 					"port": "8000",
 					"path": [
-						"user_add"
+						"sys_user_add"
 					]
 				}
 			},
