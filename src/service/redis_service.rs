@@ -1,6 +1,6 @@
 use log::error;
 use log::info;
-use rbatis::core::Result;
+use rbatis::core::{Error, Result};
 use redis::aio::Connection;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
@@ -20,28 +20,28 @@ impl RedisService {
     pub async fn get_conn(&self) -> Result<Connection> {
         let conn = self.client.get_async_connection().await;
         if conn.is_err() {
-            let err = conn.err().unwrap().to_string();
-            error!("CacheService get_conn fail! {}", err.as_str());
+            let err = format!("RedisService connect fail:{}", conn.err().unwrap());
+            error!("{}", err);
             return Err(rbatis::core::Error::from(err));
         }
         return Ok(conn.unwrap());
     }
 
     pub async fn set_json<T>(&self, k: &str, v: &T) -> Result<String>
-    where
-        T: Serialize,
+        where
+            T: Serialize,
     {
         let data = serde_json::to_string(v);
         if data.is_err() {
-            return Err(rbatis::core::Error::from(data.err().unwrap().to_string()));
+            return Err(rbatis::core::Error::from(format!("RedisService set_json fail:{}", data.err().unwrap())));
         }
         let data = self.set_string(k, data.unwrap().as_str()).await?;
         Ok(data)
     }
 
     pub async fn get_json<T>(&self, k: &str) -> Result<T>
-    where
-        T: DeserializeOwned,
+        where
+            T: DeserializeOwned,
     {
         let mut r = self.get_string(k).await?;
         if r.is_empty() {
@@ -49,31 +49,38 @@ impl RedisService {
         }
         let data: serde_json::Result<T> = serde_json::from_str(r.as_str());
         if data.is_err() {
-            return Err(rbatis::core::Error::from(data.err().unwrap().to_string()));
+            return Err(rbatis::core::Error::from(format!("RedisService get_json fail:{}", data.err().unwrap())));
         }
         Ok(data.unwrap())
     }
 
     pub async fn set_string(&self, k: &str, v: &str) -> Result<String> {
         let mut conn = self.get_conn().await?;
-        let r: String = redis::cmd("SET")
+        match redis::cmd("SET")
             .arg(&[k, v])
             .query_async(&mut conn)
-            .await
-            .unwrap_or(String::new());
-        Ok(r)
+            .await {
+            Ok(v) => {
+                return Ok(v);
+            }
+            Err(e) => {
+                return Err(Error::from(format!("RedisService set_string fail:{}", e.to_string())));
+            }
+        }
     }
 
     pub async fn get_string(&self, k: &str) -> Result<String> {
         let mut conn = self.get_conn().await?;
-        let r: String = redis::cmd("GET")
+        match redis::cmd("GET")
             .arg(&[k])
             .query_async(&mut conn)
-            .await
-            .unwrap_or(String::new());
-        if r.is_empty() {
-            return Err(rbatis::core::Error::from("cache data is empty!"));
+            .await {
+            Ok(v) => {
+                return Ok(v);
+            }
+            Err(e) => {
+                return Err(Error::from(format!("RedisService get_string fail:{}", e.to_string())));
+            }
         }
-        Ok(r)
     }
 }
