@@ -6,7 +6,7 @@ use rbatis::crud::CRUD;
 use rbatis::plugin::page::{Page, PageRequest};
 
 use crate::dao::RB;
-use crate::domain::domain::SysUser;
+use crate::domain::domain::{LoginCheck, SysUser};
 use crate::domain::dto::{SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO};
 use crate::domain::vo::SignInVO;
 use crate::service::REDIS_SERVICE;
@@ -84,27 +84,50 @@ impl SysUserService {
 
     ///登陆后台
     pub async fn sign_in(&self, arg: &SignInDTO) -> Result<SignInVO> {
-        //check img code
-        let cache_img_code = REDIS_SERVICE
-            .get_string(&format!("captch:account_{}", &arg.account))
-            .await?;
-        if cache_img_code.eq(&arg.img_code) {
-            return Err(Error::from("验证码不正确!"));
-        }
         let user: Option<SysUser> = RB
             .fetch_by_wrapper("", &RB.new_wrapper().eq("account", &arg.account).check()?)
             .await?;
         let mut user = user.ok_or_else(|| Error::from(format!("账号:{} 不存在!", arg.account)))?;
-        // check pwd
-        if !PasswordEncoder::verify(
-            user.password
-                .as_ref()
-                .ok_or_else(|| Error::from("错误的用户数据，密码为空!"))?,
-            &arg.password,
-        ) {
-            return Err(Error::from("密码不正确!"));
+
+        match &user.login_check.unwrap_or(LoginCheck::PasswordCheck) {
+            LoginCheck::NoCheck => {
+                //无校验登录，适合Debug用
+            }
+            LoginCheck::PasswordCheck => {
+                // check pwd
+                if !PasswordEncoder::verify(
+                    user.password
+                        .as_ref()
+                        .ok_or_else(|| Error::from("错误的用户数据，密码为空!"))?,
+                    &arg.password,
+                ) {
+                    return Err(Error::from("密码不正确!"));
+                }
+            }
+            LoginCheck::PasswordQRCodeCheck | LoginCheck::PasswordImgCodeCheck => {
+                //check img code
+                let cache_img_code = REDIS_SERVICE
+                    .get_string(&format!("captch:account_{}", &arg.account))
+                    .await?;
+                if cache_img_code.eq(&arg.img_code) {
+                    return Err(Error::from("验证码不正确!"));
+                }
+                // check pwd
+                if !PasswordEncoder::verify(
+                    user.password
+                        .as_ref()
+                        .ok_or_else(|| Error::from("错误的用户数据，密码为空!"))?,
+                    &arg.password,
+                ) {
+                    return Err(Error::from("密码不正确!"));
+                }
+            }
+            LoginCheck::PhoneCodeCheck => {
+                //TODO 短信验证码登录
+            }
         }
-        user.password = None; //去除密码，增加安全性
+        //去除密码，增加安全性
+        user.password = None;
         let user_id = user
             .id
             .clone()

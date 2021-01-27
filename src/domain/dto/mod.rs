@@ -39,6 +39,7 @@ pub struct SignInDTO {
     pub account: String,
     pub password: String,
     pub img_code: String,
+    pub qr_code: String,
 }
 
 /// 登陆
