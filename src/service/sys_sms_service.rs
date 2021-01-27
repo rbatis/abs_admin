@@ -16,7 +16,7 @@ impl SysSmsService {
         templete_arg.insert("sms_code".to_string(), sms_code.to_string());
         let r = REDIS_SERVICE
             .set_json(
-                &format!("{},{}",CONFIG.sms_redis_send_key_prefix,account),
+                &format!("{},{}", CONFIG.sms_redis_send_key_prefix, account),
                 &Sms {
                     account: account.to_string(),
                     args: templete_arg,
@@ -29,7 +29,7 @@ impl SysSmsService {
     ///校验验证码
     pub async fn do_verify_sms(&self, account: &str, sms_code: &str) -> Result<bool> {
         let sms: Option<Sms> = REDIS_SERVICE
-            .get_json(&format!("{},{}",CONFIG.sms_redis_send_key_prefix,account))
+            .get_json(&format!("{},{}", CONFIG.sms_redis_send_key_prefix, account))
             .await?;
         match sms {
             Some(v) => {
