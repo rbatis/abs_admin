@@ -6,7 +6,7 @@
 	},
 	"item": [
 		{
-			"name": "http://127.0.0.1:8000/res_page",
+			"name": "http://127.0.0.1:8000/sys_res_page",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -20,7 +20,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8000/res_page",
+					"raw": "http://localhost:8000/sys_res_page",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -34,7 +34,7 @@
 			"response": []
 		},
 		{
-			"name": "http://127.0.0.1:8000/res_add",
+			"name": "http://127.0.0.1:8000/sys_res_add",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -48,7 +48,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8000/res_add",
+					"raw": "http://localhost:8000/sys_res_add",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -62,7 +62,7 @@
 			"response": []
 		},
 		{
-			"name": "http://127.0.0.1:8000/user_page",
+			"name": "http://127.0.0.1:8000/sys_user_page",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -76,7 +76,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8000/user_page",
+					"raw": "http://localhost:8000/sys_user_page",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -90,7 +90,7 @@
 			"response": []
 		},
 		{
-			"name": "http://127.0.0.1:8000/login",
+			"name": "http://127.0.0.1:8000/sys_login",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -104,7 +104,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8000/login",
+					"raw": "http://localhost:8000/sys_login",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -118,7 +118,7 @@
 			"response": []
 		},
 		{
-			"name": "http://127.0.0.1:8000/add",
+			"name": "http://127.0.0.1:8000/sys_add",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -132,7 +132,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8000/user_add",
+					"raw": "http://localhost:8000/sys_user_add",
 					"protocol": "http",
 					"host": [
 						"localhost"
