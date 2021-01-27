@@ -1,11 +1,11 @@
-use actix_web::{web, App, HttpResponse, HttpServer, Responder};
-
 use abs_admin::config::CONFIG;
 use abs_admin::controller::{
     img_controller, sys_res_controller, sys_role_controller, sys_user_controller,
     sys_user_role_controller,
 };
 use abs_admin::dao::RB;
+use actix_web::{web, App, HttpResponse, HttpServer, Responder};
+use log::info;
 
 async fn index() -> impl Responder {
     HttpResponse::Ok().body("Hello ! Please use Post(Json) request /login,/role_page,/res_page....more http interface,you can install postman for import postman.json ")
@@ -17,6 +17,12 @@ async fn main() -> std::io::Result<()> {
     abs_admin::config::log::init_log();
     //ORM
     RB.link(&CONFIG.mysql_url).await.unwrap();
+    info!(
+        " - Local:   http://{}",
+        CONFIG
+            .server_url
+            .replace("0.0.0.0", "localhost")
+    );
     //路由
     HttpServer::new(|| {
         App::new()

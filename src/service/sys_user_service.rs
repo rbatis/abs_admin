@@ -1,7 +1,7 @@
 use chrono::NaiveDateTime;
+use rbatis::core::value::DateTimeNow;
 use rbatis::core::Error;
 use rbatis::core::Result;
-use rbatis::core::value::DateTimeNow;
 use rbatis::crud::CRUD;
 use rbatis::plugin::page::{Page, PageRequest};
 
@@ -90,7 +90,11 @@ impl SysUserService {
             .await?;
         let mut user = user.ok_or_else(|| Error::from(format!("账号:{} 不存在!", arg.account)))?;
 
-        match user.login_check.as_ref().unwrap_or(&LoginCheck::PasswordCheck) {
+        match user
+            .login_check
+            .as_ref()
+            .unwrap_or(&LoginCheck::PasswordCheck)
+        {
             LoginCheck::NoCheck => {
                 //无校验登录，适合Debug用
             }
@@ -126,7 +130,10 @@ impl SysUserService {
             LoginCheck::PhoneCodeCheck => {
                 //短信验证码登录
                 let sms_code = REDIS_SERVICE
-                    .get_string(&format!("{}{}", CONFIG.sms_redis_send_key_prefix, &arg.account))
+                    .get_string(&format!(
+                        "{}{}",
+                        CONFIG.sms_redis_send_key_prefix, &arg.account
+                    ))
                     .await?;
                 if sms_code.eq(&arg.vcode) {
                     return Err(Error::from("验证码不正确!"));
