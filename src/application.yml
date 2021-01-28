@@ -28,5 +28,8 @@ log_level: "info"
 #短信通道redis缓存（系统先把数据放入redis队列sms:send:，第三方短信sdk或程序需要从队列获取并发送，获得回执存入sms:resp:*）,格式为sms:send:手机号和sms:resp:手机号
 sms_redis_send_key_prefix: "sms:send:"
 
+#JwtToken秘钥
+jwt_secret: "abs_admin"
+
 
 

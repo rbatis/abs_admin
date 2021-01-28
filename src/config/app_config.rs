@@ -28,7 +28,11 @@ pub struct ApplicationConfig {
     ///日志等级
     pub log_level: String,
 
+    ///短信redis队列
     pub sms_redis_send_key_prefix: String,
+
+    ///jwt 秘钥
+    pub jwt_secret: String,
 }
 
 ///默认配置
@@ -79,6 +83,10 @@ impl Default for ApplicationConfig {
                 .unwrap_or("info")
                 .to_owned(),
             sms_redis_send_key_prefix: get_cfg(&docs, "sms_redis_send_key_prefix")
+                .as_str()
+                .unwrap_or("")
+                .to_owned(),
+            jwt_secret: get_cfg(&docs, "jwt_secret")
                 .as_str()
                 .unwrap_or("")
                 .to_owned(),

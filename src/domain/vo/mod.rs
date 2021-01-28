@@ -1,23 +1,23 @@
 use actix_http::Response;
 use actix_web::HttpResponse;
 use chrono::NaiveDateTime;
+use jsonwebtoken::{decode, DecodingKey, encode, EncodingKey, Header, Validation};
 use jsonwebtoken::errors::ErrorKind;
-use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
 use rbatis::core::Error;
 use rbatis::crud::CRUDEnable;
-use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
+use serde::de::DeserializeOwned;
 
 use crate::domain::domain::{SysRes, SysUser};
 
 /// JWT 鉴权 Token结构
 #[derive(Debug, Serialize, Deserialize, Clone)]
-struct JWTToken {
-    id: String,
-    account: String,
-    permissions: Vec<String>,
-    role_ids: Vec<String>,
-    exp: usize,
+pub struct JWTToken {
+    pub id: String,
+    pub account: String,
+    pub permissions: Vec<String>,
+    pub role_ids: Vec<String>,
+    pub exp: usize,
 }
 
 impl JWTToken {
@@ -63,8 +63,8 @@ pub struct RespVO<T> {
 }
 
 impl<T> RespVO<T>
-where
-    T: Serialize + DeserializeOwned + Clone,
+    where
+        T: Serialize + DeserializeOwned + Clone,
 {
     pub fn from_result(arg: &Result<T, Error>) -> Self {
         if arg.is_ok() {
@@ -122,8 +122,8 @@ where
 }
 
 impl<T> ToString for RespVO<T>
-where
-    T: Serialize + DeserializeOwned + Clone,
+    where
+        T: Serialize + DeserializeOwned + Clone,
 {
     fn to_string(&self) -> String {
         serde_json::to_string(self).unwrap()
@@ -135,6 +135,7 @@ where
 pub struct SignInVO {
     pub user: Option<SysUser>,
     pub permissions: Vec<String>,
+    pub access_token: String,
 }
 
 impl ToString for SignInVO {

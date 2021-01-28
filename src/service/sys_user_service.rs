@@ -8,7 +8,7 @@ use rbatis::plugin::page::{Page, PageRequest};
 use crate::dao::RB;
 use crate::domain::domain::{LoginCheck, SysUser};
 use crate::domain::dto::{SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO};
-use crate::domain::vo::SignInVO;
+use crate::domain::vo::{SignInVO,JWTToken};
 use crate::service::CONFIG;
 use crate::service::REDIS_SERVICE;
 use crate::service::SYS_ROLE_SERVICE;
@@ -89,7 +89,6 @@ impl SysUserService {
             .fetch_by_wrapper("", &RB.new_wrapper().eq("account", &arg.account).check()?)
             .await?;
         let mut user = user.ok_or_else(|| Error::from(format!("账号:{} 不存在!", arg.account)))?;
-
         match user
             .login_check
             .as_ref()
@@ -148,10 +147,19 @@ impl SysUserService {
             .clone()
             .ok_or_else(|| Error::from("错误的用户数据，id为空!"))?;
         let mut sign_vo = SignInVO {
-            user: Some(user),
+            user: Some(user.clone()),
             permissions: vec![],
+            access_token: "".to_string()
         };
         sign_vo.permissions = self.loop_load_permission(&user_id).await?;
+        let jwt_token=JWTToken{
+            id: user.id.clone().unwrap_or(String::new()),
+            account: user.account.clone().unwrap_or(String::new()),
+            permissions: sign_vo.permissions.clone(),
+            role_ids: vec![],
+            exp: 24 * 60 * 60 * 1000
+        };
+        sign_vo.access_token= jwt_token.create_token(&CONFIG.jwt_secret)?;
         return Ok(sign_vo);
     }
 
