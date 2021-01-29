@@ -44,14 +44,14 @@ impl SysRoleService {
 
     ///角色修改
     pub async fn edit(&self, arg: &RoleEditDTO) -> Result<u64> {
-        let role = SysRole {
+        let mut role = SysRole {
             id: arg.id.clone(),
             name: arg.name.clone(),
             parent_id: arg.parent_id.clone(),
             del: None,
             create_date: None,
         };
-        RB.update_by_id("", &role).await
+        RB.update_by_id("", &mut role).await
     }
 
     ///角色删除

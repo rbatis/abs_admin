@@ -171,7 +171,7 @@ impl SysUserService {
         if arg.password.is_some() {
             pwd = Some(PasswordEncoder::encode(arg.password.as_ref().unwrap()));
         }
-        let user = SysUser {
+        let mut user = SysUser {
             id: arg.id.clone(),
             account: arg.account.clone(),
             password: pwd,
@@ -180,7 +180,7 @@ impl SysUserService {
             del: None,
             create_date: None,
         };
-        RB.update_by_id("", &user).await
+        RB.update_by_id("", &mut user).await
     }
 
     pub async fn remove(&self, id: &str) -> Result<u64> {

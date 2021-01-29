@@ -27,7 +27,7 @@ impl SysResService {
 
     ///修改资源
     pub async fn edit(&self, arg: &ResEditDTO) -> Result<u64> {
-        let data = SysRes {
+        let mut data = SysRes {
             id: arg.id.clone(),
             parent_id: arg.parent_id.clone(),
             name: arg.name.clone(),
@@ -36,7 +36,7 @@ impl SysResService {
             del: None,
             create_date: None,
         };
-        RB.update_by_id("", &data).await
+        RB.update_by_id("", &mut data).await
     }
 
     ///删除资源
