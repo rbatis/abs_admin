@@ -23,8 +23,7 @@ impl SysUserService {
         let wrapper = RB
             .new_wrapper()
             .do_if(arg.name.is_some(), |w| w.eq("name", &arg.name))
-            .do_if(arg.account.is_some(), |w| w.eq("account", &arg.account))
-            .check()?;
+            .do_if(arg.account.is_some(), |w| w.eq("account", &arg.account));
         let mut result: Page<SysUser> = RB
             .fetch_page_by_wrapper(
                 "",
@@ -40,13 +39,13 @@ impl SysUserService {
 
     ///后台用户根据id查找
     pub async fn find(&self, id: &str) -> Result<Option<SysUser>> {
-        let wrapper = RB.new_wrapper().eq("id", id).check()?;
+        let wrapper = RB.new_wrapper().eq("id", id);
         return RB.fetch_by_wrapper("", &wrapper).await;
     }
 
     ///根据账户名查找
     pub async fn find_by_account(&self, account: &str) -> Result<Option<SysUser>> {
-        let wrapper = RB.new_wrapper().eq("account", account).check()?;
+        let wrapper = RB.new_wrapper().eq("account", account);
         return RB.fetch_by_wrapper("", &wrapper).await;
     }
 
@@ -86,7 +85,7 @@ impl SysUserService {
     ///登陆后台
     pub async fn sign_in(&self, arg: &SignInDTO) -> Result<SignInVO> {
         let user: Option<SysUser> = RB
-            .fetch_by_wrapper("", &RB.new_wrapper().eq("account", &arg.account).check()?)
+            .fetch_by_wrapper("", &RB.new_wrapper().eq("account", &arg.account))
             .await?;
         let mut user = user.ok_or_else(|| Error::from(format!("账号:{} 不存在!", arg.account)))?;
         match user

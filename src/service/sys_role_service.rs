@@ -15,7 +15,7 @@ pub struct SysRoleService {}
 impl SysRoleService {
     ///角色分页
     pub async fn page(&self, arg: &RolePageDTO) -> Result<Page<SysRole>> {
-        let wrapper = RB.new_wrapper().check()?;
+        let wrapper = RB.new_wrapper();
         let data = RB
             .fetch_page_by_wrapper(
                 "",
@@ -60,18 +60,18 @@ impl SysRoleService {
     }
 
     pub async fn finds(&self, ids: &Vec<String>) -> Result<Vec<SysRole>> {
-        RB.list_by_wrapper("", &RB.new_wrapper().r#in("id", ids).check()?)
+        RB.list_by_wrapper("", &RB.new_wrapper().r#in("id", ids))
             .await
     }
 
     pub async fn find_role_res(&self, ids: &Vec<String>) -> Result<Vec<SysRoleRes>> {
-        RB.list_by_wrapper("", &RB.new_wrapper().r#in("role_id", ids).check()?)
+        RB.list_by_wrapper("", &RB.new_wrapper().r#in("role_id", ids))
             .await
     }
 
     pub async fn find_user_permission(&self, user_id: &str) -> Result<Vec<String>> {
         let user_roles: Vec<SysUserRole> = RB
-            .list_by_wrapper("", &RB.new_wrapper().eq("user_id", user_id).check()?)
+            .list_by_wrapper("", &RB.new_wrapper().eq("user_id", user_id))
             .await?;
         let role_res = self
             .find_role_res(&to_field_vec!(&user_roles, role_id))

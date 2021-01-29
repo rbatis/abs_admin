@@ -13,7 +13,7 @@ pub struct SysUserRoleService {}
 impl SysUserRoleService {
     ///角色分页
     pub async fn page(&self, arg: &UserRolePageDTO) -> Result<Page<SysUserRole>> {
-        let wrapper = RB.new_wrapper().check()?;
+        let wrapper = RB.new_wrapper();
         let data = RB
             .fetch_page_by_wrapper(
                 "",
