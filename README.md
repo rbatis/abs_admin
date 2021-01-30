@@ -1,4 +1,4 @@
-# abs_admin  语言后台管理模板项目。 此版本接口火热进行中，前端模块开发进行中
+# abs_admin  语言后台管理模板项目。 火热进行中
 *  Rust语言坚如磐石，高性能，无内存泄漏，协程竞争，坚如磐石
 *  DDD领域驱动设计,Mysql,Redis，通用中间件和数据库
 *  [rbatis-orm](https://github.com/rbatis/rbatis) 和Mybatis-Plus一样的好用，简洁，易扩展的ORM框架
