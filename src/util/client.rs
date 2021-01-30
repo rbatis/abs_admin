@@ -1,9 +1,11 @@
 #[cfg(test)]
 mod test {
+    use std::collections::HashMap;
+
     #[async_std::test]
     pub async fn test_client() {
-        let uri = "https://www.baidu.com";
-        let string: String = surf::get(uri).recv_string().await.unwrap();
-        println!("{}", string);
+        let resp = reqwest::get("http://www.baidu.com")
+            .await.unwrap().bytes().await.unwrap();
+        println!("{:#?}", String::from_utf8(resp.to_vec()));
     }
 }
