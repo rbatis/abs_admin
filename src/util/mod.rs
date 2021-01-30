@@ -1,5 +1,7 @@
 pub mod bencher;
 pub mod password_encoder;
+pub mod client;
+
 
 ///快速取 源对象数组的 属性类型数组Vec，
 /// vec_ref: vec的引用，field_name: 结构体的field名称
