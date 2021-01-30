@@ -4,7 +4,7 @@ mod test {
 
     #[async_std::test]
     pub async fn test_client() {
-        let resp = reqwest::get("https://httpbin.org/ip")
+        let resp = reqwest::get("https://www.baidu.com")
             .await.unwrap()
             .json::<HashMap<String, String>>()
             .await.unwrap();
