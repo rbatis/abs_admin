@@ -34,9 +34,6 @@ yaml-rust = "0.4"
 #captcha
 captcha = "0.0.8"
 
-#http client
-reqwest = { version = "0.11", features = ["json"] }
-
 #qrcode
 qrcode = "0.12"
 image = "0.23"
