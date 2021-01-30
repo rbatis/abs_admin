@@ -1,6 +1,6 @@
 # abs_admin  语言后台管理模板项目。 火热进行中
 *  Rust语言坚如磐石，高性能，无内存泄漏，协程竞争，坚如磐石
-*  DDD领域驱动设计,Mysql,Redis，通用中间件和数据库
+*  DDD领域驱动设计,Mysql,Redis，通用中间件和数据库，通用企业级框架选型
 *  [rbatis-orm](https://github.com/rbatis/rbatis) 和Mybatis-Plus一样的好用，简洁，易扩展的ORM框架
 *  [fast_log](https://github.com/rbatis/fast_log) 超快速异步日志框架，支持zip压缩，切割
 *  [actix-web](https://actix.rs/) 常年屠榜web框架压测网站的框架
