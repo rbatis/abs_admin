@@ -4,7 +4,7 @@
 *  [rbatis-orm](https://github.com/rbatis/rbatis) 和Mybatis-Plus一样的好用，简洁，易扩展的ORM框架
 *  [fast_log](https://github.com/rbatis/fast_log) 超快速异步日志框架，支持zip压缩，切割
 *  [actix-web](https://actix.rs/) 常年屠榜web框架压测网站的框架
-*  前后端分离,基于 [Vue-JS](https://cn.vuejs.org/) +[Vue-AntDesign](https://www.antdv.com/docs/vue/introduce-cn/) + [Vue-AntDesign-Pro](https://www.antdv.com/docs/vue/introduce-cn/)
+*  前后端分离,基于 [Vue-JS](https://cn.vuejs.org/) +[Vue-AntDesign](https://www.antdv.com/docs/vue/introduce-cn/) + [Vue-AntDesign-Pro](https://pro.antdv.com/)
 *  自带JwtToken鉴权登陆，图形验证码登陆，二维码扫码登陆,基础权限管理
 
 # 此项目存在的意义
