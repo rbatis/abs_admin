@@ -1,8 +1,8 @@
 {
 	"info": {
-		"_postman_id": "d25db9a8-7f03-4460-acf6-15ba897b8a8a",
+		"_postman_id": "7b84a9ec-b53f-4b29-b9b2-fea500e946e8",
 		"name": "test",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
 	"item": [
 		{
@@ -19,17 +19,7 @@
 						}
 					}
 				},
-				"url": {
-					"raw": "http://localhost:8000/sys_res_page",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8000",
-					"path": [
-						"sys_res_page"
-					]
-				}
+				"url": "http://localhost:8000/sys_res_page"
 			},
 			"response": []
 		},
@@ -47,17 +37,7 @@
 						}
 					}
 				},
-				"url": {
-					"raw": "http://localhost:8000/sys_res_add",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8000",
-					"path": [
-						"sys_res_add"
-					]
-				}
+				"url": "http://localhost:8000/sys_res_add"
 			},
 			"response": []
 		},
@@ -75,17 +55,7 @@
 						}
 					}
 				},
-				"url": {
-					"raw": "http://localhost:8000/sys_user_page",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8000",
-					"path": [
-						"sys_user_page"
-					]
-				}
+				"url": "http://localhost:8000/sys_user_page"
 			},
 			"response": []
 		},
@@ -96,24 +66,14 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"account\":\"18969542172\",\n    \"password\":\"123456\"\n}",
+					"raw": "{\n    \"account\":\"18969542172\",\n    \"password\":\"123456\",\n    \"vcode\":\"\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
 						}
 					}
 				},
-				"url": {
-					"raw": "http://localhost:8000/sys_login",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8000",
-					"path": [
-						"sys_login"
-					]
-				}
+				"url": "http://localhost:8000/sys_login"
 			},
 			"response": []
 		},
@@ -131,20 +91,9 @@
 						}
 					}
 				},
-				"url": {
-					"raw": "http://localhost:8000/sys_user_add",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8000",
-					"path": [
-						"sys_user_add"
-					]
-				}
+				"url": "http://localhost:8000/sys_user_add"
 			},
 			"response": []
 		}
-	],
-	"protocolProfileBehavior": {}
+	]
 }
