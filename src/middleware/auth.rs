@@ -3,6 +3,7 @@ use std::pin::Pin;
 use std::rc::Rc;
 use std::task::{Context, Poll};
 
+use crate::domain::vo::RespVO;
 use actix_web::body::MessageBody;
 use actix_web::dev::{Service, ServiceRequest, ServiceResponse, Transform};
 use actix_web::http::HeaderValue;
@@ -61,7 +62,14 @@ where
             if token.len() > 0 || req.path().to_string() == "/login" {
                 Ok(svc.call(req).await?)
             } else {
-                Err(error::ErrorUnauthorized("err"))
+                let resp: RespVO<String> = RespVO {
+                    code: Some("-1".to_string()),
+                    msg: Some("Unauthorized".to_string()),
+                    data: None,
+                };
+                Err(error::ErrorUnauthorized(
+                    serde_json::json!(&resp).to_string(),
+                ))
             }
         })
     }

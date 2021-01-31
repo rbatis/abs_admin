@@ -4,6 +4,7 @@ use abs_admin::controller::{
     sys_user_role_controller,
 };
 use abs_admin::dao::RB;
+use abs_admin::middleware::auth::Auth;
 use actix_web::{web, App, HttpResponse, HttpServer, Responder};
 use log::info;
 
@@ -24,6 +25,7 @@ async fn main() -> std::io::Result<()> {
     //路由
     HttpServer::new(|| {
         App::new()
+            //.wrap(Auth)
             .route("/", web::get().to(index))
             .route("/sys_login", web::post().to(sys_user_controller::login))
             //TODO .route("/sys_log_out", web::post().to(user_controller::log_out))
