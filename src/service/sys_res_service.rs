@@ -6,6 +6,7 @@ use crate::dao::RB;
 use crate::domain::domain::SysRes;
 use crate::domain::dto::{ResEditDTO, ResPageDTO};
 use crate::domain::vo::SysResVO;
+use std::collections::HashMap;
 
 /// 资源服务
 pub struct SysResService {}
@@ -47,6 +48,16 @@ impl SysResService {
     /// 查找res数组
     pub async fn finds_all(&self) -> Result<Vec<SysRes>> {
         RB.list("").await
+    }
+
+    /// 查找res数组
+    pub async fn finds_all_map(&self) -> Result<HashMap<String,SysRes>> {
+        let all= self.finds_all().await?;
+        let mut map=HashMap::new();
+        for x in all {
+            map.insert(x.id.clone().unwrap_or(String::new()),x);
+        }
+        return Ok(map);
     }
 
     /// 查找res数组

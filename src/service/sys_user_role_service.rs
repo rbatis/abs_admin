@@ -6,8 +6,8 @@ use rbatis::core::value::DateTimeNow;
 use rbatis::core::Result;
 use rbatis::crud::CRUD;
 use rbatis::plugin::page::{Page, PageRequest};
-use crate::service::{SYS_ROLE_SERVICE};
-use crate::domain::vo::SysRoleVO;
+use crate::service::{SYS_ROLE_SERVICE,SYS_RES_SERVICE};
+use crate::domain::vo::{SysRoleVO, SysResVO};
 
 ///用户角色服务
 pub struct SysUserRoleService {}
@@ -64,15 +64,35 @@ impl SysUserRoleService {
             .await?;
         let role_ids=&to_field_vec!(&user_roles, role_id);
         let roles=SYS_ROLE_SERVICE.finds(role_ids).await?;
+        let all_res = SYS_RES_SERVICE.finds_all_map().await?;
+
+
+        let role_res_vec = SYS_ROLE_SERVICE
+            .find_role_res(&to_field_vec!(&user_roles, role_id))
+            .await?;
+
         let mut role_vos =vec![];
-        for x in roles {
+        for role in roles {
+            //load res
+            let mut resources = vec![];
+            for role_res in &role_res_vec {
+                if role.id.is_some() && role.id.eq(&role_res.role_id){
+                    let res=all_res.get(role_res.res_id.as_ref().unwrap_or(&String::new()));
+                    match res{
+                        Some(res)=>{
+                            resources.push(SysResVO::from(res));
+                        }
+                        _ => {}
+                    }
+                }
+            }
             role_vos.push(SysRoleVO{
-                id: x.id,
-                name: x.name,
-                parent_id: x.parent_id,
-                del: x.del,
-                create_date: x.create_date,
-                resources: vec![]
+                id: role.id,
+                name: role.name,
+                parent_id: role.parent_id,
+                del: role.del,
+                create_date: role.create_date,
+                resources: resources
             });
         }
         return Ok(role_vos);
