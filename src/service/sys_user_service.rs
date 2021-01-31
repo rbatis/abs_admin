@@ -144,7 +144,7 @@ impl SysUserService {
 
     pub async fn get_user_info_by_token(&self, token: &JWTToken) -> Result<SignInVO> {
         let user: Option<SysUser> = RB
-            .fetch_by_wrapper("", &RB.new_wrapper().eq("id", &token.account))
+            .fetch_by_wrapper("", &RB.new_wrapper().eq("id", &token.id))
             .await?;
         let user = user.ok_or_else(|| Error::from(format!("账号:{} 不存在!", token.account)))?;
         return self.get_user_info(&user).await;

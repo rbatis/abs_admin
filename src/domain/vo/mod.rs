@@ -1,12 +1,20 @@
 pub mod sign_in;
+
 pub use sign_in::*;
+
 pub mod res;
+
 pub use res::*;
+
 pub mod jwt;
+
 pub use jwt::*;
+
 pub mod role;
+
 pub use role::*;
 
+use crate::config::CONFIG;
 use actix_http::Response;
 use actix_web::HttpResponse;
 use rbatis::core::Error;
@@ -22,8 +30,8 @@ pub struct RespVO<T> {
 }
 
 impl<T> RespVO<T>
-where
-    T: Serialize + DeserializeOwned + Clone,
+    where
+        T: Serialize + DeserializeOwned + Clone,
 {
     pub fn from_result(arg: &Result<T, Error>) -> Self {
         if arg.is_ok() {
@@ -74,6 +82,9 @@ where
     }
 
     pub fn resp(&self) -> Response {
+        if CONFIG.debug {
+            println!("resp:{}", self.to_string());
+        }
         return HttpResponse::Ok()
             .set_header("Access-Control-Allow-Origin", "*")
             .set_header("Cache-Control", "no-cache")
@@ -83,8 +94,8 @@ where
 }
 
 impl<T> ToString for RespVO<T>
-where
-    T: Serialize + DeserializeOwned + Clone,
+    where
+        T: Serialize + DeserializeOwned + Clone,
 {
     fn to_string(&self) -> String {
         serde_json::to_string(self).unwrap()
