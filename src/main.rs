@@ -25,58 +25,58 @@ async fn main() -> std::io::Result<()> {
     //路由
     HttpServer::new(|| {
         App::new()
-            //.wrap(Auth)
+            .wrap(Auth)
             .route("/", web::get().to(index))
-            .route("/sys_login", web::post().to(sys_user_controller::login))
+            .route("/api/sys_login", web::post().to(sys_user_controller::login))
             //TODO .route("/sys_log_out", web::post().to(user_controller::log_out))
             .route(
-                "/sys_res_update",
+                "/api/sys_res_update",
                 web::post().to(sys_res_controller::update),
             )
             .route(
-                "/sys_res_remove",
+                "/api/sys_res_remove",
                 web::post().to(sys_res_controller::remove),
             )
-            .route("/sys_res_add", web::post().to(sys_res_controller::add))
-            .route("/sys_res_page", web::post().to(sys_res_controller::page))
-            .route("/sys_user_add", web::post().to(sys_user_controller::add))
-            .route("/sys_user_page", web::post().to(sys_user_controller::page))
+            .route("/api/sys_res_add", web::post().to(sys_res_controller::add))
+            .route("/api/sys_res_page", web::post().to(sys_res_controller::page))
+            .route("/api/sys_user_add", web::post().to(sys_user_controller::add))
+            .route("/api/sys_user_page", web::post().to(sys_user_controller::page))
             .route(
-                "/sys_user_remove",
+                "/api/sys_user_remove",
                 web::post().to(sys_user_controller::remove),
             )
             .route(
-                "/sys_user_update",
+                "/api/sys_user_update",
                 web::post().to(sys_user_controller::update),
             )
-            .route("/sys_role_add", web::post().to(sys_role_controller::add))
+            .route("/api/sys_role_add", web::post().to(sys_role_controller::add))
             .route(
-                "/sys_role_update",
+                "/api/sys_role_update",
                 web::post().to(sys_role_controller::update),
             )
             .route(
-                "/sys_role_delete",
+                "/api/sys_role_delete",
                 web::post().to(sys_role_controller::remove),
             )
-            .route("/sys_role_page", web::post().to(sys_role_controller::page))
+            .route("/api/sys_role_page", web::post().to(sys_role_controller::page))
             .route(
-                "/sys_user_role_add",
+                "/api/sys_user_role_add",
                 web::post().to(sys_user_role_controller::add),
             )
             .route(
-                "/sys_user_role_delete",
+                "/api/sys_user_role_delete",
                 web::post().to(sys_user_role_controller::remove),
             )
             .route(
-                "/sys_user_role_update",
+                "/api/sys_user_role_update",
                 web::post().to(sys_user_role_controller::update),
             )
             .route(
-                "/sys_user_role_page",
+                "/api/sys_user_role_page",
                 web::post().to(sys_user_role_controller::page),
             )
-            .route("/captcha", web::get().to(img_controller::captcha))
-            .route("/qrcode", web::get().to(img_controller::qrcode))
+            .route("/api/captcha", web::get().to(img_controller::captcha))
+            .route("/api/qrcode", web::get().to(img_controller::qrcode))
     })
     .bind(&CONFIG.server_url)?
     .run()

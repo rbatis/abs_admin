@@ -75,6 +75,8 @@ where
 
     pub fn resp(&self) -> Response {
         return HttpResponse::Ok()
+            .set_header("Access-Control-Allow-Origin", "*")
+            .set_header("Cache-Control", "no-cache")
             .content_type("json")
             .body(self.to_string());
     }

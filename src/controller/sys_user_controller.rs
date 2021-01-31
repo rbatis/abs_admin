@@ -5,6 +5,7 @@ use crate::domain::vo::RespVO;
 use crate::service::SYS_USER_SERVICE;
 /// 用户登陆
 pub async fn login(arg: web::Json<SignInDTO>) -> impl Responder {
+    log::info!("login:{:?}",arg.0);
     let vo = SYS_USER_SERVICE.sign_in(&arg.0).await;
     return RespVO::from_result(&vo).resp();
 }
