@@ -47,7 +47,11 @@ pub async fn captcha(arg: web::Query<CatpchaDTO>) -> impl Responder {
             }
         }
     }
-    HttpResponse::Ok().content_type("image/png").body(png)
+    HttpResponse::Ok()
+        .set_header("Access-Control-Allow-Origin", "*")
+        .set_header("Cache-Control", "no-cache")
+        .content_type("image/png")
+        .body(png)
 }
 
 ///二维码,请确保服务器server_url配置为具体ip或域名，否则访问不通...
@@ -69,5 +73,9 @@ pub async fn qrcode(arg: web::Query<CatpchaDTO>) -> impl Responder {
     png::PngEncoder::new(&mut buffer)
         .write_image(&image, image.width(), image.height(), ColorType::L8)
         .unwrap();
-    HttpResponse::Ok().content_type("image/png").body(buffer)
+    HttpResponse::Ok()
+        .set_header("Access-Control-Allow-Origin", "*")
+        .set_header("Cache-Control", "no-cache")
+        .content_type("image/png")
+        .body(buffer)
 }

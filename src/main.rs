@@ -9,7 +9,8 @@ use actix_web::{web, App, HttpResponse, HttpServer, Responder};
 use log::info;
 
 async fn index() -> impl Responder {
-    HttpResponse::Ok().body("Hello ! Please use Post(Json) request /login,/role_page,/res_page....more http interface,you can install postman for import postman.json ")
+    HttpResponse::Ok().set_header("Access-Control-Allow-Origin", "*")
+        .set_header("Cache-Control", "no-cache").body("Hello ! Please use Post(Json) request /login,/role_page,/res_page....more http interface,you can install postman for import postman.json ")
 }
 
 #[actix_web::main]
