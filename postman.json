@@ -6,7 +6,7 @@
 	},
 	"item": [
 		{
-			"name": "http://127.0.0.1:8000/sys_res_page",
+			"name": "http://127.0.0.1:8000/api/sys_res_page",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -24,7 +24,7 @@
 			"response": []
 		},
 		{
-			"name": "http://127.0.0.1:8000/sys_res_add",
+			"name": "http://127.0.0.1:8000/api/sys_res_add",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -42,7 +42,7 @@
 			"response": []
 		},
 		{
-			"name": "http://127.0.0.1:8000/sys_user_page",
+			"name": "http://127.0.0.1:8000/api/sys_user_page",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -60,7 +60,7 @@
 			"response": []
 		},
 		{
-			"name": "http://127.0.0.1:8000/sys_login",
+			"name": "http://127.0.0.1:8000/api/sys_login",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -78,7 +78,7 @@
 			"response": []
 		},
 		{
-			"name": "http://127.0.0.1:8000/sys_add",
+			"name": "http://127.0.0.1:8000/api/sys_add",
 			"request": {
 				"method": "POST",
 				"header": [],
