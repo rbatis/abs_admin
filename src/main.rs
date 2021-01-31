@@ -38,9 +38,18 @@ async fn main() -> std::io::Result<()> {
                 web::post().to(sys_res_controller::remove),
             )
             .route("/api/sys_res_add", web::post().to(sys_res_controller::add))
-            .route("/api/sys_res_page", web::post().to(sys_res_controller::page))
-            .route("/api/sys_user_add", web::post().to(sys_user_controller::add))
-            .route("/api/sys_user_page", web::post().to(sys_user_controller::page))
+            .route(
+                "/api/sys_res_page",
+                web::post().to(sys_res_controller::page),
+            )
+            .route(
+                "/api/sys_user_add",
+                web::post().to(sys_user_controller::add),
+            )
+            .route(
+                "/api/sys_user_page",
+                web::post().to(sys_user_controller::page),
+            )
             .route(
                 "/api/sys_user_remove",
                 web::post().to(sys_user_controller::remove),
@@ -49,7 +58,10 @@ async fn main() -> std::io::Result<()> {
                 "/api/sys_user_update",
                 web::post().to(sys_user_controller::update),
             )
-            .route("/api/sys_role_add", web::post().to(sys_role_controller::add))
+            .route(
+                "/api/sys_role_add",
+                web::post().to(sys_role_controller::add),
+            )
             .route(
                 "/api/sys_role_update",
                 web::post().to(sys_role_controller::update),
@@ -58,7 +70,10 @@ async fn main() -> std::io::Result<()> {
                 "/api/sys_role_delete",
                 web::post().to(sys_role_controller::remove),
             )
-            .route("/api/sys_role_page", web::post().to(sys_role_controller::page))
+            .route(
+                "/api/sys_role_page",
+                web::post().to(sys_role_controller::page),
+            )
             .route(
                 "/api/sys_user_role_add",
                 web::post().to(sys_user_role_controller::add),
