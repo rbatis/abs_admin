@@ -11,6 +11,6 @@ pub struct SignInVO {
 
 impl ToString for SignInVO {
     fn to_string(&self) -> String {
-        serde_json::to_string(self).unwrap()
+        serde_json::json!(self).to_string()
     }
 }
