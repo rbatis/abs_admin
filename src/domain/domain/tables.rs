@@ -29,7 +29,7 @@ pub struct SysRole {
     pub create_date: Option<NaiveDateTime>,
 }
 
-///角色资源关系表
+///角色资源关系表(关系表不使用逻辑删除)
 #[crud_enable]
 #[derive(Clone, Debug)]
 pub struct SysRoleRes {
@@ -54,7 +54,7 @@ pub struct SysUser {
     pub create_date: Option<NaiveDateTime>,
 }
 
-///用户角色关系表
+///用户角色关系表(关系表不使用逻辑删除)
 #[crud_enable]
 #[derive(Clone, Debug)]
 pub struct SysUserRole {
