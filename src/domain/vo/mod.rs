@@ -1,58 +1,15 @@
+pub mod sign_in;
+pub use sign_in::*;
+pub mod res;
+pub use res::*;
+pub mod jwt;
+pub use jwt::*;
+
 use actix_http::Response;
 use actix_web::HttpResponse;
-use chrono::NaiveDateTime;
-use jsonwebtoken::{decode, DecodingKey, encode, EncodingKey, Header, Validation};
-use jsonwebtoken::errors::ErrorKind;
 use rbatis::core::Error;
-use rbatis::crud::CRUDEnable;
 use serde::{Deserialize, Serialize};
 use serde::de::DeserializeOwned;
-
-use crate::domain::domain::{SysRes, SysUser};
-
-/// JWT 鉴权 Token结构
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct JWTToken {
-    pub id: String,
-    pub account: String,
-    pub permissions: Vec<String>,
-    pub role_ids: Vec<String>,
-    pub exp: usize,
-}
-
-impl JWTToken {
-    /// create token
-    /// secret: your secret string
-    pub fn create_token(&self, secret: &str) -> Result<String, Error> {
-        return match encode(
-            &Header::default(),
-            self,
-            &EncodingKey::from_secret(secret.as_ref()),
-        ) {
-            Ok(t) => Ok(t),
-            Err(_) => Err(Error::from("JWTToken encode fail!")), // in practice you would return the error
-        };
-    }
-    /// verify token invalid
-    /// secret: your secret string
-    pub fn verify(secret: &str, token: &str) -> Result<JWTToken, Error> {
-        let validation = Validation {
-            ..Validation::default()
-        };
-        return match decode::<JWTToken>(
-            &token,
-            &DecodingKey::from_secret(secret.as_ref()),
-            &validation,
-        ) {
-            Ok(c) => Ok(c.claims),
-            Err(err) => match *err.kind() {
-                ErrorKind::InvalidToken => return Err(Error::from("InvalidToken")), // Example on how to handle a specific error
-                ErrorKind::InvalidIssuer => return Err(Error::from("InvalidIssuer")), // Example on how to handle a specific error
-                _ => return Err(Error::from("InvalidToken other errors")),
-            },
-        };
-    }
-}
 
 /// http接口返回模型结构，提供基础的 code，msg，data 等json数据结构
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -127,62 +84,5 @@ impl<T> ToString for RespVO<T>
 {
     fn to_string(&self) -> String {
         serde_json::to_string(self).unwrap()
-    }
-}
-
-///登录数据
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct SignInVO {
-    pub user: Option<SysUser>,
-    pub permissions: Vec<String>,
-    pub access_token: String,
-}
-
-impl ToString for SignInVO {
-    fn to_string(&self) -> String {
-        serde_json::to_string(self).unwrap()
-    }
-}
-
-///权限资源表
-#[derive(Serialize, Deserialize, Clone, Debug)]
-pub struct SysResVO {
-    pub id: Option<String>,
-    //父id(可空)
-    pub parent_id: Option<String>,
-    pub name: Option<String>,
-    //权限
-    pub permission: Option<String>,
-    //前端-菜单路径
-    pub path: Option<String>,
-    pub del: Option<i32>,
-    pub create_date: Option<NaiveDateTime>,
-    pub childs: Option<Vec<SysResVO>>,
-}
-
-impl From<&SysRes> for SysResVO {
-    fn from(arg: &SysRes) -> Self {
-        Self {
-            id: arg.id.clone(),
-            parent_id: arg.parent_id.clone(),
-            name: arg.name.clone(),
-            permission: arg.permission.clone(),
-            path: arg.path.clone(),
-            del: arg.del.clone(),
-            create_date: arg.create_date.clone(),
-            childs: None,
-        }
-    }
-}
-
-impl CRUDEnable for SysResVO {
-    type IdType = String;
-
-    fn table_name() -> String {
-        "sys_res".to_string()
-    }
-
-    fn table_columns() -> String {
-        "id,parent_id,name,permission,path,del".to_string()
     }
 }
