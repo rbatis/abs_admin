@@ -63,6 +63,9 @@ impl SysUserRoleService {
         user_id: &str,
         all_res: &Vec<SysRes>,
     ) -> Result<Vec<SysRoleVO>> {
+        if user_id.is_empty(){
+            return Ok(vec![]);
+        }
         let user_roles: Vec<SysUserRole> = RB
             .list_by_wrapper("", &RB.new_wrapper().eq("user_id", user_id))
             .await?;
