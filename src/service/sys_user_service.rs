@@ -6,10 +6,10 @@ use rbatis::crud::CRUD;
 use rbatis::plugin::page::{Page, PageRequest};
 
 use crate::dao::RB;
-use crate::domain::domain::{LoginCheck, SysUser};
+use crate::domain::domain::{LoginCheck, SysUser, SysRes};
 use crate::domain::dto::{SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO};
-use crate::domain::vo::{SignInVO,JWTToken};
-use crate::service::{CONFIG,REDIS_SERVICE,SYS_ROLE_SERVICE,SYS_USER_ROLE_SERVICE};
+use crate::domain::vo::{SignInVO, JWTToken};
+use crate::service::{CONFIG, REDIS_SERVICE, SYS_ROLE_SERVICE, SYS_USER_ROLE_SERVICE,SYS_RES_SERVICE};
 use crate::util::password_encoder::PasswordEncoder;
 
 ///后台用户服务
@@ -147,18 +147,20 @@ impl SysUserService {
             user: Some(user.clone()),
             permissions: vec![],
             access_token: "".to_string(),
-            roles: vec![]
+            roles: vec![],
         };
-        sign_vo.permissions = self.loop_load_permission(&user_id).await?;
-        let jwt_token=JWTToken{
+        //提前查找所有权限，避免在各个函数方法中重复查找
+        let all_res = SYS_RES_SERVICE.finds_all().await?;
+        sign_vo.permissions = self.loop_load_permission(&user_id, &all_res).await?;
+        let jwt_token = JWTToken {
             id: user.id.clone().unwrap_or(String::new()),
             account: user.account.clone().unwrap_or(String::new()),
             permissions: sign_vo.permissions.clone(),
             role_ids: vec![],
-            exp: 24 * 60 * 60 * 1000
+            exp: 24 * 60 * 60 * 1000,
         };
-        sign_vo.access_token= jwt_token.create_token(&CONFIG.jwt_secret)?;
-        sign_vo.roles = SYS_USER_ROLE_SERVICE.find_user_roles(&user.id.unwrap_or_else(||{return String::new()})).await?;
+        sign_vo.access_token = jwt_token.create_token(&CONFIG.jwt_secret)?;
+        sign_vo.roles = SYS_USER_ROLE_SERVICE.find_user_roles(&user.id.unwrap_or_else(|| { return String::new(); }), &all_res).await?;
         return Ok(sign_vo);
     }
 
@@ -190,8 +192,8 @@ impl SysUserService {
         RB.remove_by_id::<SysUser>("", &id.to_string()).await
     }
 
-    ///循环查找权限
-    pub async fn loop_load_permission(&self, user_id: &str) -> Result<Vec<String>> {
-        return SYS_ROLE_SERVICE.find_user_permission(user_id).await;
+    ///TODO 循环查找权限
+    pub async fn loop_load_permission(&self, user_id: &str, all_res: &Vec<SysRes>) -> Result<Vec<String>> {
+        return SYS_ROLE_SERVICE.find_user_permission(user_id, all_res).await;
     }
 }

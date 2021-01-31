@@ -1,12 +1,12 @@
 use crate::dao::RB;
-use crate::domain::domain::{SysUserRole};
+use crate::domain::domain::{SysUserRole, SysRes};
 use crate::domain::dto::{UserRoleAddDTO, UserRoleEditDTO, UserRolePageDTO};
 use chrono::NaiveDateTime;
 use rbatis::core::value::DateTimeNow;
 use rbatis::core::Result;
 use rbatis::crud::CRUD;
 use rbatis::plugin::page::{Page, PageRequest};
-use crate::service::{SYS_ROLE_SERVICE,SYS_RES_SERVICE};
+use crate::service::{SYS_ROLE_SERVICE, SYS_RES_SERVICE};
 use crate::domain::vo::{SysRoleVO, SysResVO};
 
 ///用户角色服务
@@ -58,41 +58,40 @@ impl SysUserRoleService {
     }
 
 
-    pub async fn find_user_roles(&self, user_id: &str) -> Result<Vec<SysRoleVO>> {
+    ///找出角色
+    pub async fn find_user_roles(&self, user_id: &str, all_res: &Vec<SysRes>) -> Result<Vec<SysRoleVO>> {
         let user_roles: Vec<SysUserRole> = RB
             .list_by_wrapper("", &RB.new_wrapper().eq("user_id", user_id))
             .await?;
-        let role_ids=&to_field_vec!(&user_roles, role_id);
-        let roles=SYS_ROLE_SERVICE.finds(role_ids).await?;
-        let all_res = SYS_RES_SERVICE.finds_all_map().await?;
-
-
+        let role_ids = &to_field_vec!(&user_roles, role_id);
+        let roles = SYS_ROLE_SERVICE.finds(role_ids).await?;
+        let res_map = SYS_RES_SERVICE.to_hash_map(all_res).await?;
         let role_res_vec = SYS_ROLE_SERVICE
             .find_role_res(&to_field_vec!(&user_roles, role_id))
             .await?;
 
-        let mut role_vos =vec![];
+        let mut role_vos = vec![];
         for role in roles {
             //load res
             let mut resources = vec![];
             for role_res in &role_res_vec {
-                if role.id.is_some() && role.id.eq(&role_res.role_id){
-                    let res=all_res.get(role_res.res_id.as_ref().unwrap_or(&String::new()));
-                    match res{
-                        Some(res)=>{
-                            resources.push(SysResVO::from(res));
+                if role.id.is_some() && role.id.eq(&role_res.role_id) {
+                    let res = res_map.get(role_res.res_id.as_ref().unwrap_or(&String::new()));
+                    match res {
+                        Some(res) => {
+                            resources.push(SysResVO::from(*res));
                         }
                         _ => {}
                     }
                 }
             }
-            role_vos.push(SysRoleVO{
+            role_vos.push(SysRoleVO {
                 id: role.id,
                 name: role.name,
                 parent_id: role.parent_id,
                 del: role.del,
                 create_date: role.create_date,
-                resources: resources
+                resources: resources,
             });
         }
         return Ok(role_vos);

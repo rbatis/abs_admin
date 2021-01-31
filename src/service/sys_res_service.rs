@@ -51,10 +51,9 @@ impl SysResService {
     }
 
     /// 查找res数组
-    pub async fn finds_all_map(&self) -> Result<HashMap<String,SysRes>> {
-        let all= self.finds_all().await?;
+    pub async fn to_hash_map<'s,'a>(&'s self,data:&'a Vec<SysRes>) -> Result<HashMap<String,&'a SysRes>> {
         let mut map=HashMap::new();
-        for x in all {
+        for x in data {
             map.insert(x.id.clone().unwrap_or(String::new()),x);
         }
         return Ok(map);
