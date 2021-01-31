@@ -4,6 +4,8 @@ pub mod res;
 pub use res::*;
 pub mod jwt;
 pub use jwt::*;
+pub mod role;
+pub use role::*;
 
 use actix_http::Response;
 use actix_web::HttpResponse;

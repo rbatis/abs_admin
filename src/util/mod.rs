@@ -11,7 +11,7 @@ pub mod client;
 ///         pub role_id:String
 ///      }
 ///      let user_roles: Vec<SysUserRole>;
-///      let role_ids = make_field_vec!(&user_roles,role_id); // role_ids: Vec<String>
+///      let role_ids = to_field_vec!(&user_roles,role_id); // role_ids: Vec<String>
 ///
 ///
 ///
@@ -21,7 +21,7 @@ macro_rules! to_field_vec {
     ($vec_ref:expr,$field_name:ident) => {{
         let mut ids = vec![];
         for item in $vec_ref {
-            ids.push(item.$field_name.clone().unwrap_or("".to_string()));
+            ids.push(item.$field_name.clone().unwrap_or(String::new()));
         }
         ids
     }};

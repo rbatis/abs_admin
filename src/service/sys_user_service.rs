@@ -9,9 +9,7 @@ use crate::dao::RB;
 use crate::domain::domain::{LoginCheck, SysUser};
 use crate::domain::dto::{SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO};
 use crate::domain::vo::{SignInVO,JWTToken};
-use crate::service::CONFIG;
-use crate::service::REDIS_SERVICE;
-use crate::service::SYS_ROLE_SERVICE;
+use crate::service::{CONFIG,REDIS_SERVICE,SYS_ROLE_SERVICE,SYS_USER_ROLE_SERVICE};
 use crate::util::password_encoder::PasswordEncoder;
 
 ///后台用户服务
@@ -148,7 +146,8 @@ impl SysUserService {
         let mut sign_vo = SignInVO {
             user: Some(user.clone()),
             permissions: vec![],
-            access_token: "".to_string()
+            access_token: "".to_string(),
+            roles: vec![]
         };
         sign_vo.permissions = self.loop_load_permission(&user_id).await?;
         let jwt_token=JWTToken{
@@ -159,6 +158,7 @@ impl SysUserService {
             exp: 24 * 60 * 60 * 1000
         };
         sign_vo.access_token= jwt_token.create_token(&CONFIG.jwt_secret)?;
+        sign_vo.roles = SYS_USER_ROLE_SERVICE.find_user_roles(&user.id.unwrap_or_else(||{return String::new()})).await?;
         return Ok(sign_vo);
     }
 
