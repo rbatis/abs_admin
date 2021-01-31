@@ -47,6 +47,7 @@ impl SysResService {
 
     /// 查找res数组
     pub async fn finds_all(&self) -> Result<Vec<SysRes>> {
+        //TODO 查找的全部数据缓存于Redis，同时 remove，edit方法调用时刷新redis缓存
         RB.list("").await
     }
 
