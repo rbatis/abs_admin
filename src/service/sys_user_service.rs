@@ -87,7 +87,7 @@ impl SysUserService {
         let user: Option<SysUser> = RB
             .fetch_by_wrapper("", &RB.new_wrapper().eq("account", &arg.account))
             .await?;
-        let mut user = user.ok_or_else(|| Error::from(format!("账号:{} 不存在!", arg.account)))?;
+        let user = user.ok_or_else(|| Error::from(format!("账号:{} 不存在!", arg.account)))?;
         match user
             .login_check
             .as_ref()
@@ -139,7 +139,20 @@ impl SysUserService {
                 //TODO 是否需要删除redis的短信缓存？
             }
         }
+        return self.get_user_info(&user).await;
+    }
+
+    pub async fn get_user_info_by_token(&self, token: &JWTToken) -> Result<SignInVO> {
+        let user: Option<SysUser> = RB
+            .fetch_by_wrapper("", &RB.new_wrapper().eq("id", &token.account))
+            .await?;
+        let user = user.ok_or_else(|| Error::from(format!("账号:{} 不存在!", token.account)))?;
+        return self.get_user_info(&user).await;
+    }
+
+    pub async fn get_user_info(&self, user: &SysUser) -> Result<SignInVO> {
         //去除密码，增加安全性
+        let mut user = user.clone();
         user.password = None;
         let user_id = user
             .id

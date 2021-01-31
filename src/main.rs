@@ -29,6 +29,10 @@ async fn main() -> std::io::Result<()> {
             .wrap(Auth)
             .route("/", web::get().to(index))
             .route("/api/sys_login", web::post().to(sys_user_controller::login))
+            .route(
+                "/api/sys_user_info",
+                web::post().to(sys_user_controller::info),
+            )
             //TODO .route("/sys_log_out", web::post().to(user_controller::log_out))
             .route(
                 "/api/sys_res_update",
