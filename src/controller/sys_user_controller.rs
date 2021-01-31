@@ -30,7 +30,7 @@ pub async fn info(req: HttpRequest) -> impl Responder {
             let user_data = SYS_USER_SERVICE
                 .get_user_info_by_token(&token.unwrap())
                 .await;
-            return RespVO::from(&user_data).resp();
+            return RespVO::from_result(&user_data).resp();
         }
         _ => {
             return RespVO::<String>::from_error_info("access_token is empty!", "").resp();
