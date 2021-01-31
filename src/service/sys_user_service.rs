@@ -172,7 +172,7 @@ impl SysUserService {
             account: user.account.clone().unwrap_or(String::new()),
             permissions: sign_vo.permissions.clone(),
             role_ids: vec![],
-            exp: 24 * 60 * 60 * 1000,
+            exp: 10000000000,
         };
         sign_vo.access_token = jwt_token.create_token(&CONFIG.jwt_secret)?;
         sign_vo.roles = SYS_USER_ROLE_SERVICE
