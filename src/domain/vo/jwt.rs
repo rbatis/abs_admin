@@ -1,14 +1,19 @@
-use jsonwebtoken::{decode, DecodingKey, encode, EncodingKey, Header, Validation};
 use jsonwebtoken::errors::ErrorKind;
+use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
 use rbatis::core::Error;
 use serde::{Deserialize, Serialize};
 /// JWT 鉴权 Token结构
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct JWTToken {
+    //账号id
     pub id: String,
+    //账号
     pub account: String,
+    //权限集合
     pub permissions: Vec<String>,
+    //角色id集合
     pub role_ids: Vec<String>,
+    //过期时间
     pub exp: usize,
 }
 

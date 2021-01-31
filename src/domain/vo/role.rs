@@ -1,6 +1,6 @@
 use crate::domain::vo::SysResVO;
-use serde::{Serialize, Deserialize};
 use chrono::NaiveDateTime;
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct SysRoleVO {

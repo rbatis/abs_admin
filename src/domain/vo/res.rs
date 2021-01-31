@@ -1,5 +1,5 @@
-use chrono::NaiveDateTime;
 use crate::domain::domain::SysRes;
+use chrono::NaiveDateTime;
 ///权限资源表
 #[crud_enable(table_name: "sys_res" | table_columns: "id,parent_id,name,permission,path,del")]
 #[derive(Clone, Debug)]

@@ -1,13 +1,13 @@
 use crate::dao::RB;
-use crate::domain::domain::{SysUserRole, SysRes};
+use crate::domain::domain::{SysRes, SysUserRole};
 use crate::domain::dto::{UserRoleAddDTO, UserRoleEditDTO, UserRolePageDTO};
+use crate::domain::vo::{SysResVO, SysRoleVO};
+use crate::service::{SYS_RES_SERVICE, SYS_ROLE_SERVICE};
 use chrono::NaiveDateTime;
 use rbatis::core::value::DateTimeNow;
 use rbatis::core::Result;
 use rbatis::crud::CRUD;
 use rbatis::plugin::page::{Page, PageRequest};
-use crate::service::{SYS_ROLE_SERVICE, SYS_RES_SERVICE};
-use crate::domain::vo::{SysRoleVO, SysResVO};
 
 ///用户角色服务
 pub struct SysUserRoleService {}
@@ -57,9 +57,12 @@ impl SysUserRoleService {
         RB.remove_by_id::<SysUserRole>("", &arg.to_string()).await
     }
 
-
     ///找出角色
-    pub async fn find_user_roles(&self, user_id: &str, all_res: &Vec<SysRes>) -> Result<Vec<SysRoleVO>> {
+    pub async fn find_user_roles(
+        &self,
+        user_id: &str,
+        all_res: &Vec<SysRes>,
+    ) -> Result<Vec<SysRoleVO>> {
         let user_roles: Vec<SysUserRole> = RB
             .list_by_wrapper("", &RB.new_wrapper().eq("user_id", user_id))
             .await?;

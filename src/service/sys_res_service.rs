@@ -52,10 +52,13 @@ impl SysResService {
     }
 
     /// 查找res数组
-    pub async fn to_hash_map<'s,'a>(&'s self,data:&'a Vec<SysRes>) -> Result<HashMap<String,&'a SysRes>> {
-        let mut map=HashMap::new();
+    pub async fn to_hash_map<'s, 'a>(
+        &'s self,
+        data: &'a Vec<SysRes>,
+    ) -> Result<HashMap<String, &'a SysRes>> {
+        let mut map = HashMap::new();
         for x in data {
-            map.insert(x.id.clone().unwrap_or(String::new()),x);
+            map.insert(x.id.clone().unwrap_or(String::new()), x);
         }
         return Ok(map);
     }

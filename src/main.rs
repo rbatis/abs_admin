@@ -19,9 +19,7 @@ async fn main() -> std::io::Result<()> {
     RB.link(&CONFIG.mysql_url).await.unwrap();
     info!(
         " - Local:   http://{}",
-        CONFIG
-            .server_url
-            .replace("0.0.0.0", "localhost")
+        CONFIG.server_url.replace("0.0.0.0", "localhost")
     );
     //路由
     HttpServer::new(|| {

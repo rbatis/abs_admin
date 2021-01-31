@@ -3,7 +3,7 @@ use rbatis::crud::CRUD;
 use rbatis::plugin::page::{Page, PageRequest};
 
 use crate::dao::RB;
-use crate::domain::domain::{SysRole, SysRoleRes, SysUserRole, SysRes};
+use crate::domain::domain::{SysRes, SysRole, SysRoleRes, SysUserRole};
 use crate::domain::dto::{RoleAddDTO, RoleEditDTO, RolePageDTO};
 use crate::service::SYS_RES_SERVICE;
 use chrono::NaiveDateTime;
@@ -69,7 +69,11 @@ impl SysRoleService {
             .await
     }
 
-    pub async fn find_user_permission(&self, user_id: &str, all_res: &Vec<SysRes>) -> Result<Vec<String>> {
+    pub async fn find_user_permission(
+        &self,
+        user_id: &str,
+        all_res: &Vec<SysRes>,
+    ) -> Result<Vec<String>> {
         let user_roles: Vec<SysUserRole> = RB
             .list_by_wrapper("", &RB.new_wrapper().eq("user_id", user_id))
             .await?;

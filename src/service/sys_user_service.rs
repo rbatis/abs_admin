@@ -6,10 +6,12 @@ use rbatis::crud::CRUD;
 use rbatis::plugin::page::{Page, PageRequest};
 
 use crate::dao::RB;
-use crate::domain::domain::{LoginCheck, SysUser, SysRes};
+use crate::domain::domain::{LoginCheck, SysRes, SysUser};
 use crate::domain::dto::{SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO};
-use crate::domain::vo::{SignInVO, JWTToken};
-use crate::service::{CONFIG, REDIS_SERVICE, SYS_ROLE_SERVICE, SYS_USER_ROLE_SERVICE,SYS_RES_SERVICE};
+use crate::domain::vo::{JWTToken, SignInVO};
+use crate::service::{
+    CONFIG, REDIS_SERVICE, SYS_RES_SERVICE, SYS_ROLE_SERVICE, SYS_USER_ROLE_SERVICE,
+};
 use crate::util::password_encoder::PasswordEncoder;
 
 ///后台用户服务
@@ -160,7 +162,14 @@ impl SysUserService {
             exp: 24 * 60 * 60 * 1000,
         };
         sign_vo.access_token = jwt_token.create_token(&CONFIG.jwt_secret)?;
-        sign_vo.roles = SYS_USER_ROLE_SERVICE.find_user_roles(&user.id.unwrap_or_else(|| { return String::new(); }), &all_res).await?;
+        sign_vo.roles = SYS_USER_ROLE_SERVICE
+            .find_user_roles(
+                &user.id.unwrap_or_else(|| {
+                    return String::new();
+                }),
+                &all_res,
+            )
+            .await?;
         return Ok(sign_vo);
     }
 
@@ -193,7 +202,13 @@ impl SysUserService {
     }
 
     ///TODO 递归查找层级结构权限
-    pub async fn loop_load_level_permission(&self, user_id: &str, all_res: &Vec<SysRes>) -> Result<Vec<String>> {
-        return SYS_ROLE_SERVICE.find_user_permission(user_id, all_res).await;
+    pub async fn loop_load_level_permission(
+        &self,
+        user_id: &str,
+        all_res: &Vec<SysRes>,
+    ) -> Result<Vec<String>> {
+        return SYS_ROLE_SERVICE
+            .find_user_permission(user_id, all_res)
+            .await;
     }
 }
