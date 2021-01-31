@@ -25,6 +25,8 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
         App::new()
             .route("/", web::get().to(index))
+            .route("/sys_login", web::post().to(sys_user_controller::login))
+            //TODO .route("/sys_log_out", web::post().to(user_controller::log_out))
             .route(
                 "/sys_res_update",
                 web::post().to(sys_res_controller::update),
@@ -35,8 +37,6 @@ async fn main() -> std::io::Result<()> {
             )
             .route("/sys_res_add", web::post().to(sys_res_controller::add))
             .route("/sys_res_page", web::post().to(sys_res_controller::page))
-            .route("/sys_login", web::post().to(sys_user_controller::login))
-            //TODO .route("/sys_log_out", web::post().to(user_controller::log_out))
             .route("/sys_user_add", web::post().to(sys_user_controller::add))
             .route("/sys_user_page", web::post().to(sys_user_controller::page))
             .route(

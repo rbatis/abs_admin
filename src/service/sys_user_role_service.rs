@@ -63,7 +63,7 @@ impl SysUserRoleService {
         user_id: &str,
         all_res: &Vec<SysRes>,
     ) -> Result<Vec<SysRoleVO>> {
-        if user_id.is_empty(){
+        if user_id.is_empty() {
             return Ok(vec![]);
         }
         let user_roles: Vec<SysUserRole> = RB
