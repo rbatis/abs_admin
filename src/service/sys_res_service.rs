@@ -6,8 +6,8 @@ use crate::dao::RB;
 use crate::domain::domain::SysRes;
 use crate::domain::dto::{ResEditDTO, ResPageDTO};
 use crate::domain::vo::SysResVO;
-use std::collections::HashMap;
 use rbatis::Error;
+use std::collections::HashMap;
 
 /// 资源服务
 pub struct SysResService {}
@@ -24,8 +24,10 @@ impl SysResService {
 
     ///添加资源
     pub async fn add(&self, arg: &SysRes) -> Result<u64> {
-        let old:Option<SysRes>=RB.fetch_by_wrapper("",&RB.new_wrapper().eq("permission",&arg.permission)).await?;
-        if old.is_some(){
+        let old: Option<SysRes> = RB
+            .fetch_by_wrapper("", &RB.new_wrapper().eq("permission", &arg.permission))
+            .await?;
+        if old.is_some() {
             return Err(Error::from("权限已存在!"));
         }
         Ok(RB.save("", arg).await?.rows_affected)
