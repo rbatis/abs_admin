@@ -19,7 +19,7 @@
 						}
 					}
 				},
-				"url": "http://localhost:8000/sys_res_page"
+				"url": "http://localhost:8000/api/sys_res_page"
 			},
 			"response": []
 		},
@@ -37,7 +37,7 @@
 						}
 					}
 				},
-				"url": "http://localhost:8000/sys_res_add"
+				"url": "http://localhost:8000/api/sys_res_add"
 			},
 			"response": []
 		},
@@ -55,7 +55,7 @@
 						}
 					}
 				},
-				"url": "http://localhost:8000/sys_user_page"
+				"url": "http://localhost:8000/api/sys_user_page"
 			},
 			"response": []
 		},
@@ -73,7 +73,7 @@
 						}
 					}
 				},
-				"url": "http://localhost:8000/sys_login"
+				"url": "http://localhost:8000/api/sys_login"
 			},
 			"response": []
 		},
@@ -91,7 +91,7 @@
 						}
 					}
 				},
-				"url": "http://localhost:8000/sys_user_add"
+				"url": "http://localhost:8000/api/sys_user_add"
 			},
 			"response": []
 		}
