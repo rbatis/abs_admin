@@ -1,4 +1,4 @@
-# abs_admin  语言后台管理模板项目。 火热进行中
+# abs_admin  语言后台管理模板项目。
 *  Rust语言坚如磐石，高性能，无内存泄漏，协程竞争，坚如磐石
 *  DDD领域驱动设计,Mysql,Redis，通用中间件和数据库，通用企业级框架选型
 *  [rbatis-orm](https://github.com/rbatis/rbatis) 和Mybatis-Plus一样的好用，简洁，易扩展的ORM框架
@@ -6,6 +6,11 @@
 *  [actix-web](https://actix.rs/) 常年屠榜web框架压测网站的框架
 *  前后端分离,基于 [Vue-JS](https://cn.vuejs.org/) +[Vue-AntDesign](https://www.antdv.com/docs/vue/introduce-cn/) + [Vue-AntDesign-Pro](https://pro.antdv.com/)
 *  自带JwtToken鉴权登陆，图形验证码登陆，二维码扫码登陆,基础权限管理
+
+# 开发进度
+* （前端-进度10%）已完成登陆，权限模块对接
+*  (后端-进度60%) 部分登陆接口，二维码接口，图形验证码接口，部分角色接口，部分用户接口，部分权限接口
+
 
 # 此项目存在的意义
 * 高性能，快如C++, 超低内存占用，支持廉价服务器
