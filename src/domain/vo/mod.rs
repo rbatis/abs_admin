@@ -81,7 +81,7 @@ where
         }
     }
 
-    pub fn resp(&self) -> Response {
+    pub fn resp_json(&self) -> Response {
         if CONFIG.debug {
             println!("resp:{}", self.to_string());
         }

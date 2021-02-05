@@ -14,7 +14,7 @@ use rbatis::crud::CRUD;
 pub async fn login(arg: web::Json<SignInDTO>) -> impl Responder {
     log::info!("login:{:?}", arg.0);
     let vo = SYS_USER_SERVICE.sign_in(&arg.0).await;
-    return RespVO::from_result(&vo).resp();
+    return RespVO::from_result(&vo).resp_json();
 }
 
 /// 用户信息
@@ -25,15 +25,15 @@ pub async fn info(req: HttpRequest) -> impl Responder {
             let token = token.to_str().unwrap_or("");
             let token = JWTToken::verify(&CONFIG.jwt_secret, token);
             if token.is_err() {
-                return RespVO::from_result(&token).resp();
+                return RespVO::from_result(&token).resp_json();
             }
             let user_data = SYS_USER_SERVICE
                 .get_user_info_by_token(&token.unwrap())
                 .await;
-            return RespVO::from_result(&user_data).resp();
+            return RespVO::from_result(&user_data).resp_json();
         }
         _ => {
-            return RespVO::<String>::from_error_info("access_token is empty!", "").resp();
+            return RespVO::<String>::from_error_info("access_token is empty!", "").resp_json();
         }
     }
 }
@@ -41,19 +41,19 @@ pub async fn info(req: HttpRequest) -> impl Responder {
 /// 用户添加
 pub async fn add(arg: web::Json<UserAddDTO>) -> impl Responder {
     let vo = SYS_USER_SERVICE.add(&arg.0).await;
-    return RespVO::from_result(&vo).resp();
+    return RespVO::from_result(&vo).resp_json();
 }
 
 ///用户分页
 pub async fn page(arg: web::Json<UserPageDTO>) -> impl Responder {
     let vo = SYS_USER_SERVICE.page(&arg.0).await;
-    return RespVO::from_result(&vo).resp();
+    return RespVO::from_result(&vo).resp_json();
 }
 
 ///用户修改
 pub async fn update(arg: web::Json<UserEditDTO>) -> impl Responder {
     let vo = SYS_USER_SERVICE.edit(&arg.0).await;
-    return RespVO::from_result(&vo).resp();
+    return RespVO::from_result(&vo).resp_json();
 }
 
 ///用户删除
@@ -61,5 +61,5 @@ pub async fn remove(arg: web::Json<IdDTO>) -> impl Responder {
     let vo = SYS_USER_SERVICE
         .remove(&arg.0.id.unwrap_or("".to_string()))
         .await;
-    return RespVO::from_result(&vo).resp();
+    return RespVO::from_result(&vo).resp_json();
 }
