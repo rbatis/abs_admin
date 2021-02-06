@@ -7,7 +7,6 @@ use crate::domain::dto::{IdDTO, SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO}
 use crate::domain::vo::{JWTToken, RespVO, SignInVO};
 use crate::service::SYS_USER_SERVICE;
 use actix_http::http::HeaderValue;
-use rbatis::core::Error;
 use rbatis::crud::CRUD;
 
 /// 用户登陆

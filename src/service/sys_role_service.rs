@@ -60,12 +60,12 @@ impl SysRoleService {
     }
 
     pub async fn finds(&self, ids: &Vec<String>) -> Result<Vec<SysRole>> {
-        RB.list_by_wrapper("", &RB.new_wrapper().r#in("id", ids))
+        RB.fetch_list_by_wrapper("", &RB.new_wrapper().r#in("id", ids))
             .await
     }
 
     pub async fn find_role_res(&self, ids: &Vec<String>) -> Result<Vec<SysRoleRes>> {
-        RB.list_by_wrapper("", &RB.new_wrapper().r#in("role_id", ids))
+        RB.fetch_list_by_wrapper("", &RB.new_wrapper().r#in("role_id", ids))
             .await
     }
 
@@ -75,7 +75,7 @@ impl SysRoleService {
         all_res: &Vec<SysRes>,
     ) -> Result<Vec<String>> {
         let user_roles: Vec<SysUserRole> = RB
-            .list_by_wrapper("", &RB.new_wrapper().eq("user_id", user_id))
+            .fetch_list_by_wrapper("", &RB.new_wrapper().eq("user_id", user_id))
             .await?;
         let role_res = self
             .find_role_res(&to_field_vec!(&user_roles, role_id))

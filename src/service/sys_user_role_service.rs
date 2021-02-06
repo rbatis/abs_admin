@@ -67,7 +67,7 @@ impl SysUserRoleService {
             return Ok(vec![]);
         }
         let user_roles: Vec<SysUserRole> = RB
-            .list_by_wrapper("", &RB.new_wrapper().eq("user_id", user_id))
+            .fetch_list_by_wrapper("", &RB.new_wrapper().eq("user_id", user_id))
             .await?;
         let role_ids = &to_field_vec!(&user_roles, role_id);
         let roles = SYS_ROLE_SERVICE.finds(role_ids).await?;
