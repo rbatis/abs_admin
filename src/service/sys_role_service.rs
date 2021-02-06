@@ -78,10 +78,10 @@ impl SysRoleService {
             .fetch_list_by_wrapper("", &RB.new_wrapper().eq("user_id", user_id))
             .await?;
         let role_res = self
-            .find_role_res(&to_field_vec!(&user_roles, role_id))
+            .find_role_res(&get_fields!(&user_roles, role_id))
             .await?;
         let res = SYS_RES_SERVICE
-            .finds_layer(&to_field_vec!(&role_res, res_id), &all_res)
+            .finds_layer(&get_fields!(&role_res, res_id), &all_res)
             .await?;
         let mut permissons = vec![];
         for item in res {
