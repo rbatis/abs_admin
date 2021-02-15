@@ -83,7 +83,7 @@ where
 
     pub fn resp_json(&self) -> Response {
         if CONFIG.debug {
-            println!("resp:{}", self.to_string());
+            println!("[abs_admin][debug] resp:{}", self.to_string());
         }
         return HttpResponse::Ok()
             .set_header("Access-Control-Allow-Origin", "*")
