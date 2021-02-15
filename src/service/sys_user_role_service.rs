@@ -69,11 +69,11 @@ impl SysUserRoleService {
         let user_roles: Vec<SysUserRole> = RB
             .fetch_list_by_wrapper("", &RB.new_wrapper().eq("user_id", user_id))
             .await?;
-        let role_ids = &get_fields!(&user_roles, role_id);
+        let role_ids = &fields!(&user_roles, role_id);
         let roles = SYS_ROLE_SERVICE.finds(role_ids).await?;
         let res_map = SYS_RES_SERVICE.to_hash_map(all_res).await?;
         let role_res_vec = SYS_ROLE_SERVICE
-            .find_role_res(&get_fields!(&user_roles, role_id))
+            .find_role_res(&fields!(&user_roles, role_id))
             .await?;
 
         let mut role_vos = vec![];
