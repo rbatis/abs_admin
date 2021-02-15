@@ -4,7 +4,6 @@ use abs_admin::controller::{
     sys_user_role_controller,
 };
 use abs_admin::dao::RB;
-//use abs_admin::middleware::auth::Auth;
 use actix_web::{web, App, HttpResponse, HttpServer, Responder};
 use log::info;
 
@@ -26,7 +25,7 @@ async fn main() -> std::io::Result<()> {
     //路由
     HttpServer::new(|| {
         App::new()
-           // .wrap(Auth)
+            .wrap(abs_admin::middleware::auth::Auth)
             .route("/", web::get().to(index))
             .route("/api/sys_login", web::post().to(sys_user_controller::login))
             .route(

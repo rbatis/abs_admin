@@ -23,8 +23,8 @@ futures = "0.3"
 #runtime
 async-std = { version = "1.7", features = ["attributes", "tokio1"] }
 #web server
-actix-web = "4.0.0-beta.3"
-actix-http = "3.0.0-beta.2"
+actix-web = "3.3"
+actix-http = "2.2"
 #redis
 redis = "0.16.0"
 #jwt
