@@ -47,6 +47,10 @@ async fn main() -> std::io::Result<()> {
                 web::post().to(sys_res_controller::page),
             )
             .route(
+                "/api/sys_res_all",
+                web::post().to(sys_res_controller::all),
+            )
+            .route(
                 "/api/sys_user_add",
                 web::post().to(sys_user_controller::add),
             )

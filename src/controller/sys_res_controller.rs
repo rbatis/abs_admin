@@ -13,6 +13,12 @@ pub async fn page(page: web::Json<ResPageDTO>) -> impl Responder {
     RespVO::from_result(&data).resp_json()
 }
 
+/// 资源全部(json请求)
+pub async fn all(page: web::Json<ResPageDTO>) -> impl Responder {
+    let data = SYS_RES_SERVICE.finds_all().await;
+    RespVO::from_result(&data).resp_json()
+}
+
 ///资源添加
 pub async fn add(mut arg: web::Json<ResAddDTO>) -> impl Responder {
     if arg.name.is_none() {
