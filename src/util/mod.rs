@@ -20,7 +20,7 @@ macro_rules! fields {
     ($vec_ref:expr,$field_name:ident) => {{
         let mut ids = vec![];
         for item in $vec_ref {
-            ids.push(item.$field_name.clone().unwrap_or_else(||String::new()));
+            ids.push(item.$field_name.clone().unwrap_or_else(|| String::new()));
         }
         ids
     }};
