@@ -59,7 +59,7 @@ impl SysResService {
     }
 
     /// 查找res数组
-    pub async fn to_hash_map<'s, 'a>(
+    pub fn to_hash_map<'s, 'a>(
         &'s self,
         data: &'a Vec<SysRes>,
     ) -> Result<HashMap<String, &'a SysRes>> {

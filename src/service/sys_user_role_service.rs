@@ -71,7 +71,7 @@ impl SysUserRoleService {
             .await?;
         let role_ids = &fields!(&user_roles, role_id);
         let roles = SYS_ROLE_SERVICE.finds(role_ids).await?;
-        let res_map = SYS_RES_SERVICE.to_hash_map(all_res).await?;
+        let res_map = SYS_RES_SERVICE.to_hash_map(all_res)?;
         let role_res_vec = SYS_ROLE_SERVICE
             .find_role_res(&fields!(&user_roles, role_id))
             .await?;
