@@ -1,6 +1,6 @@
 use crate::config::CONFIG;
 use crate::domain::domain::Sms;
-use crate::service::REDIS_SERVICE;
+use crate::service::Context;
 use rbatis::core::{Error, Result};
 use std::collections::HashMap;
 
@@ -14,7 +14,8 @@ impl SysSmsService {
         templete_arg.insert("sms_type".to_string(), "verify_sms".to_string());
         //验证码值
         templete_arg.insert("sms_code".to_string(), sms_code.to_string());
-        let r = REDIS_SERVICE
+        let r = Context
+            .redis_service
             .set_json(
                 &format!("{},{}", CONFIG.sms_redis_send_key_prefix, account),
                 &Sms {
@@ -28,7 +29,8 @@ impl SysSmsService {
 
     ///校验验证码
     pub async fn do_verify_sms(&self, account: &str, sms_code: &str) -> Result<bool> {
-        let sms: Option<Sms> = REDIS_SERVICE
+        let sms: Option<Sms> = Context
+            .redis_service
             .get_json(&format!("{},{}", CONFIG.sms_redis_send_key_prefix, account))
             .await?;
         match sms {

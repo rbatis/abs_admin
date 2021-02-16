@@ -5,15 +5,13 @@ use rbatis::core::Result;
 use rbatis::crud::CRUD;
 use rbatis::plugin::page::{Page, PageRequest};
 
+use crate::config::CONFIG;
 use crate::dao::RB;
 use crate::domain::domain::{LoginCheck, SysRes, SysUser};
 use crate::domain::dto::{SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO};
 use crate::domain::vo::{JWTToken, SignInVO};
-use crate::service::{
-    CONFIG, REDIS_SERVICE, SYS_RES_SERVICE, SYS_ROLE_SERVICE, SYS_USER_ROLE_SERVICE,
-};
+use crate::service::Context;
 use crate::util::password_encoder::PasswordEncoder;
-
 ///后台用户服务
 pub struct SysUserService {}
 
@@ -109,7 +107,8 @@ impl SysUserService {
             }
             LoginCheck::PasswordQRCodeCheck | LoginCheck::PasswordImgCodeCheck => {
                 //check img code
-                let cache_code = REDIS_SERVICE
+                let cache_code = Context
+                    .redis_service
                     .get_string(&format!("captch:account_{}", &arg.account))
                     .await?;
                 if cache_code.eq(&arg.vcode) {
@@ -127,7 +126,8 @@ impl SysUserService {
             }
             LoginCheck::PhoneCodeCheck => {
                 //短信验证码登录
-                let sms_code = REDIS_SERVICE
+                let sms_code = Context
+                    .redis_service
                     .get_string(&format!(
                         "{}{}",
                         CONFIG.sms_redis_send_key_prefix, &arg.account
@@ -165,7 +165,7 @@ impl SysUserService {
             roles: vec![],
         };
         //提前查找所有权限，避免在各个函数方法中重复查找
-        let all_res = SYS_RES_SERVICE.finds_all().await?;
+        let all_res = Context.sys_res_service.finds_all().await?;
         sign_vo.permissions = self.loop_load_level_permission(&user_id, &all_res).await?;
         let jwt_token = JWTToken {
             id: user.id.clone().unwrap_or(String::new()),
@@ -175,7 +175,8 @@ impl SysUserService {
             exp: 10000000000,
         };
         sign_vo.access_token = jwt_token.create_token(&CONFIG.jwt_secret)?;
-        sign_vo.roles = SYS_USER_ROLE_SERVICE
+        sign_vo.roles = Context
+            .sys_user_role_service
             .find_user_roles(
                 &user.id.unwrap_or_else(|| {
                     return String::new();
@@ -220,7 +221,8 @@ impl SysUserService {
         user_id: &str,
         all_res: &Vec<SysRes>,
     ) -> Result<Vec<String>> {
-        return SYS_ROLE_SERVICE
+        return Context
+            .sys_role_service
             .find_user_permission(user_id, all_res)
             .await;
     }

@@ -1,12 +1,3 @@
-mod redis_service;
-mod sys_config_service;
-mod sys_res_service;
-mod sys_role_res_service;
-mod sys_role_service;
-mod sys_sms_service;
-mod sys_user_role_service;
-mod sys_user_service;
-
 use redis_service::*;
 use sys_res_service::*;
 use sys_role_res_service::*;
@@ -16,13 +7,37 @@ use sys_user_service::*;
 
 use crate::config::CONFIG;
 
+mod redis_service;
+mod sys_config_service;
+mod sys_res_service;
+mod sys_role_res_service;
+mod sys_role_service;
+mod sys_sms_service;
+mod sys_user_role_service;
+mod sys_user_service;
+
+pub struct ServiceContext {
+    pub redis_service: RedisService,
+    pub sys_res_service: SysResService,
+    pub sys_user_service: SysUserService,
+    pub sys_role_service: SysRoleService,
+    pub sys_role_res_service: SysRoleResService,
+    pub sys_user_role_service: SysUserRoleService,
+}
+
+impl Default for ServiceContext {
+    fn default() -> Self {
+        ServiceContext {
+            redis_service: RedisService::new(&CONFIG.redis_url),
+            sys_res_service: SysResService {},
+            sys_user_service: SysUserService {},
+            sys_role_service: SysRoleService {},
+            sys_role_res_service: SysRoleResService {},
+            sys_user_role_service: SysUserRoleService {},
+        }
+    }
+}
+
 lazy_static! {
-   /// redis
-   pub static ref REDIS_SERVICE: RedisService = RedisService::new(&CONFIG.redis_url);
-   /// sys services
-   pub static ref SYS_RES_SERVICE: SysResService = SysResService{};
-   pub static ref SYS_USER_SERVICE: SysUserService = SysUserService{};
-   pub static ref SYS_ROLE_SERVICE: SysRoleService = SysRoleService{};
-   pub static ref SYS_ROLE_RES_SERVICE: SysRoleResService = SysRoleResService{};
-   pub static ref SYS_USER_ROLE_SERVICE: SysUserRoleService = SysUserRoleService{};
+    pub static ref Context: ServiceContext = ServiceContext::default();
 }

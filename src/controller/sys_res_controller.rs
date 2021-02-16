@@ -5,17 +5,17 @@ use rbatis::core::value::DateTimeNow;
 use crate::domain::domain::SysRes;
 use crate::domain::dto::{IdDTO, ResAddDTO, ResEditDTO, ResPageDTO};
 use crate::domain::vo::RespVO;
-use crate::service::SYS_RES_SERVICE;
+use crate::service::Context;
 
 /// 资源分页(json请求)
 pub async fn page(page: web::Json<ResPageDTO>) -> impl Responder {
-    let data = SYS_RES_SERVICE.page(&page.0).await;
+    let data = Context.sys_res_service.page(&page.0).await;
     RespVO::from_result(&data).resp_json()
 }
 
 /// 资源全部(json请求)
 pub async fn all(page: web::Json<ResPageDTO>) -> impl Responder {
-    let data = SYS_RES_SERVICE.finds_all().await;
+    let data = Context.sys_res_service.finds_all().await;
     RespVO::from_result(&data).resp_json()
 }
 
@@ -43,18 +43,21 @@ pub async fn add(mut arg: web::Json<ResAddDTO>) -> impl Responder {
         del: Some(0),
         create_date: Some(NaiveDateTime::now()),
     };
-    let data = SYS_RES_SERVICE.add(&res).await;
+    let data = Context.sys_res_service.add(&res).await;
     RespVO::from_result(&data).resp_json()
 }
 
 ///资源修改
 pub async fn update(arg: web::Json<ResEditDTO>) -> impl Responder {
-    let data = SYS_RES_SERVICE.edit(&arg.0).await;
+    let data = Context.sys_res_service.edit(&arg.0).await;
     RespVO::from_result(&data).resp_json()
 }
 
 ///资源删除
 pub async fn remove(arg: web::Json<IdDTO>) -> impl Responder {
-    let data = SYS_RES_SERVICE.remove(&arg.0.id.unwrap_or_default()).await;
+    let data = Context
+        .sys_res_service
+        .remove(&arg.0.id.unwrap_or_default())
+        .await;
     RespVO::from_result(&data).resp_json()
 }

@@ -7,7 +7,7 @@ use qrcode::QrCode;
 use crate::config::CONFIG;
 use crate::domain::dto::CatpchaDTO;
 use crate::domain::vo::RespVO;
-use crate::service::REDIS_SERVICE;
+use crate::service::Context;
 use image::codecs::png;
 
 ///图形验证码接口(注意，debug模式无论redis是否连接成功都返回图片，release模式则校验redis是否存储成功)
@@ -33,7 +33,8 @@ pub async fn captcha(arg: web::Query<CatpchaDTO>) -> impl Responder {
         &captcha_str
     );
     if arg.account.is_some() {
-        let result = REDIS_SERVICE
+        let result = Context
+            .redis_service
             .set_string(
                 &format!("captch:account_{}", &arg.account.as_ref().unwrap()),
                 captcha_str.as_str(),
