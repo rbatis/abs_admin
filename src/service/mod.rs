@@ -16,7 +16,7 @@ mod sys_sms_service;
 mod sys_user_role_service;
 mod sys_user_service;
 
-pub struct ServiceContext {
+pub struct ServiceCONTEXT {
     pub redis_service: RedisService,
     pub sys_res_service: SysResService,
     pub sys_user_service: SysUserService,
@@ -25,9 +25,9 @@ pub struct ServiceContext {
     pub sys_user_role_service: SysUserRoleService,
 }
 
-impl Default for ServiceContext {
+impl Default for ServiceCONTEXT {
     fn default() -> Self {
-        ServiceContext {
+        ServiceCONTEXT {
             redis_service: RedisService::new(&CONFIG.redis_url),
             sys_res_service: SysResService {},
             sys_user_service: SysUserService {},
@@ -39,5 +39,5 @@ impl Default for ServiceContext {
 }
 
 lazy_static! {
-    pub static ref Context: ServiceContext = ServiceContext::default();
+    pub static ref CONTEXT: ServiceCONTEXT = ServiceCONTEXT::default();
 }

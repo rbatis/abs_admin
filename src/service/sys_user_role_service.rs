@@ -2,7 +2,7 @@ use crate::dao::RB;
 use crate::domain::domain::{SysRes, SysUserRole};
 use crate::domain::dto::{UserRoleAddDTO, UserRoleEditDTO, UserRolePageDTO};
 use crate::domain::vo::{SysResVO, SysRoleVO};
-use crate::service::Context;
+use crate::service::CONTEXT;
 use chrono::NaiveDateTime;
 use rbatis::core::value::DateTimeNow;
 use rbatis::core::Result;
@@ -76,9 +76,9 @@ impl SysUserRoleService {
             .fetch_list_by_wrapper::<SysUserRole>("", &RB.new_wrapper().eq("user_id", user_id))
             .await?;
         let role_ids = &field_vec!(&user_roles, role_id);
-        let roles = Context.sys_role_service.finds(role_ids).await?;
-        let res_map = Context.sys_res_service.to_hash_map(all_res)?;
-        let role_res_vec = Context
+        let roles = CONTEXT.sys_role_service.finds(role_ids).await?;
+        let res_map = CONTEXT.sys_res_service.to_hash_map(all_res)?;
+        let role_res_vec = CONTEXT
             .sys_role_service
             .find_role_res(&field_vec!(&user_roles, role_id))
             .await?;

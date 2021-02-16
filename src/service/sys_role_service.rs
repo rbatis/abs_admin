@@ -7,7 +7,7 @@ use rbatis::plugin::page::{Page, PageRequest};
 use crate::dao::RB;
 use crate::domain::domain::{SysRes, SysRole, SysRoleRes, SysUserRole};
 use crate::domain::dto::{RoleAddDTO, RoleEditDTO, RolePageDTO};
-use crate::service::Context;
+use crate::service::CONTEXT;
 
 ///角色服务
 pub struct SysRoleService {}
@@ -63,8 +63,8 @@ impl SysRoleService {
     pub async fn remove_role_relation(&self, id: &str) -> Result<u64> {
         let remove_roles = self.remove(id).await?;
         //删除关联关系
-        let remove_user_roles = Context.sys_user_role_service.remove_by_role_id(id).await?;
-        let remove_role_res = Context.sys_role_res_service.remove_by_role_id(id).await?;
+        let remove_user_roles = CONTEXT.sys_user_role_service.remove_by_role_id(id).await?;
+        let remove_role_res = CONTEXT.sys_role_res_service.remove_by_role_id(id).await?;
         return Ok(remove_roles + remove_user_roles + remove_role_res);
     }
 
@@ -89,11 +89,11 @@ impl SysRoleService {
         let role_res = self
             .find_role_res(&field_vec!(&user_roles, role_id))
             .await?;
-        let res = Context
+        let res = CONTEXT
             .sys_res_service
             .finds_layer(&field_vec!(&role_res, res_id), &all_res)
             .await?;
-        let mut permissons = field_vec!(&res, permission);
+        let permissons = field_vec!(&res, permission);
         return Ok(permissons);
     }
 }
