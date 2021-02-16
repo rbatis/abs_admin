@@ -1,3 +1,5 @@
+use rbatis::rbatis::Rbatis;
+
 use redis_service::*;
 use sys_res_service::*;
 use sys_role_res_service::*;
@@ -16,7 +18,8 @@ mod sys_sms_service;
 mod sys_user_role_service;
 mod sys_user_service;
 
-pub struct ServiceCONTEXT {
+pub struct ServiceContext {
+    pub rbatis: Rbatis,
     pub redis_service: RedisService,
     pub sys_res_service: SysResService,
     pub sys_user_service: SysUserService,
@@ -25,9 +28,10 @@ pub struct ServiceCONTEXT {
     pub sys_user_role_service: SysUserRoleService,
 }
 
-impl Default for ServiceCONTEXT {
+impl Default for ServiceContext {
     fn default() -> Self {
-        ServiceCONTEXT {
+        ServiceContext {
+            rbatis: crate::dao::init_rbatis(),
             redis_service: RedisService::new(&CONFIG.redis_url),
             sys_res_service: SysResService {},
             sys_user_service: SysUserService {},
@@ -39,5 +43,5 @@ impl Default for ServiceCONTEXT {
 }
 
 lazy_static! {
-    pub static ref CONTEXT: ServiceCONTEXT = ServiceCONTEXT::default();
+    pub static ref CONTEXT: ServiceContext = ServiceContext::default();
 }

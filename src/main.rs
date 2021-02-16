@@ -3,7 +3,7 @@ use abs_admin::controller::{
     img_controller, sys_res_controller, sys_role_controller, sys_user_controller,
     sys_user_role_controller,
 };
-use abs_admin::dao::RB;
+use abs_admin::service::CONTEXT;
 use actix_web::{web, App, HttpResponse, HttpServer, Responder};
 use log::info;
 
@@ -17,7 +17,7 @@ async fn main() -> std::io::Result<()> {
     //日志追加器
     abs_admin::config::log::init_log();
     //ORM
-    RB.link(&CONFIG.mysql_url).await.unwrap();
+    CONTEXT.rbatis.link(&CONFIG.mysql_url).await.unwrap();
     info!(
         " - Local:   http://{}",
         CONFIG.server_url.replace("0.0.0.0", "localhost")

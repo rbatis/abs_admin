@@ -1,13 +1,14 @@
+use std::collections::HashMap;
+
 use rbatis::core::Result;
 use rbatis::crud::CRUD;
 use rbatis::plugin::page::{Page, PageRequest};
+use rbatis::Error;
 
-use crate::dao::RB;
 use crate::domain::domain::SysRes;
 use crate::domain::dto::{ResEditDTO, ResPageDTO};
 use crate::domain::vo::SysResVO;
-use rbatis::Error;
-use std::collections::HashMap;
+use crate::service::CONTEXT;
 
 /// 资源服务
 pub struct SysResService {}
@@ -16,21 +17,29 @@ impl SysResService {
     ///资源分页
     pub async fn page(&self, arg: &ResPageDTO) -> Result<Page<SysRes>> {
         let page_req = PageRequest::new(arg.page.unwrap_or(1), arg.size.unwrap_or(10));
-        let data = RB
-            .fetch_page_by_wrapper("", &RB.new_wrapper(), &page_req)
+        let data = CONTEXT
+            .rbatis
+            .fetch_page_by_wrapper("", &CONTEXT.rbatis.new_wrapper(), &page_req)
             .await?;
         Ok(data)
     }
 
     ///添加资源
     pub async fn add(&self, arg: &SysRes) -> Result<u64> {
-        let old: Option<SysRes> = RB
-            .fetch_by_wrapper("", &RB.new_wrapper().eq("permission", &arg.permission))
+        let old: Option<SysRes> = CONTEXT
+            .rbatis
+            .fetch_by_wrapper(
+                "",
+                &CONTEXT
+                    .rbatis
+                    .new_wrapper()
+                    .eq("permission", &arg.permission),
+            )
             .await?;
         if old.is_some() {
             return Err(Error::from("权限已存在!"));
         }
-        Ok(RB.save("", arg).await?.rows_affected)
+        Ok(CONTEXT.rbatis.save("", arg).await?.rows_affected)
     }
 
     ///修改资源
@@ -44,18 +53,21 @@ impl SysResService {
             del: None,
             create_date: None,
         };
-        RB.update_by_id("", &mut data).await
+        CONTEXT.rbatis.update_by_id("", &mut data).await
     }
 
     ///删除资源
     pub async fn remove(&self, id: &str) -> Result<u64> {
-        RB.remove_by_id::<SysRes>("", &id.to_string()).await
+        CONTEXT
+            .rbatis
+            .remove_by_id::<SysRes>("", &id.to_string())
+            .await
     }
 
     /// 查找res数组
     pub async fn finds_all(&self) -> Result<Vec<SysRes>> {
         //TODO 查找的全部数据缓存于Redis，同时 remove，edit方法调用时刷新redis缓存
-        RB.fetch_list("").await
+        CONTEXT.rbatis.fetch_list("").await
     }
 
     /// 查找res数组
@@ -72,7 +84,9 @@ impl SysResService {
 
     /// 查找res数组
     pub async fn finds(&self, ids: &Vec<String>) -> Result<Vec<SysRes>> {
-        RB.fetch_list_by_wrapper("", &RB.new_wrapper().r#in("id", ids))
+        CONTEXT
+            .rbatis
+            .fetch_list_by_wrapper("", &CONTEXT.rbatis.new_wrapper().r#in("id", ids))
             .await
     }
 

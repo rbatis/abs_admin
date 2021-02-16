@@ -6,7 +6,7 @@ use rbatis::crud::CRUD;
 use rbatis::plugin::page::{Page, PageRequest};
 
 use crate::config::CONFIG;
-use crate::dao::RB;
+
 use crate::domain::domain::{LoginCheck, SysRes, SysUser};
 use crate::domain::dto::{SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO};
 use crate::domain::vo::{JWTToken, SignInVO};
@@ -18,11 +18,13 @@ pub struct SysUserService {}
 impl SysUserService {
     /// 后台用户分页
     pub async fn page(&self, arg: &UserPageDTO) -> Result<Page<SysUser>> {
-        let wrapper = RB
+        let wrapper = CONTEXT
+            .rbatis
             .new_wrapper()
             .do_if(arg.name.is_some(), |w| w.eq("name", &arg.name))
             .do_if(arg.account.is_some(), |w| w.eq("account", &arg.account));
-        let mut result: Page<SysUser> = RB
+        let mut result: Page<SysUser> = CONTEXT
+            .rbatis
             .fetch_page_by_wrapper(
                 "",
                 &wrapper,
@@ -37,14 +39,14 @@ impl SysUserService {
 
     ///后台用户根据id查找
     pub async fn find(&self, id: &str) -> Result<Option<SysUser>> {
-        let wrapper = RB.new_wrapper().eq("id", id);
-        return RB.fetch_by_wrapper("", &wrapper).await;
+        let wrapper = CONTEXT.rbatis.new_wrapper().eq("id", id);
+        return CONTEXT.rbatis.fetch_by_wrapper("", &wrapper).await;
     }
 
     ///根据账户名查找
     pub async fn find_by_account(&self, account: &str) -> Result<Option<SysUser>> {
-        let wrapper = RB.new_wrapper().eq("account", account);
-        return RB.fetch_by_wrapper("", &wrapper).await;
+        let wrapper = CONTEXT.rbatis.new_wrapper().eq("account", account);
+        return CONTEXT.rbatis.fetch_by_wrapper("", &wrapper).await;
     }
 
     ///添加后台账号
@@ -77,13 +79,17 @@ impl SysUserService {
             del: Some(0),
             create_date: Some(NaiveDateTime::now()),
         };
-        return Ok(RB.save("", &user).await?.rows_affected);
+        return Ok(CONTEXT.rbatis.save("", &user).await?.rows_affected);
     }
 
     ///登陆后台
     pub async fn sign_in(&self, arg: &SignInDTO) -> Result<SignInVO> {
-        let user: Option<SysUser> = RB
-            .fetch_by_wrapper("", &RB.new_wrapper().eq("account", &arg.account))
+        let user: Option<SysUser> = CONTEXT
+            .rbatis
+            .fetch_by_wrapper(
+                "",
+                &CONTEXT.rbatis.new_wrapper().eq("account", &arg.account),
+            )
             .await?;
         let user = user.ok_or_else(|| Error::from(format!("账号:{} 不存在!", arg.account)))?;
         match user
@@ -143,8 +149,9 @@ impl SysUserService {
     }
 
     pub async fn get_user_info_by_token(&self, token: &JWTToken) -> Result<SignInVO> {
-        let user: Option<SysUser> = RB
-            .fetch_by_wrapper("", &RB.new_wrapper().eq("id", &token.id))
+        let user: Option<SysUser> = CONTEXT
+            .rbatis
+            .fetch_by_wrapper("", &CONTEXT.rbatis.new_wrapper().eq("id", &token.id))
             .await?;
         let user = user.ok_or_else(|| Error::from(format!("账号:{} 不存在!", token.account)))?;
         return self.get_user_info(&user).await;
@@ -205,14 +212,17 @@ impl SysUserService {
             del: None,
             create_date: None,
         };
-        RB.update_by_id("", &mut user).await
+        CONTEXT.rbatis.update_by_id("", &mut user).await
     }
 
     pub async fn remove(&self, id: &str) -> Result<u64> {
         if id.is_empty() {
             return Err(Error::from("id 不能为空！"));
         }
-        RB.remove_by_id::<SysUser>("", &id.to_string()).await
+        CONTEXT
+            .rbatis
+            .remove_by_id::<SysUser>("", &id.to_string())
+            .await
     }
 
     ///TODO 递归查找层级结构权限
