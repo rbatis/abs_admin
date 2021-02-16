@@ -10,13 +10,13 @@ pub mod password_encoder;
 ///         pub role_id:String
 ///      }
 ///      let user_roles: Vec<SysUserRole>;
-///      let role_ids = fields!(&user_roles,role_id); // role_ids: Vec<String>
+///      let role_ids = field_vec!(&user_roles,role_id); // role_ids: Vec<String>
 ///
 ///
 ///
 #[allow(unused_macros)]
 #[macro_export]
-macro_rules! fields {
+macro_rules! field_vec {
     ($vec_ref:expr,$field_name:ident) => {{
         let mut ids = vec![];
         for item in $vec_ref {
