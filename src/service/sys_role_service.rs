@@ -1,6 +1,6 @@
 use chrono::NaiveDateTime;
-use rbatis::core::Result;
 use rbatis::core::value::DateTimeNow;
+use rbatis::core::Result;
 use rbatis::crud::CRUD;
 use rbatis::plugin::page::{Page, PageRequest};
 
@@ -86,12 +86,14 @@ impl SysRoleService {
         let user_roles: Vec<SysUserRole> = RB
             .fetch_list_by_wrapper("", &RB.new_wrapper().eq("user_id", user_id))
             .await?;
-        let role_res = self.find_role_res(&field_vec!(&user_roles, role_id)).await?;
+        let role_res = self
+            .find_role_res(&field_vec!(&user_roles, role_id))
+            .await?;
         let res = Context
             .sys_res_service
             .finds_layer(&field_vec!(&role_res, res_id), &all_res)
             .await?;
-        let mut permissons = field_vec!(&res,permission);
+        let mut permissons = field_vec!(&res, permission);
         return Ok(permissons);
     }
 }

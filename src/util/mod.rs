@@ -20,11 +20,11 @@ macro_rules! field_vec {
     ($vec_ref:expr,$field_name:ident) => {{
         let mut ids = vec![];
         for item in $vec_ref {
-            match &item.$field_name{
-                std::option::Option::Some(v)=>{
-                  ids.push(v.clone());
+            match &item.$field_name {
+                std::option::Option::Some(v) => {
+                    ids.push(v.clone());
                 }
-                _=>{}
+                _ => {}
             }
         }
         ids
