@@ -55,8 +55,8 @@ impl SysRoleService {
     }
 
     ///角色删除
-    pub async fn remove(&self, arg: &str) -> Result<u64> {
-        RB.remove_by_id::<SysRole>("", &arg.to_string()).await
+    pub async fn remove(&self, id: &str) -> Result<u64> {
+        RB.remove_by_id::<SysRole>("", &id.to_string()).await
     }
 
     ///角色删除,同时删除用户关系，权限关系
