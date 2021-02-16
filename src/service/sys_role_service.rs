@@ -1,4 +1,6 @@
+use chrono::NaiveDateTime;
 use rbatis::core::Result;
+use rbatis::core::value::DateTimeNow;
 use rbatis::crud::CRUD;
 use rbatis::plugin::page::{Page, PageRequest};
 
@@ -6,8 +8,6 @@ use crate::dao::RB;
 use crate::domain::domain::{SysRes, SysRole, SysRoleRes, SysUserRole};
 use crate::domain::dto::{RoleAddDTO, RoleEditDTO, RolePageDTO};
 use crate::service::Context;
-use chrono::NaiveDateTime;
-use rbatis::core::value::DateTimeNow;
 
 ///角色服务
 pub struct SysRoleService {}
@@ -91,15 +91,7 @@ impl SysRoleService {
             .sys_res_service
             .finds_layer(&field_vec!(&role_res, res_id), &all_res)
             .await?;
-        let mut permissons = vec![];
-        for item in res {
-            match item.permission{
-                Some(permission)=>{
-                    permissons.push(permission);
-                }
-                _ => {}
-            }
-        }
+        let mut permissons = field_vec!(&res,permission);
         return Ok(permissons);
     }
 }

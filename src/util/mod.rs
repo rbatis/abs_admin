@@ -20,7 +20,12 @@ macro_rules! field_vec {
     ($vec_ref:expr,$field_name:ident) => {{
         let mut ids = vec![];
         for item in $vec_ref {
-            ids.push(item.$field_name.clone().unwrap_or_default());
+            match &item.$field_name{
+                std::option::Option::Some(v)=>{
+                  ids.push(v.clone());
+                }
+                _=>{}
+            }
         }
         ids
     }};
