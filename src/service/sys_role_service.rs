@@ -93,7 +93,12 @@ impl SysRoleService {
             .await?;
         let mut permissons = vec![];
         for item in res {
-            permissons.push(item.permission.clone().unwrap_or_default());
+            match item.permission{
+                Some(permission)=>{
+                    permissons.push(permission);
+                }
+                _ => {}
+            }
         }
         return Ok(permissons);
     }
