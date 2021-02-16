@@ -5,7 +5,7 @@ use rbatis::plugin::page::{Page, PageRequest};
 use crate::dao::RB;
 use crate::domain::domain::{SysRes, SysRole, SysRoleRes, SysUserRole};
 use crate::domain::dto::{RoleAddDTO, RoleEditDTO, RolePageDTO};
-use crate::service::SYS_RES_SERVICE;
+use crate::service::{SYS_RES_SERVICE, SYS_ROLE_RES_SERVICE, SYS_USER_ROLE_SERVICE};
 use chrono::NaiveDateTime;
 use rbatis::core::value::DateTimeNow;
 
@@ -57,6 +57,15 @@ impl SysRoleService {
     ///角色删除
     pub async fn remove(&self, arg: &str) -> Result<u64> {
         RB.remove_by_id::<SysRole>("", &arg.to_string()).await
+    }
+
+    ///角色删除,同时删除用户关系，权限关系
+    pub async fn remove_role_relation(&self, id: &str) -> Result<u64> {
+        let remove_roles = self.remove(id).await?;
+        //删除关联关系
+        let remove_user_roles = SYS_USER_ROLE_SERVICE.remove_by_role_id(id).await?;
+        let remove_role_res = SYS_ROLE_RES_SERVICE.remove_by_role_id(id).await?;
+        return Ok(remove_roles + remove_user_roles + remove_role_res);
     }
 
     pub async fn finds(&self, ids: &Vec<String>) -> Result<Vec<SysRole>> {
