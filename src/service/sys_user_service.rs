@@ -161,7 +161,7 @@ impl SysUserService {
         let mut sign_vo = SignInVO {
             user: Some(user.clone()),
             permissions: vec![],
-            access_token: "".to_string(),
+            access_token: String::new(),
             roles: vec![],
         };
         //提前查找所有权限，避免在各个函数方法中重复查找

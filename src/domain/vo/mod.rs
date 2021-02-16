@@ -21,7 +21,6 @@ use rbatis::core::Error;
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 
-
 pub const CODE_SUCCESS: &str = "SUCCESS";
 pub const CODE_FAIL: &str = "FAIL";
 

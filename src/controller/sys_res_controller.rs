@@ -55,8 +55,6 @@ pub async fn update(arg: web::Json<ResEditDTO>) -> impl Responder {
 
 ///资源删除
 pub async fn remove(arg: web::Json<IdDTO>) -> impl Responder {
-    let data = SYS_RES_SERVICE
-        .remove(&arg.0.id.unwrap_or("".to_string()))
-        .await;
+    let data = SYS_RES_SERVICE.remove(&arg.0.id.unwrap_or_default()).await;
     RespVO::from_result(&data).resp_json()
 }

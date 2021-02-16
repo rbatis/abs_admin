@@ -25,7 +25,7 @@ pub async fn update(arg: web::Json<UserRoleEditDTO>) -> impl Responder {
 ///用户角色删除
 pub async fn remove(arg: web::Json<IdDTO>) -> impl Responder {
     let vo = SYS_USER_ROLE_SERVICE
-        .remove(&arg.0.id.unwrap_or("".to_string()))
+        .remove(&arg.0.id.unwrap_or_default())
         .await;
     return RespVO::from_result(&vo).resp_json();
 }

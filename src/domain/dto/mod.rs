@@ -84,6 +84,9 @@ pub struct RoleAddDTO {
     pub auths: Vec<String>,
     //父id(可空)
     pub parent_id: Option<String>,
+
+    //资源id集合
+    pub resource_ids: Option<Vec<String>>,
 }
 
 /// 角色修改
@@ -93,6 +96,9 @@ pub struct RoleEditDTO {
     pub name: Option<String>,
     pub auths: Vec<String>,
     pub parent_id: Option<String>,
+
+    //资源id集合
+    pub resource_ids: Option<Vec<String>>,
 }
 
 /// 用户角色添加

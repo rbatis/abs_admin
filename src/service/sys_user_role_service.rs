@@ -53,8 +53,14 @@ impl SysUserRoleService {
     }
 
     ///角色删除
-    pub async fn remove(&self, arg: &str) -> Result<u64> {
-        RB.remove_by_id::<SysUserRole>("", &arg.to_string()).await
+    pub async fn remove(&self, id: &str) -> Result<u64> {
+        RB.remove_by_id::<SysUserRole>("", &id.to_string()).await
+    }
+
+    ///角色删除
+    pub async fn remove_by_role_id(&self, role_id: &str) -> Result<u64> {
+        RB.remove_by_wrapper::<SysUserRole>("", &RB.new_wrapper().eq("role_id", role_id))
+            .await
     }
 
     ///找出角色
