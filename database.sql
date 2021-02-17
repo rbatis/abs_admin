@@ -1,13 +1,13 @@
--- MySQL dump 10.13  Distrib 8.0.16, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.23, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: test
 -- ------------------------------------------------------
--- Server version	5.7.30
+-- Server version	5.7.33
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
- SET NAMES utf8 ;
+/*!50503 SET NAMES utf8 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -21,21 +21,21 @@
 
 DROP TABLE IF EXISTS `biz_activity`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `biz_activity` (
-  `id` varchar(50) NOT NULL DEFAULT '' COMMENT '唯一活动码',
-  `name` varchar(255) NOT NULL,
-  `pc_link` varchar(255) DEFAULT NULL,
-  `h5_link` varchar(255) DEFAULT NULL,
-  `sort` varchar(255) NOT NULL COMMENT '排序',
-  `status` int(11) NOT NULL COMMENT '状态（0：已下线，1：已上线）',
-  `version` int(11) NOT NULL,
-  `remark` varchar(255) DEFAULT NULL,
-  `create_date` datetime NOT NULL,
-  `delete_flag` int(1) NOT NULL,
-  `pc_banner_img` varchar(255) DEFAULT NULL,
-  `h5_banner_img` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
+                                `id` varchar(50) NOT NULL DEFAULT '' COMMENT '唯一活动码',
+                                `name` varchar(255) NOT NULL,
+                                `pc_link` varchar(255) DEFAULT NULL,
+                                `h5_link` varchar(255) DEFAULT NULL,
+                                `sort` varchar(255) NOT NULL COMMENT '排序',
+                                `status` int(11) NOT NULL COMMENT '状态（0：已下线，1：已上线）',
+                                `version` int(11) NOT NULL,
+                                `remark` varchar(255) DEFAULT NULL,
+                                `create_date` datetime NOT NULL,
+                                `delete_flag` int(1) NOT NULL,
+                                `pc_banner_img` varchar(255) DEFAULT NULL,
+                                `h5_banner_img` varchar(255) DEFAULT NULL,
+                                PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='运营管理-活动管理';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -48,6 +48,10 @@ LOCK TABLES `biz_activity` WRITE;
 INSERT INTO `biz_activity` VALUES ('1','test','','','0',0,0,'','2020-06-17 20:10:23',1,NULL,NULL),('12312','123',NULL,NULL,'1',1,1,NULL,'2020-09-06 16:09:02',0,NULL,NULL),('178','test_insret','','','1',1,0,'','2020-06-17 20:08:13',0,NULL,NULL),('221','test','','','0',0,0,'','2020-06-17 20:10:23',0,NULL,NULL),('222','test','','','0',0,0,'','2020-06-17 20:10:23',0,NULL,NULL);
 /*!40000 ALTER TABLE `biz_activity` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `sys_res`
+--
 
 DROP TABLE IF EXISTS `sys_res`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -70,7 +74,7 @@ CREATE TABLE `sys_res` (
 
 LOCK TABLES `sys_res` WRITE;
 /*!40000 ALTER TABLE `sys_res` DISABLE KEYS */;
-INSERT INTO `sys_res` VALUES ('1',NULL,'qx','/','/',0,'2020-02-09 00:00:00'),('2',NULL,'qx','dashboard','dashboard',0,'2020-02-09 00:00:00'),('3',NULL,'qx','form','form',0,'2020-02-09 00:00:00'),('4',NULL,'qx','table','table',0,'2020-02-09 00:00:00'),('5',NULL,'qx','profile','profile',0,'2020-02-09 00:00:00'),('6',NULL,'qx','result','result',0,'2020-02-09 00:00:00'),('7',NULL,'qx','exception','exception',0,'2020-02-09 00:00:00'),('8',NULL,'qx','user','user',0,'2020-02-09 00:00:00'),('dbe65c81-8688-4e24-bc88-b6ba108a33bc',NULL,'超级管理员权限','/','',0,'2020-08-13 11:43:26');
+INSERT INTO `sys_res` VALUES ('1',NULL,'qx','/','/',0,'2020-02-09 00:00:00'),('2',NULL,'qx','dashboard','dashboard',0,'2020-02-09 00:00:00'),('3',NULL,'qx','form','form',0,'2020-02-09 00:00:00'),('4',NULL,'qx','table','table',0,'2020-02-09 00:00:00'),('5',NULL,'qx','profile','profile',0,'2020-02-09 00:00:00'),('6',NULL,'qx','result','result',0,'2020-02-09 00:00:00'),('7',NULL,'qx','exception','exception',0,'2020-02-09 00:00:00'),('8',NULL,'qx','user','user',0,'2020-02-09 00:00:00'),('9',NULL,'qx','setting','setting',0,'2020-02-09 00:00:00'),('dbe65c81-8688-4e24-bc88-b6ba108a33bc',NULL,'超级管理员权限','/','',0,'2020-08-13 11:43:26');
 /*!40000 ALTER TABLE `sys_res` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -123,7 +127,7 @@ CREATE TABLE `sys_role_res` (
 
 LOCK TABLES `sys_role_res` WRITE;
 /*!40000 ALTER TABLE `sys_role_res` DISABLE KEYS */;
-INSERT INTO `sys_role_res` VALUES ('1','1','1','2020-07-28 08:34:40'),('2','1','dbe65c81-8688-4e24-bc88-b6ba108a33bc','2020-07-28 08:34:40'),('3','1','2','2020-07-28 08:34:40'),('4','1','3','2020-07-28 08:34:40'),('5','1','4','2020-07-28 08:34:40'),('6','1','5','2020-07-28 08:34:40'),('7','1','6','2020-07-28 08:34:40'),('8','1','7','2020-07-28 08:34:40'),('9','1','8','2020-07-28 08:34:40');
+INSERT INTO `sys_role_res` VALUES ('1','1','1','2020-07-28 08:34:40'),('10','1','9','2020-07-28 08:34:40'),('2','1','dbe65c81-8688-4e24-bc88-b6ba108a33bc','2020-07-28 08:34:40'),('3','1','2','2020-07-28 08:34:40'),('4','1','3','2020-07-28 08:34:40'),('5','1','4','2020-07-28 08:34:40'),('6','1','5','2020-07-28 08:34:40'),('7','1','6','2020-07-28 08:34:40'),('8','1','7','2020-07-28 08:34:40'),('9','1','8','2020-07-28 08:34:40');
 /*!40000 ALTER TABLE `sys_role_res` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -191,4 +195,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-09-21  2:02:12
+-- Dump completed on 2021-02-17 19:16:54
