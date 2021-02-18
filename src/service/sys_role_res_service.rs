@@ -163,10 +163,7 @@ impl SysRoleResService {
     pub async fn remove_by_res_id(&self, res_id: &str) -> Result<u64> {
         CONTEXT
             .rbatis
-            .remove_by_wrapper::<SysRoleRes>(
-                "",
-                &CONTEXT.rbatis.new_wrapper().eq("res_id", res_id),
-            )
+            .remove_by_wrapper::<SysRoleRes>("", &CONTEXT.rbatis.new_wrapper().eq("res_id", res_id))
             .await
     }
 

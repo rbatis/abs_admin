@@ -58,7 +58,7 @@ impl SysResService {
 
     ///删除资源
     pub async fn remove(&self, id: &str) -> Result<u64> {
-        let num=CONTEXT
+        let num = CONTEXT
             .rbatis
             .remove_by_id::<SysRes>("", &id.to_string())
             .await?;
@@ -74,9 +74,9 @@ impl SysResService {
     }
 
     /// 查找res数组
-    pub async fn finds_all_map(&self) -> Result<(HashMap<String,SysRes>)> {
-        let all=self.finds_all().await?;
-        return self.to_hash_map_owner(all)
+    pub async fn finds_all_map(&self) -> Result<(HashMap<String, SysRes>)> {
+        let all = self.finds_all().await?;
+        return self.to_hash_map_owner(all);
     }
 
     /// 查找res数组
@@ -92,11 +92,11 @@ impl SysResService {
     }
 
     /// 查找res数组
-    pub fn to_hash_map_owner(&self,arg:Vec<SysRes>) -> Result<HashMap<String,SysRes>> {
-        let mut result=HashMap::new();
-        let data=self.to_hash_map(&arg)?;
-        for (k,v) in data {
-            result.insert(k,v.clone());
+    pub fn to_hash_map_owner(&self, arg: Vec<SysRes>) -> Result<HashMap<String, SysRes>> {
+        let mut result = HashMap::new();
+        let data = self.to_hash_map(&arg)?;
+        for (k, v) in data {
+            result.insert(k, v.clone());
         }
         return Ok(result);
     }
