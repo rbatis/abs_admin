@@ -115,6 +115,9 @@ impl SysResService {
 
     ///死循环找出父-子 关联关系数组
     pub fn loop_find_childs(&self, arg: &mut SysResVO, all_res: &HashMap<String,SysRes>) {
+        if arg.parent_id.is_none(){
+            return;
+        }
         let mut childs = None;
         for (key,x) in all_res {
             if x.parent_id.eq(&arg.id) {
