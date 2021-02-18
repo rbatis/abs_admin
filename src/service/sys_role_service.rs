@@ -21,7 +21,7 @@ impl SysRoleService {
             .fetch_page_by_wrapper(
                 "",
                 &wrapper,
-                &PageRequest::new(arg.page.unwrap_or(0), arg.size.unwrap_or(0)),
+                &PageRequest::new(arg.page_no.unwrap_or(0), arg.page_size.unwrap_or(10)),
             )
             .await?;
         return Ok(data);

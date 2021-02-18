@@ -30,7 +30,7 @@ impl SysUserService {
             .fetch_page_by_wrapper(
                 "",
                 &wrapper,
-                &PageRequest::new(arg.page.unwrap_or(1), arg.size.unwrap_or(10)),
+                &PageRequest::new(arg.page_no.unwrap_or(1), arg.page_size.unwrap_or(10)),
             )
             .await?;
         for x in &mut result.records {

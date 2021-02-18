@@ -19,8 +19,8 @@ impl SysRoleResService {
         let role_page = CONTEXT
             .sys_role_service
             .page(&RolePageDTO {
-                page: arg.page.clone(),
-                size: arg.size.clone(),
+                page_no: arg.page_no.clone(),
+                page_size: arg.page_size.clone(),
             })
             .await?;
         let role_ids = field_vec!(&role_page.records, id);
@@ -80,9 +80,9 @@ impl SysRoleResService {
             records: data,
             total: role_page.total,
             pages: role_page.pages,
-            size: role_page.size,
-            current: role_page.current,
-            serch_count: role_page.serch_count,
+            page_size: role_page.page_size,
+            page_no: role_page.page_no,
+            search_count: role_page.search_count,
         };
         return Result::Ok(result);
     }

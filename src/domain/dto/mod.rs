@@ -10,8 +10,8 @@ pub struct IdDTO {
 /// 资源分页DTO
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct ResPageDTO {
-    pub page: Option<u64>,
-    pub size: Option<u64>,
+    pub page_no: Option<u64>,
+    pub page_size: Option<u64>,
 }
 
 /// 资源添加DTO
@@ -64,8 +64,8 @@ pub struct UserEditDTO {
 /// 用户分页
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct UserPageDTO {
-    pub page: Option<u64>,
-    pub size: Option<u64>,
+    pub page_no: Option<u64>,
+    pub page_size: Option<u64>,
     pub account: Option<String>,
     pub name: Option<String>,
 }
@@ -73,8 +73,8 @@ pub struct UserPageDTO {
 /// 角色分页
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct RolePageDTO {
-    pub page: Option<u64>,
-    pub size: Option<u64>,
+    pub page_no: Option<u64>,
+    pub page_size: Option<u64>,
 }
 
 /// 角色添加
@@ -114,8 +114,8 @@ pub struct UserRoleEditDTO {
 /// 用户角色分页
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct UserRolePageDTO {
-    pub page: Option<u64>,
-    pub size: Option<u64>,
+    pub page_no: Option<u64>,
+    pub page_size: Option<u64>,
 }
 
 /// 验证码
@@ -143,6 +143,6 @@ pub struct SysRoleResUpdateDTO {
 /// 角色分页
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct SysRoleResPageDTO {
-    pub page: Option<u64>,
-    pub size: Option<u64>,
+    pub page_no: Option<u64>,
+    pub page_size: Option<u64>,
 }

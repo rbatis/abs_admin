@@ -16,7 +16,7 @@ pub struct SysResService {}
 impl SysResService {
     ///资源分页
     pub async fn page(&self, arg: &ResPageDTO) -> Result<Page<SysRes>> {
-        let page_req = PageRequest::new(arg.page.unwrap_or(1), arg.size.unwrap_or(10));
+        let page_req = PageRequest::new(arg.page_no.unwrap_or(1), arg.page_size.unwrap_or(10));
         let data = CONTEXT
             .rbatis
             .fetch_page_by_wrapper("", &CONTEXT.rbatis.new_wrapper(), &page_req)
