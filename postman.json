@@ -1,12 +1,12 @@
 {
 	"info": {
-		"_postman_id": "7b84a9ec-b53f-4b29-b9b2-fea500e946e8",
+		"_postman_id": "843967c9-3254-485b-845c-f565747d6541",
 		"name": "test",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "http://127.0.0.1:8000/api/sys_res_page",
+			"name": "权限分页",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -24,7 +24,25 @@
 			"response": []
 		},
 		{
-			"name": "http://127.0.0.1:8000/api/sys_res_add",
+			"name": "角色分页",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"page\":1,\r\n    \"size\":5\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8000/api/sys_role_page"
+			},
+			"response": []
+		},
+		{
+			"name": "权限添加",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -42,7 +60,7 @@
 			"response": []
 		},
 		{
-			"name": "http://127.0.0.1:8000/api/sys_user_page",
+			"name": "账号分页",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -60,7 +78,7 @@
 			"response": []
 		},
 		{
-			"name": "http://127.0.0.1:8000/api/sys_login",
+			"name": "登陆",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -78,7 +96,7 @@
 			"response": []
 		},
 		{
-			"name": "http://127.0.0.1:8000/api/sys_add",
+			"name": "账号添加",
 			"request": {
 				"method": "POST",
 				"header": [],
