@@ -74,6 +74,12 @@ impl SysResService {
     }
 
     /// 查找res数组
+    pub async fn finds_all_map(&self) -> Result<(HashMap<String,SysRes>)> {
+        let all=self.finds_all().await?;
+        return self.to_hash_map_owner(all)
+    }
+
+    /// 查找res数组
     pub fn to_hash_map<'s, 'a>(
         &'s self,
         data: &'a Vec<SysRes>,
@@ -83,6 +89,16 @@ impl SysResService {
             map.insert(x.id.clone().unwrap_or(String::new()), x);
         }
         return Ok(map);
+    }
+
+    /// 查找res数组
+    pub fn to_hash_map_owner(&self,arg:Vec<SysRes>) -> Result<HashMap<String,SysRes>> {
+        let mut result=HashMap::new();
+        let data=self.to_hash_map(&arg)?;
+        for (k,v) in data {
+            result.insert(k,v.clone());
+        }
+        return Ok(result);
     }
 
     /// 查找res数组

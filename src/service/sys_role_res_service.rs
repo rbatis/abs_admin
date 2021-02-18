@@ -25,17 +25,16 @@ impl SysRoleResService {
             })
             .await?;
         let mut role_ids = field_vec!(&role_page.records, id);
-        let role_ress = CONTEXT
+        let role_res_vec = CONTEXT
             .rbatis
             .fetch_list_by_wrapper::<SysRoleRes>(
                 "",
                 &CONTEXT.rbatis.new_wrapper().r#in("role_id", &role_ids),
             )
             .await?;
-        let mut all_res = CONTEXT.sys_res_service.finds_all().await?;
-        let resource_map = CONTEXT.sys_res_service.to_hash_map(&all_res)?;
+        let resource_map = CONTEXT.sys_res_service.finds_all_map().await?;
         let mut role_res_map: HashMap<String, Vec<SysRoleRes>> = HashMap::new();
-        for role_res in role_ress {
+        for role_res in role_res_vec {
             let role_id = role_res.role_id.clone().unwrap_or_default();
             if role_res_map.get(&role_id).is_none() {
                 let mut datas = vec![];
@@ -59,7 +58,7 @@ impl SysRoleResService {
                     for x in res_ids {
                         match resource_map.get(x.res_id.as_ref().unwrap_or(&String::new())) {
                             Some(res) => {
-                                let vo = SysResVO::from(*res);
+                                let vo = SysResVO::from(res);
                                 roles.push(vo);
                             }
                             _ => {}
