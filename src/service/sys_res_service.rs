@@ -135,8 +135,8 @@ impl SysResService {
     pub fn loop_find_childs(&self, arg: &mut SysResVO, all_res: &Vec<SysRes>) {
         let mut childs = None;
         for x in all_res {
-            if x.parent_id.eq(&x.id) {
-                let mut item = SysResVO::from(&x.clone());
+            if x.parent_id.eq(&arg.id) {
+                let mut item = SysResVO::from(x);
                 self.loop_find_childs(&mut item, all_res);
                 if childs.is_none() {
                     childs = Some(vec![]);
