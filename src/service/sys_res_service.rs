@@ -74,7 +74,7 @@ impl SysResService {
     }
 
     /// 查找res数组
-    pub async fn finds_all_map(&self) -> Result<(HashMap<String, SysRes>)> {
+    pub async fn finds_all_map(&self) -> Result<HashMap<String, SysRes>> {
         let all = self.finds_all().await?;
         return self.to_hash_map_owner(all);
     }

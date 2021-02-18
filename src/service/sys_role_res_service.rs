@@ -1,15 +1,14 @@
-use crate::domain::domain::{SysRes, SysRoleRes};
+use crate::domain::domain::{SysRoleRes};
 use crate::domain::dto::{
-    RoleAddDTO, RolePageDTO, SysRoleResAddDTO, SysRoleResPageDTO, SysRoleResUpdateDTO,
+    RolePageDTO, SysRoleResAddDTO, SysRoleResPageDTO, SysRoleResUpdateDTO,
 };
 use crate::domain::vo::{SysResVO, SysRoleVO};
 use crate::service::CONTEXT;
-use actix_web::web::BufMut;
 use rbatis::core::Error;
 use rbatis::core::Result;
 use rbatis::crud::CRUD;
 use rbatis::plugin::page::Page;
-use std::collections::{HashMap, HashSet};
+use std::collections::{HashMap};
 
 /// 角色资源服务
 pub struct SysRoleResService {}
@@ -24,7 +23,7 @@ impl SysRoleResService {
                 size: arg.size.clone(),
             })
             .await?;
-        let mut role_ids = field_vec!(&role_page.records, id);
+        let role_ids = field_vec!(&role_page.records, id);
         let role_res_vec = CONTEXT
             .rbatis
             .fetch_list_by_wrapper::<SysRoleRes>(
@@ -37,7 +36,7 @@ impl SysRoleResService {
         for role_res in role_res_vec {
             let role_id = role_res.role_id.clone().unwrap_or_default();
             if role_res_map.get(&role_id).is_none() {
-                let mut datas = vec![];
+                let datas = vec![];
                 role_res_map.insert(role_id.clone(), datas);
             }
             let sets = role_res_map.get_mut(&role_id).unwrap();

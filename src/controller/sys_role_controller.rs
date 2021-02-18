@@ -1,8 +1,6 @@
 use actix_web::{web, Responder};
-
-use crate::domain::domain::SysRoleRes;
 use crate::domain::dto::{
-    IdDTO, RoleAddDTO, RoleEditDTO, RolePageDTO, SysRoleResAddDTO, SysRoleResPageDTO,
+    IdDTO, SysRoleResAddDTO, SysRoleResPageDTO,
     SysRoleResUpdateDTO,
 };
 use crate::domain::vo::RespVO;
