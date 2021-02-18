@@ -90,7 +90,7 @@ impl SysRoleResService {
     ///添加角色资源
     pub async fn add(&self, arg: &SysRoleResAddDTO) -> Result<u64> {
         let (_, role_id) = CONTEXT.sys_role_service.add(&arg.role).await?;
-        return self.save_resources(&role_id, &arg.resource_ids).await;
+        return self.save_resources(&role_id, arg.resource_ids.clone().unwrap_or(vec![])).await;
     }
 
     pub async fn edit(&self, arg: &SysRoleResUpdateDTO) -> Result<u64> {
@@ -100,36 +100,31 @@ impl SysRoleResService {
             .as_ref()
             .ok_or_else(|| Error::from("角色id不能为空！"))?;
         CONTEXT.sys_role_service.edit(&arg.role).await?;
-        return self.save_resources(role_id, &arg.resource_ids).await;
+        return self.save_resources(role_id, arg.resource_ids.clone().unwrap_or(vec![])).await;
     }
 
     ///保存所以资源
-    async fn save_resources(&self, role_id: &str, arg: &Option<Vec<String>>) -> Result<u64> {
+    async fn save_resources(&self, role_id: &str, resource_ids: Vec<String>) -> Result<u64> {
         self.remove_by_role_id(role_id).await?;
         let mut num = 0;
-        match &arg {
-            Some(resource_ids) => {
-                for resource_id in resource_ids {
-                    let save_ok = CONTEXT
-                        .rbatis
-                        .save(
-                            "",
-                            &SysRoleRes {
-                                id: Some(
-                                    rbatis::plugin::snowflake::async_snowflake_id().await.to_string(),
-                                ),
-                                role_id: Some(role_id.to_string()),
-                                res_id: Some(resource_id.clone()),
-                                create_date: None,
-                            },
-                        )
-                        .await;
-                    if save_ok.is_ok() {
-                        num += 1;
-                    }
-                }
+        for resource_id in resource_ids {
+            let save_ok = CONTEXT
+                .rbatis
+                .save(
+                    "",
+                    &SysRoleRes {
+                        id: Some(
+                            rbatis::plugin::snowflake::async_snowflake_id().await.to_string(),
+                        ),
+                        role_id: Some(role_id.to_string()),
+                        res_id: Some(resource_id.clone()),
+                        create_date: None,
+                    },
+                )
+                .await;
+            if save_ok.is_ok() {
+                num += 1;
             }
-            _ => {}
         }
         return Ok(num);
     }
