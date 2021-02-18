@@ -7,6 +7,7 @@ use rbatis::core::value::DateTimeNow;
 use rbatis::core::Result;
 use rbatis::crud::CRUD;
 use rbatis::plugin::page::{Page, PageRequest};
+use std::collections::HashMap;
 
 ///用户角色服务
 pub struct SysUserRoleService {}
@@ -75,7 +76,7 @@ impl SysUserRoleService {
     pub async fn find_user_roles(
         &self,
         user_id: &str,
-        all_res: &Vec<SysRes>,
+        all_res: &HashMap<String,SysRes>,
     ) -> Result<Vec<SysRoleVO>> {
         if user_id.is_empty() {
             return Ok(vec![]);
@@ -89,7 +90,6 @@ impl SysUserRoleService {
             .await?;
         let role_ids = &field_vec!(&user_roles, role_id);
         let roles = CONTEXT.sys_role_service.finds(role_ids).await?;
-        let res_map = CONTEXT.sys_res_service.to_hash_map(all_res)?;
         let role_res_vec = CONTEXT
             .sys_role_service
             .find_role_res(&field_vec!(&user_roles, role_id))
@@ -101,10 +101,10 @@ impl SysUserRoleService {
             let mut resources = vec![];
             for role_res in &role_res_vec {
                 if role.id.is_some() && role.id.eq(&role_res.role_id) {
-                    let res = res_map.get(role_res.res_id.as_ref().unwrap_or(&String::new()));
+                    let res = all_res.get(role_res.res_id.as_ref().unwrap_or(&String::new()));
                     match res {
                         Some(res) => {
-                            resources.push(SysResVO::from(*res));
+                            resources.push(SysResVO::from(res));
                         }
                         _ => {}
                     }

@@ -76,27 +76,9 @@ impl SysResService {
     /// 查找res数组
     pub async fn finds_all_map(&self) -> Result<HashMap<String, SysRes>> {
         let all = self.finds_all().await?;
-        return self.to_hash_map_owner(all);
-    }
-
-    /// 查找res数组
-    pub fn to_hash_map<'s, 'a>(
-        &'s self,
-        data: &'a Vec<SysRes>,
-    ) -> Result<HashMap<String, &'a SysRes>> {
-        let mut map = HashMap::new();
-        for x in data {
-            map.insert(x.id.clone().unwrap_or(String::new()), x);
-        }
-        return Ok(map);
-    }
-
-    /// 查找res数组
-    pub fn to_hash_map_owner(&self, arg: Vec<SysRes>) -> Result<HashMap<String, SysRes>> {
         let mut result = HashMap::new();
-        let data = self.to_hash_map(&arg)?;
-        for (k, v) in data {
-            result.insert(k, v.clone());
+        for mut x in all {
+            result.insert(x.id.take().unwrap_or_default(),x);
         }
         return Ok(result);
     }
@@ -113,7 +95,7 @@ impl SysResService {
     pub async fn finds_layer(
         &self,
         ids: &Vec<String>,
-        all_res: &Vec<SysRes>,
+        all_res: &HashMap<String,SysRes>,
     ) -> Result<Vec<SysResVO>> {
         let res = self.finds(&ids).await?;
         //find tops
@@ -132,9 +114,9 @@ impl SysResService {
     }
 
     ///死循环找出父-子 关联关系数组
-    pub fn loop_find_childs(&self, arg: &mut SysResVO, all_res: &Vec<SysRes>) {
+    pub fn loop_find_childs(&self, arg: &mut SysResVO, all_res: &HashMap<String,SysRes>) {
         let mut childs = None;
-        for x in all_res {
+        for (key,x) in all_res {
             if x.parent_id.eq(&arg.id) {
                 let mut item = SysResVO::from(x);
                 self.loop_find_childs(&mut item, all_res);

@@ -12,6 +12,8 @@ use crate::domain::dto::{SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO};
 use crate::domain::vo::{JWTToken, SignInVO};
 use crate::service::CONTEXT;
 use crate::util::password_encoder::PasswordEncoder;
+use std::collections::HashMap;
+
 ///后台用户服务
 pub struct SysUserService {}
 
@@ -172,7 +174,7 @@ impl SysUserService {
             roles: vec![],
         };
         //提前查找所有权限，避免在各个函数方法中重复查找
-        let all_res = CONTEXT.sys_res_service.finds_all().await?;
+        let all_res = CONTEXT.sys_res_service.finds_all_map().await?;
         sign_vo.permissions = self.loop_load_level_permission(&user_id, &all_res).await?;
         let jwt_token = JWTToken {
             id: user.id.clone().unwrap_or(String::new()),
@@ -229,7 +231,7 @@ impl SysUserService {
     pub async fn loop_load_level_permission(
         &self,
         user_id: &str,
-        all_res: &Vec<SysRes>,
+        all_res: &HashMap<String,SysRes>,
     ) -> Result<Vec<String>> {
         return CONTEXT
             .sys_role_service
