@@ -139,3 +139,10 @@ pub struct SysRoleResUpdateDTO {
     //资源id集合
     pub resource_ids: Option<Vec<String>>,
 }
+
+/// 角色分页
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct SysRoleResPageDTO {
+    pub page: Option<u64>,
+    pub size: Option<u64>,
+}

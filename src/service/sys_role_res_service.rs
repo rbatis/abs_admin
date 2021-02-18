@@ -1,14 +1,94 @@
-use crate::domain::domain::SysRoleRes;
-use crate::domain::dto::{RoleAddDTO, SysRoleResAddDTO, SysRoleResUpdateDTO};
+use crate::domain::domain::{SysRes, SysRoleRes};
+use crate::domain::dto::{
+    RoleAddDTO, RolePageDTO, SysRoleResAddDTO, SysRoleResPageDTO, SysRoleResUpdateDTO,
+};
+use crate::domain::vo::{SysResVO, SysRoleVO};
 use crate::service::CONTEXT;
+use actix_web::web::BufMut;
 use rbatis::core::Error;
 use rbatis::core::Result;
 use rbatis::crud::CRUD;
+use rbatis::plugin::page::Page;
+use std::collections::{HashMap, HashSet};
 
 /// 角色资源服务
 pub struct SysRoleResService {}
 
 impl SysRoleResService {
+    ///角色-资源 总体分页
+    pub async fn page(&self, arg: &SysRoleResPageDTO) -> Result<Page<SysRoleVO>> {
+        let role_page = CONTEXT
+            .sys_role_service
+            .page(&RolePageDTO {
+                page: arg.page.clone(),
+                size: arg.size.clone(),
+            })
+            .await?;
+        let mut role_ids = field_vec!(&role_page.records, id);
+        let role_ress = CONTEXT
+            .rbatis
+            .fetch_list_by_wrapper::<SysRoleRes>(
+                "",
+                &CONTEXT.rbatis.new_wrapper().r#in("role_id", &role_ids),
+            )
+            .await?;
+        let mut all_res = CONTEXT.sys_res_service.finds_all().await?;
+        let resource_map = CONTEXT.sys_res_service.to_hash_map(&all_res)?;
+        let mut role_res_map: HashMap<String, Vec<SysRoleRes>> = HashMap::new();
+        for role_res in role_ress {
+            let role_id = role_res.role_id.clone().unwrap_or_default();
+            if role_res_map.get(&role_id).is_none() {
+                let mut datas = vec![];
+                role_res_map.insert(role_id.clone(), datas);
+            }
+            let sets = role_res_map.get_mut(&role_id).unwrap();
+            //去重添加
+            for x in sets.iter() {
+                if x.id.eq(&role_res.id) {
+                    continue;
+                }
+            }
+            sets.push(role_res);
+        }
+        let mut data = vec![];
+        for role in role_page.records {
+            let res_ids = role_res_map.get(role.id.as_ref().unwrap_or(&"".to_string()));
+            let mut roles = vec![];
+            match res_ids {
+                Some(res_ids) => {
+                    for x in res_ids {
+                        match resource_map.get(x.res_id.as_ref().unwrap_or(&String::new())) {
+                            Some(res) => {
+                                let vo = SysResVO::from(*res);
+                                roles.push(vo);
+                            }
+                            _ => {}
+                        }
+                    }
+                }
+                _ => {}
+            }
+            let vo = SysRoleVO {
+                id: role.id.clone(),
+                name: role.name.clone(),
+                parent_id: role.parent_id.clone(),
+                del: role.del.clone(),
+                create_date: role.create_date.clone(),
+                resources: roles,
+            };
+            data.push(vo);
+        }
+        let result = Page::<SysRoleVO> {
+            records: data,
+            total: role_page.total,
+            pages: role_page.pages,
+            size: role_page.size,
+            current: role_page.current,
+            serch_count: role_page.serch_count,
+        };
+        return Result::Ok(result);
+    }
+
     ///添加角色资源
     pub async fn add(&self, arg: &SysRoleResAddDTO) -> Result<u64> {
         let (_, role_id) = CONTEXT.sys_role_service.add(&arg.role).await?;
@@ -61,9 +141,15 @@ impl SysRoleResService {
         //删角色
         let remove_roles = CONTEXT.sys_role_service.remove(role_id).await?;
         //删除用户-角色
-        let remove_user_roles = CONTEXT.sys_user_role_service.remove_by_role_id(role_id).await?;
+        let remove_user_roles = CONTEXT
+            .sys_user_role_service
+            .remove_by_role_id(role_id)
+            .await?;
         //删除角色-资源
-        let remove_role_res = CONTEXT.sys_role_res_service.remove_by_role_id(role_id).await?;
+        let remove_role_res = CONTEXT
+            .sys_role_res_service
+            .remove_by_role_id(role_id)
+            .await?;
         return Ok(remove_roles + remove_user_roles + remove_role_res);
     }
 

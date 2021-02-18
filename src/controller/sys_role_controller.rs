@@ -2,7 +2,8 @@ use actix_web::{web, Responder};
 
 use crate::domain::domain::SysRoleRes;
 use crate::domain::dto::{
-    IdDTO, RoleAddDTO, RoleEditDTO, RolePageDTO, SysRoleResAddDTO, SysRoleResUpdateDTO,
+    IdDTO, RoleAddDTO, RoleEditDTO, RolePageDTO, SysRoleResAddDTO, SysRoleResPageDTO,
+    SysRoleResUpdateDTO,
 };
 use crate::domain::vo::RespVO;
 use crate::service::CONTEXT;
@@ -14,8 +15,8 @@ pub async fn add(arg: web::Json<SysRoleResAddDTO>) -> impl Responder {
 }
 
 ///角色分页
-pub async fn page(arg: web::Json<RolePageDTO>) -> impl Responder {
-    let vo = CONTEXT.sys_role_service.page(&arg.0).await;
+pub async fn page(arg: web::Json<SysRoleResPageDTO>) -> impl Responder {
+    let vo = CONTEXT.sys_role_res_service.page(&arg.0).await;
     return RespVO::from_result(&vo).resp_json();
 }
 
@@ -28,9 +29,6 @@ pub async fn update(arg: web::Json<SysRoleResUpdateDTO>) -> impl Responder {
 ///角色删除
 pub async fn remove(arg: web::Json<IdDTO>) -> impl Responder {
     let role_id = arg.0.id.unwrap_or_default();
-    let vo = CONTEXT
-        .sys_role_res_service
-        .remove_role(&role_id)
-        .await;
+    let vo = CONTEXT.sys_role_res_service.remove_role(&role_id).await;
     return RespVO::from_result(&vo).resp_json();
 }

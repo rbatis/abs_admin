@@ -31,7 +31,7 @@ pub struct SysRole {
 
 ///角色资源关系表(关系表不使用逻辑删除)
 #[crud_enable]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct SysRoleRes {
     pub id: Option<String>,
     //角色id
