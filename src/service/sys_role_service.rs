@@ -27,7 +27,7 @@ impl SysRoleService {
     }
 
     ///角色添加
-    pub async fn add(&self, arg: &RoleAddDTO) -> Result<u64> {
+    pub async fn add(&self, arg: &RoleAddDTO) -> Result<(u64, String)> {
         let role = SysRole {
             id: Some(
                 rbatis::plugin::snowflake::async_snowflake_id()
@@ -39,7 +39,10 @@ impl SysRoleService {
             del: Some(0),
             create_date: Some(NaiveDateTime::now()),
         };
-        Ok(CONTEXT.rbatis.save("", &role).await?.rows_affected)
+        Ok((
+            CONTEXT.rbatis.save("", &role).await?.rows_affected,
+            role.id.clone().unwrap(),
+        ))
     }
 
     ///角色修改
@@ -60,15 +63,6 @@ impl SysRoleService {
             .rbatis
             .remove_by_id::<SysRole>("", &id.to_string())
             .await
-    }
-
-    ///角色删除,同时删除用户关系，权限关系
-    pub async fn remove_role_relation(&self, id: &str) -> Result<u64> {
-        let remove_roles = self.remove(id).await?;
-        //删除关联关系
-        let remove_user_roles = CONTEXT.sys_user_role_service.remove_by_role_id(id).await?;
-        let remove_role_res = CONTEXT.sys_role_res_service.remove_by_role_id(id).await?;
-        return Ok(remove_roles + remove_user_roles + remove_role_res);
     }
 
     pub async fn finds(&self, ids: &Vec<String>) -> Result<Vec<SysRole>> {

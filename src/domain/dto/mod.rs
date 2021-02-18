@@ -84,9 +84,6 @@ pub struct RoleAddDTO {
     pub auths: Vec<String>,
     //父id(可空)
     pub parent_id: Option<String>,
-
-    //资源id集合
-    pub resource_ids: Option<Vec<String>>,
 }
 
 /// 角色修改
@@ -96,9 +93,6 @@ pub struct RoleEditDTO {
     pub name: Option<String>,
     pub auths: Vec<String>,
     pub parent_id: Option<String>,
-
-    //资源id集合
-    pub resource_ids: Option<Vec<String>>,
 }
 
 /// 用户角色添加
@@ -128,4 +122,20 @@ pub struct UserRolePageDTO {
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct CatpchaDTO {
     pub account: Option<String>,
+}
+
+/// 角色资源添加
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct SysRoleResAddDTO {
+    pub role: RoleAddDTO,
+    //资源id集合
+    pub resource_ids: Option<Vec<String>>,
+}
+
+/// 角色资源添加
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct SysRoleResUpdateDTO {
+    pub role: RoleEditDTO,
+    //资源id集合
+    pub resource_ids: Option<Vec<String>>,
 }
