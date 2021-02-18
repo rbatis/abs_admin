@@ -6,7 +6,7 @@
 	},
 	"item": [
 		{
-			"name": "权限分页",
+			"name": "资源分页",
 			"request": {
 				"method": "POST",
 				"header": [],
