@@ -58,10 +58,13 @@ impl SysResService {
 
     ///删除资源
     pub async fn remove(&self, id: &str) -> Result<u64> {
-        CONTEXT
+        let num=CONTEXT
             .rbatis
             .remove_by_id::<SysRes>("", &id.to_string())
-            .await
+            .await?;
+        //删除关联数据
+        CONTEXT.sys_role_res_service.remove_by_res_id(id).await;
+        return Ok(num);
     }
 
     /// 查找res数组
