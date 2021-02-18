@@ -62,6 +62,8 @@ impl SysResService {
             .rbatis
             .remove_by_id::<SysRes>("", &id.to_string())
             .await?;
+        //删除父级为id的记录
+        CONTEXT.rbatis.remove_by_wrapper::<SysRes>("",&CONTEXT.rbatis.new_wrapper().eq("parent_id",id)).await;
         //删除关联数据
         CONTEXT.sys_role_res_service.remove_by_res_id(id).await;
         return Ok(num);
@@ -78,7 +80,7 @@ impl SysResService {
         let all = self.finds_all().await?;
         let mut result = HashMap::new();
         for mut x in all {
-            result.insert(x.id.take().unwrap_or_default(),x);
+            result.insert(x.id.take().unwrap_or_default(), x);
         }
         return Ok(result);
     }
@@ -95,7 +97,7 @@ impl SysResService {
     pub async fn finds_layer(
         &self,
         ids: &Vec<String>,
-        all_res: &HashMap<String,SysRes>,
+        all_res: &HashMap<String, SysRes>,
     ) -> Result<Vec<SysResVO>> {
         let res = self.finds(&ids).await?;
         //find tops
@@ -114,12 +116,12 @@ impl SysResService {
     }
 
     ///死循环找出父-子 关联关系数组
-    pub fn loop_find_childs(&self, arg: &mut SysResVO, all_res: &HashMap<String,SysRes>) {
-        if arg.parent_id.is_none(){
+    pub fn loop_find_childs(&self, arg: &mut SysResVO, all_res: &HashMap<String, SysRes>) {
+        if arg.parent_id.is_none() {
             return;
         }
         let mut childs = None;
-        for (key,x) in all_res {
+        for (key, x) in all_res {
             if x.parent_id.eq(&arg.id) {
                 let mut item = SysResVO::from(x);
                 self.loop_find_childs(&mut item, all_res);
