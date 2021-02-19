@@ -99,7 +99,15 @@ impl SysResService {
         ids: &Vec<String>,
         all_res: &HashMap<String, SysRes>,
     ) -> Result<Vec<SysResVO>> {
-        let res = self.finds(&ids).await?;
+        let mut res = vec![];
+        //filter res id
+        for (k,v) in all_res {
+            for x in ids {
+                if k.eq(x){
+                    res.push(v.clone());
+                }
+            }
+        }
         //find tops
         let mut tops = vec![];
         for item in res {
