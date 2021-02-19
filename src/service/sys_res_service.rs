@@ -24,6 +24,15 @@ impl SysResService {
         Ok(data)
     }
 
+    ///详情(附带层级数据)
+    pub async fn detail(&self, id: &String) -> Result<SysResVO> {
+        let res = CONTEXT.rbatis.fetch_by_id::<SysRes>("", id).await?;
+        let mut vo = SysResVO::from(&res);
+        let all_res = self.finds_all_map().await?;
+        self.loop_find_childs(&mut vo, &all_res);
+        return Ok(vo);
+    }
+
     ///添加资源
     pub async fn add(&self, arg: &SysRes) -> Result<u64> {
         let old: Option<SysRes> = CONTEXT
@@ -113,7 +122,7 @@ impl SysResService {
         ids: &Vec<String>,
         all_res: &HashMap<String, SysRes>,
     ) -> Result<Vec<SysResVO>> {
-        let mut res = self.finds_res(ids, &all_res);
+        let res = self.finds_res(ids, &all_res);
         //find tops
         let mut tops = vec![];
         for item in res {
