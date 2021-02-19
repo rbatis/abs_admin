@@ -2,8 +2,8 @@ use std::collections::HashMap;
 
 use rbatis::core::Result;
 use rbatis::crud::CRUD;
-use rbatis::plugin::page::{Page, PageRequest};
 use rbatis::Error;
+use rbatis::plugin::page::{Page, PageRequest};
 
 use crate::domain::domain::SysRes;
 use crate::domain::dto::{ResEditDTO, ResPageDTO};
@@ -63,7 +63,7 @@ impl SysResService {
             .remove_by_id::<SysRes>("", &id.to_string())
             .await?;
         //删除父级为id的记录
-        CONTEXT.rbatis.remove_by_wrapper::<SysRes>("",&CONTEXT.rbatis.new_wrapper().eq("parent_id",id)).await;
+        CONTEXT.rbatis.remove_by_wrapper::<SysRes>("", &CONTEXT.rbatis.new_wrapper().eq("parent_id", id)).await;
         //删除关联数据
         CONTEXT.sys_role_res_service.remove_by_res_id(id).await;
         return Ok(num);
@@ -93,21 +93,27 @@ impl SysResService {
             .await
     }
 
+    /// 查找res数组
+    pub fn finds_res(&self, ids: &Vec<String>, all_res: &HashMap<String, SysRes>) -> Vec<SysRes> {
+        let mut res = vec![];
+        //filter res id
+        for (k, v) in all_res {
+            for x in ids {
+                if k.eq(x) {
+                    res.push(v.clone());
+                }
+            }
+        }
+        res
+    }
+
     ///带有层级结构的 res数组
     pub async fn finds_layer(
         &self,
         ids: &Vec<String>,
         all_res: &HashMap<String, SysRes>,
     ) -> Result<Vec<SysResVO>> {
-        let mut res = vec![];
-        //filter res id
-        for (k,v) in all_res {
-            for x in ids {
-                if k.eq(x){
-                    res.push(v.clone());
-                }
-            }
-        }
+        let mut res = self.finds_res(ids, &all_res);
         //find tops
         let mut tops = vec![];
         for item in res {
