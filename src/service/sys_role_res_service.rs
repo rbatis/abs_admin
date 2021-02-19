@@ -1,14 +1,16 @@
-use crate::domain::domain::{SysRoleRes};
+use std::collections::HashMap;
+
+use rbatis::core::Error;
+use rbatis::core::Result;
+use rbatis::crud::CRUD;
+use rbatis::plugin::page::Page;
+
+use crate::domain::domain::{SysRole, SysRoleRes};
 use crate::domain::dto::{
     RolePageDTO, SysRoleResAddDTO, SysRoleResPageDTO, SysRoleResUpdateDTO,
 };
 use crate::domain::vo::{SysResVO, SysRoleVO};
 use crate::service::CONTEXT;
-use rbatis::core::Error;
-use rbatis::core::Result;
-use rbatis::crud::CRUD;
-use rbatis::plugin::page::Page;
-use std::collections::{HashMap};
 
 /// 角色资源服务
 pub struct SysRoleResService {}
@@ -23,7 +25,21 @@ impl SysRoleResService {
                 page_size: arg.page_size.clone(),
             })
             .await?;
-        let role_ids = field_vec!(&role_page.records, id);
+        let data = self.make_sys_role_vo(role_page.records).await?;
+        let result = Page::<SysRoleVO> {
+            records: data,
+            total: role_page.total,
+            pages: role_page.pages,
+            page_size: role_page.page_size,
+            page_no: role_page.page_no,
+            search_count: role_page.search_count,
+        };
+        return Result::Ok(result);
+    }
+
+    /// Vec<SysRole> -> Vec<SysRoleVO>
+    async fn make_sys_role_vo(&self, arg: Vec<SysRole>) -> Result<Vec<SysRoleVO>> {
+        let role_ids = field_vec!(&arg, id);
         let role_res_vec = CONTEXT
             .rbatis
             .fetch_list_by_wrapper::<SysRoleRes>(
@@ -49,7 +65,7 @@ impl SysRoleResService {
             sets.push(role_res);
         }
         let mut data = vec![];
-        for role in role_page.records {
+        for role in arg {
             let res_ids = role_res_map.get(role.id.as_ref().unwrap_or(&"".to_string()));
             let mut roles = vec![];
             match res_ids {
@@ -76,15 +92,7 @@ impl SysRoleResService {
             };
             data.push(vo);
         }
-        let result = Page::<SysRoleVO> {
-            records: data,
-            total: role_page.total,
-            pages: role_page.pages,
-            page_size: role_page.page_size,
-            page_no: role_page.page_no,
-            search_count: role_page.search_count,
-        };
-        return Result::Ok(result);
+        return Ok(data);
     }
 
     ///添加角色资源
