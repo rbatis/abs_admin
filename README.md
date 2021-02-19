@@ -30,8 +30,9 @@ docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 --name mysql -e TZ=Asia
 ```cmd
 打开postman,导入 postman.json
 ```
-* 4.使用Clion克隆导入abs_admin项目，命令行执行或者点开main.rs点击按钮运行
+* 4.使用Clion克隆导入abs_admin项目，点开main.rs点击按钮运行.或执行命令:
 ```cmd
+cargo update
 cargo run
 ```
 
