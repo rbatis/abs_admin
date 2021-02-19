@@ -227,7 +227,7 @@ impl SysUserService {
             .await
     }
 
-    ///TODO 递归查找层级结构权限
+    ///递归查找层级结构权限
     pub async fn loop_load_level_permission(
         &self,
         user_id: &str,
