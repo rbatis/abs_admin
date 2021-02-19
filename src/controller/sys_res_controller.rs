@@ -13,6 +13,12 @@ pub async fn page(page: web::Json<ResPageDTO>) -> impl Responder {
     RespVO::from_result(&data).resp_json()
 }
 
+/// 资源详情(json请求)
+pub async fn detail(id: web::Json<IdDTO>) -> impl Responder {
+    let data = CONTEXT.sys_res_service.detail(&id.0.id.unwrap_or_default()).await;
+    RespVO::from_result(&data).resp_json()
+}
+
 /// 资源全部(json请求)
 pub async fn all(page: web::Json<ResPageDTO>) -> impl Responder {
     let data = CONTEXT.sys_res_service.finds_all().await;
