@@ -1,11 +1,12 @@
+use actix_web::{App, HttpResponse, HttpServer, Responder, web};
+use log::info;
+
 use abs_admin::config::CONFIG;
 use abs_admin::controller::{
     img_controller, sys_res_controller, sys_role_controller, sys_user_controller,
     sys_user_role_controller,
 };
 use abs_admin::service::CONTEXT;
-use actix_web::{web, App, HttpResponse, HttpServer, Responder};
-use log::info;
 
 async fn index() -> impl Responder {
     HttpResponse::Ok().set_header("Access-Control-Allow-Origin", "*")
@@ -32,6 +33,10 @@ async fn main() -> std::io::Result<()> {
                 "/api/sys_user_info",
                 web::post().to(sys_user_controller::info),
             )
+            .route(
+                "/api/sys_user_detail",
+                web::post().to(sys_user_controller::detail),
+            )
             //TODO .route("/sys_log_out", web::post().to(user_controller::log_out))
             .route(
                 "/api/sys_res_update",
@@ -45,6 +50,10 @@ async fn main() -> std::io::Result<()> {
             .route(
                 "/api/sys_res_page",
                 web::post().to(sys_res_controller::page),
+            )
+            .route(
+                "/api/sys_res_detail",
+                web::post().to(sys_res_controller::detail),
             )
             .route("/api/sys_res_all", web::post().to(sys_res_controller::all))
             .route(
@@ -80,6 +89,10 @@ async fn main() -> std::io::Result<()> {
                 web::post().to(sys_role_controller::page),
             )
             .route(
+                "/api/sys_role_detail",
+                web::post().to(sys_role_controller::detail),
+            )
+            .route(
                 "/api/sys_user_role_add",
                 web::post().to(sys_user_role_controller::add),
             )
@@ -98,7 +111,7 @@ async fn main() -> std::io::Result<()> {
             .route("/api/captcha", web::get().to(img_controller::captcha))
             .route("/api/qrcode", web::get().to(img_controller::qrcode))
     })
-    .bind(&CONFIG.server_url)?
-    .run()
-    .await
+        .bind(&CONFIG.server_url)?
+        .run()
+        .await
 }
