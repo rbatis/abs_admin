@@ -46,6 +46,12 @@ pub async fn page(arg: web::Json<UserPageDTO>) -> impl Responder {
     return RespVO::from_result(&vo).resp_json();
 }
 
+///用户详情
+pub async fn detail(arg: web::Json<IdDTO>) -> impl Responder {
+    let vo = CONTEXT.sys_user_service.detail(&arg.0).await;
+    return RespVO::from_result(&vo).resp_json();
+}
+
 ///用户修改
 pub async fn update(arg: web::Json<UserEditDTO>) -> impl Responder {
     let vo = CONTEXT.sys_user_service.edit(&arg.0).await;

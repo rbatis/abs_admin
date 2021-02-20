@@ -1,18 +1,13 @@
-pub mod sign_in;
-
-pub use sign_in::*;
-
-pub mod res;
-
-pub use res::*;
-
 pub mod jwt;
+pub mod res;
+pub mod role;
+pub mod sign_in;
+pub mod user;
 
 pub use jwt::*;
-
-pub mod role;
-
+pub use res::*;
 pub use role::*;
+pub use sign_in::*;
 
 use crate::config::CONFIG;
 use actix_http::Response;

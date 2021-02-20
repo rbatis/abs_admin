@@ -8,7 +8,8 @@ use rbatis::plugin::page::{Page, PageRequest};
 use crate::config::CONFIG;
 
 use crate::domain::domain::{LoginCheck, SysRes, SysUser};
-use crate::domain::dto::{SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO};
+use crate::domain::dto::{IdDTO, SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO};
+use crate::domain::vo::user::SysUserVO;
 use crate::domain::vo::{JWTToken, SignInVO};
 use crate::service::CONTEXT;
 use crate::util::password_encoder::PasswordEncoder;
@@ -37,6 +38,23 @@ impl SysUserService {
             x.password = None; //屏蔽密码
         }
         return Ok(result);
+    }
+
+    ///用户详情
+    pub async fn detail(&self, arg: &IdDTO) -> Result<SysUserVO> {
+        let user_id = arg.id.clone().unwrap_or_default();
+        let user = self
+            .find(&user_id)
+            .await?
+            .ok_or_else(|| Error::from(format!("用户:{:?} 不存在！", user_id)))?;
+        let mut user_vo = SysUserVO::from(user);
+        let all_res = CONTEXT.sys_res_service.finds_all_map().await?;
+        let roles = CONTEXT
+            .sys_user_role_service
+            .find_user_roles(&user_id, &all_res)
+            .await?;
+        user_vo.roles = roles;
+        return Ok(user_vo);
     }
 
     ///后台用户根据id查找
@@ -231,7 +249,7 @@ impl SysUserService {
     pub async fn loop_load_level_permission(
         &self,
         user_id: &str,
-        all_res: &HashMap<String,SysRes>,
+        all_res: &HashMap<String, SysRes>,
     ) -> Result<Vec<String>> {
         return CONTEXT
             .sys_role_service

@@ -76,7 +76,7 @@ impl SysUserRoleService {
     pub async fn find_user_roles(
         &self,
         user_id: &str,
-        all_res: &HashMap<String,SysRes>,
+        all_res: &HashMap<String, SysRes>,
     ) -> Result<Vec<SysRoleVO>> {
         if user_id.is_empty() {
             return Ok(vec![]);

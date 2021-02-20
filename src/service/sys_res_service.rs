@@ -2,8 +2,8 @@ use std::collections::HashMap;
 
 use rbatis::core::Result;
 use rbatis::crud::CRUD;
-use rbatis::Error;
 use rbatis::plugin::page::{Page, PageRequest};
+use rbatis::Error;
 
 use crate::domain::domain::SysRes;
 use crate::domain::dto::{ResEditDTO, ResPageDTO};
@@ -72,7 +72,10 @@ impl SysResService {
             .remove_by_id::<SysRes>("", &id.to_string())
             .await?;
         //删除父级为id的记录
-        CONTEXT.rbatis.remove_by_wrapper::<SysRes>("", &CONTEXT.rbatis.new_wrapper().eq("parent_id", id)).await;
+        CONTEXT
+            .rbatis
+            .remove_by_wrapper::<SysRes>("", &CONTEXT.rbatis.new_wrapper().eq("parent_id", id))
+            .await;
         //删除关联数据
         CONTEXT.sys_role_res_service.remove_by_res_id(id).await;
         return Ok(num);

@@ -83,7 +83,7 @@ impl SysRoleService {
     pub async fn find_user_permission(
         &self,
         user_id: &str,
-        all_res:  &HashMap<String,SysRes>,
+        all_res: &HashMap<String, SysRes>,
     ) -> Result<Vec<String>> {
         let user_roles: Vec<SysUserRole> = CONTEXT
             .rbatis
