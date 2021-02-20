@@ -73,6 +73,10 @@ impl SysRoleService {
             .await
     }
 
+    pub async fn find(&self, id: &String) -> Result<SysRole> {
+        CONTEXT.rbatis.fetch_by_id("", id).await
+    }
+
     pub async fn find_role_res(&self, ids: &Vec<String>) -> Result<Vec<SysRoleRes>> {
         CONTEXT
             .rbatis

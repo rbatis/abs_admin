@@ -1,10 +1,10 @@
 use crate::domain::domain::{LoginCheck, SysUser};
 use crate::domain::vo::SysRoleVO;
 use chrono::NaiveDateTime;
-use serde::{Serialize,Deserialize};
+use serde::{Deserialize, Serialize};
 
 ///后台用户
-#[derive(Clone, Debug,Serialize,Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct SysUserVO {
     pub id: Option<String>,
     pub account: Option<String>,

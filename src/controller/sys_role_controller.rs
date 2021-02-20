@@ -15,6 +15,12 @@ pub async fn page(arg: web::Json<SysRoleResPageDTO>) -> impl Responder {
     return RespVO::from_result(&vo).resp_json();
 }
 
+///角色详情
+pub async fn detail(arg: web::Json<IdDTO>) -> impl Responder {
+    let vo = CONTEXT.sys_role_res_service.detail(&arg.0).await;
+    return RespVO::from_result(&vo).resp_json();
+}
+
 ///角色（关联资源）修改
 pub async fn update(arg: web::Json<SysRoleResUpdateDTO>) -> impl Responder {
     let vo = CONTEXT.sys_role_res_service.edit(&arg.0).await;
