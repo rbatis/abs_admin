@@ -63,9 +63,7 @@ impl SysResService {
                     .new_wrapper()
                     .eq("permission", &arg.permission)
                     .or()
-                    .eq("name",&arg.name)
-                    .or()
-                    .eq("path",&arg.path),
+                    .eq("name",&arg.name),
             )
             .await?;
         if old.len() > 0 {
