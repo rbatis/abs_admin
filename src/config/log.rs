@@ -15,7 +15,7 @@ pub fn init_log() {
         CONFIG.debug,
     );
     if CONFIG.debug == false {
-        println!("[abs_admin] release mode up! file log open,console log disable!");
+        println!("[abs_admin] release_mode up! file log open,console log disable!");
     }
 }
 
