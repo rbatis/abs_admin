@@ -2,8 +2,8 @@ use std::collections::HashMap;
 
 use rbatis::core::Result;
 use rbatis::crud::CRUD;
-use rbatis::plugin::page::{Page, PageRequest};
 use rbatis::Error;
+use rbatis::plugin::page::{Page, PageRequest};
 
 use crate::domain::domain::SysRes;
 use crate::domain::dto::{ResEditDTO, ResPageDTO};
@@ -15,15 +15,30 @@ pub struct SysResService {}
 
 impl SysResService {
     ///资源分页
-    pub async fn page(&self, arg: &ResPageDTO) -> Result<Page<SysRes>> {
+    pub async fn page(&self, arg: &ResPageDTO) -> Result<Page<SysResVO>> {
         let page_req = PageRequest::new(arg.page_no.unwrap_or(1), arg.page_size.unwrap_or(10));
         let data = CONTEXT
             .rbatis
-            .fetch_page_by_wrapper("", &CONTEXT.rbatis.new_wrapper()
+            .fetch_page_by_wrapper::<SysRes>("", &CONTEXT.rbatis.new_wrapper()
                 .is_null("parent_id")
-                .order_by(false,&["create_date"]), &page_req)
+                .order_by(false, &["create_date"]), &page_req)
             .await?;
-        Ok(data)
+        let all_res = self.finds_all_map().await?;
+        let mut datas = vec![];
+        for x in data.records {
+            let mut vo = SysResVO::from(&x);
+            self.loop_find_childs(&mut vo, &all_res);
+            datas.push(vo);
+        }
+        let new_page = Page {
+            records: datas,
+            total: data.total,
+            pages: data.pages,
+            page_no: data.page_no,
+            page_size: data.page_size,
+            search_count: data.search_count,
+        };
+        Ok(new_page)
     }
 
     ///详情(附带层级数据)
@@ -145,11 +160,11 @@ impl SysResService {
 
     ///死循环找出父-子 关联关系数组
     pub fn loop_find_childs(&self, arg: &mut SysResVO, all_res: &HashMap<String, SysRes>) {
-        if arg.parent_id.is_none() {
-            return;
-        }
         let mut childs = None;
         for (key, x) in all_res {
+            if x.parent_id.is_none(){
+                continue;
+            }
             if x.parent_id.eq(&arg.id) {
                 let mut item = SysResVO::from(x);
                 self.loop_find_childs(&mut item, all_res);
@@ -159,6 +174,8 @@ impl SysResService {
                 childs.as_mut().unwrap().push(item);
             }
         }
-        arg.childs = childs;
+        if childs.is_some() && childs.as_ref().unwrap().len() != 0 {
+            arg.childs = childs;
+        }
     }
 }
