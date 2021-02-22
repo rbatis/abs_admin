@@ -162,10 +162,7 @@ impl SysResService {
     pub fn loop_find_childs(&self, arg: &mut SysResVO, all_res: &HashMap<String, SysRes>) {
         let mut childs = None;
         for (key, x) in all_res {
-            if x.parent_id.is_none(){
-                continue;
-            }
-            if x.parent_id.eq(&arg.id) {
+            if x.parent_id.is_some() && x.parent_id.eq(&arg.id) {
                 let mut item = SysResVO::from(x);
                 self.loop_find_childs(&mut item, all_res);
                 if childs.is_none() {
