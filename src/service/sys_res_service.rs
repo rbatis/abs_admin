@@ -160,18 +160,24 @@ impl SysResService {
 
     ///死循环找出父-子 关联关系数组
     pub fn loop_find_childs(&self, arg: &mut SysResVO, all_res: &HashMap<String, SysRes>) {
-        let mut childs = None;
+        let mut childs: Option<Vec<SysResVO>> = None;
         for (key, x) in all_res {
             if x.parent_id.is_some() && x.parent_id.eq(&arg.id) {
                 let mut item = SysResVO::from(x);
                 self.loop_find_childs(&mut item, all_res);
-                if childs.is_none() {
-                    childs = Some(vec![]);
+                match &mut childs {
+                    Some(childs) => {
+                        childs.push(item);
+                    }
+                    None => {
+                        let mut vec = vec![];
+                        vec.push(item);
+                        childs = Some(vec);
+                    }
                 }
-                childs.as_mut().unwrap().push(item);
             }
         }
-        if childs.is_some() && childs.as_ref().unwrap().len() != 0 {
+        if childs.is_some() {
             arg.childs = childs;
         }
     }
