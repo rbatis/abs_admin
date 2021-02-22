@@ -108,8 +108,8 @@ impl SysResService {
     pub async fn finds_all_map(&self) -> Result<HashMap<String, SysRes>> {
         let all = self.finds_all().await?;
         let mut result = HashMap::new();
-        for mut x in all {
-            result.insert(x.id.take().unwrap_or_default(), x);
+        for x in all {
+            result.insert(x.id.clone().unwrap_or_default(), x);
         }
         return Ok(result);
     }
