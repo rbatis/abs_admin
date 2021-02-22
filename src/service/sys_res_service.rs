@@ -63,7 +63,7 @@ impl SysResService {
             )
             .await?;
         if old.len() > 0 {
-            return Err(Error::from("权限已存在!"));
+            return Err(Error::from(format!("权限已存在! 权限:{:?}",field_vec!(old,name))));
         }
         Ok(CONTEXT.rbatis.save("", arg).await?.rows_affected)
     }
