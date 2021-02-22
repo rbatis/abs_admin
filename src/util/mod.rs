@@ -1,6 +1,7 @@
 pub mod bencher;
 pub mod client;
 pub mod password_encoder;
+pub mod string;
 
 /// 取目标Vec的成员属性vec集合
 /// vec_ref: vec的引用，field_name: 结构体的field名称

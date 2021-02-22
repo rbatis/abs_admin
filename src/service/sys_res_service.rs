@@ -9,6 +9,7 @@ use crate::domain::domain::SysRes;
 use crate::domain::dto::{ResEditDTO, ResPageDTO};
 use crate::domain::vo::SysResVO;
 use crate::service::CONTEXT;
+use crate::util::string::{IsEmpty};
 
 /// 资源服务
 pub struct SysResService {}
@@ -20,6 +21,7 @@ impl SysResService {
         let data = CONTEXT
             .rbatis
             .fetch_page_by_wrapper::<SysRes>("", &CONTEXT.rbatis.new_wrapper()
+                .do_if(!arg.name.is_empty(),|w|w.eq("name",&arg.name))
                 .is_null("parent_id")
                 .order_by(false, &["create_date"]), &page_req)
             .await?;

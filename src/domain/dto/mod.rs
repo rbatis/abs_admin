@@ -12,6 +12,7 @@ pub struct IdDTO {
 pub struct ResPageDTO {
     pub page_no: Option<u64>,
     pub page_size: Option<u64>,
+    pub name: Option<String>,
 }
 
 /// 资源添加DTO
