@@ -59,7 +59,11 @@ impl SysResService {
                 &CONTEXT
                     .rbatis
                     .new_wrapper()
-                    .eq("permission", &arg.permission),
+                    .eq("permission", &arg.permission)
+                    .or()
+                    .eq("name",&arg.name)
+                    .or()
+                    .eq("path",&arg.path),
             )
             .await?;
         if old.len() > 0 {
