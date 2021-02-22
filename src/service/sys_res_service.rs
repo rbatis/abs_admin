@@ -21,7 +21,7 @@ impl SysResService {
         let data = CONTEXT
             .rbatis
             .fetch_page_by_wrapper::<SysRes>("", &CONTEXT.rbatis.new_wrapper()
-                .do_if(!arg.name.is_empty(),|w|w.eq("name",&arg.name))
+                .do_if(!arg.name.is_empty(),|w|w.like("name",&arg.name))
                 .is_null("parent_id")
                 .order_by(false, &["create_date"]), &page_req)
             .await?;
