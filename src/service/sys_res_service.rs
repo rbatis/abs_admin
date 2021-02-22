@@ -20,7 +20,7 @@ impl SysResService {
         let data = CONTEXT
             .rbatis
             .fetch_page_by_wrapper("", &CONTEXT.rbatis.new_wrapper()
-                .eq("parent_id",serde_json::Value::Null)
+                .is_null("parent_id")
                 .order_by(false,&["create_date"]), &page_req)
             .await?;
         Ok(data)
