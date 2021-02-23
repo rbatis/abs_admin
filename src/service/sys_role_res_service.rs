@@ -5,8 +5,10 @@ use rbatis::core::Result;
 use rbatis::crud::CRUD;
 use rbatis::plugin::page::Page;
 
-use crate::domain::domain::{SysRes, SysRole, SysRoleRes};
-use crate::domain::dto::{RolePageDTO, SysRoleResAddDTO, SysRoleResPageDTO, SysRoleResUpdateDTO};
+use crate::domain::domain::{SysRes, SysRoleRes};
+use crate::domain::dto::{
+    RoleAddDTO, RoleEditDTO, RolePageDTO, SysRoleResAddDTO, SysRoleResPageDTO, SysRoleResUpdateDTO,
+};
 use crate::domain::vo::{SysResVO, SysRoleVO};
 use crate::service::CONTEXT;
 
@@ -114,22 +116,25 @@ impl SysRoleResService {
 
     ///添加角色资源
     pub async fn add(&self, arg: &SysRoleResAddDTO) -> Result<u64> {
-        let (_, role_id) = CONTEXT.sys_role_service.add(&arg.role).await?;
+        let (_, role_id) = CONTEXT
+            .sys_role_service
+            .add(&RoleAddDTO::from(arg.clone()))
+            .await?;
         return self
-            .save_resources(&role_id, arg.resource_ids.clone().unwrap_or(vec![]))
+            .save_resources(&role_id, arg.resource_ids.clone())
             .await;
     }
 
     pub async fn edit(&self, arg: &SysRoleResUpdateDTO) -> Result<u64> {
         let role_id = arg
-            .role
             .id
             .as_ref()
             .ok_or_else(|| Error::from("角色id不能为空！"))?;
-        CONTEXT.sys_role_service.edit(&arg.role).await?;
-        return self
-            .save_resources(role_id, arg.resource_ids.clone().unwrap_or(vec![]))
-            .await;
+        CONTEXT
+            .sys_role_service
+            .edit(&RoleEditDTO::from(arg.clone()))
+            .await?;
+        return self.save_resources(role_id, arg.resource_ids.clone()).await;
     }
 
     ///保存所以资源
