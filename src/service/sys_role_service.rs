@@ -8,6 +8,7 @@ use crate::domain::domain::{SysRes, SysRole, SysRoleRes, SysUserRole};
 use crate::domain::dto::{RoleAddDTO, RoleEditDTO, RolePageDTO};
 use crate::service::CONTEXT;
 use std::collections::HashMap;
+use crate::util::string::IsEmpty;
 
 ///角色服务
 pub struct SysRoleService {}
@@ -15,7 +16,10 @@ pub struct SysRoleService {}
 impl SysRoleService {
     ///角色分页
     pub async fn page(&self, arg: &RolePageDTO) -> Result<Page<SysRole>> {
-        let wrapper = CONTEXT.rbatis.new_wrapper();
+        let wrapper = CONTEXT.rbatis.new_wrapper()
+            .do_if(!arg.name.is_empty(),|w|w.like("name",&arg.name))
+            .is_null("parent_id")
+            .order_by(false, &["create_date"]);
         let data = CONTEXT
             .rbatis
             .fetch_page_by_wrapper(

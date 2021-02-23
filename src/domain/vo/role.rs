@@ -11,4 +11,5 @@ pub struct SysRoleVO {
     pub del: Option<i32>,
     pub create_date: Option<NaiveDateTime>,
     pub resources: Vec<SysResVO>,
+    pub childs: Option<Vec<SysRoleVO>>,
 }

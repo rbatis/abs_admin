@@ -76,6 +76,7 @@ pub struct UserPageDTO {
 pub struct RolePageDTO {
     pub page_no: Option<u64>,
     pub page_size: Option<u64>,
+    pub name: Option<String>,
 }
 
 /// 角色添加
@@ -146,4 +147,5 @@ pub struct SysRoleResUpdateDTO {
 pub struct SysRoleResPageDTO {
     pub page_no: Option<u64>,
     pub page_size: Option<u64>,
+    pub name: Option<String>,
 }

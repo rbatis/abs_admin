@@ -1,13 +1,15 @@
+use std::collections::HashMap;
+
+use chrono::NaiveDateTime;
+use rbatis::core::Result;
+use rbatis::core::value::DateTimeNow;
+use rbatis::crud::CRUD;
+use rbatis::plugin::page::{Page, PageRequest};
+
 use crate::domain::domain::{SysRes, SysUserRole};
 use crate::domain::dto::{UserRoleAddDTO, UserRoleEditDTO, UserRolePageDTO};
 use crate::domain::vo::{SysResVO, SysRoleVO};
 use crate::service::CONTEXT;
-use chrono::NaiveDateTime;
-use rbatis::core::value::DateTimeNow;
-use rbatis::core::Result;
-use rbatis::crud::CRUD;
-use rbatis::plugin::page::{Page, PageRequest};
-use std::collections::HashMap;
 
 ///用户角色服务
 pub struct SysUserRoleService {}
@@ -117,6 +119,7 @@ impl SysUserRoleService {
                 del: role.del,
                 create_date: role.create_date,
                 resources: resources,
+                childs: None,
             });
         }
         return Ok(role_vos);

@@ -32,6 +32,7 @@ impl SysRoleResService {
             .page(&RolePageDTO {
                 page_no: arg.page_no.clone(),
                 page_size: arg.page_size.clone(),
+                name: arg.name.clone()
             })
             .await?;
         return Result::Ok(role_page);
@@ -144,6 +145,7 @@ impl SysRoleResService {
             del: arg.del,
             create_date: arg.create_date,
             resources: roles,
+            childs: None
         };
         return Ok(vo);
     }
