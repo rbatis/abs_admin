@@ -102,6 +102,23 @@ impl SysResService {
         return Ok(num);
     }
 
+    pub fn make_res_ids(&self, args: &Vec<SysResVO>) -> Vec<String> {
+        let mut ids = vec![];
+        for x in args {
+            ids.push(x.id.clone().unwrap_or_default());
+            match &x.childs {
+                Some(childs) => {
+                    let child_ids = self.make_res_ids(childs);
+                    for child in child_ids {
+                        ids.push(child);
+                    }
+                }
+                _ => {}
+            }
+        }
+        ids
+    }
+
     /// 查找res数组
     pub async fn finds_all(&self) -> Result<Vec<SysRes>> {
         //TODO 查找的全部数据缓存于Redis，同时 remove，edit方法调用时刷新redis缓存

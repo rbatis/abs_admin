@@ -118,6 +118,7 @@ impl SysUserRoleService {
                 parent_id: role.parent_id,
                 del: role.del,
                 create_date: role.create_date,
+                resource_ids: CONTEXT.sys_res_service.make_res_ids(&resources),
                 resources: resources,
                 childs: vec![],
             });

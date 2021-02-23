@@ -11,7 +11,6 @@ use crate::domain::dto::{
 };
 use crate::domain::vo::{SysResVO, SysRoleVO};
 use crate::service::CONTEXT;
-use std::alloc::Global;
 
 /// 角色资源服务
 pub struct SysRoleResService {}
@@ -111,24 +110,10 @@ impl SysRoleResService {
                 childs: self.loop_set_res_vec(role.childs, role_res_map, all)?,
                 resource_ids: vec![],
             };
-            vo.resource_ids = self.make_res_ids(&vo);
+            vo.resource_ids = CONTEXT.sys_res_service.make_res_ids(&vo.resources);
             data.push(vo);
         }
         return Ok(data);
-    }
-
-    fn make_res_ids(&self, args: &Vec<SysResVO>) -> Vec<String> {
-        let mut ids=vec![];
-        for x in args {
-            ids.push(x.id.clone().unwrap_or_default());
-            match &x.childs{
-                Some(childs)=>{
-                  //TODO sys res data
-                }
-                _ => {}
-            }
-        }
-        ids
     }
 
     ///添加角色资源
