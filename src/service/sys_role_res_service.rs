@@ -112,60 +112,6 @@ impl SysRoleResService {
         return Ok(data);
     }
 
-    /// SysRole -> SysRoleVO
-    async fn make_sys_role_vo(&self, arg: SysRole) -> Result<SysRoleVO> {
-        let role_res_vec = CONTEXT
-            .rbatis
-            .fetch_list_by_wrapper::<SysRoleRes>(
-                "",
-                &CONTEXT.rbatis.new_wrapper().eq("role_id", &arg.id),
-            )
-            .await?;
-        let resource_map = CONTEXT.sys_res_service.finds_all_map().await?;
-        let mut role_res_map: HashMap<String, Vec<SysRoleRes>> = HashMap::new();
-        for role_res in role_res_vec {
-            let role_id = role_res.role_id.clone().unwrap_or_default();
-            if role_res_map.get(&role_id).is_none() {
-                let datas = vec![];
-                role_res_map.insert(role_id.clone(), datas);
-            }
-            let sets = role_res_map.get_mut(&role_id).unwrap();
-            //去重添加
-            for x in sets.iter() {
-                if x.id.eq(&role_res.id) {
-                    continue;
-                }
-            }
-            sets.push(role_res);
-        }
-        let res_ids = role_res_map.get(arg.id.as_ref().unwrap_or(&"".to_string()));
-        let mut roles = vec![];
-        match res_ids {
-            Some(res_ids) => {
-                for x in res_ids {
-                    match resource_map.get(x.res_id.as_ref().unwrap_or(&String::new())) {
-                        Some(res) => {
-                            let vo = SysResVO::from(res);
-                            roles.push(vo);
-                        }
-                        _ => {}
-                    }
-                }
-            }
-            _ => {}
-        }
-        let vo = SysRoleVO {
-            id: arg.id,
-            name: arg.name,
-            parent_id: arg.parent_id,
-            del: arg.del,
-            create_date: arg.create_date,
-            resources: roles,
-            childs: vec![],
-        };
-        return Ok(vo);
-    }
-
     ///添加角色资源
     pub async fn add(&self, arg: &SysRoleResAddDTO) -> Result<u64> {
         let (_, role_id) = CONTEXT.sys_role_service.add(&arg.role).await?;
