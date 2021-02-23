@@ -25,7 +25,7 @@ impl SysRoleResService {
             })
             .await?;
         let all = CONTEXT.sys_res_service.finds_all_map().await?;
-        let role_res_map = self.make_role_res_map(&role_page.records).await?;
+        let role_res_map = self.find_role_res_map(&role_page.records).await?;
         role_page.records = self.loop_set_res_vec(role_page.records, &role_res_map, &all)?;
         return Result::Ok(role_page);
     }
@@ -42,7 +42,7 @@ impl SysRoleResService {
         return results;
     }
 
-    async fn make_role_res_map(
+    async fn find_role_res_map(
         &self,
         arg: &Vec<SysRoleVO>,
     ) -> Result<HashMap<String, Vec<SysRoleRes>>> {
