@@ -13,6 +13,7 @@ pub struct SysRoleVO {
     pub create_date: Option<NaiveDateTime>,
     pub resources: Vec<SysResVO>,
     pub childs: Vec<SysRoleVO>,
+    pub resource_ids: Vec<String>,
 }
 
 impl From<SysRole> for SysRoleVO {
@@ -25,6 +26,7 @@ impl From<SysRole> for SysRoleVO {
             create_date: arg.create_date,
             resources: vec![],
             childs: vec![],
+            resource_ids: vec![]
         }
     }
 }
