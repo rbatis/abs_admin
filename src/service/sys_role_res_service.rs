@@ -11,6 +11,8 @@ use crate::domain::dto::{
 };
 use crate::domain::vo::{SysResVO, SysRoleVO};
 use crate::service::CONTEXT;
+use chrono::NaiveDateTime;
+use rbatis::core::value::DateTimeNow;
 
 /// 角色资源服务
 pub struct SysRoleResService {}
@@ -142,29 +144,28 @@ impl SysRoleResService {
     ///保存所以资源
     async fn save_resources(&self, role_id: &str, resource_ids: Vec<String>) -> Result<u64> {
         self.remove_by_role_id(role_id).await?;
-        let mut num = 0;
+        let now=NaiveDateTime::now();
+        let mut sys_role_res =vec![];
         for resource_id in resource_ids {
-            let save_ok = CONTEXT
-                .rbatis
-                .save(
-                    "",
-                    &SysRoleRes {
-                        id: Some(
-                            rbatis::plugin::snowflake::async_snowflake_id()
-                                .await
-                                .to_string(),
-                        ),
-                        role_id: Some(role_id.to_string()),
-                        res_id: Some(resource_id.clone()),
-                        create_date: None,
-                    },
-                )
-                .await;
-            if save_ok.is_ok() {
-                num += 1;
-            }
+            sys_role_res.push(SysRoleRes {
+                id: Some(
+                    rbatis::plugin::snowflake::async_snowflake_id()
+                        .await
+                        .to_string(),
+                ),
+                role_id: Some(role_id.to_string()),
+                res_id: Some(resource_id.clone()),
+                create_date: Some(now.clone()),
+            });
         }
-        return Ok(num);
+        let save_ok = CONTEXT
+            .rbatis
+            .save_batch(
+                "",
+                &sys_role_res,
+            )
+            .await?;
+        return Ok(save_ok.rows_affected);
     }
 
     ///角色删除,同时删除用户关系，权限关系
