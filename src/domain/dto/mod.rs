@@ -98,8 +98,8 @@ pub struct RoleAddDTO {
 pub struct RoleEditDTO {
     pub id: Option<String>,
     pub name: Option<String>,
-    pub auths: Vec<String>,
     pub parent_id: Option<String>,
+    pub resource_ids: Vec<String>,
 }
 
 /// 用户角色添加
@@ -155,7 +155,6 @@ impl From<SysRoleResAddDTO> for RoleAddDTO {
 pub struct SysRoleResUpdateDTO {
     pub id: Option<String>,
     pub name: Option<String>,
-    pub auths: Vec<String>,
     pub parent_id: Option<String>,
     //资源id集合
     pub resource_ids: Vec<String>,
@@ -166,7 +165,7 @@ impl From<SysRoleResUpdateDTO> for RoleEditDTO {
         Self {
             id: arg.id,
             name: arg.name,
-            auths: arg.auths,
+            resource_ids: arg.resource_ids,
             parent_id: arg.parent_id,
         }
     }
