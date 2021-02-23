@@ -64,7 +64,7 @@ impl SysRoleResService {
             match res_ids {
                 Some(res_ids) => {
                     for x in res_ids {
-                        match resource_map.get(x.res_id.as_ref().unwrap_or(&String::new())) {
+                        match all.get(x.res_id.as_ref().unwrap_or(&String::new())) {
                             Some(res) => {
                                 let vo = SysResVO::from(res);
                                 res_vos.push(vo);
