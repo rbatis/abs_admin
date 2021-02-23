@@ -3,7 +3,7 @@ use chrono::NaiveDateTime;
 use rbatis::core::value::DateTimeNow;
 
 use crate::domain::domain::SysRes;
-use crate::domain::dto::{IdDTO, ResAddDTO, ResEditDTO, ResPageDTO};
+use crate::domain::dto::{IdDTO, ResAddDTO, ResEditDTO, ResPageDTO, EmptyDTO};
 use crate::domain::vo::RespVO;
 use crate::service::CONTEXT;
 
@@ -14,8 +14,14 @@ pub async fn page(page: web::Json<ResPageDTO>) -> impl Responder {
 }
 
 /// 资源全部(json请求)
-pub async fn all(page: web::Json<ResPageDTO>) -> impl Responder {
+pub async fn all(page: web::Json<EmptyDTO>) -> impl Responder {
     let data = CONTEXT.sys_res_service.finds_all().await;
+    RespVO::from_result(&data).resp_json()
+}
+
+/// 顶层权限
+pub async fn layer_top(page: web::Json<EmptyDTO>) -> impl Responder{
+    let data = CONTEXT.sys_res_service.finds_layer_top().await;
     RespVO::from_result(&data).resp_json()
 }
 

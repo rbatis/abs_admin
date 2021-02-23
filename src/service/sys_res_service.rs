@@ -157,6 +157,17 @@ impl SysResService {
         res
     }
 
+    ///顶层权限
+    pub async fn finds_layer_top(&self) -> Result<Vec<SysResVO>> {
+        let list=CONTEXT.rbatis.fetch_list_by_wrapper::<SysRes>("",&CONTEXT
+            .rbatis
+            .new_wrapper()
+            .is_null("parent_id")
+            .order_by(false, &["create_date"])).await?;
+        let all= self.finds_all_map().await?;
+        self.finds_layer(&field_vec!(list,id),&all).await
+    }
+
     ///带有层级结构的 res数组
     pub async fn finds_layer(
         &self,
