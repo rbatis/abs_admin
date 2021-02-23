@@ -20,13 +20,13 @@ pub struct SysUserService {}
 
 impl SysUserService {
     /// 后台用户分页
-    pub async fn page(&self, arg: &UserPageDTO) -> Result<Page<SysUser>> {
+    pub async fn page(&self, arg: &UserPageDTO) -> Result<Page<SysUserVO>> {
         let wrapper = CONTEXT
             .rbatis
             .new_wrapper()
             .do_if(arg.name.is_some(), |w| w.eq("name", &arg.name))
             .do_if(arg.account.is_some(), |w| w.eq("account", &arg.account));
-        let mut result: Page<SysUser> = CONTEXT
+        let sys_user_page: Page<SysUser> = CONTEXT
             .rbatis
             .fetch_page_by_wrapper(
                 "",
@@ -34,10 +34,18 @@ impl SysUserService {
                 &PageRequest::new(arg.page_no.unwrap_or(1), arg.page_size.unwrap_or(10)),
             )
             .await?;
-        for x in &mut result.records {
-            x.password = None; //屏蔽密码
+        let mut vos = vec![];
+        for x in sys_user_page.records {
+            vos.push(SysUserVO::from(x));
         }
-        return Ok(result);
+        return Ok(Page::<SysUserVO> {
+            records: vos,
+            total: sys_user_page.total,
+            pages: sys_user_page.pages,
+            page_no: sys_user_page.page_no,
+            page_size: sys_user_page.page_size,
+            search_count: sys_user_page.search_count,
+        });
     }
 
     ///用户详情

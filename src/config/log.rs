@@ -14,6 +14,9 @@ pub fn init_log() {
         None,
         CONFIG.debug,
     );
+    if CONFIG.debug == false {
+        println!("[abs_admin] release_mode up! file log open,console log disable!");
+    }
 }
 
 fn str_to_temp_size(arg: &str) -> LogSize {

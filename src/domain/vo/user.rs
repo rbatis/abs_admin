@@ -22,7 +22,8 @@ impl From<SysUser> for SysUserVO {
         Self {
             id: arg.id,
             account: arg.account,
-            password: arg.password,
+            //屏蔽密码
+            password: None,
             name: arg.name,
             login_check: arg.login_check,
             del: arg.del,

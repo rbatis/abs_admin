@@ -45,7 +45,7 @@ impl Default for ApplicationConfig {
 
         let docs = YamlLoader::load_from_str(&yml_data).unwrap();
         //读取配置
-        Self {
+        let result = Self {
             debug: get_cfg(&docs, "debug").as_bool().unwrap_or(true),
             server_url: get_cfg(&docs, "server_url")
                 .as_str()
@@ -90,7 +90,15 @@ impl Default for ApplicationConfig {
                 .as_str()
                 .unwrap_or("")
                 .to_owned(),
+        };
+
+        if result.debug {
+            println!("[abs_admin] debug_mode is enable!")
+        } else {
+            println!("[abs_admin] release_mode is enable!")
         }
+
+        result
     }
 }
 
