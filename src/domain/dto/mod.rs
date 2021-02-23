@@ -83,7 +83,6 @@ pub struct RolePageDTO {
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct RoleAddDTO {
     pub name: Option<String>,
-    pub auths: Vec<String>,
     //父id(可空)
     pub parent_id: Option<String>,
 }
