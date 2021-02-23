@@ -1,4 +1,4 @@
-use actix_web::{App, HttpResponse, HttpServer, Responder, web};
+use actix_web::{web, App, HttpResponse, HttpServer, Responder};
 use log::info;
 
 use abs_admin::config::CONFIG;
@@ -103,7 +103,7 @@ async fn main() -> std::io::Result<()> {
             .route("/api/captcha", web::get().to(img_controller::captcha))
             .route("/api/qrcode", web::get().to(img_controller::qrcode))
     })
-        .bind(&CONFIG.server_url)?
-        .run()
-        .await
+    .bind(&CONFIG.server_url)?
+    .run()
+    .await
 }

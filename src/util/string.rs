@@ -11,9 +11,7 @@ impl IsEmpty for Option<String> {
                 }
                 false
             }
-            _ => {
-                true
-            }
+            _ => true,
         }
     }
 }

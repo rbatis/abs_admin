@@ -6,10 +6,10 @@ use rbatis::plugin::page::{Page, PageRequest};
 
 use crate::domain::domain::{SysRes, SysRole, SysRoleRes, SysUserRole};
 use crate::domain::dto::{RoleAddDTO, RoleEditDTO, RolePageDTO};
-use crate::service::CONTEXT;
-use std::collections::HashMap;
-use crate::util::string::IsEmpty;
 use crate::domain::vo::SysRoleVO;
+use crate::service::CONTEXT;
+use crate::util::string::IsEmpty;
+use std::collections::HashMap;
 
 ///角色服务
 pub struct SysRoleService {}
@@ -17,8 +17,10 @@ pub struct SysRoleService {}
 impl SysRoleService {
     ///角色分页
     pub async fn page(&self, arg: &RolePageDTO) -> Result<Page<SysRoleVO>> {
-        let wrapper = CONTEXT.rbatis.new_wrapper()
-            .do_if(!arg.name.is_empty(),|w|w.like("name",&arg.name))
+        let wrapper = CONTEXT
+            .rbatis
+            .new_wrapper()
+            .do_if(!arg.name.is_empty(), |w| w.like("name", &arg.name))
             .is_null("parent_id")
             .order_by(false, &["create_date"]);
         let data = CONTEXT
@@ -47,14 +49,13 @@ impl SysRoleService {
         Ok(new_page)
     }
 
-
     /// 查找role数组
     pub async fn finds_all(&self) -> Result<Vec<SysRole>> {
         //TODO 查找的全部数据缓存于Redis，同时 remove，edit方法调用时刷新redis缓存
         CONTEXT.rbatis.fetch_list("").await
     }
 
-    pub async fn finds_all_map(&self)->Result<HashMap<String,SysRole>>{
+    pub async fn finds_all_map(&self) -> Result<HashMap<String, SysRole>> {
         let all = self.finds_all().await?;
         let mut result = HashMap::new();
         for x in all {
@@ -160,7 +161,7 @@ impl SysRoleService {
             }
         }
         if childs.is_some() {
-            arg.childs = childs;
+            arg.childs = childs.unwrap();
         }
     }
 }

@@ -2,14 +2,14 @@ use std::collections::HashMap;
 
 use rbatis::core::Result;
 use rbatis::crud::CRUD;
-use rbatis::Error;
 use rbatis::plugin::page::{Page, PageRequest};
+use rbatis::Error;
 
 use crate::domain::domain::SysRes;
 use crate::domain::dto::{ResEditDTO, ResPageDTO};
 use crate::domain::vo::SysResVO;
 use crate::service::CONTEXT;
-use crate::util::string::{IsEmpty};
+use crate::util::string::IsEmpty;
 
 /// 资源服务
 pub struct SysResService {}
@@ -20,10 +20,16 @@ impl SysResService {
         let page_req = PageRequest::new(arg.page_no.unwrap_or(1), arg.page_size.unwrap_or(10));
         let data = CONTEXT
             .rbatis
-            .fetch_page_by_wrapper::<SysRes>("", &CONTEXT.rbatis.new_wrapper()
-                .do_if(!arg.name.is_empty(),|w|w.like("name",&arg.name))
-                .is_null("parent_id")
-                .order_by(false, &["create_date"]), &page_req)
+            .fetch_page_by_wrapper::<SysRes>(
+                "",
+                &CONTEXT
+                    .rbatis
+                    .new_wrapper()
+                    .do_if(!arg.name.is_empty(), |w| w.like("name", &arg.name))
+                    .is_null("parent_id")
+                    .order_by(false, &["create_date"]),
+                &page_req,
+            )
             .await?;
         let all_res = self.finds_all_map().await?;
         let mut datas = vec![];
@@ -54,11 +60,14 @@ impl SysResService {
                     .new_wrapper()
                     .eq("permission", &arg.permission)
                     .or()
-                    .eq("name",&arg.name),
+                    .eq("name", &arg.name),
             )
             .await?;
         if old.len() > 0 {
-            return Err(Error::from(format!("权限已存在! 权限:{:?}",field_vec!(old,name))));
+            return Err(Error::from(format!(
+                "权限已存在! 权限:{:?}",
+                field_vec!(old, name)
+            )));
         }
         Ok(CONTEXT.rbatis.save("", arg).await?.rows_affected)
     }
