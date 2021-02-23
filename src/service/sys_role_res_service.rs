@@ -38,9 +38,14 @@ impl SysRoleResService {
         let mut results = vec![];
         for x in arg {
             results.push(x.id.clone().unwrap_or_default());
-            let ids = self.loop_find_role_ids(&x.childs);
-            for id in ids {
-                results.push(id);
+            match &x.childs {
+                Some(childs) => {
+                    let ids = self.loop_find_role_ids(childs);
+                    for id in ids {
+                        results.push(id);
+                    }
+                }
+                _ => {}
             }
         }
         return results;
@@ -109,9 +114,12 @@ impl SysRoleResService {
                 del: role.del.clone(),
                 create_date: role.create_date.clone(),
                 resources: res_vos,
-                childs: self.loop_set_res_vec(role.childs, role_res_map, all)?,
+                childs: None,
                 resource_ids: vec![],
             };
+            if role.childs.is_some() {
+                vo.childs = Some(self.loop_set_res_vec(role.childs.unwrap_or(vec![]), role_res_map, all)?);
+            }
             vo.resource_ids = CONTEXT.sys_res_service.make_res_ids(&vo.resources);
             data.push(vo);
         }
@@ -144,8 +152,8 @@ impl SysRoleResService {
     ///保存所以资源
     async fn save_resources(&self, role_id: &str, resource_ids: Vec<String>) -> Result<u64> {
         self.remove_by_role_id(role_id).await?;
-        let now=NaiveDateTime::now();
-        let mut sys_role_res =vec![];
+        let now = NaiveDateTime::now();
+        let mut sys_role_res = vec![];
         for resource_id in resource_ids {
             sys_role_res.push(SysRoleRes {
                 id: Some(

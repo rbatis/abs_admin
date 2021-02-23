@@ -161,7 +161,7 @@ impl SysRoleService {
             }
         }
         if childs.is_some() {
-            arg.childs = childs.unwrap();
+            arg.childs = Some(childs.unwrap());
         }
     }
 }

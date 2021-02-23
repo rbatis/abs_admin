@@ -120,7 +120,7 @@ impl SysUserRoleService {
                 create_date: role.create_date,
                 resource_ids: CONTEXT.sys_res_service.make_res_ids(&resources),
                 resources: resources,
-                childs: vec![],
+                childs: None,
             });
         }
         return Ok(role_vos);
