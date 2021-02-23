@@ -5,9 +5,9 @@ use rbatis::core::Result;
 use rbatis::crud::CRUD;
 use rbatis::plugin::page::Page;
 
-use crate::domain::domain::{SysRole, SysRoleRes};
+use crate::domain::domain::{SysRes, SysRole, SysRoleRes};
 use crate::domain::dto::{
-    IdDTO, RolePageDTO, SysRoleResAddDTO, SysRoleResPageDTO, SysRoleResUpdateDTO,
+    RolePageDTO, SysRoleResAddDTO, SysRoleResPageDTO, SysRoleResUpdateDTO,
 };
 use crate::domain::vo::{SysResVO, SysRoleVO};
 use crate::service::CONTEXT;
@@ -16,85 +16,78 @@ use crate::service::CONTEXT;
 pub struct SysRoleResService {}
 
 impl SysRoleResService {
-    ///角色-资源详情
-    pub async fn detail(&self, arg: &IdDTO) -> Result<SysRoleVO> {
-        let role = CONTEXT
-            .sys_role_service
-            .find(&arg.id.clone().unwrap_or_default())
-            .await?;
-        self.make_sys_role_vo(role).await
-    }
-
     ///角色-资源 总体分页
-    pub async fn page(&self, arg: &SysRoleResPageDTO) -> Result<Page<SysRole>> {
-        let role_page = CONTEXT
+    pub async fn page(&self, arg: &SysRoleResPageDTO) -> Result<Page<SysRoleVO>> {
+        let mut role_page = CONTEXT
             .sys_role_service
             .page(&RolePageDTO {
                 page_no: arg.page_no.clone(),
                 page_size: arg.page_size.clone(),
-                name: arg.name.clone()
+                name: arg.name.clone(),
             })
             .await?;
+        let all = CONTEXT.sys_res_service.finds_all_map().await?;
+        role_page.records = self.set_res_vec(role_page.records, all).await?;
         return Result::Ok(role_page);
     }
 
-    // /// 直接转换角色数组  Vec<SysRole> -> Vec<SysRoleVO>
-    // async fn make_sys_role_vos(&self, arg: Vec<SysRole>) -> Result<Vec<SysRoleVO>> {
-    //     let role_ids = field_vec!(&arg, id);
-    //     let role_res_vec = CONTEXT
-    //         .rbatis
-    //         .fetch_list_by_wrapper::<SysRoleRes>(
-    //             "",
-    //             &CONTEXT.rbatis.new_wrapper().r#in("role_id", &role_ids),
-    //         )
-    //         .await?;
-    //     let resource_map = CONTEXT.sys_res_service.finds_all_map().await?;
-    //     let mut role_res_map: HashMap<String, Vec<SysRoleRes>> = HashMap::new();
-    //     for role_res in role_res_vec {
-    //         let role_id = role_res.role_id.clone().unwrap_or_default();
-    //         if role_res_map.get(&role_id).is_none() {
-    //             let datas = vec![];
-    //             role_res_map.insert(role_id.clone(), datas);
-    //         }
-    //         let sets = role_res_map.get_mut(&role_id).unwrap();
-    //         //去重添加
-    //         for x in sets.iter() {
-    //             if x.id.eq(&role_res.id) {
-    //                 continue;
-    //             }
-    //         }
-    //         sets.push(role_res);
-    //     }
-    //     let mut data = vec![];
-    //     for role in arg {
-    //         let res_ids = role_res_map.get(role.id.as_ref().unwrap_or(&"".to_string()));
-    //         let mut roles = vec![];
-    //         match res_ids {
-    //             Some(res_ids) => {
-    //                 for x in res_ids {
-    //                     match resource_map.get(x.res_id.as_ref().unwrap_or(&String::new())) {
-    //                         Some(res) => {
-    //                             let vo = SysResVO::from(res);
-    //                             roles.push(vo);
-    //                         }
-    //                         _ => {}
-    //                     }
-    //                 }
-    //             }
-    //             _ => {}
-    //         }
-    //         let vo = SysRoleVO {
-    //             id: role.id.clone(),
-    //             name: role.name.clone(),
-    //             parent_id: role.parent_id.clone(),
-    //             del: role.del.clone(),
-    //             create_date: role.create_date.clone(),
-    //             resources: roles,
-    //         };
-    //         data.push(vo);
-    //     }
-    //     return Ok(data);
-    // }
+    /// 添加资源
+    async fn set_res_vec(&self, arg: Vec<SysRoleVO>, all: HashMap<String, SysRes>) -> Result<Vec<SysRoleVO>> {
+        let role_ids = field_vec!(&arg, id);
+        let role_res_vec = CONTEXT
+            .rbatis
+            .fetch_list_by_wrapper::<SysRoleRes>(
+                "",
+                &CONTEXT.rbatis.new_wrapper().r#in("role_id", &role_ids),
+            )
+            .await?;
+        let mut role_res_map: HashMap<String, Vec<SysRoleRes>> = HashMap::new();
+        for role_res in role_res_vec {
+            let role_id = role_res.role_id.clone().unwrap_or_default();
+            if role_res_map.get(&role_id).is_none() {
+                let datas = vec![];
+                role_res_map.insert(role_id.clone(), datas);
+            }
+            let sets = role_res_map.get_mut(&role_id).unwrap();
+            //去重添加
+            for x in sets.iter() {
+                if x.id.eq(&role_res.id) {
+                    continue;
+                }
+            }
+            sets.push(role_res);
+        }
+        let mut data = vec![];
+        for role in arg {
+            let res_ids = role_res_map.get(role.id.as_ref().unwrap_or(&"".to_string()));
+            let mut res_vos = vec![];
+            match res_ids {
+                Some(res_ids) => {
+                    for x in res_ids {
+                        match resource_map.get(x.res_id.as_ref().unwrap_or(&String::new())) {
+                            Some(res) => {
+                                let vo = SysResVO::from(res);
+                                res_vos.push(vo);
+                            }
+                            _ => {}
+                        }
+                    }
+                }
+                _ => {}
+            }
+            let vo = SysRoleVO {
+                id: role.id.clone(),
+                name: role.name.clone(),
+                parent_id: role.parent_id.clone(),
+                del: role.del.clone(),
+                create_date: role.create_date.clone(),
+                resources: res_vos,
+                childs: role.childs,
+            };
+            data.push(vo);
+        }
+        return Ok(data);
+    }
 
     /// SysRole -> SysRoleVO
     async fn make_sys_role_vo(&self, arg: SysRole) -> Result<SysRoleVO> {
@@ -145,7 +138,7 @@ impl SysRoleResService {
             del: arg.del,
             create_date: arg.create_date,
             resources: roles,
-            childs: None
+            childs: None,
         };
         return Ok(vo);
     }

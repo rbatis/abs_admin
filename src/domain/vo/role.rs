@@ -1,6 +1,7 @@
 use crate::domain::vo::SysResVO;
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
+use crate::domain::domain::SysRole;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct SysRoleVO {
@@ -12,4 +13,18 @@ pub struct SysRoleVO {
     pub create_date: Option<NaiveDateTime>,
     pub resources: Vec<SysResVO>,
     pub childs: Option<Vec<SysRoleVO>>,
+}
+
+impl From<SysRole> for SysRoleVO{
+    fn from(arg: SysRole) -> Self {
+        Self{
+            id: arg.id,
+            name: arg.name,
+            parent_id: arg.parent_id,
+            del: arg.del,
+            create_date: arg.create_date,
+            resources: vec![],
+            childs: None
+        }
+    }
 }

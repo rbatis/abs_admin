@@ -85,10 +85,6 @@ async fn main() -> std::io::Result<()> {
                 web::post().to(sys_role_controller::page),
             )
             .route(
-                "/api/sys_role_detail",
-                web::post().to(sys_role_controller::detail),
-            )
-            .route(
                 "/api/sys_user_role_add",
                 web::post().to(sys_user_role_controller::add),
             )
