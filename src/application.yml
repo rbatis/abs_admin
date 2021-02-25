@@ -15,7 +15,7 @@ mysql_url: "mysql://root:123456@localhost:3306/test"
 #日志文件存放目录
 log_dir: "target/logs/"
 #日志通道最大缓存日志条数
-log_cup: 100000
+log_cup: 10000
 #日志分割尺寸-单位KB,MB,GB
 log_temp_size: "100MB"
 #使用zip压缩
