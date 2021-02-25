@@ -50,12 +50,14 @@ pub async fn add(mut arg: web::Json<ResAddDTO>) -> impl Responder {
         create_date: Some(NaiveDateTime::now()),
     };
     let data = CONTEXT.sys_res_service.add(&res).await;
+    CONTEXT.sys_res_service.update_all().await;
     RespVO::from_result(&data).resp_json()
 }
 
 ///资源修改
 pub async fn update(arg: web::Json<ResEditDTO>) -> impl Responder {
     let data = CONTEXT.sys_res_service.edit(&arg.0).await;
+    CONTEXT.sys_res_service.update_all().await;
     RespVO::from_result(&data).resp_json()
 }
 
@@ -65,5 +67,6 @@ pub async fn remove(arg: web::Json<IdDTO>) -> impl Responder {
         .sys_res_service
         .remove(&arg.0.id.unwrap_or_default())
         .await;
+    CONTEXT.sys_res_service.update_all().await;
     RespVO::from_result(&data).resp_json()
 }

@@ -121,9 +121,22 @@ impl SysResService {
 
     /// 查找res数组
     pub async fn finds_all(&self) -> Result<Vec<SysRes>> {
-        //TODO 查找的全部数据缓存于Redis，同时 remove，edit方法调用时刷新redis缓存
-        CONTEXT.rbatis.fetch_list("").await
+        let js=CONTEXT.redis_service.get_json::<Option<Vec<SysRes>>>("sys_res:all").await;
+        if js.is_err() || js.as_ref().ok().unwrap().is_none(){
+            let all=CONTEXT.rbatis.fetch_list::<SysRes>("").await?;
+            CONTEXT.redis_service.set_json("sys_res:all",&all).await;
+            return Ok(all);
+        }
+        return Ok(js.ok().unwrap().unwrap());
     }
+
+    /// 查找res数组
+    pub async fn update_all(&self) -> Result<Vec<SysRes>> {
+        let all=CONTEXT.rbatis.fetch_list::<SysRes>("").await?;
+        CONTEXT.redis_service.set_json("sys_res:all",&all).await;
+        return Ok(all);
+    }
+
 
     /// 查找res数组
     pub async fn finds_all_map(&self) -> Result<HashMap<String, SysRes>> {
