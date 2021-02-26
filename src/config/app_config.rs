@@ -69,10 +69,10 @@ impl Default for ApplicationConfig {
                 .as_str()
                 .unwrap_or("")
                 .to_owned(),
-            logic_un_deleted: get_cfg(&docs, "logic_column")
+            logic_un_deleted: get_cfg(&docs, "logic_un_deleted")
                 .as_i64()
                 .unwrap_or_default(),
-            logic_deleted: get_cfg(&docs, "logic_column")
+            logic_deleted: get_cfg(&docs, "logic_deleted")
             .as_i64()
             .unwrap_or_default(),
             log_dir: get_cfg(&docs, "log_dir")
