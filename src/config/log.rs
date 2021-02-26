@@ -15,7 +15,7 @@ pub fn init_log() {
         CONTEXT.config.debug,
     );
     if CONTEXT.config.debug == false {
-        println!("[abs_admin] release_mode up! file log open,console log disable!");
+        println!("[abs_admin] release_mode is up! [file_log] open,[console_log] disabled!");
     }
 }
 
