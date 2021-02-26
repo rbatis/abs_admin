@@ -12,8 +12,13 @@ pub struct ApplicationConfig {
     pub log_path: String,
     ///redis地址
     pub redis_url: String,
-    ///mysql地址
-    pub mysql_url: String,
+    /// 数据库地址
+    pub database_url: String,
+
+    /// 逻辑删除字段
+    pub logic_column: String,
+    pub logic_un_deleted: i64,
+    pub logic_deleted: i64,
 
     ///日志目录 "target/logs/"
     pub log_dir: String,
@@ -56,11 +61,20 @@ impl Default for ApplicationConfig {
                 .as_str()
                 .unwrap_or("")
                 .to_owned(),
-            mysql_url: get_cfg(&docs, "mysql_url")
+            database_url: get_cfg(&docs, "database_url")
                 .as_str()
                 .unwrap_or("")
                 .to_owned(),
-
+            logic_column: get_cfg(&docs, "logic_column")
+                .as_str()
+                .unwrap_or("")
+                .to_owned(),
+            logic_un_deleted: get_cfg(&docs, "logic_column")
+                .as_i64()
+                .unwrap_or_default(),
+            logic_deleted: get_cfg(&docs, "logic_column")
+            .as_i64()
+            .unwrap_or_default(),
             log_dir: get_cfg(&docs, "log_dir")
                 .as_str()
                 .unwrap_or("target/logs/")
