@@ -1,20 +1,20 @@
-use crate::config::CONFIG;
 use fast_log::consts::LogSize;
 use fast_log::plugin::file_split::RollingType;
 use std::time::Duration;
+use crate::service::CONTEXT;
 
 pub fn init_log() {
     fast_log::init_split_log(
-        &CONFIG.log_dir,
-        CONFIG.log_cup as usize,
-        str_to_temp_size(&CONFIG.log_temp_size),
-        CONFIG.log_zip,
-        str_to_rolling(&CONFIG.log_rolling_type),
-        str_to_log_level(&CONFIG.log_level),
+        &CONTEXT.config.log_dir,
+        CONTEXT.config.log_cup as usize,
+        str_to_temp_size(&CONTEXT.config.log_temp_size),
+        CONTEXT.config.log_zip,
+        str_to_rolling(&CONTEXT.config.log_rolling_type),
+        str_to_log_level(&CONTEXT.config.log_level),
         None,
-        CONFIG.debug,
+        CONTEXT.config.debug,
     );
-    if CONFIG.debug == false {
+    if CONTEXT.config.debug == false {
         println!("[abs_admin] release_mode up! file log open,console log disable!");
     }
 }

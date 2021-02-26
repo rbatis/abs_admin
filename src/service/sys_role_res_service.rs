@@ -118,7 +118,11 @@ impl SysRoleResService {
                 resource_ids: vec![],
             };
             if role.childs.is_some() {
-                vo.childs = Some(self.loop_set_res_vec(role.childs.unwrap_or(vec![]), role_res_map, all)?);
+                vo.childs = Some(self.loop_set_res_vec(
+                    role.childs.unwrap_or(vec![]),
+                    role_res_map,
+                    all,
+                )?);
             }
             vo.resource_ids = CONTEXT.sys_res_service.make_res_ids(&vo.resources);
             data.push(vo);
@@ -166,13 +170,7 @@ impl SysRoleResService {
                 create_date: Some(now.clone()),
             });
         }
-        let save_ok = CONTEXT
-            .rbatis
-            .save_batch(
-                "",
-                &sys_role_res,
-            )
-            .await?;
+        let save_ok = CONTEXT.rbatis.save_batch("", &sys_role_res).await?;
         return Ok(save_ok.rows_affected);
     }
 

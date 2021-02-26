@@ -7,7 +7,7 @@ use sys_role_service::*;
 use sys_user_role_service::*;
 use sys_user_service::*;
 
-use crate::config::CONFIG;
+use crate::config::app_config::ApplicationConfig;
 
 mod redis_service;
 mod sys_config_service;
@@ -19,6 +19,7 @@ mod sys_user_role_service;
 mod sys_user_service;
 
 pub struct ServiceContext {
+    pub config: ApplicationConfig,
     pub rbatis: Rbatis,
     pub redis_service: RedisService,
     pub sys_res_service: SysResService,
@@ -30,9 +31,12 @@ pub struct ServiceContext {
 
 impl Default for ServiceContext {
     fn default() -> Self {
+        let config=ApplicationConfig::default();
+        let redis_url=config.redis_url.clone();
         ServiceContext {
+            config,
             rbatis: crate::dao::init_rbatis(),
-            redis_service: RedisService::new(&CONFIG.redis_url),
+            redis_service: RedisService::new(&redis_url),
             sys_res_service: SysResService {},
             sys_user_service: SysUserService {},
             sys_role_service: SysRoleService {},

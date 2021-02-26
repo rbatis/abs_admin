@@ -1,9 +1,8 @@
 use actix_web::{web, HttpRequest, Responder};
 
-use crate::config::CONFIG;
+use crate::service::CONTEXT;
 use crate::domain::dto::{IdDTO, SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO};
 use crate::domain::vo::{JWTToken, RespVO};
-use crate::service::CONTEXT;
 
 /// 用户登陆
 pub async fn login(arg: web::Json<SignInDTO>) -> impl Responder {
@@ -18,7 +17,7 @@ pub async fn info(req: HttpRequest) -> impl Responder {
     match token {
         Some(token) => {
             let token = token.to_str().unwrap_or("");
-            let token = JWTToken::verify(&CONFIG.jwt_secret, token);
+            let token = JWTToken::verify(&CONTEXT.config.jwt_secret, token);
             if token.is_err() {
                 return RespVO::from_result(&token).resp_json();
             }

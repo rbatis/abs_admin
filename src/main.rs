@@ -1,7 +1,5 @@
 use actix_web::{web, App, HttpResponse, HttpServer, Responder};
 use log::info;
-
-use abs_admin::config::CONFIG;
 use abs_admin::controller::{
     img_controller, sys_res_controller, sys_role_controller, sys_user_controller,
     sys_user_role_controller,
@@ -18,10 +16,10 @@ async fn main() -> std::io::Result<()> {
     //日志追加器
     abs_admin::config::log::init_log();
     //ORM
-    CONTEXT.rbatis.link(&CONFIG.mysql_url).await.unwrap();
+    CONTEXT.rbatis.link(&CONTEXT.config.mysql_url).await.unwrap();
     info!(
         " - Local:   http://{}",
-        CONFIG.server_url.replace("0.0.0.0", "localhost")
+        CONTEXT.config.server_url.replace("0.0.0.0", "localhost")
     );
     //路由
     HttpServer::new(|| {
@@ -52,7 +50,10 @@ async fn main() -> std::io::Result<()> {
                 web::post().to(sys_res_controller::page),
             )
             .route("/api/sys_res_all", web::post().to(sys_res_controller::all))
-            .route("/api/sys_res_layer_top", web::post().to(sys_res_controller::layer_top))
+            .route(
+                "/api/sys_res_layer_top",
+                web::post().to(sys_res_controller::layer_top),
+            )
             .route(
                 "/api/sys_user_add",
                 web::post().to(sys_user_controller::add),
@@ -104,7 +105,7 @@ async fn main() -> std::io::Result<()> {
             .route("/api/captcha", web::get().to(img_controller::captcha))
             .route("/api/qrcode", web::get().to(img_controller::qrcode))
     })
-    .bind(&CONFIG.server_url)?
+    .bind(&CONTEXT.config.server_url)?
     .run()
     .await
 }

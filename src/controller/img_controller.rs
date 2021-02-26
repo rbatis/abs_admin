@@ -3,8 +3,6 @@ use captcha::filters::{Dots, Noise, Wave};
 use captcha::Captcha;
 use image::{ColorType, ImageEncoder, Luma};
 use qrcode::QrCode;
-
-use crate::config::CONFIG;
 use crate::domain::dto::CatpchaDTO;
 use crate::domain::vo::RespVO;
 use crate::service::CONTEXT;
@@ -41,7 +39,7 @@ pub async fn captcha(arg: web::Query<CatpchaDTO>) -> impl Responder {
             )
             .await;
         println!("{:?}", result);
-        if CONFIG.debug == false {
+        if CONTEXT.config.debug == false {
             //release mode, return the error
             if result.is_err() {
                 return RespVO::from_result(&result).resp_json();
@@ -61,10 +59,10 @@ pub async fn qrcode(arg: web::Query<CatpchaDTO>) -> impl Responder {
     // Encode some data into bits.
     let url = format!(
         "http://{}?account={}",
-        CONFIG.server_url,
+        CONTEXT.config.server_url,
         arg.account.as_ref().unwrap_or(&"".to_string())
     );
-    if CONFIG.debug {
+    if CONTEXT.config.debug {
         println!("gen qrcode url:{}", url);
     }
     let code = QrCode::new(url.as_bytes()).unwrap();

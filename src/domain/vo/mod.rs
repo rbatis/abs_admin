@@ -9,7 +9,7 @@ pub use res::*;
 pub use role::*;
 pub use sign_in::*;
 
-use crate::config::CONFIG;
+use crate::service::CONTEXT;
 use actix_http::Response;
 use actix_web::HttpResponse;
 use rbatis::core::Error;
@@ -80,7 +80,7 @@ where
     }
 
     pub fn resp_json(&self) -> Response {
-        if CONFIG.debug {
+        if CONTEXT.config.debug {
             println!("[abs_admin][debug] resp:{}", self.to_string());
         }
         return HttpResponse::Ok()

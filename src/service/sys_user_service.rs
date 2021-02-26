@@ -4,14 +4,12 @@ use rbatis::core::Error;
 use rbatis::core::Result;
 use rbatis::crud::CRUD;
 use rbatis::plugin::page::{Page, PageRequest};
-
-use crate::config::CONFIG;
+use crate::service::CONTEXT;
 
 use crate::domain::domain::{LoginCheck, SysRes, SysUser};
 use crate::domain::dto::{IdDTO, SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO};
 use crate::domain::vo::user::SysUserVO;
 use crate::domain::vo::{JWTToken, SignInVO};
-use crate::service::CONTEXT;
 use crate::util::password_encoder::PasswordEncoder;
 use std::collections::HashMap;
 
@@ -164,7 +162,7 @@ impl SysUserService {
                     .redis_service
                     .get_string(&format!(
                         "{}{}",
-                        CONFIG.sms_redis_send_key_prefix, &arg.account
+                        CONTEXT.config.sms_redis_send_key_prefix, &arg.account
                     ))
                     .await?;
                 if sms_code.eq(&arg.vcode) {
@@ -209,7 +207,7 @@ impl SysUserService {
             role_ids: vec![],
             exp: 10000000000,
         };
-        sign_vo.access_token = jwt_token.create_token(&CONFIG.jwt_secret)?;
+        sign_vo.access_token = jwt_token.create_token(&CONTEXT.config.jwt_secret)?;
         sign_vo.roles = CONTEXT
             .sys_user_role_service
             .find_user_roles(

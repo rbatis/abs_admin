@@ -26,7 +26,7 @@ impl From<SysRole> for SysRoleVO {
             create_date: arg.create_date,
             resources: vec![],
             childs: None,
-            resource_ids: vec![]
+            resource_ids: vec![],
         }
     }
 }

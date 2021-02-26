@@ -11,6 +11,7 @@ use crate::domain::vo::SysResVO;
 use crate::service::CONTEXT;
 use crate::util::string::IsEmpty;
 
+const RES_KEY: &'static str = "sys_res:all";
 /// 资源服务
 pub struct SysResService {}
 
@@ -121,22 +122,27 @@ impl SysResService {
 
     /// 查找res数组
     pub async fn finds_all(&self) -> Result<Vec<SysRes>> {
-        let js=CONTEXT.redis_service.get_json::<Option<Vec<SysRes>>>("sys_res:all").await;
-        if js.is_err() || js.as_ref().ok().unwrap().is_none(){
-            let all=CONTEXT.rbatis.fetch_list::<SysRes>("").await?;
-            CONTEXT.redis_service.set_json("sys_res:all",&all).await;
+        let js = CONTEXT
+            .redis_service
+            .get_json::<Option<Vec<SysRes>>>(RES_KEY)
+            .await;
+        if js.is_err() || js.as_ref().ok().unwrap().is_none() {
+            let all = CONTEXT.rbatis.fetch_list::<SysRes>("").await?;
+            CONTEXT.redis_service.set_json(RES_KEY, &all).await;
             return Ok(all);
+        }
+        if CONTEXT.config.debug {
+            log::info!("[abs_admin] get from redis:{}", RES_KEY);
         }
         return Ok(js.ok().unwrap().unwrap());
     }
 
     /// 查找res数组
     pub async fn update_all(&self) -> Result<Vec<SysRes>> {
-        let all=CONTEXT.rbatis.fetch_list::<SysRes>("").await?;
-        CONTEXT.redis_service.set_json("sys_res:all",&all).await;
+        let all = CONTEXT.rbatis.fetch_list::<SysRes>("").await?;
+        CONTEXT.redis_service.set_json("sys_res:all", &all).await;
         return Ok(all);
     }
-
 
     /// 查找res数组
     pub async fn finds_all_map(&self) -> Result<HashMap<String, SysRes>> {
@@ -172,13 +178,19 @@ impl SysResService {
 
     ///顶层权限
     pub async fn finds_layer_top(&self) -> Result<Vec<SysResVO>> {
-        let list=CONTEXT.rbatis.fetch_list_by_wrapper::<SysRes>("",&CONTEXT
+        let list = CONTEXT
             .rbatis
-            .new_wrapper()
-            .is_null("parent_id")
-            .order_by(false, &["create_date"])).await?;
-        let all= self.finds_all_map().await?;
-        self.finds_layer(&field_vec!(list,id),&all).await
+            .fetch_list_by_wrapper::<SysRes>(
+                "",
+                &CONTEXT
+                    .rbatis
+                    .new_wrapper()
+                    .is_null("parent_id")
+                    .order_by(false, &["create_date"]),
+            )
+            .await?;
+        let all = self.finds_all_map().await?;
+        self.finds_layer(&field_vec!(list, id), &all).await
     }
 
     ///带有层级结构的 res数组

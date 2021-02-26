@@ -3,9 +3,7 @@ use serde::{Deserialize, Serialize};
 use crate::domain::domain::LoginCheck;
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
-pub struct EmptyDTO {
-
-}
+pub struct EmptyDTO {}
 
 /// IdDTO
 #[derive(Serialize, Deserialize, Clone, Debug)]
