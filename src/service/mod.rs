@@ -32,16 +32,15 @@ pub struct ServiceContext {
 impl Default for ServiceContext {
     fn default() -> Self {
         let config=ApplicationConfig::default();
-        let redis_url=config.redis_url.clone();
         ServiceContext {
-            config,
-            rbatis: crate::dao::init_rbatis(),
-            redis_service: RedisService::new(&redis_url),
+            rbatis: crate::dao::init_rbatis(&config.debug),
+            redis_service: RedisService::new(&config.redis_url),
             sys_res_service: SysResService {},
             sys_user_service: SysUserService {},
             sys_role_service: SysRoleService {},
             sys_role_res_service: SysRoleResService {},
             sys_user_role_service: SysUserRoleService {},
+            config,
         }
     }
 }

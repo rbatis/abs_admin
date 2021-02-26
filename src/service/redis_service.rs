@@ -12,6 +12,7 @@ pub struct RedisService {
 
 impl RedisService {
     pub fn new(url: &str) -> Self {
+        info!("connect redis start!");
         let client = redis::Client::open(url).unwrap();
         info!("connect redis success!");
         Self { client }
