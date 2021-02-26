@@ -8,8 +8,6 @@ pub struct ApplicationConfig {
     pub debug: bool,
     ///当前服务地址
     pub server_url: String,
-    ///日志路径
-    pub log_path: String,
     ///redis地址
     pub redis_url: String,
     /// 数据库地址
@@ -56,7 +54,6 @@ impl Default for ApplicationConfig {
                 .as_str()
                 .unwrap_or("")
                 .to_owned(),
-            log_path: get_cfg(&docs, "log_path").as_str().unwrap_or("").to_owned(),
             redis_url: get_cfg(&docs, "redis_url")
                 .as_str()
                 .unwrap_or("")

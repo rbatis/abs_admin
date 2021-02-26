@@ -4,8 +4,6 @@ debug: true
 server_name: "dev"
 #server 地址
 server_url: "0.0.0.0:8000"
-#log 地址
-log_path: "requests.log"
 #redis地址
 redis_url: "redis://127.0.0.1:6379"
 #数据库地址
