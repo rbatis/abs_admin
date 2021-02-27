@@ -127,8 +127,7 @@ impl SysResService {
             .get_json::<Option<Vec<SysRes>>>(RES_KEY)
             .await;
         if js.is_err() || js.as_ref().ok().unwrap().is_none() {
-            let all = CONTEXT.rbatis.fetch_list::<SysRes>("").await?;
-            CONTEXT.redis_service.set_json(RES_KEY, &all).await;
+            let all = self.update_all().await?;
             return Ok(all);
         }
         if CONTEXT.config.debug {
@@ -137,10 +136,10 @@ impl SysResService {
         return Ok(js.ok().unwrap().unwrap());
     }
 
-    /// 查找res数组
+    /// 更新所有
     pub async fn update_all(&self) -> Result<Vec<SysRes>> {
         let all = CONTEXT.rbatis.fetch_list::<SysRes>("").await?;
-        CONTEXT.redis_service.set_json("sys_res:all", &all).await;
+        CONTEXT.redis_service.set_json(RES_KEY, &all).await;
         return Ok(all);
     }
 

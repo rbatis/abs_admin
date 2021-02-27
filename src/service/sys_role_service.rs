@@ -11,6 +11,7 @@ use crate::service::CONTEXT;
 use crate::util::string::IsEmpty;
 use std::collections::HashMap;
 
+const RES_KEY: &'static str = "sys_role:all";
 ///角色服务
 pub struct SysRoleService {}
 
@@ -51,8 +52,26 @@ impl SysRoleService {
 
     /// 查找role数组
     pub async fn finds_all(&self) -> Result<Vec<SysRole>> {
-        //TODO 查找的全部数据缓存于Redis，同时 remove，edit方法调用时刷新redis缓存
-        CONTEXT.rbatis.fetch_list("").await
+        //查找的全部数据缓存于Redis，同时 remove，edit方法调用时刷新redis缓存
+        let js = CONTEXT
+            .redis_service
+            .get_json::<Option<Vec<SysRole>>>(RES_KEY)
+            .await;
+        if js.is_err() || js.as_ref().ok().unwrap().is_none() {
+            let all = self.update_all().await?;
+            return Ok(all);
+        }
+        if CONTEXT.config.debug {
+            log::info!("[abs_admin] get from redis:{}", RES_KEY);
+        }
+        return Ok(js.ok().unwrap().unwrap());
+    }
+
+    /// 更新所有
+    pub async fn update_all(&self) -> Result<Vec<SysRole>> {
+        let all =  CONTEXT.rbatis.fetch_list("").await?;
+        CONTEXT.redis_service.set_json(RES_KEY, &all).await;
+        return Ok(all);
     }
 
     pub async fn finds_all_map(&self) -> Result<HashMap<String, SysRole>> {
@@ -77,10 +96,12 @@ impl SysRoleService {
             del: Some(0),
             create_date: Some(NaiveDateTime::now()),
         };
-        Ok((
+        let result=(
             CONTEXT.rbatis.save("", &role).await?.rows_affected,
             role.id.clone().unwrap(),
-        ))
+        );
+        self.update_all().await?;
+        Ok(result)
     }
 
     ///角色修改
@@ -92,15 +113,19 @@ impl SysRoleService {
             del: None,
             create_date: None,
         };
-        CONTEXT.rbatis.update_by_id("", &mut role).await
+        let result=CONTEXT.rbatis.update_by_id("", &mut role).await;
+        self.update_all().await?;
+        result
     }
 
     ///角色删除
     pub async fn remove(&self, id: &str) -> Result<u64> {
-        CONTEXT
+        let result= CONTEXT
             .rbatis
             .remove_by_id::<SysRole>("", &id.to_string())
-            .await
+            .await;
+        self.update_all().await?;
+        result
     }
 
     pub async fn finds(&self, ids: &Vec<String>) -> Result<Vec<SysRole>> {
