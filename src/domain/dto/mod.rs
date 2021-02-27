@@ -54,6 +54,7 @@ pub struct UserAddDTO {
     pub password: Option<String>,
     pub name: Option<String>,
     pub login_check: Option<LoginCheck>,
+    pub role_id:Option<String>
 }
 
 /// 用户修改
@@ -64,6 +65,7 @@ pub struct UserEditDTO {
     pub password: Option<String>,
     pub name: Option<String>,
     pub login_check: Option<LoginCheck>,
+    pub role_id:Option<String>
 }
 
 /// 用户分页

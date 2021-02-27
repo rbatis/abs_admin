@@ -8,7 +8,7 @@ pub struct SignInVO {
     pub user: Option<SysUser>,
     pub permissions: Vec<String>,
     pub access_token: String,
-    pub roles: Vec<SysRoleVO>,
+    pub role: Option<SysRoleVO>,
 }
 
 impl ToString for SignInVO {

@@ -14,7 +14,7 @@ pub struct SysUserVO {
     pub del: Option<i32>,
     pub create_date: Option<NaiveDateTime>,
 
-    pub roles: Vec<SysRoleVO>,
+    pub role: Option<SysRoleVO>,
 }
 
 impl From<SysUser> for SysUserVO {
@@ -28,7 +28,7 @@ impl From<SysUser> for SysUserVO {
             login_check: arg.login_check,
             del: arg.del,
             create_date: arg.create_date,
-            roles: vec![],
+            role: None,
         }
     }
 }

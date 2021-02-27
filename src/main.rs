@@ -1,8 +1,7 @@
 use actix_web::{web, App, HttpResponse, HttpServer, Responder};
 use log::info;
 use abs_admin::controller::{
-    img_controller, sys_res_controller, sys_role_controller, sys_user_controller,
-    sys_user_role_controller,
+    img_controller, sys_res_controller, sys_role_controller, sys_user_controller
 };
 use abs_admin::service::CONTEXT;
 
@@ -85,22 +84,6 @@ async fn main() -> std::io::Result<()> {
             .route(
                 "/api/sys_role_page",
                 web::post().to(sys_role_controller::page),
-            )
-            .route(
-                "/api/sys_user_role_add",
-                web::post().to(sys_user_role_controller::add),
-            )
-            .route(
-                "/api/sys_user_role_delete",
-                web::post().to(sys_user_role_controller::remove),
-            )
-            .route(
-                "/api/sys_user_role_update",
-                web::post().to(sys_user_role_controller::update),
-            )
-            .route(
-                "/api/sys_user_role_page",
-                web::post().to(sys_user_role_controller::page),
             )
             .route("/api/captcha", web::get().to(img_controller::captcha))
             .route("/api/qrcode", web::get().to(img_controller::qrcode))

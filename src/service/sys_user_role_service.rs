@@ -7,9 +7,10 @@ use rbatis::crud::CRUD;
 use rbatis::plugin::page::{Page, PageRequest};
 
 use crate::domain::domain::{SysRes, SysUserRole};
-use crate::domain::dto::{UserRoleAddDTO, UserRoleEditDTO, UserRolePageDTO};
+use crate::domain::dto::{UserRoleAddDTO, UserRolePageDTO};
 use crate::domain::vo::{SysResVO, SysRoleVO};
 use crate::service::CONTEXT;
+use rbatis::Error;
 
 ///用户角色服务
 pub struct SysUserRoleService {}
@@ -31,37 +32,23 @@ impl SysUserRoleService {
 
     ///角色添加
     pub async fn add(&self, arg: &UserRoleAddDTO) -> Result<u64> {
-        let role = SysUserRole {
-            id: Some(
-                rbatis::plugin::snowflake::async_snowflake_id()
-                    .await
-                    .to_string(),
-            ),
-            user_id: arg.user_id.clone(),
-            role_id: arg.role_id.clone(),
-            create_date: Some(NaiveDateTime::now()),
-        };
-        Ok(CONTEXT.rbatis.save("", &role).await?.rows_affected)
-    }
-
-    ///角色修改
-    pub async fn edit(&self, arg: &UserRoleEditDTO) -> Result<u64> {
+        if arg.user_id.is_none() || arg.role_id.is_none(){
+            return Err(Error::from("添加角色时用户和角色不能为空！"))
+        }
         let mut role = SysUserRole {
             id: arg.id.clone(),
             user_id: arg.user_id.clone(),
             role_id: arg.role_id.clone(),
-            create_date: None,
+            create_date: Some(NaiveDateTime::now()),
         };
-        CONTEXT.rbatis.update_by_id("", &mut role).await
+        if role.id.is_none() {
+            role.id = Some(rbatis::plugin::snowflake::async_snowflake_id().await
+                .to_string());
+        }
+        self.remove_by_user_id(&arg.user_id.clone().unwrap_or_default()).await?;
+        Ok(CONTEXT.rbatis.save("", &role).await?.rows_affected)
     }
 
-    ///角色删除
-    pub async fn remove(&self, id: &str) -> Result<u64> {
-        CONTEXT
-            .rbatis
-            .remove_by_id::<SysUserRole>("", &id.to_string())
-            .await
-    }
 
     ///角色删除
     pub async fn remove_by_role_id(&self, role_id: &str) -> Result<u64> {
@@ -74,14 +61,25 @@ impl SysUserRoleService {
             .await
     }
 
+    pub async fn remove_by_user_id(&self, user_id: &str) -> Result<u64> {
+        CONTEXT
+            .rbatis
+            .remove_by_wrapper::<SysUserRole>(
+                "",
+                &CONTEXT.rbatis.new_wrapper().eq("user_id", user_id),
+            )
+            .await
+    }
+
+
     ///找出角色
-    pub async fn find_user_roles(
+    pub async fn find_user_role(
         &self,
         user_id: &str,
         all_res: &HashMap<String, SysRes>,
-    ) -> Result<Vec<SysRoleVO>> {
+    ) -> Result<Option<SysRoleVO>> {
         if user_id.is_empty() {
-            return Ok(vec![]);
+            return Ok(None);
         }
         let user_roles = CONTEXT
             .rbatis
@@ -123,6 +121,10 @@ impl SysUserRoleService {
                 childs: None,
             });
         }
-        return Ok(role_vos);
+        if role_vos.is_empty(){
+            return Ok(None);
+        }else{
+            return Ok(Some(role_vos[0].clone()));
+        }
     }
 }

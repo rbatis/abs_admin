@@ -7,7 +7,7 @@ use rbatis::plugin::page::{Page, PageRequest};
 use crate::service::CONTEXT;
 
 use crate::domain::domain::{LoginCheck, SysRes, SysUser};
-use crate::domain::dto::{IdDTO, SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO};
+use crate::domain::dto::{IdDTO, SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO, UserRoleAddDTO};
 use crate::domain::vo::user::SysUserVO;
 use crate::domain::vo::{JWTToken, SignInVO};
 use crate::util::password_encoder::PasswordEncoder;
@@ -55,11 +55,11 @@ impl SysUserService {
             .ok_or_else(|| Error::from(format!("用户:{:?} 不存在！", user_id)))?;
         let mut user_vo = SysUserVO::from(user);
         let all_res = CONTEXT.sys_res_service.finds_all_map().await?;
-        let roles = CONTEXT
+        let role = CONTEXT
             .sys_user_role_service
-            .find_user_roles(&user_id, &all_res)
+            .find_user_role(&user_id, &all_res)
             .await?;
-        user_vo.roles = roles;
+        user_vo.role = role;
         return Ok(user_vo);
     }
 
@@ -105,6 +105,16 @@ impl SysUserService {
             del: Some(0),
             create_date: Some(NaiveDateTime::now()),
         };
+        match &arg.role_id {
+            Some(role_id) => {
+                CONTEXT.sys_user_role_service.add(&UserRoleAddDTO {
+                    id: None,
+                    user_id: user.id.clone(),
+                    role_id: arg.role_id.clone(),
+                }).await?;
+            }
+            _ => {}
+        }
         return Ok(CONTEXT.rbatis.save("", &user).await?.rows_affected);
     }
 
@@ -195,7 +205,7 @@ impl SysUserService {
             user: Some(user.clone()),
             permissions: vec![],
             access_token: String::new(),
-            roles: vec![],
+            role: None,
         };
         //提前查找所有权限，避免在各个函数方法中重复查找
         let all_res = CONTEXT.sys_res_service.finds_all_map().await?;
@@ -208,9 +218,9 @@ impl SysUserService {
             exp: 10000000000,
         };
         sign_vo.access_token = jwt_token.create_token(&CONTEXT.config.jwt_secret)?;
-        sign_vo.roles = CONTEXT
+        sign_vo.role = CONTEXT
             .sys_user_role_service
-            .find_user_roles(
+            .find_user_role(
                 &user.id.unwrap_or_else(|| {
                     return String::new();
                 }),
@@ -238,6 +248,13 @@ impl SysUserService {
             del: None,
             create_date: None,
         };
+        if arg.role_id.is_some() {
+            CONTEXT.sys_user_role_service.add(&UserRoleAddDTO {
+                id: None,
+                user_id: user.id.clone(),
+                role_id: arg.role_id.clone(),
+            });
+        }
         CONTEXT.rbatis.update_by_id("", &mut user).await
     }
 
@@ -245,10 +262,12 @@ impl SysUserService {
         if id.is_empty() {
             return Err(Error::from("id 不能为空！"));
         }
-        CONTEXT
+        let r = CONTEXT
             .rbatis
             .remove_by_id::<SysUser>("", &id.to_string())
-            .await
+            .await;
+        CONTEXT.sys_user_role_service.remove_by_user_id(id).await?;
+        return r;
     }
 
     ///递归查找层级结构权限
