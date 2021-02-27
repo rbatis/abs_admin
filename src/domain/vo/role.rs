@@ -30,3 +30,24 @@ impl From<SysRole> for SysRoleVO {
         }
     }
 }
+
+impl SysRoleVO{
+    pub fn from_option(arg: Option<SysRole>) -> Option<SysRoleVO> {
+        match arg{
+            Some(arg)=>{
+                Some(SysRoleVO {
+                    id: arg.id,
+                    name: arg.name,
+                    parent_id: arg.parent_id,
+                    del: arg.del,
+                    create_date: arg.create_date,
+                    resources: vec![],
+                    childs: None,
+                    resource_ids: vec![],
+                })
+            }
+            _ => {None}
+        }
+    }
+}
+

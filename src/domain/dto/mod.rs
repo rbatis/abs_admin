@@ -77,6 +77,17 @@ pub struct UserPageDTO {
     pub name: Option<String>,
 }
 
+impl From<&UserRolePageDTO> for UserPageDTO{
+    fn from(arg: &UserRolePageDTO) -> Self {
+       Self{
+           page_no: arg.page_no.clone(),
+           page_size: arg.page_size.clone(),
+           account: arg.account.clone(),
+           name: arg.name.clone()
+       }
+    }
+}
+
 /// 角色分页
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct RolePageDTO {
@@ -123,6 +134,8 @@ pub struct UserRoleEditDTO {
 pub struct UserRolePageDTO {
     pub page_no: Option<u64>,
     pub page_size: Option<u64>,
+    pub account: Option<String>,
+    pub name: Option<String>,
 }
 
 /// 验证码

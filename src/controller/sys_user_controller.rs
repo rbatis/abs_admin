@@ -1,7 +1,7 @@
 use actix_web::{web, HttpRequest, Responder};
 
 use crate::service::CONTEXT;
-use crate::domain::dto::{IdDTO, SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO};
+use crate::domain::dto::{IdDTO, SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO, UserRolePageDTO};
 use crate::domain::vo::{JWTToken, RespVO};
 
 /// 用户登陆
@@ -40,8 +40,8 @@ pub async fn add(arg: web::Json<UserAddDTO>) -> impl Responder {
 }
 
 ///用户分页
-pub async fn page(arg: web::Json<UserPageDTO>) -> impl Responder {
-    let vo = CONTEXT.sys_user_service.page(&arg.0).await;
+pub async fn page(arg: web::Json<UserRolePageDTO>) -> impl Responder {
+    let vo = CONTEXT.sys_user_role_service.page(&arg.0).await;
     return RespVO::from_result(&vo).resp_json();
 }
 

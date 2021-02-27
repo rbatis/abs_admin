@@ -7,33 +7,54 @@ use rbatis::crud::CRUD;
 use rbatis::plugin::page::{Page, PageRequest};
 
 use crate::domain::domain::{SysRes, SysUserRole};
-use crate::domain::dto::{UserRoleAddDTO, UserRolePageDTO};
+use crate::domain::dto::{UserRoleAddDTO, UserRolePageDTO, UserPageDTO};
 use crate::domain::vo::{SysResVO, SysRoleVO};
 use crate::service::CONTEXT;
 use rbatis::Error;
+use crate::domain::vo::user::SysUserVO;
 
 ///用户角色服务
 pub struct SysUserRoleService {}
 
 impl SysUserRoleService {
     ///角色分页
-    pub async fn page(&self, arg: &UserRolePageDTO) -> Result<Page<SysUserRole>> {
-        let wrapper = CONTEXT.rbatis.new_wrapper();
-        let data = CONTEXT
+    pub async fn page(&self, arg: &UserRolePageDTO) -> Result<Page<SysUserVO>> {
+        let mut vo = CONTEXT.sys_user_service.page(&UserPageDTO::from(arg)).await?;
+        let user_ids = field_vec!(&vo.records,id);
+        let user_roles = CONTEXT
             .rbatis
-            .fetch_page_by_wrapper(
+            .fetch_list_by_wrapper::<SysUserRole>(
                 "",
-                &wrapper,
-                &PageRequest::new(arg.page_no.unwrap_or(0), arg.page_size.unwrap_or(10)),
+                &CONTEXT.rbatis.new_wrapper()
+                    .in_("user_id", &user_ids),
             )
             .await?;
-        return Ok(data);
+        let user_role_map = make_hash_map!(&user_roles,user_id);
+        let role_ids = field_vec!(&user_roles,role_id);
+        let roles = CONTEXT.sys_role_service.finds(&role_ids).await?;
+        let roles_map = make_hash_map!(&roles,id);
+        for mut x in &mut vo.records {
+            let user_role = user_role_map.get(&x.id.clone().unwrap_or_default());
+            match user_role {
+                Some(user_role) => {
+                    match &user_role.role_id {
+                        Some(role_id) => {
+                            let role = roles_map.get(role_id).cloned();
+                            x.role = SysRoleVO::from_option(role);
+                        }
+                        _ => {}
+                    }
+                }
+                _ => {}
+            }
+        }
+        return Ok(vo);
     }
 
     ///角色添加
     pub async fn add(&self, arg: &UserRoleAddDTO) -> Result<u64> {
-        if arg.user_id.is_none() || arg.role_id.is_none(){
-            return Err(Error::from("添加角色时用户和角色不能为空！"))
+        if arg.user_id.is_none() || arg.role_id.is_none() {
+            return Err(Error::from("添加角色时用户和角色不能为空！"));
         }
         let mut role = SysUserRole {
             id: arg.id.clone(),
@@ -121,9 +142,9 @@ impl SysUserRoleService {
                 childs: None,
             });
         }
-        if role_vos.is_empty(){
+        if role_vos.is_empty() {
             return Ok(None);
-        }else{
+        } else {
             return Ok(Some(role_vos[0].clone()));
         }
     }

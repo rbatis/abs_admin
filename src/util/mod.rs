@@ -31,3 +31,20 @@ macro_rules! field_vec {
         ids
     }};
 }
+
+#[allow(unused_macros)]
+#[macro_export]
+macro_rules! make_hash_map {
+    ($vec_ref:expr,$field_name:ident) => {{
+        let mut ids = std::collections::HashMap::new();
+        for item in $vec_ref {
+            match &item.$field_name {
+                std::option::Option::Some(v) => {
+                    ids.insert(v.clone(),item.clone());
+                }
+                _ => {}
+            }
+        }
+        ids
+    }};
+}
