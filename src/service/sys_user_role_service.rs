@@ -20,6 +20,7 @@ impl SysUserRoleService {
     ///角色分页
     pub async fn page(&self, arg: &UserRolePageDTO) -> Result<Page<SysUserVO>> {
         let mut vo = CONTEXT.sys_user_service.page(&UserPageDTO::from(arg)).await?;
+        let all_role = CONTEXT.sys_role_service.finds_all_map().await?;
         let user_ids = field_vec!(&vo.records,id);
         let user_roles = CONTEXT
             .rbatis
@@ -41,6 +42,13 @@ impl SysUserRoleService {
                         Some(role_id) => {
                             let role = roles_map.get(role_id).cloned();
                             x.role = SysRoleVO::from_option(role);
+                            //查找子集角色
+                            match &mut x.role {
+                                None => {}
+                                Some(role_vo) => {
+                                    CONTEXT.sys_role_service.loop_find_childs(role_vo, &all_role);
+                                }
+                            }
                         }
                         _ => {}
                     }
