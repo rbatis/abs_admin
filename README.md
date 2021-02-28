@@ -23,20 +23,27 @@
 * 稳定，部署无忧，无内存泄漏，无闪退
 * 开箱即用
 
-# 快速安装教程
-* 前端项目链接 https://github.com/rbatis/abs_admin_vue
-* 1.docker命令快速启动redis和mysql(用户名root密码123456)。生产docker可以建议部署http服务，原则上生产环境不建议用docker部署数据库
+# （rust服务器端安装）快速安装教程
+* 1.（rust服务器端安装）1.docker命令快速启动redis和mysql(用户名root密码123456)。生产docker可以建议部署http服务，原则上生产环境不建议用docker部署数据库
 ```cmd
 docker run -it -d --name redis -p 6379:6379 redis
 docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 --name mysql -e TZ=Asia/Shanghai mysql:5.7
 ```
-* 2.使用MysqlWorkBench或Navicat等工具 导入database.sql脚本到Mysql数据库（mysql用户名密码root  123456）（redis无密码）中
+* 2.（rust服务器端安装）使用MysqlWorkBench或Navicat等工具 导入database.sql脚本到Mysql数据库（mysql用户名密码root  123456）（redis无密码）中
 
-* 3.安装打开PostMan ，导入postman.json到postman中即可使用写好的请求
+# （前端node服务安装）快速安装教程
+* 1.（前端安装）阅读并克隆前端项目 https://github.com/rbatis/abs_admin_vue
+
+* 2.（前端安装）使用``` npm install ```安装依赖（或者淘宝镜像cnpm）并使用 ``` yarn serve ```命令启动web前端
+
+* 3.（前端安装）打开浏览器http://localhost:8001即可登陆后台
+
+# （postman导入）教程
+* 1.（postman安装）安装打开PostMan ，导入postman.json到postman中即可使用写好的请求
 ```cmd
 打开postman,导入 postman.json
 ```
-* 4.使用Clion克隆导入abs_admin项目，点开main.rs点击按钮运行.或执行命令:
+* 2.（postman安装）使用Clion克隆导入abs_admin项目，点开main.rs点击按钮运行.或执行命令:
 ```cmd
 cargo update
 cargo run
