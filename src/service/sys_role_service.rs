@@ -50,6 +50,19 @@ impl SysRoleService {
         Ok(new_page)
     }
 
+    pub async fn finds_top_layer(&self)->Result<Vec<SysRoleVO>>{
+        let all=self.finds_all_map().await?;
+        let mut data=vec![];
+        for (k,v) in &all {
+            if v.parent_id.is_none(){
+                let mut top=SysRoleVO::from(v.clone());
+                self.loop_find_childs(&mut top,&all);
+                data.push(top);
+            }
+        }
+        return Ok(data);
+    }
+
     /// 查找role数组
     pub async fn finds_all(&self) -> Result<Vec<SysRole>> {
         //查找的全部数据缓存于Redis，同时 remove，edit方法调用时刷新redis缓存

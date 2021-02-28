@@ -1,4 +1,4 @@
-use crate::domain::dto::{IdDTO, SysRoleResAddDTO, SysRoleResPageDTO, SysRoleResUpdateDTO};
+use crate::domain::dto::{IdDTO, SysRoleResAddDTO, SysRoleResPageDTO, SysRoleResUpdateDTO, EmptyDTO};
 use crate::domain::vo::RespVO;
 use crate::service::CONTEXT;
 use actix_web::{web, Responder};
@@ -12,6 +12,12 @@ pub async fn add(arg: web::Json<SysRoleResAddDTO>) -> impl Responder {
 ///角色分页
 pub async fn page(arg: web::Json<SysRoleResPageDTO>) -> impl Responder {
     let vo = CONTEXT.sys_role_res_service.page(&arg.0).await;
+    return RespVO::from_result(&vo).resp_json();
+}
+
+///层级数据
+pub async fn layer_top(arg: web::Json<EmptyDTO>) -> impl Responder{
+    let vo = CONTEXT.sys_role_service.finds_top_layer().await;
     return RespVO::from_result(&vo).resp_json();
 }
 

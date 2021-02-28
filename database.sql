@@ -146,7 +146,7 @@ CREATE TABLE `sys_user` (
                             `login_check` varchar(255) DEFAULT 'PasswordQRCodeCheck',
                             `del` int(1) NOT NULL DEFAULT '1',
                             `create_date` datetime NOT NULL,
-                            `state` int(1) NOT NULL DEFAULT '0',
+                            `state` int(1) NOT NULL DEFAULT '1',
                             PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;

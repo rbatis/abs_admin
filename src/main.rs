@@ -85,6 +85,10 @@ async fn main() -> std::io::Result<()> {
                 "/api/sys_role_page",
                 web::post().to(sys_role_controller::page),
             )
+            .route(
+                "/api/sys_role_layer_top",
+                web::post().to(sys_role_controller::layer_top),
+            )
             .route("/api/captcha", web::get().to(img_controller::captcha))
             .route("/api/qrcode", web::get().to(img_controller::qrcode))
     })
