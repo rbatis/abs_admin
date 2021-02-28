@@ -42,7 +42,7 @@ docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 --name mysql -e TZ=Asia
 
 * 2.（前端安装）使用``` npm install ```安装依赖（或者淘宝镜像cnpm）并使用 ``` yarn serve ```命令启动web前端
 
-* 3.（前端安装）打开浏览器http://localhost:8001即可登陆后台
+* 3.（前端安装）打开浏览器http://localhost:8001 即可登陆后台
 
 # （postman导入）教程
 * 1.（postman安装）安装打开PostMan ，导入postman.json到postman中即可使用写好的请求
