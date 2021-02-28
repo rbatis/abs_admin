@@ -129,6 +129,9 @@ impl SysUserService {
             )
             .await?;
         let user = user.ok_or_else(|| Error::from(format!("账号:{} 不存在!", arg.account)))?;
+        if user.state.eq(&Some(0)){
+            return Err(Error::from("账户被禁用!"));
+        }
         match user
             .login_check
             .as_ref()
