@@ -50,6 +50,7 @@ pub struct SysUser {
     pub password: Option<String>,
     pub name: Option<String>,
     pub login_check: Option<LoginCheck>,
+    pub state: Option<i32>,
     pub del: Option<i32>,
     pub create_date: Option<NaiveDateTime>,
 }

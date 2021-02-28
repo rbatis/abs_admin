@@ -146,6 +146,7 @@ CREATE TABLE `sys_user` (
                             `login_check` varchar(255) DEFAULT 'PasswordQRCodeCheck',
                             `del` int(1) NOT NULL DEFAULT '1',
                             `create_date` datetime NOT NULL,
+                            `state` int(1) NOT NULL DEFAULT '0',
                             PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -156,7 +157,7 @@ CREATE TABLE `sys_user` (
 
 LOCK TABLES `sys_user` WRITE;
 /*!40000 ALTER TABLE `sys_user` DISABLE KEYS */;
-INSERT INTO `sys_user` VALUES ('2d4886bd-ad2a-4644-86b9-460afad05cbf','00000000000','e10adc3949ba59abbe56e057f20f883e','xxxx','PasswordCheck',0,'2020-07-28 08:34:40'),('7c0591a3-41f9-423b-943e-6944d7760192','18969542174','e10adc3949ba59abbe56e057f20f883e','xxxx','PasswordCheck',0,'2020-08-07 17:01:02'),('91095081-1966-491d-a95d-bd1bc36d204f','1896954211','e10adc3949ba59abbe56e057f20f883e','xxxx','PasswordCheck',0,'2020-08-31 20:05:26'),('f63ef5b6-171e-47ab-8aad-832ff4323056','18969542173','e10adc3949ba59abbe56e057f20f883e','xxxx','PasswordCheck',0,'2020-07-31 05:47:28'),('f84ad1fe-1d96-4776-bb2b-45fc990a9975','18969542171','e10adc3949ba59abbe56e057f20f883e','xxxx','PasswordCheck',0,'2020-08-07 16:54:45');
+INSERT INTO `sys_user` VALUES ('205667537625681919','00000000000','e10adc3949ba59abbe56e057f20f883e','xxxx','PasswordCheck',0,'2020-07-28 08:34:40',0);
 /*!40000 ALTER TABLE `sys_user` ENABLE KEYS */;
 UNLOCK TABLES;
 

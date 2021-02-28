@@ -102,6 +102,7 @@ impl SysUserService {
             password: Some(PasswordEncoder::encode(arg.password.as_ref().unwrap())),
             name: arg.name.clone(),
             login_check: arg.login_check.clone(),
+            state: Some(0),
             del: Some(0),
             create_date: Some(NaiveDateTime::now()),
         };
@@ -245,6 +246,7 @@ impl SysUserService {
             password: pwd,
             name: arg.name.clone(),
             login_check: arg.login_check.clone(),
+            state: arg.state.clone(),
             del: None,
             create_date: None,
         };

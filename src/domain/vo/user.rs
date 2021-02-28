@@ -11,6 +11,7 @@ pub struct SysUserVO {
     pub password: Option<String>,
     pub name: Option<String>,
     pub login_check: Option<LoginCheck>,
+    pub state: Option<i32>,
     pub del: Option<i32>,
     pub create_date: Option<NaiveDateTime>,
 
@@ -26,6 +27,7 @@ impl From<SysUser> for SysUserVO {
             password: None,
             name: arg.name,
             login_check: arg.login_check,
+            state:arg.state,
             del: arg.del,
             create_date: arg.create_date,
             role: None,
