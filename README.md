@@ -1,22 +1,28 @@
 ![demo](demo.png)
 # Rust企业级一站式后台解决方案
-*  Rust语言坚如磐石，高性能，无内存泄漏，协程竞争，坚如磐石
-*  DDD领域驱动设计,Mysql,Redis，通用中间件和数据库，通用企业级框架选型
+*  坚如磐石（Rust语言），高性能，无GC无内存泄漏，无协程竞争
+*  DDD领域驱动,Mysql,Redis，通用中间件和数据库，通用企业级框架选型
 *  [rbatis-orm](https://github.com/rbatis/rbatis) 和Mybatis-Plus一样的好用，简洁，易扩展的ORM框架
 *  [fast_log](https://github.com/rbatis/fast_log) 超快速异步日志框架，支持zip压缩，切割
 *  [actix-web](https://actix.rs/) 常年屠榜web框架压测网站的框架
 *  前后端分离,基于 [Vue-JS](https://cn.vuejs.org/) +[Vue-AntDesign](https://www.antdv.com/docs/vue/introduce-cn/) + [Vue-AntDesign-Pro](https://pro.antdv.com/)
 *  RBAC权限控制,自带JwtToken鉴权登陆，图形验证码登陆，二维码扫码登陆,基础权限管理
 
-# 开发进度（包含前/后端）
-* 动态菜单(菜单权限生成)（√）
-* JWT Token登陆（账号密码登陆（√）图形验证码登陆（x）二维码扫码登陆（x）短信登陆（基于redis短信消息）（x））
-* 设置/权限管理（父子级，分菜单权限(包含路由path)+按钮权限(不含路由path)，权限可缓存redis）（√）
-* 设置/角色管理（父子级+权限树）（√）
-* 设置/后台账号管理（角色树）（√）
-* 设置/键值对常量管理(x)
-* JWT Token拦截器校验（x）
+# 进度、功能模块（包含(包含web前端和rust后端)）
 
+|  功能(包含web前端和rust后端)    |   完成(√)、进行中(x)     | 
+|  ------ | ------ |
+| 动态菜单(菜单权限生成)  |  √    | 
+| JWT账号密码登陆   |  √   |     
+| JWT拦截器校验   |  x   |   
+| JWT图形验证码登陆   |  x   |     
+| JWT二维码扫码登陆   |  x   |  
+| JWT短信登陆（基于redis短信消息）   |  x   |  
+| 设置/权限管理（父子级，分菜单权限+按钮权限，缓存redis）   |  √   |    
+| 设置/角色管理（父子级,分层级权限树，缓存redis）   |  √   | 
+| 设置/后台账号管理（分层角色树）   |  √   | 
+| 设置/键值对常量管理   |  x   | 
+| 设置/键值对常量管理   |  x   | 
 
 # 此项目存在的意义
 * 高性能，快如C++, 超低内存占用，支持廉价服务器
