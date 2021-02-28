@@ -17,7 +17,7 @@ pub async fn page(arg: web::Json<SysRoleResPageDTO>) -> impl Responder {
 
 ///层级数据
 pub async fn layer_top(arg: web::Json<EmptyDTO>) -> impl Responder{
-    let vo = CONTEXT.sys_role_service.finds_top_layer().await;
+    let vo = CONTEXT.sys_role_service.finds_layer().await;
     return RespVO::from_result(&vo).resp_json();
 }
 
