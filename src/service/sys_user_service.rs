@@ -255,7 +255,7 @@ impl SysUserService {
                 id: None,
                 user_id: user.id.clone(),
                 role_id: arg.role_id.clone(),
-            });
+            }).await?;
         }
         CONTEXT.rbatis.update_by_id("", &mut user).await
     }
