@@ -11,6 +11,7 @@ use crate::service::CONTEXT;
 use rbatis::Error;
 use crate::domain::vo::user::SysUserVO;
 use rbatis::plugin::page::Page;
+use rbatis::plugin::snowflake::new_snowflake_id;
 
 ///用户角色服务
 pub struct SysUserRoleService {}
@@ -70,8 +71,7 @@ impl SysUserRoleService {
             create_date: Some(NaiveDateTime::now()),
         };
         if role.id.is_none() {
-            role.id = Some(rbatis::plugin::snowflake::async_snowflake_id().await
-                .to_string());
+            role.id = Some(new_snowflake_id().to_string());
         }
         self.remove_by_user_id(&arg.user_id.clone().unwrap_or_default()).await?;
         Ok(CONTEXT.rbatis.save("", &role).await?.rows_affected)

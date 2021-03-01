@@ -12,6 +12,7 @@ use crate::domain::vo::user::SysUserVO;
 use crate::domain::vo::{JWTToken, SignInVO};
 use crate::util::password_encoder::PasswordEncoder;
 use std::collections::HashMap;
+use rbatis::plugin::snowflake::new_snowflake_id;
 
 ///后台用户服务
 pub struct SysUserService {}
@@ -93,9 +94,7 @@ impl SysUserService {
                 arg.account.as_ref().unwrap()
             )));
         }
-        let id = rbatis::plugin::snowflake::async_snowflake_id()
-            .await
-            .to_string();
+        let id = new_snowflake_id().to_string();
         let user = SysUser {
             id: Some(id.to_string()),
             account: arg.account.clone(),

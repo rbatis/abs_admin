@@ -6,6 +6,7 @@ use crate::domain::domain::SysRes;
 use crate::domain::dto::{EmptyDTO, IdDTO, ResAddDTO, ResEditDTO, ResPageDTO};
 use crate::domain::vo::RespVO;
 use crate::service::CONTEXT;
+use rbatis::plugin::snowflake::new_snowflake_id;
 
 /// 资源分页(json请求)
 pub async fn page(page: web::Json<ResPageDTO>) -> impl Responder {
@@ -38,9 +39,7 @@ pub async fn add(mut arg: web::Json<ResAddDTO>) -> impl Responder {
     }
     let res = SysRes {
         id: Some(
-            rbatis::plugin::snowflake::async_snowflake_id()
-                .await
-                .to_string(),
+            new_snowflake_id().to_string()
         ),
         parent_id: arg.parent_id.clone(),
         name: arg.name.clone(),

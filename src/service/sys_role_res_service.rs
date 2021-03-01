@@ -13,6 +13,7 @@ use crate::domain::vo::{SysResVO, SysRoleVO};
 use crate::service::CONTEXT;
 use chrono::NaiveDateTime;
 use rbatis::core::value::DateTimeNow;
+use rbatis::plugin::snowflake::new_snowflake_id;
 
 /// 角色资源服务
 pub struct SysRoleResService {}
@@ -161,9 +162,7 @@ impl SysRoleResService {
         for resource_id in resource_ids {
             sys_role_res.push(SysRoleRes {
                 id: Some(
-                    rbatis::plugin::snowflake::async_snowflake_id()
-                        .await
-                        .to_string(),
+                    new_snowflake_id().to_string(),
                 ),
                 role_id: Some(role_id.to_string()),
                 res_id: Some(resource_id.clone()),
