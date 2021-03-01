@@ -171,8 +171,8 @@ impl SysRoleService {
             .sys_res_service
             .finds_layer(&make_field_vec!(&role_res, res_id), &all_res)
             .await?;
-        let permissons = make_field_vec!(&res, permission);
-        return Ok(permissons);
+        let permissions = make_field_vec!(&res, permission);
+        return Ok(permissions);
     }
 
     ///死循环找出父-子 关联关系数组
