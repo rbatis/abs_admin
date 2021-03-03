@@ -23,8 +23,8 @@ impl SysUserService {
         let wrapper = CONTEXT
             .rbatis
             .new_wrapper()
-            .do_if(arg.name.is_some(), |w| w.eq("name", &arg.name))
-            .do_if(arg.account.is_some(), |w| w.eq("account", &arg.account));
+            .do_if(arg.name.is_some(), |w| w.like("name", &arg.name))
+            .do_if(arg.account.is_some(), |w| w.like("account", &arg.account));
         let sys_user_page: Page<SysUser> = CONTEXT
             .rbatis
             .fetch_page_by_wrapper(
