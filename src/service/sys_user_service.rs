@@ -247,7 +247,7 @@ impl SysUserService {
         }
         let mut user = SysUser {
             id: arg.id.clone(),
-            account: arg.account.clone(),
+            account: None,
             password: pwd,
             name: arg.name.clone(),
             login_check: arg.login_check.clone(),
