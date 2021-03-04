@@ -1,5 +1,7 @@
 use crate::domain::domain::SysRes;
 use chrono::NaiveDateTime;
+use rbatis::utils::table_util::FatherChildRelationship;
+
 ///权限资源表
 #[crud_enable(table_name: "sys_res" | table_columns: "id,parent_id,name,permission,path,del")]
 #[derive(Clone, Debug)]
@@ -29,5 +31,15 @@ impl From<&SysRes> for SysResVO {
             create_date: arg.create_date.clone(),
             childs: None,
         }
+    }
+}
+
+impl FatherChildRelationship for SysResVO {
+    fn get_father_id(&self) -> Option<&Self::IdType> {
+        self.parent_id.as_ref()
+    }
+
+    fn set_childs(&mut self, arg: Vec<Self>) {
+        self.childs = Option::from(arg);
     }
 }

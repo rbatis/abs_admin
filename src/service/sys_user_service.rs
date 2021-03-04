@@ -23,8 +23,8 @@ impl SysUserService {
         let wrapper = CONTEXT
             .rbatis
             .new_wrapper()
-            .do_if(arg.name.is_some(), |w| w.eq("name", &arg.name))
-            .do_if(arg.account.is_some(), |w| w.eq("account", &arg.account));
+            .do_if(arg.name.is_some(), |w| w.like("name", &arg.name))
+            .do_if(arg.account.is_some(), |w| w.like("account", &arg.account));
         let sys_user_page: Page<SysUser> = CONTEXT
             .rbatis
             .fetch_page_by_wrapper(
@@ -78,12 +78,10 @@ impl SysUserService {
 
     ///添加后台账号
     pub async fn add(&self, arg: &UserAddDTO) -> Result<u64> {
-        if arg.account.is_none()
-            || arg.password.is_none()
-            || arg.account.as_ref().unwrap().is_empty()
-            || arg.password.as_ref().unwrap().is_empty()
+        if arg.account.is_none() || arg.account.as_ref().unwrap().is_empty()
+            || arg.name.is_none() || arg.name.as_ref().unwrap().is_empty()
         {
-            return Err(Error::from("用户名密码不能为空!"));
+            return Err(Error::from("用户名和姓名不能为空!"));
         }
         let old_user = self
             .find_by_account(arg.account.as_ref().unwrap_or(&"".to_string()))
@@ -94,11 +92,16 @@ impl SysUserService {
                 arg.account.as_ref().unwrap()
             )));
         }
+        let mut password = arg.password.clone().unwrap_or_default();
+        if password.is_empty() {
+            //默认密码
+            password = "123456".to_string();
+        }
         let id = new_snowflake_id().to_string();
         let user = SysUser {
             id: Some(id.to_string()),
             account: arg.account.clone(),
-            password: Some(PasswordEncoder::encode(arg.password.as_ref().unwrap())),
+            password: Some(PasswordEncoder::encode(&password)),
             name: arg.name.clone(),
             login_check: arg.login_check.clone(),
             state: Some(0),
@@ -128,7 +131,7 @@ impl SysUserService {
             )
             .await?;
         let user = user.ok_or_else(|| Error::from(format!("账号:{} 不存在!", arg.account)))?;
-        if user.state.eq(&Some(0)){
+        if user.state.eq(&Some(0)) {
             return Err(Error::from("账户被禁用!"));
         }
         match user
@@ -244,7 +247,7 @@ impl SysUserService {
         }
         let mut user = SysUser {
             id: arg.id.clone(),
-            account: arg.account.clone(),
+            account: None,
             password: pwd,
             name: arg.name.clone(),
             login_check: arg.login_check.clone(),

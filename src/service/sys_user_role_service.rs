@@ -21,7 +21,7 @@ impl SysUserRoleService {
     pub async fn page(&self, arg: &UserRolePageDTO) -> Result<Page<SysUserVO>> {
         let mut vo = CONTEXT.sys_user_service.page(&UserPageDTO::from(arg)).await?;
         let all_role = CONTEXT.sys_role_service.finds_all_map().await?;
-        let user_ids = make_field_vec!(&vo.records,id);
+        let user_ids = rbatis::make_table_field_vec!(&vo.records,id);
         let user_roles = CONTEXT
             .rbatis
             .fetch_list_by_wrapper::<SysUserRole>(
@@ -30,10 +30,10 @@ impl SysUserRoleService {
                     .in_("user_id", &user_ids),
             )
             .await?;
-        let user_role_map = make_field_map!(&user_roles,user_id);
-        let role_ids = make_field_vec!(&user_roles,role_id);
+        let user_role_map = rbatis::make_table_field_map!(&user_roles,user_id);
+        let role_ids = rbatis::make_table_field_vec!(&user_roles,role_id);
         let roles = CONTEXT.sys_role_service.finds(&role_ids).await?;
-        let roles_map = make_field_map!(&roles,id);
+        let roles_map = rbatis::make_table_field_map!(&roles,id);
         for mut x in &mut vo.records {
             let user_role = user_role_map.get(&x.id.clone().unwrap_or_default());
             match user_role {
@@ -116,11 +116,11 @@ impl SysUserRoleService {
                 &CONTEXT.rbatis.new_wrapper().eq("user_id", user_id),
             )
             .await?;
-        let role_ids = &make_field_vec!(&user_roles, role_id);
+        let role_ids = &rbatis::make_table_field_vec!(&user_roles, role_id);
         let roles = CONTEXT.sys_role_service.finds(role_ids).await?;
         let role_res_vec = CONTEXT
             .sys_role_service
-            .find_role_res(&make_field_vec!(&user_roles, role_id))
+            .find_role_res(&rbatis::make_table_field_vec!(&user_roles, role_id))
             .await?;
 
         let mut role_vos = vec![];
