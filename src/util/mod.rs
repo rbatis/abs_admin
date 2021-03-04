@@ -40,7 +40,7 @@ macro_rules! make_field_vec {
 ///         pub role_id:String
 ///      }
 ///      let user_roles: Vec<SysUserRole>;
-///      let role_ids = make_field_map!(&user_roles,role_id); // role_ids: HashMap<String,SysUserRole>
+///      let role_ids = make_field_map!(&vec_ref, field_name); // role_ids: HashMap<String,SysUserRole>
 ///
 ///
 ///
