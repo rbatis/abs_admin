@@ -164,13 +164,13 @@ impl SysRoleService {
             .fetch_list_by_wrapper("", &CONTEXT.rbatis.new_wrapper().eq("user_id", user_id))
             .await?;
         let role_res = self
-            .find_role_res(&make_field_vec!(&user_roles, role_id))
+            .find_role_res(&rbatis::make_table_field_vec!(&user_roles, role_id))
             .await?;
         let res = CONTEXT
             .sys_res_service
-            .finds_layer(&make_field_vec!(&role_res, res_id), &all_res)
+            .finds_layer(&rbatis::make_table_field_vec!(&role_res, res_id), &all_res)
             .await?;
-        let permissions = make_field_vec!(&res, permission);
+        let permissions = rbatis::make_table_field_vec!(&res, permission);
         return Ok(permissions);
     }
 

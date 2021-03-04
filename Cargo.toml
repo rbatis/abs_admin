@@ -8,7 +8,7 @@ edition = "2018"
 
 [dependencies]
 #rbatis orm dep
-rbatis = { version = "1.8", default-features = false, features = ["tokio1-mysql"] }
+rbatis = { version = "1.8.76", default-features = false, features = ["tokio1-mysql"] }
 #serde and json
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"

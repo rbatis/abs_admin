@@ -67,7 +67,7 @@ impl SysResService {
         if old.len() > 0 {
             return Err(Error::from(format!(
                 "权限已存在! 权限:{:?}",
-                make_field_vec!(old, name)
+                rbatis::make_table_field_vec!(old, name)
             )));
         }
         Ok(CONTEXT.rbatis.save("", arg).await?.rows_affected)
@@ -189,7 +189,7 @@ impl SysResService {
             )
             .await?;
         let all = self.finds_all_map().await?;
-        self.finds_layer(&make_field_vec!(list, id), &all).await
+        self.finds_layer(&rbatis::make_table_field_vec!(list, id), &all).await
     }
 
     ///带有层级结构的 res数组
