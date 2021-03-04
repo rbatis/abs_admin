@@ -4,14 +4,8 @@ pub trait IsEmpty {
 
 impl IsEmpty for Option<String> {
     fn is_empty(&self) -> bool {
-        match self {
-            Some(v) => {
-                if v.is_empty() {
-                    return true;
-                }
-                false
-            }
-            _ => true,
-        }
+        self.as_ref().map_or_else(|| false, |v| {
+            if v.is_empty() { true } else { false }
+        })
     }
 }
