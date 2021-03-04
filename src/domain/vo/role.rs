@@ -1,9 +1,10 @@
 use crate::domain::domain::SysRole;
 use crate::domain::vo::SysResVO;
 use chrono::NaiveDateTime;
-use serde::{Deserialize, Serialize};
+use rbatis::utils::table_util::FatherChildRelationship;
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[crud_enable(table_name: "sys_role"| table_columns: "id,name,parent_id,create_date,del")]
+#[derive(Debug, Clone)]
 pub struct SysRoleVO {
     pub id: Option<String>,
     pub name: Option<String>,
@@ -51,3 +52,13 @@ impl SysRoleVO{
     }
 }
 
+
+impl FatherChildRelationship for SysRoleVO{
+    fn get_father_id(&self) -> Option<&Self::IdType> {
+        self.parent_id.as_ref()
+    }
+
+    fn set_childs(&mut self, arg: Vec<Self>) {
+        self.childs = Option::from(arg)
+    }
+}

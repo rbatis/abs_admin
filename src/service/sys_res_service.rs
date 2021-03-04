@@ -10,6 +10,7 @@ use crate::domain::dto::{ResEditDTO, ResPageDTO};
 use crate::domain::vo::SysResVO;
 use crate::service::CONTEXT;
 use crate::util::string::IsEmpty;
+use rbatis::utils::table_util::FatherChildRelationship;
 
 const RES_KEY: &'static str = "sys_res:all";
 /// 资源服务
@@ -33,10 +34,14 @@ impl SysResService {
             )
             .await?;
         let all_res = self.finds_all_map().await?;
+        let mut all_res_vo =HashMap::new();
+        for (k,v) in all_res {
+            all_res_vo.insert(k,SysResVO::from(&v));
+        }
         let mut datas = vec![];
         for x in data.records {
             let mut vo = SysResVO::from(&x);
-            self.loop_find_childs(&mut vo, &all_res);
+            vo.recursive_set_childs(&all_res_vo);
             datas.push(vo);
         }
         let new_page = Page {
