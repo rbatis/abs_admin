@@ -15,10 +15,10 @@ use futures::Future;
 pub struct Auth;
 
 impl<S, B> Transform<S> for Auth
-where
-    S: Service<Request = ServiceRequest, Response = ServiceResponse<B>, Error = Error> + 'static,
-    S::Future: 'static,
-    B: MessageBody + 'static,
+    where
+        S: Service<Request=ServiceRequest, Response=ServiceResponse<B>, Error=Error> + 'static,
+        S::Future: 'static,
+        B: MessageBody + 'static,
 {
     type Request = ServiceRequest;
     type Response = ServiceResponse<B>;
@@ -39,15 +39,15 @@ pub struct AuthMiddleware<S> {
 }
 
 impl<S, B> Service for AuthMiddleware<S>
-where
-    S: Service<Request = ServiceRequest, Response = ServiceResponse<B>, Error = Error> + 'static,
-    S::Future: 'static,
-    B: MessageBody + 'static,
+    where
+        S: Service<Request=ServiceRequest, Response=ServiceResponse<B>, Error=Error> + 'static,
+        S::Future: 'static,
+        B: MessageBody + 'static,
 {
     type Request = ServiceRequest;
     type Response = ServiceResponse<B>;
     type Error = Error;
-    type Future = Pin<Box<dyn Future<Output = Result<Self::Response, Self::Error>>>>;
+    type Future = Pin<Box<dyn Future<Output=Result<Self::Response, Self::Error>>>>;
 
     fn poll_ready(&mut self, cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
         self.service.poll_ready(cx)
@@ -59,8 +59,7 @@ where
         Box::pin(async move {
             let value = HeaderValue::from_str("").unwrap();
             let token = req.headers().get("access_token").unwrap_or(&value);
-            if true {
-                //TODO token.len() > 0  && req.path().to_string().contains("/login")
+            if is_white_list(req.path().to_string()) || checked_token(token) {
                 let resp = svc.call(req).await?;
                 Ok(resp)
             } else {
@@ -75,4 +74,17 @@ where
             }
         })
     }
+}
+
+fn is_white_list(path: String) -> bool {
+    if path.ends_with("/api/sys_login")
+        || path.eq("/") {
+        return true;
+    } else {
+        return true;
+    }
+}
+
+fn checked_token(token: &HeaderValue) -> bool {
+    return true;
 }
