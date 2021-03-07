@@ -87,11 +87,11 @@ fn is_white_list_api(path: String) -> bool {
             return true;
         }
     }
-    //other
-    return true;
+    return false;
 }
 
 ///校验token是否有效，未过期
 fn checked_token(token: &HeaderValue) -> bool {
+    //TODO check token alive
     return true;
 }
