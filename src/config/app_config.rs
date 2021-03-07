@@ -77,24 +77,24 @@ impl Default for ApplicationConfig {
             .unwrap_or_default(),
             log_dir: get_cfg(&docs, "log_dir")
                 .as_str()
-                .unwrap_or("target/logs/")
+                .unwrap_or("")
                 .to_owned(),
             log_cup: get_cfg(&docs, "log_cup")
                 .as_i64()
-                .unwrap_or(10000)
+                .unwrap_or(0)
                 .to_owned(),
             log_temp_size: get_cfg(&docs, "log_temp_size")
                 .as_str()
-                .unwrap_or("100MB")
+                .unwrap_or("")
                 .to_owned(),
             log_zip: get_cfg(&docs, "log_zip").as_bool().unwrap_or(false),
             log_rolling_type: get_cfg(&docs, "log_rolling_type")
                 .as_str()
-                .unwrap_or("All")
+                .unwrap_or("")
                 .to_owned(),
             log_level: get_cfg(&docs, "log_level")
                 .as_str()
-                .unwrap_or("info")
+                .unwrap_or("")
                 .to_owned(),
             sms_redis_send_key_prefix: get_cfg(&docs, "sms_redis_send_key_prefix")
                 .as_str()
