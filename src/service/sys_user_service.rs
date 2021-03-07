@@ -187,7 +187,9 @@ impl SysUserService {
                 //TODO 是否需要删除redis的短信缓存？
             }
         }
-        return self.get_user_info(&user).await;
+        let sign_in_vo= self.get_user_info(&user).await?;
+        CONTEXT.redis_service.set_string(&format!("login:token:{}",arg.account),&NaiveDateTime::now().to_string()).await?;
+        return Ok(sign_in_vo);
     }
 
     pub async fn get_user_info_by_token(&self, token: &JWTToken) -> Result<SignInVO> {

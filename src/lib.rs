@@ -15,3 +15,4 @@ pub mod dao;
 pub mod domain;
 pub mod middleware;
 pub mod service;
+pub mod error;

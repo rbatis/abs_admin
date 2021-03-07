@@ -3,7 +3,7 @@ use std::pin::Pin;
 use std::rc::Rc;
 use std::task::{Context, Poll};
 
-use crate::domain::vo::RespVO;
+use crate::domain::vo::{RespVO, JWTToken};
 use actix_web::body::MessageBody;
 use actix_web::dev::{Service, ServiceRequest, ServiceResponse, Transform};
 use actix_web::http::HeaderValue;
@@ -11,6 +11,10 @@ use actix_web::{error, Error};
 use futures::future::{ok, Ready};
 use futures::Future;
 use crate::service::CONTEXT;
+use chrono::{NaiveDateTime, Duration};
+use std::str::FromStr;
+use rbatis::core::value::DateTimeNow;
+use std::ops::Sub;
 
 // custom request auth middleware
 pub struct Auth;
@@ -60,7 +64,27 @@ impl<S, B> Service for AuthMiddleware<S>
         Box::pin(async move {
             let value = HeaderValue::from_str("").unwrap();
             let token = req.headers().get("access_token").unwrap_or(&value);
-            if is_white_list_api(req.path().to_string()) || checked_token(token) {
+            let is_white_list_api = is_white_list_api(req.path().to_string());
+            let mut is_checked_token = false;
+            if !is_white_list_api {
+                //非白名单检查token是否有效
+                match checked_token(token).await {
+                    Ok(data) => {
+                        is_checked_token = data;
+                    }
+                    Err(e) => {
+                        let resp: RespVO<String> = RespVO {
+                            code: Some("-1".to_string()),
+                            msg: Some(format!("Unauthorized for:{}", e.to_string())),
+                            data: None,
+                        };
+                        return Err(error::ErrorUnauthorized(
+                            serde_json::json!(&resp).to_string(),
+                        ));
+                    }
+                }
+            }
+            if is_white_list_api || is_checked_token {
                 let resp = svc.call(req).await?;
                 Ok(resp)
             } else {
@@ -91,7 +115,30 @@ fn is_white_list_api(path: String) -> bool {
 }
 
 ///校验token是否有效，未过期
-fn checked_token(token: &HeaderValue) -> bool {
-    //TODO check token alive
-    return true;
+async fn checked_token(token: &HeaderValue) -> Result<bool, crate::error::Error> {
+    //check token alive
+    let token_value = token.to_str().unwrap_or("");
+    let token = JWTToken::verify(&CONTEXT.config.jwt_secret, token_value);
+    match token {
+        Ok(token) => {
+            let token_create_time = CONTEXT.redis_service.get_string(&format!("login:token:{}", token.account)).await?;
+            let time = NaiveDateTime::from_str(&token_create_time);
+            match time {
+                Ok(time) => {
+                    let sub = NaiveDateTime::now().sub(time);
+                    if sub.gt(&Duration::nanoseconds(token.exp as i64)) {
+                        return Ok(false);
+                    }
+                    return Ok(true);
+                }
+                Err(e) => {
+                    log::error!("[abs_admin] parse token error:{}", e.to_string());
+                    return Ok(false);
+                }
+            }
+        }
+        _ => {
+            return Ok(false);
+        }
+    }
 }
