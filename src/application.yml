@@ -31,7 +31,7 @@ sms_redis_send_key_prefix: "sms:send:"
 
 #JwtToken秘钥
 jwt_secret: "abs_admin"
-
+#接口白名单
 white_list_api:
  - "/"
  - "/api/sys_login"
