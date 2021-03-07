@@ -188,7 +188,8 @@ impl SysUserService {
             }
         }
         let sign_in_vo= self.get_user_info(&user).await?;
-        CONTEXT.redis_service.set_string(&format!("login:token:{}",arg.account),&NaiveDateTime::now().to_string()).await?;
+        let time=NaiveDateTime::now().format("%Y-%m-%dT%H:%M:%S").to_string();
+        CONTEXT.redis_service.set_string(&format!("login:token:{}",arg.account),&time).await?;
         return Ok(sign_in_vo);
     }
 

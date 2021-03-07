@@ -12,7 +12,6 @@ use futures::future::{ok, Ready};
 use futures::Future;
 use crate::service::CONTEXT;
 use chrono::{NaiveDateTime, Duration};
-use std::str::FromStr;
 use rbatis::core::value::DateTimeNow;
 use std::ops::Sub;
 
@@ -107,7 +106,9 @@ fn is_white_list_api(path: String) -> bool {
         return true;
     }
     for x in &CONTEXT.config.white_list_api {
-        if path.contains(x) {
+        println!("x:{}",x);
+        println!("path:{}",path);
+        if x.contains(&path) {
             return true;
         }
     }
@@ -118,21 +119,24 @@ fn is_white_list_api(path: String) -> bool {
 async fn checked_token(token: &HeaderValue) -> Result<bool, crate::error::Error> {
     //check token alive
     let token_value = token.to_str().unwrap_or("");
+    if CONTEXT.config.debug{
+        log::info!("[abs_admin] token:{}",token_value);
+    }
     let token = JWTToken::verify(&CONTEXT.config.jwt_secret, token_value);
     match token {
         Ok(token) => {
             let token_create_time = CONTEXT.redis_service.get_string(&format!("login:token:{}", token.account)).await?;
-            let time = NaiveDateTime::from_str(&token_create_time);
+            let time = NaiveDateTime::parse_from_str(&token_create_time,"%Y-%m-%dT%H:%M:%S");
             match time {
                 Ok(time) => {
                     let sub = NaiveDateTime::now().sub(time);
-                    if sub.gt(&Duration::nanoseconds(token.exp as i64)) {
+                    if sub.gt(&Duration::milliseconds(token.exp as i64)) {
                         return Ok(false);
                     }
                     return Ok(true);
                 }
                 Err(e) => {
-                    log::error!("[abs_admin] parse token error:{}", e.to_string());
+                    log::error!("[abs_admin] parse token.exp error:{}", e.to_string());
                     return Ok(false);
                 }
             }
