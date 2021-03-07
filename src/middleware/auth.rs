@@ -106,8 +106,6 @@ fn is_white_list_api(path: String) -> bool {
         return true;
     }
     for x in &CONTEXT.config.white_list_api {
-        println!("x:{}",x);
-        println!("path:{}",path);
         if x.contains(&path) {
             return true;
         }
