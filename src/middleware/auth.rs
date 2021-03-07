@@ -10,6 +10,7 @@ use actix_web::http::HeaderValue;
 use actix_web::{error, Error};
 use futures::future::{ok, Ready};
 use futures::Future;
+use crate::service::CONTEXT;
 
 // custom request auth middleware
 pub struct Auth;
@@ -59,7 +60,7 @@ impl<S, B> Service for AuthMiddleware<S>
         Box::pin(async move {
             let value = HeaderValue::from_str("").unwrap();
             let token = req.headers().get("access_token").unwrap_or(&value);
-            if is_white_list(req.path().to_string()) || checked_token(token) {
+            if is_white_list_api(req.path().to_string()) || checked_token(token) {
                 let resp = svc.call(req).await?;
                 Ok(resp)
             } else {
@@ -76,15 +77,21 @@ impl<S, B> Service for AuthMiddleware<S>
     }
 }
 
-fn is_white_list(path: String) -> bool {
-    if path.ends_with("/api/sys_login")
-        || path.eq("/") {
-        return true;
-    } else {
+///是否处在白名单接口中
+fn is_white_list_api(path: String) -> bool {
+    if path.eq("/") {
         return true;
     }
+    for x in &CONTEXT.config.white_list_api {
+        if path.contains(x) {
+            return true;
+        }
+    }
+    //other
+    return true;
 }
 
+///校验token是否有效，未过期
 fn checked_token(token: &HeaderValue) -> bool {
     return true;
 }

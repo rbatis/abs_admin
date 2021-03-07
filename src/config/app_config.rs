@@ -36,6 +36,9 @@ pub struct ApplicationConfig {
 
     ///jwt 秘钥
     pub jwt_secret: String,
+
+    ///白名单接口
+    pub white_list_api: Vec<String>,
 }
 
 ///默认配置
@@ -101,6 +104,7 @@ impl Default for ApplicationConfig {
                 .as_str()
                 .unwrap_or("")
                 .to_owned(),
+            white_list_api: to_vec_string(get_cfg(&docs, "white_list_api").as_vec().unwrap().to_vec())
         };
 
         if result.debug {
@@ -128,4 +132,12 @@ fn get_cfg<'a>(docs: &'a Vec<Yaml>, key: &str) -> &'a Yaml {
         }
     }
     panic!(format!("in application.yml key: '{}' not exist!", key))
+}
+
+fn to_vec_string(arg:Vec<Yaml>) -> Vec<String> {
+    let mut arr=vec![];
+    for x in arg {
+        arr.push(x.as_str().unwrap_or("").to_string());
+    }
+    return arr;
 }
