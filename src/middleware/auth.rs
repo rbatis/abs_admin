@@ -117,9 +117,6 @@ fn is_white_list_api(path: String) -> bool {
 async fn checked_token(token: &HeaderValue) -> Result<bool, crate::error::Error> {
     //check token alive
     let token_value = token.to_str().unwrap_or("");
-    if CONTEXT.config.debug{
-        log::info!("[abs_admin] token:{}",token_value);
-    }
     let token = JWTToken::verify(&CONTEXT.config.jwt_secret, token_value);
     match token {
         Ok(token) => {
