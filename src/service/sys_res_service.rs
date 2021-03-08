@@ -131,7 +131,7 @@ impl SysResService {
             .redis_service
             .get_json::<Option<Vec<SysRes>>>(RES_KEY)
             .await;
-        if js.is_err() || js.as_ref()?.is_none() {
+        if js.is_err() || js.as_ref().unwrap().is_none() {
             let all = self.update_all().await?;
             return Ok(all);
         }

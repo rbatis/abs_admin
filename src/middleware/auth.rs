@@ -3,19 +3,17 @@ use std::pin::Pin;
 use std::rc::Rc;
 use std::task::{Context, Poll};
 
-use crate::domain::vo::{RespVO, JWTToken};
+use actix_web::{error, Error};
 use actix_web::body::MessageBody;
 use actix_web::dev::{Service, ServiceRequest, ServiceResponse, Transform};
 use actix_web::http::HeaderValue;
-use actix_web::{error, Error};
+use chrono::NaiveDateTime;
 use futures::future::{ok, Ready};
 use futures::Future;
-use crate::service::CONTEXT;
-use chrono::{NaiveDateTime, Duration};
-use rbatis::core::value::DateTimeNow;
-use std::ops::Sub;
 
-// custom request auth middleware
+use crate::domain::vo::{JWTToken, RespVO};
+use crate::service::CONTEXT;
+
 pub struct Auth;
 
 impl<S, B> Transform<S> for Auth
@@ -63,14 +61,28 @@ impl<S, B> Service for AuthMiddleware<S>
         Box::pin(async move {
             let value = HeaderValue::from_str("").unwrap();
             let token = req.headers().get("access_token").unwrap_or(&value);
-            let path=req.path().to_string();
+            let path = req.path().to_string();
             let is_white_list_api = is_white_list_api(&path);
             let mut is_checked_token = false;
             if !is_white_list_api {
                 //非白名单检查token是否有效
-                match checked_token(token,path).await {
+                match checked_token(token, &path).await {
                     Ok(data) => {
-                        is_checked_token = data;
+                        match check_auth(data,&path).await {
+                            Ok(_) => {
+                                is_checked_token = true;
+                            }
+                            Err(e) => {
+                                let resp: RespVO<String> = RespVO {
+                                    code: Some("-1".to_string()),
+                                    msg: Some(format!("Unauthorized for:{}", e.to_string())),
+                                    data: None,
+                                };
+                                return Err(error::ErrorUnauthorized(
+                                    serde_json::json!(&resp).to_string(),
+                                ));
+                            }
+                        }
                     }
                     Err(e) => {
                         let resp: RespVO<String> = RespVO {
@@ -115,27 +127,41 @@ fn is_white_list_api(path: &str) -> bool {
 }
 
 ///校验token是否有效，未过期
-async fn checked_token(token: &HeaderValue,path:&str) -> Result<bool, crate::error::Error> {
+async fn checked_token(token: &HeaderValue, path: &str) -> Result<JWTToken, crate::error::Error> {
     //check token alive
     let token_value = token.to_str().unwrap_or("");
     let token = JWTToken::verify(&CONTEXT.config.jwt_secret, token_value);
     match token {
         Ok(token) => {
-            //TODO 二级缓存 sys_res vec
-            let sys_res=CONTEXT.sys_res_service.finds_all().await?;
-            //权限校验
-            for permission in &token.permissions {
-                for x in &sys_res {
-                    if x.permission.eq(permission) &&
-                        path.contains(&x.path){
-                        return Ok(true);
-                    }
-                }
-            }
-            return Ok(false);
+            return Ok(token);
         }
-        _ => {
-            return Ok(false);
+        Err(e) => {
+            return Err(crate::error::Error::from(e.to_string()));
         }
     }
+}
+
+///权限校验
+async fn check_auth(token: JWTToken,path:&str) -> Result<(), crate::error::Error> {
+    let sys_res = CONTEXT.sys_res_service.finds_all().await?;
+    //权限校验
+    for token_permission in &token.permissions {
+        for x in &sys_res {
+            match &x.permission {
+                Some(permission) => {
+                    match &x.path {
+                        None => {}
+                        Some(x_path) => {
+                            if permission.eq(token_permission) &&
+                                path.contains(x_path) {
+                                return Ok(());
+                            }
+                        }
+                    }
+                }
+                _ => {}
+            }
+        }
+    }
+    return Err(crate::error::Error::from("无权限访问!"));
 }
