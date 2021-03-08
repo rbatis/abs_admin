@@ -68,6 +68,7 @@ impl<S> Service for AuthMiddleware<S>
                                 is_checked_token = true;
                             }
                             Err(e) => {
+                                //仅提示拦截
                                 let resp: RespVO<String> = RespVO {
                                     code: Some("-1".to_string()),
                                     msg: Some(format!("无权限访问:{}", e.to_string())),
@@ -78,6 +79,7 @@ impl<S> Service for AuthMiddleware<S>
                         }
                     }
                     Err(e) => {
+                        //401 http状态码会强制前端退出当前登陆状态
                         let resp: RespVO<String> = RespVO {
                             code: Some("-1".to_string()),
                             msg: Some(format!("Unauthorized for:{}", e.to_string())),
@@ -90,17 +92,17 @@ impl<S> Service for AuthMiddleware<S>
                 }
             }
             if is_white_list_api || is_checked_token {
+                //调用接口服务
                 let resp = svc.call(req).await?;
                 Ok(resp)
             } else {
+                //仅提示拦截
                 let resp: RespVO<String> = RespVO {
                     code: Some("-1".to_string()),
-                    msg: Some("Unauthorized".to_string()),
+                    msg: Some(format!("无权限访问:{}", e.to_string())),
                     data: None,
                 };
-                Err(error::ErrorUnauthorized(
-                    serde_json::json!(&resp).to_string(),
-                ))
+                return Ok(req.into_response(resp.resp_json()));
             }
         })
     }
