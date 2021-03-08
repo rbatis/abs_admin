@@ -63,11 +63,12 @@ impl<S, B> Service for AuthMiddleware<S>
         Box::pin(async move {
             let value = HeaderValue::from_str("").unwrap();
             let token = req.headers().get("access_token").unwrap_or(&value);
-            let is_white_list_api = is_white_list_api(req.path().to_string());
+            let path=req.path().to_string();
+            let is_white_list_api = is_white_list_api(&path);
             let mut is_checked_token = false;
             if !is_white_list_api {
                 //非白名单检查token是否有效
-                match checked_token(token).await {
+                match checked_token(token,path).await {
                     Ok(data) => {
                         is_checked_token = data;
                     }
@@ -101,12 +102,12 @@ impl<S, B> Service for AuthMiddleware<S>
 }
 
 ///是否处在白名单接口中
-fn is_white_list_api(path: String) -> bool {
+fn is_white_list_api(path: &str) -> bool {
     if path.eq("/") {
         return true;
     }
     for x in &CONTEXT.config.white_list_api {
-        if x.contains(&path) {
+        if x.contains(path) {
             return true;
         }
     }
@@ -114,17 +115,24 @@ fn is_white_list_api(path: String) -> bool {
 }
 
 ///校验token是否有效，未过期
-async fn checked_token(token: &HeaderValue) -> Result<bool, crate::error::Error> {
+async fn checked_token(token: &HeaderValue,path:&str) -> Result<bool, crate::error::Error> {
     //check token alive
     let token_value = token.to_str().unwrap_or("");
     let token = JWTToken::verify(&CONTEXT.config.jwt_secret, token_value);
     match token {
         Ok(token) => {
-            //TODO 权限校验
-            for x in &token.permissions {
-
+            //TODO 二级缓存 sys_res vec
+            let sys_res=CONTEXT.sys_res_service.finds_all().await?;
+            //权限校验
+            for permission in &token.permissions {
+                for x in &sys_res {
+                    if x.permission.eq(permission) &&
+                        path.contains(&x.path){
+                        return Ok(true);
+                    }
+                }
             }
-            return Ok(true);
+            return Ok(false);
         }
         _ => {
             return Ok(false);
