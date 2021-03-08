@@ -57,15 +57,12 @@ impl<S> Service for AuthMiddleware<S>
             let value = HeaderValue::from_str("").unwrap();
             let token = req.headers().get("access_token").unwrap_or(&value);
             let path = req.path().to_string();
-            let is_white_list_api = is_white_list_api(&path);
-            let mut is_checked_token = false;
-            if !is_white_list_api {
+            if !is_white_list_api(&path) {
                 //非白名单检查token是否有效
                 match checked_token(token, &path).await {
                     Ok(data) => {
                         match check_auth(data,&path).await {
                             Ok(_) => {
-                                is_checked_token = true;
                             }
                             Err(e) => {
                                 //仅提示拦截
@@ -91,19 +88,9 @@ impl<S> Service for AuthMiddleware<S>
                     }
                 }
             }
-            if is_white_list_api || is_checked_token {
-                //调用接口服务
-                let resp = svc.call(req).await?;
-                Ok(resp)
-            } else {
-                //仅提示拦截
-                let resp: RespVO<String> = RespVO {
-                    code: Some("-1".to_string()),
-                    msg: Some(format!("无权限访问:{}", e.to_string())),
-                    data: None,
-                };
-                return Ok(req.into_response(resp.resp_json()));
-            }
+            //调用接口服务
+            let resp = svc.call(req).await?;
+            Ok(resp)
         })
     }
 }
