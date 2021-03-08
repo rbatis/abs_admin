@@ -123,21 +123,11 @@ async fn checked_token(token: &HeaderValue) -> Result<bool, crate::error::Error>
     let token = JWTToken::verify(&CONTEXT.config.jwt_secret, token_value);
     match token {
         Ok(token) => {
-            let token_create_time = CONTEXT.redis_service.get_string(&format!("login:token:{}", token.account)).await?;
-            let time = NaiveDateTime::parse_from_str(&token_create_time,"%Y-%m-%dT%H:%M:%S");
-            match time {
-                Ok(time) => {
-                    let sub = NaiveDateTime::now().sub(time);
-                    if sub.gt(&Duration::milliseconds(token.exp as i64)) {
-                        return Ok(false);
-                    }
-                    return Ok(true);
-                }
-                Err(e) => {
-                    log::error!("[abs_admin] parse token.exp error:{}", e.to_string());
-                    return Ok(false);
-                }
+            //TODO 权限校验
+            for x in &token.permissions {
+
             }
+            return Ok(true);
         }
         _ => {
             return Ok(false);
