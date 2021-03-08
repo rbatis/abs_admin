@@ -138,7 +138,7 @@ impl SysResService {
         if CONTEXT.config.debug {
             log::info!("[abs_admin] get from redis:{}", RES_KEY);
         }
-        return Ok(js.ok().unwrap().unwrap());
+        return Ok(js?.unwrap_or_default());
     }
 
     /// 更新所有
