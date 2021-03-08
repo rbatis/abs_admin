@@ -71,14 +71,14 @@ impl SysRoleService {
             .redis_service
             .get_json::<Option<Vec<SysRole>>>(RES_KEY)
             .await;
-        if js.is_err() || js.as_ref().ok().unwrap().is_none() {
+        if js.is_err() || js.as_ref()?.is_none() {
             let all = self.update_all().await?;
             return Ok(all);
         }
         if CONTEXT.config.debug {
             log::info!("[abs_admin] get from redis:{}", RES_KEY);
         }
-        return Ok(js.ok().unwrap().unwrap());
+        return Ok(js?.unwrap_or_default());
     }
 
     /// 更新所有
