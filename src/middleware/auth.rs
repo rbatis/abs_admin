@@ -4,26 +4,22 @@ use std::rc::Rc;
 use std::task::{Context, Poll};
 
 use actix_web::{error, Error};
-use actix_web::body::MessageBody;
-use actix_web::dev::{Service, ServiceRequest, ServiceResponse, Transform};
+use actix_web::dev::{Service, ServiceRequest, ServiceResponse, Transform, Body};
 use actix_web::http::HeaderValue;
-use chrono::NaiveDateTime;
 use futures::future::{ok, Ready};
 use futures::Future;
 
 use crate::domain::vo::{JWTToken, RespVO};
 use crate::service::CONTEXT;
-
 pub struct Auth;
 
-impl<S, B> Transform<S> for Auth
+impl<S> Transform<S> for Auth
     where
-        S: Service<Request=ServiceRequest, Response=ServiceResponse<B>, Error=Error> + 'static,
+        S: Service<Request=ServiceRequest, Response=ServiceResponse<Body>, Error=Error> + 'static,
         S::Future: 'static,
-        B: MessageBody + 'static,
 {
     type Request = ServiceRequest;
-    type Response = ServiceResponse<B>;
+    type Response = ServiceResponse<Body>;
     type Error = Error;
     type Transform = AuthMiddleware<S>;
     type InitError = ();
@@ -40,14 +36,13 @@ pub struct AuthMiddleware<S> {
     service: Rc<RefCell<S>>,
 }
 
-impl<S, B> Service for AuthMiddleware<S>
+impl<S> Service for AuthMiddleware<S>
     where
-        S: Service<Request=ServiceRequest, Response=ServiceResponse<B>, Error=Error> + 'static,
-        S::Future: 'static,
-        B: MessageBody + 'static,
+        S: Service<Request=ServiceRequest, Response=ServiceResponse<Body>, Error=Error> + 'static,
+        S::Future: 'static
 {
     type Request = ServiceRequest;
-    type Response = ServiceResponse<B>;
+    type Response = ServiceResponse<Body>;
     type Error = Error;
     type Future = Pin<Box<dyn Future<Output=Result<Self::Response, Self::Error>>>>;
 
@@ -75,12 +70,10 @@ impl<S, B> Service for AuthMiddleware<S>
                             Err(e) => {
                                 let resp: RespVO<String> = RespVO {
                                     code: Some("-1".to_string()),
-                                    msg: Some(format!("Unauthorized for:{}", e.to_string())),
+                                    msg: Some(format!("无权限访问:{}", e.to_string())),
                                     data: None,
                                 };
-                                return Err(error::ErrorUnauthorized(
-                                    serde_json::json!(&resp).to_string(),
-                                ));
+                                return Ok(req.into_response(resp.resp_json()));
                             }
                         }
                     }
