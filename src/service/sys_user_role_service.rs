@@ -1,17 +1,17 @@
 use std::collections::HashMap;
 
+use crate::domain::domain::{SysRes, SysUserRole};
+use crate::domain::dto::{UserPageDTO, UserRoleAddDTO, UserRolePageDTO};
+use crate::domain::vo::user::SysUserVO;
+use crate::domain::vo::{SysResVO, SysRoleVO};
+use crate::service::CONTEXT;
 use chrono::NaiveDateTime;
 use rbatis::core::value::DateTimeNow;
 use rbatis::core::Result;
 use rbatis::crud::CRUD;
-use crate::domain::domain::{SysRes, SysUserRole};
-use crate::domain::dto::{UserRoleAddDTO, UserRolePageDTO, UserPageDTO};
-use crate::domain::vo::{SysResVO, SysRoleVO};
-use crate::service::CONTEXT;
-use rbatis::Error;
-use crate::domain::vo::user::SysUserVO;
 use rbatis::plugin::page::Page;
 use rbatis::plugin::snowflake::new_snowflake_id;
+use rbatis::Error;
 
 ///用户角色服务
 pub struct SysUserRoleService {}
@@ -19,21 +19,23 @@ pub struct SysUserRoleService {}
 impl SysUserRoleService {
     ///角色分页
     pub async fn page(&self, arg: &UserRolePageDTO) -> Result<Page<SysUserVO>> {
-        let mut vo = CONTEXT.sys_user_service.page(&UserPageDTO::from(arg)).await?;
+        let mut vo = CONTEXT
+            .sys_user_service
+            .page(&UserPageDTO::from(arg))
+            .await?;
         let all_role = CONTEXT.sys_role_service.finds_all_map().await?;
-        let user_ids = rbatis::make_table_field_vec!(&vo.records,id);
+        let user_ids = rbatis::make_table_field_vec!(&vo.records, id);
         let user_roles = CONTEXT
             .rbatis
             .fetch_list_by_wrapper::<SysUserRole>(
                 "",
-                &CONTEXT.rbatis.new_wrapper()
-                    .in_("user_id", &user_ids),
+                &CONTEXT.rbatis.new_wrapper().in_("user_id", &user_ids),
             )
             .await?;
-        let user_role_map = rbatis::make_table_field_map!(&user_roles,user_id);
-        let role_ids = rbatis::make_table_field_vec!(&user_roles,role_id);
+        let user_role_map = rbatis::make_table_field_map!(&user_roles, user_id);
+        let role_ids = rbatis::make_table_field_vec!(&user_roles, role_id);
         let roles = CONTEXT.sys_role_service.finds(&role_ids).await?;
-        let roles_map = rbatis::make_table_field_map!(&roles,id);
+        let roles_map = rbatis::make_table_field_map!(&roles, id);
         for mut x in &mut vo.records {
             let user_role = user_role_map.get(&x.id.clone().unwrap_or_default());
             match user_role {
@@ -46,7 +48,9 @@ impl SysUserRoleService {
                             match &mut x.role {
                                 None => {}
                                 Some(role_vo) => {
-                                    CONTEXT.sys_role_service.loop_find_childs(role_vo, &all_role);
+                                    CONTEXT
+                                        .sys_role_service
+                                        .loop_find_childs(role_vo, &all_role);
                                 }
                             }
                         }
@@ -73,10 +77,10 @@ impl SysUserRoleService {
         if role.id.is_none() {
             role.id = Some(new_snowflake_id().to_string());
         }
-        self.remove_by_user_id(&arg.user_id.clone().unwrap_or_default()).await?;
+        self.remove_by_user_id(&arg.user_id.clone().unwrap_or_default())
+            .await?;
         Ok(CONTEXT.rbatis.save("", &role).await?.rows_affected)
     }
-
 
     ///角色删除
     pub async fn remove_by_role_id(&self, role_id: &str) -> Result<u64> {
@@ -98,7 +102,6 @@ impl SysUserRoleService {
             )
             .await
     }
-
 
     ///找出角色
     pub async fn find_user_role(

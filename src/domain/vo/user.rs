@@ -27,7 +27,7 @@ impl From<SysUser> for SysUserVO {
             password: None,
             name: arg.name,
             login_check: arg.login_check,
-            state:arg.state,
+            state: arg.state,
             del: arg.del,
             create_date: arg.create_date,
             role: None,

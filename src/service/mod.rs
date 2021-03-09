@@ -31,7 +31,7 @@ pub struct ServiceContext {
 
 impl Default for ServiceContext {
     fn default() -> Self {
-        let config=ApplicationConfig::default();
+        let config = ApplicationConfig::default();
         ServiceContext {
             rbatis: crate::dao::init_rbatis(&config),
             redis_service: RedisService::new(&config.redis_url),

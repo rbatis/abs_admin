@@ -72,17 +72,9 @@ impl Default for ApplicationConfig {
             logic_un_deleted: get_cfg(&docs, "logic_un_deleted")
                 .as_i64()
                 .unwrap_or_default(),
-            logic_deleted: get_cfg(&docs, "logic_deleted")
-            .as_i64()
-            .unwrap_or_default(),
-            log_dir: get_cfg(&docs, "log_dir")
-                .as_str()
-                .unwrap_or("")
-                .to_owned(),
-            log_cup: get_cfg(&docs, "log_cup")
-                .as_i64()
-                .unwrap_or(0)
-                .to_owned(),
+            logic_deleted: get_cfg(&docs, "logic_deleted").as_i64().unwrap_or_default(),
+            log_dir: get_cfg(&docs, "log_dir").as_str().unwrap_or("").to_owned(),
+            log_cup: get_cfg(&docs, "log_cup").as_i64().unwrap_or(0).to_owned(),
             log_temp_size: get_cfg(&docs, "log_temp_size")
                 .as_str()
                 .unwrap_or("")
@@ -104,7 +96,9 @@ impl Default for ApplicationConfig {
                 .as_str()
                 .unwrap_or("")
                 .to_owned(),
-            white_list_api: to_vec_string(get_cfg(&docs, "white_list_api").as_vec().unwrap().to_vec())
+            white_list_api: to_vec_string(
+                get_cfg(&docs, "white_list_api").as_vec().unwrap().to_vec(),
+            ),
         };
 
         if result.debug {
@@ -134,8 +128,8 @@ fn get_cfg<'a>(docs: &'a Vec<Yaml>, key: &str) -> &'a Yaml {
     panic!(format!("in application.yml key: '{}' not exist!", key))
 }
 
-fn to_vec_string(arg:Vec<Yaml>) -> Vec<String> {
-    let mut arr=vec![];
+fn to_vec_string(arg: Vec<Yaml>) -> Vec<String> {
+    let mut arr = vec![];
     for x in arg {
         arr.push(x.as_str().unwrap_or("").to_string());
     }

@@ -34,9 +34,9 @@ impl SysResService {
             )
             .await?;
         let all_res = self.finds_all_map().await?;
-        let mut all_res_vo =HashMap::new();
-        for (k,v) in all_res {
-            all_res_vo.insert(k,SysResVO::from(&v));
+        let mut all_res_vo = HashMap::new();
+        for (k, v) in all_res {
+            all_res_vo.insert(k, SysResVO::from(&v));
         }
         let mut datas = vec![];
         for x in data.records {
@@ -194,7 +194,8 @@ impl SysResService {
             )
             .await?;
         let all = self.finds_all_map().await?;
-        self.finds_layer(&rbatis::make_table_field_vec!(list, id), &all).await
+        self.finds_layer(&rbatis::make_table_field_vec!(list, id), &all)
+            .await
     }
 
     ///带有层级结构的 res数组

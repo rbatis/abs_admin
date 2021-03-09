@@ -3,9 +3,9 @@ use std::pin::Pin;
 use std::rc::Rc;
 use std::task::{Context, Poll};
 
-use actix_web::{error, Error};
-use actix_web::dev::{Service, ServiceRequest, ServiceResponse, Transform, Body};
+use actix_web::dev::{Body, Service, ServiceRequest, ServiceResponse, Transform};
 use actix_web::http::HeaderValue;
+use actix_web::{error, Error};
 use futures::future::{ok, Ready};
 use futures::Future;
 
@@ -14,9 +14,9 @@ use crate::service::CONTEXT;
 pub struct Auth;
 
 impl<S> Transform<S> for Auth
-    where
-        S: Service<Request=ServiceRequest, Response=ServiceResponse<Body>, Error=Error> + 'static,
-        S::Future: 'static,
+where
+    S: Service<Request = ServiceRequest, Response = ServiceResponse<Body>, Error = Error> + 'static,
+    S::Future: 'static,
 {
     type Request = ServiceRequest;
     type Response = ServiceResponse<Body>;
@@ -37,14 +37,14 @@ pub struct AuthMiddleware<S> {
 }
 
 impl<S> Service for AuthMiddleware<S>
-    where
-        S: Service<Request=ServiceRequest, Response=ServiceResponse<Body>, Error=Error> + 'static,
-        S::Future: 'static
+where
+    S: Service<Request = ServiceRequest, Response = ServiceResponse<Body>, Error = Error> + 'static,
+    S::Future: 'static,
 {
     type Request = ServiceRequest;
     type Response = ServiceResponse<Body>;
     type Error = Error;
-    type Future = Pin<Box<dyn Future<Output=Result<Self::Response, Self::Error>>>>;
+    type Future = Pin<Box<dyn Future<Output = Result<Self::Response, Self::Error>>>>;
 
     fn poll_ready(&mut self, cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
         self.service.poll_ready(cx)
@@ -61,9 +61,8 @@ impl<S> Service for AuthMiddleware<S>
                 //非白名单检查token是否有效
                 match checked_token(token, &path).await {
                     Ok(data) => {
-                        match check_auth(data,&path).await {
-                            Ok(_) => {
-                            }
+                        match check_auth(data, &path).await {
+                            Ok(_) => {}
                             Err(e) => {
                                 //仅提示拦截
                                 let resp: RespVO<String> = RespVO {
@@ -124,23 +123,20 @@ async fn checked_token(token: &HeaderValue, path: &str) -> Result<JWTToken, crat
 }
 
 ///权限校验
-async fn check_auth(token: JWTToken,path:&str) -> Result<(), crate::error::Error> {
+async fn check_auth(token: JWTToken, path: &str) -> Result<(), crate::error::Error> {
     let sys_res = CONTEXT.sys_res_service.finds_all().await?;
     //权限校验
     for token_permission in &token.permissions {
         for x in &sys_res {
             match &x.permission {
-                Some(permission) => {
-                    match &x.path {
-                        None => {}
-                        Some(x_path) => {
-                            if permission.eq(token_permission) &&
-                                path.contains(x_path) {
-                                return Ok(());
-                            }
+                Some(permission) => match &x.path {
+                    None => {}
+                    Some(x_path) => {
+                        if permission.eq(token_permission) && path.contains(x_path) {
+                            return Ok(());
                         }
                     }
-                }
+                },
                 _ => {}
             }
         }

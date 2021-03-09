@@ -1,18 +1,18 @@
+use crate::service::CONTEXT;
 use chrono::NaiveDateTime;
 use rbatis::core::value::DateTimeNow;
 use rbatis::core::Error;
 use rbatis::core::Result;
 use rbatis::crud::CRUD;
 use rbatis::plugin::page::{Page, PageRequest};
-use crate::service::CONTEXT;
 
 use crate::domain::domain::{LoginCheck, SysRes, SysUser};
 use crate::domain::dto::{IdDTO, SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO, UserRoleAddDTO};
 use crate::domain::vo::user::SysUserVO;
 use crate::domain::vo::{JWTToken, SignInVO};
 use crate::util::password_encoder::PasswordEncoder;
-use std::collections::HashMap;
 use rbatis::plugin::snowflake::new_snowflake_id;
+use std::collections::HashMap;
 
 ///后台用户服务
 pub struct SysUserService {}
@@ -78,8 +78,10 @@ impl SysUserService {
 
     ///添加后台账号
     pub async fn add(&self, arg: &UserAddDTO) -> Result<u64> {
-        if arg.account.is_none() || arg.account.as_ref().unwrap().is_empty()
-            || arg.name.is_none() || arg.name.as_ref().unwrap().is_empty()
+        if arg.account.is_none()
+            || arg.account.as_ref().unwrap().is_empty()
+            || arg.name.is_none()
+            || arg.name.as_ref().unwrap().is_empty()
         {
             return Err(Error::from("用户名和姓名不能为空!"));
         }
@@ -110,11 +112,14 @@ impl SysUserService {
         };
         match &arg.role_id {
             Some(role_id) => {
-                CONTEXT.sys_user_role_service.add(&UserRoleAddDTO {
-                    id: None,
-                    user_id: user.id.clone(),
-                    role_id: arg.role_id.clone(),
-                }).await?;
+                CONTEXT
+                    .sys_user_role_service
+                    .add(&UserRoleAddDTO {
+                        id: None,
+                        user_id: user.id.clone(),
+                        role_id: arg.role_id.clone(),
+                    })
+                    .await?;
             }
             _ => {}
         }
@@ -187,7 +192,7 @@ impl SysUserService {
                 //TODO 是否需要删除redis的短信缓存？
             }
         }
-        let sign_in_vo= self.get_user_info(&user).await?;
+        let sign_in_vo = self.get_user_info(&user).await?;
         return Ok(sign_in_vo);
     }
 
@@ -257,11 +262,14 @@ impl SysUserService {
             create_date: None,
         };
         if arg.role_id.is_some() {
-            CONTEXT.sys_user_role_service.add(&UserRoleAddDTO {
-                id: None,
-                user_id: user.id.clone(),
-                role_id: arg.role_id.clone(),
-            }).await?;
+            CONTEXT
+                .sys_user_role_service
+                .add(&UserRoleAddDTO {
+                    id: None,
+                    user_id: user.id.clone(),
+                    role_id: arg.role_id.clone(),
+                })
+                .await?;
         }
         CONTEXT.rbatis.update_by_id("", &mut user).await
     }

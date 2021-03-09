@@ -9,8 +9,8 @@ use crate::domain::dto::{RoleAddDTO, RoleEditDTO, RolePageDTO};
 use crate::domain::vo::SysRoleVO;
 use crate::service::CONTEXT;
 use crate::util::string::IsEmpty;
-use std::collections::HashMap;
 use rbatis::plugin::snowflake::new_snowflake_id;
+use std::collections::HashMap;
 
 const RES_KEY: &'static str = "sys_role:all";
 ///角色服务
@@ -51,13 +51,13 @@ impl SysRoleService {
         Ok(new_page)
     }
 
-    pub async fn finds_layer(&self) ->Result<Vec<SysRoleVO>>{
-        let all=self.finds_all_map().await?;
-        let mut data=vec![];
-        for (k,v) in &all {
-            if v.parent_id.is_none(){
-                let mut top=SysRoleVO::from(v.clone());
-                self.loop_find_childs(&mut top,&all);
+    pub async fn finds_layer(&self) -> Result<Vec<SysRoleVO>> {
+        let all = self.finds_all_map().await?;
+        let mut data = vec![];
+        for (k, v) in &all {
+            if v.parent_id.is_none() {
+                let mut top = SysRoleVO::from(v.clone());
+                self.loop_find_childs(&mut top, &all);
                 data.push(top);
             }
         }
@@ -83,7 +83,7 @@ impl SysRoleService {
 
     /// 更新所有
     pub async fn update_all(&self) -> Result<Vec<SysRole>> {
-        let all =  CONTEXT.rbatis.fetch_list("").await?;
+        let all = CONTEXT.rbatis.fetch_list("").await?;
         CONTEXT.redis_service.set_json(RES_KEY, &all).await;
         return Ok(all);
     }
@@ -100,15 +100,13 @@ impl SysRoleService {
     ///角色添加
     pub async fn add(&self, arg: &RoleAddDTO) -> Result<(u64, String)> {
         let role = SysRole {
-            id: Some(
-                new_snowflake_id().to_string(),
-            ),
+            id: Some(new_snowflake_id().to_string()),
             name: arg.name.clone(),
             parent_id: arg.parent_id.clone(),
             del: Some(0),
             create_date: Some(NaiveDateTime::now()),
         };
-        let result=(
+        let result = (
             CONTEXT.rbatis.save("", &role).await?.rows_affected,
             role.id.clone().unwrap(),
         );
@@ -125,14 +123,14 @@ impl SysRoleService {
             del: None,
             create_date: None,
         };
-        let result=CONTEXT.rbatis.update_by_id("", &mut role).await;
+        let result = CONTEXT.rbatis.update_by_id("", &mut role).await;
         self.update_all().await?;
         result
     }
 
     ///角色删除
     pub async fn remove(&self, id: &str) -> Result<u64> {
-        let result= CONTEXT
+        let result = CONTEXT
             .rbatis
             .remove_by_id::<SysRole>("", &id.to_string())
             .await;

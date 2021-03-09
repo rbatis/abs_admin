@@ -161,9 +161,7 @@ impl SysRoleResService {
         let mut sys_role_res = vec![];
         for resource_id in resource_ids {
             sys_role_res.push(SysRoleRes {
-                id: Some(
-                    new_snowflake_id().to_string(),
-                ),
+                id: Some(new_snowflake_id().to_string()),
                 role_id: Some(role_id.to_string()),
                 res_id: Some(resource_id.clone()),
                 create_date: Some(now.clone()),

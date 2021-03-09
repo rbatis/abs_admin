@@ -38,9 +38,7 @@ pub async fn add(mut arg: web::Json<ResAddDTO>) -> impl Responder {
         arg.path = Some("".to_string());
     }
     let res = SysRes {
-        id: Some(
-            new_snowflake_id().to_string()
-        ),
+        id: Some(new_snowflake_id().to_string()),
         parent_id: arg.parent_id.clone(),
         name: arg.name.clone(),
         permission: arg.permission.clone(),

@@ -1,5 +1,5 @@
-use crate::service::CONTEXT;
 use crate::domain::domain::Sms;
+use crate::service::CONTEXT;
 use rbatis::core::{Error, Result};
 use std::collections::HashMap;
 
@@ -30,7 +30,10 @@ impl SysSmsService {
     pub async fn do_verify_sms(&self, account: &str, sms_code: &str) -> Result<bool> {
         let sms: Option<Sms> = CONTEXT
             .redis_service
-            .get_json(&format!("{},{}", CONTEXT.config.sms_redis_send_key_prefix, account))
+            .get_json(&format!(
+                "{},{}",
+                CONTEXT.config.sms_redis_send_key_prefix, account
+            ))
             .await?;
         match sms {
             Some(v) => {

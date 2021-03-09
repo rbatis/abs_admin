@@ -1,13 +1,15 @@
-use actix_web::{web, App, HttpResponse, HttpServer, Responder};
-use log::info;
 use abs_admin::controller::{
-    img_controller, sys_res_controller, sys_role_controller, sys_user_controller
+    img_controller, sys_res_controller, sys_role_controller, sys_user_controller,
 };
 use abs_admin::service::CONTEXT;
+use actix_web::{web, App, HttpResponse, HttpServer, Responder};
+use log::info;
 
 async fn index() -> impl Responder {
-    HttpResponse::Ok().set_header("Access-Control-Allow-Origin", "*")
-        .set_header("Cache-Control", "no-cache").body("Hello ! Please use Post(Json) request /login,/role_page,/res_page....more http interface,you can install postman for import postman.json ")
+    HttpResponse::Ok()
+        .set_header("Access-Control-Allow-Origin", "*")
+        .set_header("Cache-Control", "no-cache")
+        .body("[abs_admin] Hello !")
 }
 
 #[actix_web::main]
@@ -15,7 +17,11 @@ async fn main() -> std::io::Result<()> {
     //日志追加器
     abs_admin::config::log::init_log();
     //ORM
-    CONTEXT.rbatis.link(&CONTEXT.config.database_url).await.unwrap();
+    CONTEXT
+        .rbatis
+        .link(&CONTEXT.config.database_url)
+        .await
+        .unwrap();
     info!(
         " - Local:   http://{}",
         CONTEXT.config.server_url.replace("0.0.0.0", "localhost")

@@ -54,7 +54,7 @@ pub struct UserAddDTO {
     pub password: Option<String>,
     pub name: Option<String>,
     pub login_check: Option<LoginCheck>,
-    pub role_id:Option<String>
+    pub role_id: Option<String>,
 }
 
 /// 用户修改
@@ -66,7 +66,7 @@ pub struct UserEditDTO {
     pub name: Option<String>,
     pub state: Option<i32>,
     pub login_check: Option<LoginCheck>,
-    pub role_id:Option<String>
+    pub role_id: Option<String>,
 }
 
 /// 用户分页
@@ -78,14 +78,14 @@ pub struct UserPageDTO {
     pub name: Option<String>,
 }
 
-impl From<&UserRolePageDTO> for UserPageDTO{
+impl From<&UserRolePageDTO> for UserPageDTO {
     fn from(arg: &UserRolePageDTO) -> Self {
-       Self{
-           page_no: arg.page_no.clone(),
-           page_size: arg.page_size.clone(),
-           account: arg.account.clone(),
-           name: arg.name.clone()
-       }
+        Self {
+            page_no: arg.page_no.clone(),
+            page_size: arg.page_size.clone(),
+            account: arg.account.clone(),
+            name: arg.name.clone(),
+        }
     }
 }
 

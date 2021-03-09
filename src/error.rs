@@ -54,26 +54,23 @@ impl From<&dyn std::error::Error> for Error {
     }
 }
 
-impl From<Error> for std::io::Error{
+impl From<Error> for std::io::Error {
     fn from(arg: Error) -> Self {
         arg.into()
     }
 }
 
-impl From<rbatis::core::Error> for Error{
+impl From<rbatis::core::Error> for Error {
     fn from(arg: rbatis::core::Error) -> Self {
         Error::E(arg.to_string())
     }
 }
 
-
-impl From<actix_web::error::Error> for Error{
+impl From<actix_web::error::Error> for Error {
     fn from(arg: actix_web::error::Error) -> Self {
         Error::E(arg.to_string())
     }
 }
-
-
 
 impl Clone for Error {
     fn clone(&self) -> Self {
@@ -128,7 +125,6 @@ impl<'de> Deserialize<'de> for Error {
         return Ok(Error::from(r));
     }
 }
-
 
 #[test]
 fn test_json_error() {
