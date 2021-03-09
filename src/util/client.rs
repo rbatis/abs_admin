@@ -1,6 +1,5 @@
 #[cfg(test)]
 mod test {
-    use std::collections::HashMap;
 
     #[async_std::test]
     pub async fn test_client() {
