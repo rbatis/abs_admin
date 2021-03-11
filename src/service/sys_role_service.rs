@@ -71,7 +71,10 @@ impl SysRoleService {
             .redis_service
             .get_json::<Option<Vec<SysRole>>>(RES_KEY)
             .await;
-        if js.is_err() || js.as_ref().unwrap().is_none() {
+        if js.is_err()
+            || js.as_ref().unwrap().is_none()
+            || js.as_ref().unwrap().as_ref().unwrap().is_empty()
+        {
             let all = self.update_all().await?;
             return Ok(all);
         }
