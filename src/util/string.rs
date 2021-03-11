@@ -6,11 +6,7 @@ impl IsEmpty for Option<String> {
     fn is_empty(&self) -> bool {
         match self {
             Some(s) => {
-                if s.is_empty() {
-                    return true;
-                } else {
-                    return false;
-                }
+                return s.is_empty();
             }
             _ => { return true; }
         }
