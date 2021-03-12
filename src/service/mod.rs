@@ -20,6 +20,7 @@ mod sys_user_role_service;
 mod sys_user_service;
 
 pub struct ServiceContext {
+    //the tokio runtime
     pub runtime: Runtime,
     pub config: ApplicationConfig,
     pub rbatis: Rbatis,
