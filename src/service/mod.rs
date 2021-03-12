@@ -40,7 +40,7 @@ impl Default for ServiceContext {
             .build()
             .unwrap();
         ServiceContext {
-            rbatis: tokio_runtime.block_on(async { crate::dao::init_rbatis(&config)}),
+            rbatis: tokio_runtime.block_on(async { crate::dao::init_rbatis(&config).await}),
             redis_service: RedisService::new(&config.redis_url),
             sys_res_service: SysResService {},
             sys_user_service: SysUserService {},

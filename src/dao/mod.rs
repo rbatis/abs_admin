@@ -1,9 +1,10 @@
 use crate::config::app_config::ApplicationConfig;
 use rbatis::plugin::logic_delete::RbatisLogicDeletePlugin;
 use rbatis::rbatis::Rbatis;
+
 pub mod mapper;
 
-pub fn init_rbatis(config: &ApplicationConfig) -> Rbatis {
+pub async fn init_rbatis(config: &ApplicationConfig) -> Rbatis {
     let mut rbatis = Rbatis::new();
     //logic plugin 设置逻辑删除插件
     rbatis.logic_plugin = Some(Box::new(RbatisLogicDeletePlugin::new_opt(
@@ -16,5 +17,9 @@ pub fn init_rbatis(config: &ApplicationConfig) -> Rbatis {
             r#"已使用release模式，但是rbatis仍使用debug模式！请删除 Cargo.toml 中 rbatis的配置 features = ["debug_mode"]"#
         );
     }
+    //连接数据库
+    rbatis.link(&config.database_url)
+        .await
+        .unwrap();
     return rbatis;
 }

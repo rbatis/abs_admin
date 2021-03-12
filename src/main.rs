@@ -16,14 +16,6 @@ async fn index() -> impl Responder {
 async fn main() -> std::io::Result<()> {
     //日志追加器
     abs_admin::config::log::init_log();
-    CONTEXT.runtime.spawn(async{
-        //ORM
-        CONTEXT
-            .rbatis
-            .link(&CONTEXT.config.database_url)
-            .await
-            .unwrap();
-    });
     info!(
         " - Local:   http://{}",
         CONTEXT.config.server_url.replace("0.0.0.0", "localhost")
