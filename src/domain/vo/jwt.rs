@@ -1,6 +1,6 @@
 use jsonwebtoken::errors::ErrorKind;
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
-use rbatis::core::Error;
+use crate::error::Error;
 use serde::{Deserialize, Serialize};
 /// JWT 鉴权 Token结构
 #[derive(Debug, Serialize, Deserialize, Clone)]

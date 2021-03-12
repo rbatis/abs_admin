@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
-use rbatis::core::Error;
-use rbatis::core::Result;
+use crate::error::Error;
+use crate::error::Result;
 use rbatis::crud::CRUD;
 use rbatis::plugin::page::Page;
 
@@ -190,27 +190,27 @@ impl SysRoleResService {
 
     ///删除角色资源
     pub async fn remove(&self, id: &str) -> Result<u64> {
-        CONTEXT
+        Ok(CONTEXT
             .rbatis
             .remove_by_id::<SysRoleRes>("", &id.to_string())
-            .await
+            .await?)
     }
 
     pub async fn remove_by_res_id(&self, res_id: &str) -> Result<u64> {
-        CONTEXT
+        Ok(CONTEXT
             .rbatis
             .remove_by_wrapper::<SysRoleRes>("", &CONTEXT.rbatis.new_wrapper().eq("res_id", res_id))
-            .await
+            .await?)
     }
 
     ///删除角色资源
     pub async fn remove_by_role_id(&self, role_id: &str) -> Result<u64> {
-        CONTEXT
+        Ok(CONTEXT
             .rbatis
             .remove_by_wrapper::<SysRoleRes>(
                 "",
                 &CONTEXT.rbatis.new_wrapper().eq("role_id", role_id),
             )
-            .await
+            .await?)
     }
 }

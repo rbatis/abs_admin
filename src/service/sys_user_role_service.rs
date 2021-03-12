@@ -7,11 +7,11 @@ use crate::domain::vo::{SysResVO, SysRoleVO};
 use crate::service::CONTEXT;
 use chrono::NaiveDateTime;
 use rbatis::core::value::DateTimeNow;
-use rbatis::core::Result;
+use crate::error::Result;
 use rbatis::crud::CRUD;
 use rbatis::plugin::page::Page;
 use rbatis::plugin::snowflake::new_snowflake_id;
-use rbatis::Error;
+use crate::error::Error;
 
 ///用户角色服务
 pub struct SysUserRoleService {}
@@ -84,23 +84,23 @@ impl SysUserRoleService {
 
     ///角色删除
     pub async fn remove_by_role_id(&self, role_id: &str) -> Result<u64> {
-        CONTEXT
+        Ok(CONTEXT
             .rbatis
             .remove_by_wrapper::<SysUserRole>(
                 "",
                 &CONTEXT.rbatis.new_wrapper().eq("role_id", role_id),
             )
-            .await
+            .await?)
     }
 
     pub async fn remove_by_user_id(&self, user_id: &str) -> Result<u64> {
-        CONTEXT
+        Ok(CONTEXT
             .rbatis
             .remove_by_wrapper::<SysUserRole>(
                 "",
                 &CONTEXT.rbatis.new_wrapper().eq("user_id", user_id),
             )
-            .await
+            .await?)
     }
 
     ///找出角色

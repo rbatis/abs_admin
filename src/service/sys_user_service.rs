@@ -1,8 +1,8 @@
 use crate::service::CONTEXT;
 use chrono::NaiveDateTime;
 use rbatis::core::value::DateTimeNow;
-use rbatis::core::Error;
-use rbatis::core::Result;
+use crate::error::Error;
+use crate::error::Result;
 use rbatis::crud::CRUD;
 use rbatis::plugin::page::{Page, PageRequest};
 
@@ -67,13 +67,13 @@ impl SysUserService {
     ///后台用户根据id查找
     pub async fn find(&self, id: &str) -> Result<Option<SysUser>> {
         let wrapper = CONTEXT.rbatis.new_wrapper().eq("id", id);
-        return CONTEXT.rbatis.fetch_by_wrapper("", &wrapper).await;
+        return Ok(CONTEXT.rbatis.fetch_by_wrapper("", &wrapper).await?);
     }
 
     ///根据账户名查找
     pub async fn find_by_account(&self, account: &str) -> Result<Option<SysUser>> {
         let wrapper = CONTEXT.rbatis.new_wrapper().eq("account", account);
-        return CONTEXT.rbatis.fetch_by_wrapper("", &wrapper).await;
+        return Ok(CONTEXT.rbatis.fetch_by_wrapper("", &wrapper).await?);
     }
 
     ///添加后台账号
@@ -271,7 +271,7 @@ impl SysUserService {
                 })
                 .await?;
         }
-        CONTEXT.rbatis.update_by_id("", &mut user).await
+        Ok(CONTEXT.rbatis.update_by_id("", &mut user).await?)
     }
 
     pub async fn remove(&self, id: &str) -> Result<u64> {
@@ -283,7 +283,7 @@ impl SysUserService {
             .remove_by_id::<SysUser>("", &id.to_string())
             .await;
         CONTEXT.sys_user_role_service.remove_by_user_id(id).await?;
-        return r;
+        return Ok(r?);
     }
 
     ///递归查找层级结构权限

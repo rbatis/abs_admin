@@ -12,7 +12,7 @@ pub use sign_in::*;
 use crate::service::CONTEXT;
 use actix_http::Response;
 use actix_web::HttpResponse;
-use rbatis::core::Error;
+use crate::error::Error;
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 

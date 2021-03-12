@@ -1,6 +1,6 @@
 use log::error;
 use log::info;
-use rbatis::core::{Error, Result};
+use crate::error::{Error, Result};
 use redis::aio::Connection;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
@@ -23,7 +23,7 @@ impl RedisService {
         if conn.is_err() {
             let err = format!("RedisService connect fail:{}", conn.err().unwrap());
             error!("{}", err);
-            return Err(rbatis::core::Error::from(err));
+            return Err(crate::error::Error::from(err));
         }
         return Ok(conn.unwrap());
     }
@@ -34,7 +34,7 @@ impl RedisService {
     {
         let data = serde_json::to_string(v);
         if data.is_err() {
-            return Err(rbatis::core::Error::from(format!(
+            return Err(crate::error::Error::from(format!(
                 "RedisService set_json fail:{}",
                 data.err().unwrap()
             )));
@@ -53,7 +53,7 @@ impl RedisService {
         }
         let data: serde_json::Result<T> = serde_json::from_str(r.as_str());
         if data.is_err() {
-            return Err(rbatis::core::Error::from(format!(
+            return Err(crate::error::Error::from(format!(
                 "RedisService get_json fail:{}",
                 data.err().unwrap()
             )));

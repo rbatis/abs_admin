@@ -1,6 +1,6 @@
 use chrono::NaiveDateTime;
 use rbatis::core::value::DateTimeNow;
-use rbatis::core::Result;
+use crate::error::Result;
 use rbatis::crud::CRUD;
 use rbatis::plugin::page::{Page, PageRequest};
 
@@ -128,7 +128,7 @@ impl SysRoleService {
         };
         let result = CONTEXT.rbatis.update_by_id("", &mut role).await;
         self.update_all().await?;
-        result
+        Ok(result?)
     }
 
     ///角色删除
@@ -138,21 +138,21 @@ impl SysRoleService {
             .remove_by_id::<SysRole>("", &id.to_string())
             .await;
         self.update_all().await?;
-        result
+        Ok(result?)
     }
 
     pub async fn finds(&self, ids: &Vec<String>) -> Result<Vec<SysRole>> {
-        CONTEXT
+        Ok(CONTEXT
             .rbatis
             .fetch_list_by_wrapper("", &CONTEXT.rbatis.new_wrapper().r#in("id", ids))
-            .await
+            .await?)
     }
 
     pub async fn find_role_res(&self, ids: &Vec<String>) -> Result<Vec<SysRoleRes>> {
-        CONTEXT
+        Ok(CONTEXT
             .rbatis
             .fetch_list_by_wrapper("", &CONTEXT.rbatis.new_wrapper().r#in("role_id", ids))
-            .await
+            .await?)
     }
 
     pub async fn find_user_permission(

@@ -1,6 +1,6 @@
 use crate::domain::domain::Sms;
 use crate::service::CONTEXT;
-use rbatis::core::{Error, Result};
+use crate::error::{Error, Result};
 use std::collections::HashMap;
 
 pub struct SysSmsService {}

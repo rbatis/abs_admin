@@ -1,9 +1,9 @@
 use std::collections::HashMap;
 
-use rbatis::core::Result;
+use crate::error::Result;
 use rbatis::crud::CRUD;
 use rbatis::plugin::page::{Page, PageRequest};
-use rbatis::Error;
+use crate::error::Error;
 
 use crate::domain::domain::SysRes;
 use crate::domain::dto::{ResEditDTO, ResPageDTO};
@@ -89,7 +89,7 @@ impl SysResService {
             del: None,
             create_date: None,
         };
-        CONTEXT.rbatis.update_by_id("", &mut data).await
+        Ok(CONTEXT.rbatis.update_by_id("", &mut data).await?)
     }
 
     ///删除资源
@@ -163,10 +163,10 @@ impl SysResService {
 
     /// 查找res数组
     pub async fn finds(&self, ids: &Vec<String>) -> Result<Vec<SysRes>> {
-        CONTEXT
+        Ok(CONTEXT
             .rbatis
             .fetch_list_by_wrapper("", &CONTEXT.rbatis.new_wrapper().r#in("id", ids))
-            .await
+            .await?)
     }
 
     /// 查找res数组
