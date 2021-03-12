@@ -4,7 +4,6 @@ use abs_admin::controller::{
 use abs_admin::service::CONTEXT;
 use actix_web::{web, App, HttpResponse, HttpServer, Responder};
 use log::info;
-use rbatis::core::runtime::runtime::Builder;
 
 async fn index() -> impl Responder {
     HttpResponse::Ok()
