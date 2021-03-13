@@ -21,5 +21,6 @@ pub async fn init_rbatis(config: &ApplicationConfig) -> Rbatis {
     rbatis.link(&config.database_url)
         .await
         .unwrap();
+    println!("[abs_admin] rbatis link database success!");
     return rbatis;
 }

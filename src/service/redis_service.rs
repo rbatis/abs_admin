@@ -1,5 +1,4 @@
 use log::error;
-use log::info;
 use crate::error::{Error, Result};
 use redis::aio::Connection;
 use serde::de::DeserializeOwned;
@@ -12,9 +11,8 @@ pub struct RedisService {
 
 impl RedisService {
     pub fn new(url: &str) -> Self {
-        info!("connect redis start!");
         let client = redis::Client::open(url).unwrap();
-        info!("connect redis success!");
+        println!("[abs_admin] conncect redis success!");
         Self { client }
     }
 
