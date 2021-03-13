@@ -9,7 +9,6 @@ edition = "2018"
 [dependencies]
 #runtime
 tokio = { version = "1.3.0", features = ["full"] }
-async-std = { version = "1.9", features = ["attributes", "tokio1"] }
 #rbatis orm dep
 rbatis = { version = "1.8.79", default-features = false, features = ["mysql"] }
 #serde and json

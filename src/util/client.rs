@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod test {
 
-    #[async_std::test]
+    #[tokio::test]
     pub async fn test_client() {
         let resp = reqwest::get("http://www.baidu.com")
             .await
