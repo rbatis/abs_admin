@@ -4,9 +4,6 @@ use crate::service::CONTEXT;
 use actix_web::{web, HttpResponse, Responder};
 use captcha::filters::{Dots, Noise, Wave};
 use captcha::Captcha;
-use image::codecs::png;
-use image::{ColorType, ImageEncoder, Luma};
-use qrcode::QrCode;
 
 ///图形验证码接口(注意，debug模式无论redis是否连接成功都返回图片，release模式则校验redis是否存储成功)
 /// 请求方式 GET
@@ -51,30 +48,4 @@ pub async fn captcha(arg: web::Query<CatpchaDTO>) -> impl Responder {
         .set_header("Cache-Control", "no-cache")
         .content_type("image/png")
         .body(png)
-}
-
-///二维码,请确保服务器server_url配置为具体ip或域名，否则访问不通...
-///
-pub async fn qrcode(arg: web::Query<CatpchaDTO>) -> impl Responder {
-    // Encode some data into bits.
-    let url = format!(
-        "http://{}?account={}",
-        CONTEXT.config.server_url,
-        arg.account.as_ref().unwrap_or(&"".to_string())
-    );
-    if CONTEXT.config.debug {
-        println!("gen qrcode url:{}", url);
-    }
-    let code = QrCode::new(url.as_bytes()).unwrap();
-    // Render the bits into an image.
-    let image = code.render::<Luma<u8>>().max_dimensions(200, 200).build();
-    let mut buffer: Vec<u8> = vec![]; // Generate the image data
-    png::PngEncoder::new(&mut buffer)
-        .write_image(&image, image.width(), image.height(), ColorType::L8)
-        .unwrap();
-    HttpResponse::Ok()
-        .set_header("Access-Control-Allow-Origin", "*")
-        .set_header("Cache-Control", "no-cache")
-        .content_type("image/png")
-        .body(buffer)
 }

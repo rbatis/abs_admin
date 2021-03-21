@@ -3,6 +3,5 @@ pub enum LoginCheck {
     NoCheck,
     PasswordCheck,
     PasswordImgCodeCheck,
-    PasswordQRCodeCheck,
     PhoneCodeCheck,
 }

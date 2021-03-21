@@ -158,7 +158,7 @@ impl SysUserService {
                     return Err(Error::from("密码不正确!"));
                 }
             }
-            LoginCheck::PasswordQRCodeCheck | LoginCheck::PasswordImgCodeCheck => {
+            LoginCheck::PasswordImgCodeCheck => {
                 //check img code
                 let cache_code = CONTEXT
                     .redis_service

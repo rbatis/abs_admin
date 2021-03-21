@@ -90,7 +90,6 @@ async fn main() -> std::io::Result<()> {
                 web::post().to(sys_role_controller::layer_top),
             )
             .route("/api/captcha", web::get().to(img_controller::captcha))
-            .route("/api/qrcode", web::get().to(img_controller::qrcode))
     })
     .bind(&CONTEXT.config.server_url)?
     .run()
