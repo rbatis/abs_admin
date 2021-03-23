@@ -77,7 +77,7 @@ impl SysResService {
             )));
         }
         let result=Ok(CONTEXT.rbatis.save("", arg).await?.rows_affected);
-        self.update_all().await?;
+        self.update_cache().await?;
         return result;
     }
 
@@ -93,7 +93,7 @@ impl SysResService {
             create_date: None,
         };
         let result=Ok(CONTEXT.rbatis.update_by_id("", &mut data).await?);
-        self.update_all().await?;
+        self.update_cache().await?;
         return result;
     }
 
@@ -110,7 +110,7 @@ impl SysResService {
             .await;
         //删除关联数据
         CONTEXT.sys_role_res_service.remove_by_res_id(id).await;
-        self.update_all().await?;
+        self.update_cache().await?;
         return Ok(num);
     }
 
@@ -148,7 +148,7 @@ impl SysResService {
             || js.as_ref().unwrap().is_none()
             || js.as_ref().unwrap().as_ref().unwrap().is_empty()
         {
-            let all = self.update_all().await?;
+            let all = self.update_cache().await?;
             return Ok(all);
         }
         if CONTEXT.config.debug {
@@ -158,7 +158,7 @@ impl SysResService {
     }
 
     /// 更新所有
-    pub async fn update_all(&self) -> Result<Vec<SysRes>> {
+    pub async fn update_cache(&self) -> Result<Vec<SysRes>> {
         let all = CONTEXT.rbatis.fetch_list::<SysRes>("").await?;
         if CONTEXT.config.auth_cache_type == "redis" {
             CONTEXT.redis_service.set_json(RES_KEY, &all).await;
