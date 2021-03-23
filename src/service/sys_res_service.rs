@@ -1,18 +1,19 @@
 use std::collections::HashMap;
 
-use crate::error::Result;
 use rbatis::crud::CRUD;
 use rbatis::plugin::page::{Page, PageRequest};
-use crate::error::Error;
+use rbatis::utils::table_util::FatherChildRelationship;
 
 use crate::domain::domain::SysRes;
 use crate::domain::dto::{ResEditDTO, ResPageDTO};
 use crate::domain::vo::SysResVO;
+use crate::error::Error;
+use crate::error::Result;
 use crate::service::CONTEXT;
 use crate::util::string::IsEmpty;
-use rbatis::utils::table_util::FatherChildRelationship;
 
 const RES_KEY: &'static str = "sys_res:all";
+
 /// 资源服务
 pub struct SysResService {}
 
@@ -127,10 +128,17 @@ impl SysResService {
 
     /// 查找res数组
     pub async fn finds_all(&self) -> Result<Vec<SysRes>> {
-        let js = CONTEXT
-            .redis_service
-            .get_json::<Option<Vec<SysRes>>>(RES_KEY)
-            .await;
+        let js;
+        if CONTEXT.config.auth_cache_type == "redis" {
+            js = CONTEXT
+                .redis_service
+                .get_json::<Option<Vec<SysRes>>>(RES_KEY)
+                .await;
+        } else {
+            js = CONTEXT
+                .mem_cache_service
+                .get_json::<Option<Vec<SysRes>>>(RES_KEY);
+        }
         if js.is_err()
             || js.as_ref().unwrap().is_none()
             || js.as_ref().unwrap().as_ref().unwrap().is_empty()
@@ -147,7 +155,11 @@ impl SysResService {
     /// 更新所有
     pub async fn update_all(&self) -> Result<Vec<SysRes>> {
         let all = CONTEXT.rbatis.fetch_list::<SysRes>("").await?;
-        CONTEXT.redis_service.set_json(RES_KEY, &all).await;
+        if CONTEXT.config.auth_cache_type == "redis" {
+            CONTEXT.redis_service.set_json(RES_KEY, &all).await;
+        } else {
+            CONTEXT.mem_cache_service.set_json(RES_KEY, &all);
+        }
         return Ok(all);
     }
 
