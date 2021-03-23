@@ -76,7 +76,9 @@ impl SysResService {
                 rbatis::make_table_field_vec!(old, name)
             )));
         }
-        Ok(CONTEXT.rbatis.save("", arg).await?.rows_affected)
+        let result=Ok(CONTEXT.rbatis.save("", arg).await?.rows_affected);
+        self.update_all().await?;
+        return result;
     }
 
     ///修改资源
@@ -90,7 +92,9 @@ impl SysResService {
             del: None,
             create_date: None,
         };
-        Ok(CONTEXT.rbatis.update_by_id("", &mut data).await?)
+        let result=Ok(CONTEXT.rbatis.update_by_id("", &mut data).await?);
+        self.update_all().await?;
+        return result;
     }
 
     ///删除资源
@@ -106,6 +110,7 @@ impl SysResService {
             .await;
         //删除关联数据
         CONTEXT.sys_role_res_service.remove_by_res_id(id).await;
+        self.update_all().await?;
         return Ok(num);
     }
 
