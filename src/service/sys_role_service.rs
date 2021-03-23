@@ -82,7 +82,7 @@ impl SysRoleService {
             || js.as_ref().unwrap().is_none()
             || js.as_ref().unwrap().as_ref().unwrap().is_empty()
         {
-            let all = self.update_all().await?;
+            let all = self.update_cache().await?;
             return Ok(all);
         }
         if CONTEXT.config.debug {
@@ -92,7 +92,7 @@ impl SysRoleService {
     }
 
     /// 更新所有
-    pub async fn update_all(&self) -> Result<Vec<SysRole>> {
+    pub async fn update_cache(&self) -> Result<Vec<SysRole>> {
         let all = CONTEXT.rbatis.fetch_list("").await?;
         if CONTEXT.config.auth_cache_type == "redis" {
             CONTEXT.redis_service.set_json(RES_KEY, &all).await;
@@ -124,7 +124,7 @@ impl SysRoleService {
             CONTEXT.rbatis.save("", &role).await?.rows_affected,
             role.id.clone().unwrap(),
         );
-        self.update_all().await?;
+        self.update_cache().await?;
         Ok(result)
     }
 
@@ -138,7 +138,7 @@ impl SysRoleService {
             create_date: None,
         };
         let result = CONTEXT.rbatis.update_by_id("", &mut role).await;
-        self.update_all().await?;
+        self.update_cache().await?;
         Ok(result?)
     }
 
@@ -148,7 +148,7 @@ impl SysRoleService {
             .rbatis
             .remove_by_id::<SysRole>("", &id.to_string())
             .await;
-        self.update_all().await?;
+        self.update_cache().await?;
         Ok(result?)
     }
 
