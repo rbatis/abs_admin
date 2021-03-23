@@ -38,7 +38,7 @@ white_list_api:
  - "/api/captcha"
  - "/api/qrcode"
 
-#权限缓存类型("mem","redis")
+#权限、角色 缓存介质类型("mem","redis")
 auth_cache_type: "mem"
 
 
