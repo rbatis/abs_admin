@@ -8,6 +8,7 @@ use sys_user_role_service::*;
 use sys_user_service::*;
 
 use crate::config::app_config::ApplicationConfig;
+use crate::service::mem_cache_service::MemCacheService;
 
 mod redis_service;
 mod sys_config_service;
@@ -17,11 +18,13 @@ mod sys_role_service;
 mod sys_sms_service;
 mod sys_user_role_service;
 mod sys_user_service;
+mod mem_cache_service;
 
 pub struct ServiceContext {
     pub config: ApplicationConfig,
     pub rbatis: Rbatis,
     pub redis_service: RedisService,
+    pub mem_cache_service: MemCacheService,
     pub sys_res_service: SysResService,
     pub sys_user_service: SysUserService,
     pub sys_role_service: SysRoleService,
@@ -35,6 +38,7 @@ impl Default for ServiceContext {
         ServiceContext {
             rbatis: rbatis::core::runtime::task::block_on(async { crate::dao::init_rbatis(&config).await}),
             redis_service: RedisService::new(&config.redis_url),
+            mem_cache_service: MemCacheService::default(),
             sys_res_service: SysResService {},
             sys_user_service: SysUserService {},
             sys_role_service: SysRoleService {},
