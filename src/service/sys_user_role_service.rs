@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, BTreeMap};
 
 use crate::domain::domain::{SysRes, SysUserRole};
 use crate::domain::dto::{UserPageDTO, UserRoleAddDTO, UserRolePageDTO};
@@ -107,7 +107,7 @@ impl SysUserRoleService {
     pub async fn find_user_role(
         &self,
         user_id: &str,
-        all_res: &HashMap<String, SysRes>,
+        all_res: &BTreeMap<String, SysRes>,
     ) -> Result<Option<SysRoleVO>> {
         if user_id.is_empty() {
             return Ok(None);

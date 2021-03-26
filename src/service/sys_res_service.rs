@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, BTreeMap};
 
 use rbatis::crud::CRUD;
 use rbatis::plugin::page::{Page, PageRequest};
@@ -169,9 +169,9 @@ impl SysResService {
     }
 
     /// 查找res数组
-    pub async fn finds_all_map(&self) -> Result<HashMap<String, SysRes>> {
+    pub async fn finds_all_map(&self) -> Result<BTreeMap<String, SysRes>> {
         let all = self.finds_all().await?;
-        let mut result = HashMap::new();
+        let mut result = BTreeMap::new();
         for x in all {
             result.insert(x.id.clone().unwrap_or_default(), x);
         }
@@ -187,7 +187,7 @@ impl SysResService {
     }
 
     /// 查找res数组
-    pub fn finds_res(&self, ids: &Vec<String>, all_res: &HashMap<String, SysRes>) -> Vec<SysRes> {
+    pub fn finds_res(&self, ids: &Vec<String>, all_res: &BTreeMap<String, SysRes>) -> Vec<SysRes> {
         let mut res = vec![];
         //filter res id
         for (k, v) in all_res {
@@ -222,7 +222,7 @@ impl SysResService {
     pub async fn finds_layer(
         &self,
         ids: &Vec<String>,
-        all_res: &HashMap<String, SysRes>,
+        all_res: &BTreeMap<String, SysRes>,
     ) -> Result<Vec<SysResVO>> {
         let res = self.finds_res(ids, &all_res);
         //find tops
@@ -241,7 +241,7 @@ impl SysResService {
     }
 
     ///死循环找出父-子 关联关系数组
-    pub fn loop_find_childs(&self, arg: &mut SysResVO, all_res: &HashMap<String, SysRes>) {
+    pub fn loop_find_childs(&self, arg: &mut SysResVO, all_res: &BTreeMap<String, SysRes>) {
         let mut childs: Option<Vec<SysResVO>> = None;
         for (key, x) in all_res {
             if x.parent_id.is_some() && x.parent_id.eq(&arg.id) {

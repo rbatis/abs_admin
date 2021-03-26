@@ -12,7 +12,7 @@ use crate::domain::vo::user::SysUserVO;
 use crate::domain::vo::{JWTToken, SignInVO};
 use crate::util::password_encoder::PasswordEncoder;
 use rbatis::plugin::snowflake::new_snowflake_id;
-use std::collections::HashMap;
+use std::collections::{HashMap, BTreeMap};
 
 ///后台用户服务
 pub struct SysUserService {}
@@ -289,7 +289,7 @@ impl SysUserService {
     pub async fn loop_load_level_permission(
         &self,
         user_id: &str,
-        all_res: &HashMap<String, SysRes>,
+        all_res: &BTreeMap<String, SysRes>,
     ) -> Result<Vec<String>> {
         return CONTEXT
             .sys_role_service

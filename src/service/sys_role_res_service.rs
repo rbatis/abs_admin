@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, BTreeMap};
 
 use crate::error::Error;
 use crate::error::Result;
@@ -88,7 +88,7 @@ impl SysRoleResService {
         &self,
         arg: Vec<SysRoleVO>,
         role_res_map: &HashMap<String, Vec<SysRoleRes>>,
-        all: &HashMap<String, SysRes>,
+        all: &BTreeMap<String, SysRes>,
     ) -> Result<Vec<SysRoleVO>> {
         let mut data = vec![];
         for role in arg {

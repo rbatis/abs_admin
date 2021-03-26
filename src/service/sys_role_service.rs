@@ -10,7 +10,7 @@ use crate::domain::vo::SysRoleVO;
 use crate::service::CONTEXT;
 use crate::util::string::IsEmpty;
 use rbatis::plugin::snowflake::new_snowflake_id;
-use std::collections::HashMap;
+use std::collections::{HashMap, BTreeMap};
 
 const RES_KEY: &'static str = "sys_role:all";
 ///角色服务
@@ -169,7 +169,7 @@ impl SysRoleService {
     pub async fn find_user_permission(
         &self,
         user_id: &str,
-        all_res: &HashMap<String, SysRes>,
+        all_res: &BTreeMap<String, SysRes>,
     ) -> Result<Vec<String>> {
         let user_roles: Vec<SysUserRole> = CONTEXT
             .rbatis
