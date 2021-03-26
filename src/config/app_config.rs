@@ -47,11 +47,7 @@ pub struct ApplicationConfig {
 ///默认配置
 impl Default for ApplicationConfig {
     fn default() -> Self {
-        let mut yml_data = String::new();
-        File::open("src/application.yml")
-            .expect("application.yml not exist!")
-            .read_to_string(&mut yml_data);
-
+        let mut yml_data = include_str!("../../src/application.yml");
         let docs = YamlLoader::load_from_str(&yml_data).unwrap();
         //读取配置
         let result = Self {
