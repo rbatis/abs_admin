@@ -1,6 +1,3 @@
-use std::fs::File;
-use std::io::Read;
-
 use yaml_rust::{Yaml, YamlLoader};
 
 ///服务启动配置
@@ -47,7 +44,7 @@ pub struct ApplicationConfig {
 ///默认配置
 impl Default for ApplicationConfig {
     fn default() -> Self {
-        let mut yml_data = include_str!("../../application.yml");
+        let yml_data = include_str!("../../application.yml");
         let docs = YamlLoader::load_from_str(&yml_data).unwrap();
         //读取配置
         let result = Self {
@@ -128,7 +125,7 @@ fn get_cfg<'a>(docs: &'a Vec<Yaml>, key: &str) -> &'a Yaml {
             _ => {}
         }
     }
-    panic!(format!("in application.yml key: '{}' not exist!", key))
+    panic!("[abs_admin] application.yml key: '{}' not exist!", key)
 }
 
 fn to_vec_string(arg: Vec<Yaml>) -> Vec<String> {

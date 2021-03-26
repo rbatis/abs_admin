@@ -12,7 +12,7 @@ use crate::domain::vo::user::SysUserVO;
 use crate::domain::vo::{JWTToken, SignInVO};
 use crate::util::password_encoder::PasswordEncoder;
 use rbatis::plugin::snowflake::new_snowflake_id;
-use std::collections::{HashMap, BTreeMap};
+use std::collections::{BTreeMap};
 
 ///后台用户服务
 pub struct SysUserService {}

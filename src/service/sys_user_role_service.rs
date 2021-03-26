@@ -1,4 +1,4 @@
-use std::collections::{HashMap, BTreeMap};
+use std::collections::{BTreeMap};
 
 use crate::domain::domain::{SysRes, SysUserRole};
 use crate::domain::dto::{UserPageDTO, UserRoleAddDTO, UserRolePageDTO};
