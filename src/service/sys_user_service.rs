@@ -133,7 +133,7 @@ impl SysUserService {
 
     ///登陆后台
     pub async fn sign_in(&self, arg: &SignInDTO) -> Result<SignInVO> {
-        self.is_need_wait().await?;
+        self.is_need_wait_login_ex().await?;
         let user: Option<SysUser> = CONTEXT
             .rbatis
             .fetch_by_wrapper(
@@ -199,7 +199,7 @@ impl SysUserService {
             }
         }
         if error.is_some() {
-            self.add_retry_num().await?;
+            self.add_retry_login_limit_num().await?;
             return Err(error.unwrap());
         }
         let sign_in_vo = self.get_user_info(&user).await?;
@@ -208,7 +208,7 @@ impl SysUserService {
 
 
     ///是否需要等待
-    async fn is_need_wait(&self) -> Result<()> {
+    pub async fn is_need_wait_login_ex(&self) -> Result<()> {
         if CONTEXT.config.login_fail_retry > 0 {
             let num: Option<i64> = CONTEXT.redis_service.get_json(REDIS_KEY_RETRY).await?;
             if num.unwrap_or(0) >= CONTEXT.config.login_fail_retry {
@@ -222,7 +222,7 @@ impl SysUserService {
     }
 
     ///增加redis重试记录
-    async fn add_retry_num(&self) -> Result<()> {
+    pub async fn add_retry_login_limit_num(&self) -> Result<()> {
         if CONTEXT.config.login_fail_retry > 0 {
             let num: Option<i64> = CONTEXT.redis_service.get_json(REDIS_KEY_RETRY).await?;
             let mut num = num.unwrap_or(0);
