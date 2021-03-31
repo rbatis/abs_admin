@@ -43,6 +43,5 @@ white_list_api:
  - "/"
  - "/api/sys_login"
  - "/api/captcha"
- - "/api/qrcode"
 
 
