@@ -13,6 +13,10 @@ use crate::domain::vo::{JWTToken, SignInVO};
 use crate::util::password_encoder::PasswordEncoder;
 use rbatis::plugin::snowflake::new_snowflake_id;
 use std::collections::{BTreeMap};
+use std::time::Duration;
+
+
+const REDIS_KEY_RETRY: &'static str = "login:login_retry";
 
 ///后台用户服务
 pub struct SysUserService {}
@@ -126,8 +130,10 @@ impl SysUserService {
         return Ok(CONTEXT.rbatis.save("", &user).await?.rows_affected);
     }
 
+
     ///登陆后台
     pub async fn sign_in(&self, arg: &SignInDTO) -> Result<SignInVO> {
+        self.is_need_wait().await?;
         let user: Option<SysUser> = CONTEXT
             .rbatis
             .fetch_by_wrapper(
@@ -139,6 +145,7 @@ impl SysUserService {
         if user.state.eq(&Some(0)) {
             return Err(Error::from("账户被禁用!"));
         }
+        let mut error = None;
         match user
             .login_check
             .as_ref()
@@ -155,7 +162,7 @@ impl SysUserService {
                         .ok_or_else(|| Error::from("错误的用户数据，密码为空!"))?,
                     &arg.password,
                 ) {
-                    return Err(Error::from("密码不正确!"));
+                    error = Some(Error::from("密码不正确!"));
                 }
             }
             LoginCheck::PasswordImgCodeCheck => {
@@ -165,7 +172,7 @@ impl SysUserService {
                     .get_string(&format!("captch:account_{}", &arg.account))
                     .await?;
                 if cache_code.eq(&arg.vcode) {
-                    return Err(Error::from("验证码不正确!"));
+                    error = Some(Error::from("验证码不正确!"))
                 }
                 // check pwd
                 if !PasswordEncoder::verify(
@@ -174,7 +181,7 @@ impl SysUserService {
                         .ok_or_else(|| Error::from("错误的用户数据，密码为空!"))?,
                     &arg.password,
                 ) {
-                    return Err(Error::from("密码不正确!"));
+                    error = Some(Error::from("密码不正确!"));
                 }
             }
             LoginCheck::PhoneCodeCheck => {
@@ -187,12 +194,44 @@ impl SysUserService {
                     ))
                     .await?;
                 if sms_code.eq(&arg.vcode) {
-                    return Err(Error::from("验证码不正确!"));
+                    error = Some(Error::from("验证码不正确!"));
                 }
             }
         }
+        if error.is_some() {
+            self.add_retry_num().await?;
+            return Err(error.unwrap());
+        }
         let sign_in_vo = self.get_user_info(&user).await?;
         return Ok(sign_in_vo);
+    }
+
+
+    ///是否需要等待
+    async fn is_need_wait(&self) -> Result<()> {
+        if CONTEXT.config.login_fail_retry > 0 {
+            let num: Option<i64> = CONTEXT.redis_service.get_json(REDIS_KEY_RETRY).await?;
+            if num.unwrap_or(0) >= CONTEXT.config.login_fail_retry {
+                let wait_sec: i64 = CONTEXT.redis_service.ttl(REDIS_KEY_RETRY).await?;
+                if wait_sec > 0 {
+                    return Err(Error::from(format!("请等待{}秒后重试!", wait_sec)));
+                }
+            }
+        }
+        return Ok(());
+    }
+
+    ///增加redis重试记录
+    async fn add_retry_num(&self) -> Result<()> {
+        if CONTEXT.config.login_fail_retry > 0 {
+            let num: Option<i64> = CONTEXT.redis_service.get_json(REDIS_KEY_RETRY).await?;
+            let mut num = num.unwrap_or(0);
+            if num > CONTEXT.config.login_fail_retry {
+                num = CONTEXT.config.login_fail_retry;
+            }
+            CONTEXT.redis_service.set_string_ex(REDIS_KEY_RETRY, &num.to_string(), Some(Duration::from_secs(CONTEXT.config.login_fail_retry_wait_sec as u64))).await?;
+        }
+        return Ok(());
     }
 
     pub async fn get_user_info_by_token(&self, token: &JWTToken) -> Result<SignInVO> {

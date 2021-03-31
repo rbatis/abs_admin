@@ -39,6 +39,7 @@ white_list_api:
 
 #登陆失败重试次数限制(0次无限制)
 login_fail_retry: 3
-
+#登陆失败重试次数限制等待时间
+login_fail_retry_wait_sec: 300
 
 
