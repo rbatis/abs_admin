@@ -37,4 +37,8 @@ white_list_api:
  - "/api/captcha"
  - "/api/qrcode"
 
+#登陆失败重试次数限制(0次无限制)
+login_fail_retry: 3
+
+
 
