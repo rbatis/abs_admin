@@ -37,9 +37,10 @@ white_list_api:
  - "/api/captcha"
  - "/api/qrcode"
 
+#登陆错误重试可以简单的办法拒绝大量恶意登陆
 #登陆失败重试次数限制(0次无限制)
 login_fail_retry: 3
-#登陆失败重试次数限制等待时间
+#登陆失败重试次数限制超过后提示的等待时间（秒）
 login_fail_retry_wait_sec: 300
 
 
