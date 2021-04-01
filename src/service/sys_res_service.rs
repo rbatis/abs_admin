@@ -161,9 +161,9 @@ impl SysResService {
     pub async fn update_cache(&self) -> Result<Vec<SysRes>> {
         let all = CONTEXT.rbatis.fetch_list::<SysRes>("").await?;
         if CONTEXT.config.auth_cache_type == "redis" {
-            CONTEXT.redis_service.set_json(RES_KEY, &all).await;
+            CONTEXT.redis_service.set_json(RES_KEY, &all).await?;
         } else {
-            CONTEXT.mem_cache_service.set_json(RES_KEY, &all);
+            CONTEXT.mem_cache_service.set_json(RES_KEY, &all)?;
         }
         return Ok(all);
     }

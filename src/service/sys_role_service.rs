@@ -95,9 +95,9 @@ impl SysRoleService {
     pub async fn update_cache(&self) -> Result<Vec<SysRole>> {
         let all = CONTEXT.rbatis.fetch_list("").await?;
         if CONTEXT.config.auth_cache_type == "redis" {
-            CONTEXT.redis_service.set_json(RES_KEY, &all).await;
+            CONTEXT.redis_service.set_json(RES_KEY, &all).await?;
         } else {
-            CONTEXT.mem_cache_service.set_json(RES_KEY, &all);
+            CONTEXT.mem_cache_service.set_json(RES_KEY, &all)?;
         }
         return Ok(all);
     }
