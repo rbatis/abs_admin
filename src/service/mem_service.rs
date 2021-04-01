@@ -2,7 +2,7 @@ use dashmap::DashMap;
 use serde::Serialize;
 use serde::de::DeserializeOwned;
 
-use crate::error::{Error, Result};
+use crate::error::{Result};
 
 ///内存缓存服务
 pub struct MemService {
@@ -19,7 +19,8 @@ impl Default for MemService {
 
 impl MemService {
     pub fn set_string(&self, k: &str, v: &str) -> Result<String> {
-        return self.cache.insert(k.to_string(), v.to_string()).ok_or(Error::E("save cache none".to_string()));
+        self.cache.insert(k.to_string(), v.to_string());
+        return Ok(v.to_string());
     }
     pub fn get_string(&self, k: &str) -> Result<String> {
         let v = self.cache.get(k);

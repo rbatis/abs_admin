@@ -13,7 +13,7 @@ use crate::domain::vo::{JWTToken, SignInVO};
 use crate::util::password_encoder::PasswordEncoder;
 use rbatis::plugin::snowflake::new_snowflake_id;
 use std::collections::{BTreeMap};
-use std::time::Duration;
+use std::time::{Duration};
 
 
 const REDIS_KEY_RETRY: &'static str = "login:login_retry";
@@ -265,7 +265,7 @@ impl SysUserService {
             account: user.account.clone().unwrap_or(String::new()),
             permissions: sign_vo.permissions.clone(),
             role_ids: vec![],
-            exp: 10000000000,
+            exp: chrono::NaiveDateTime::now().timestamp() as usize,
         };
         sign_vo.access_token = jwt_token.create_token(&CONTEXT.config.jwt_secret)?;
         sign_vo.role = CONTEXT
