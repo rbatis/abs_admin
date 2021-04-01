@@ -4,12 +4,12 @@ use serde::de::DeserializeOwned;
 
 use crate::error::{Error, Result};
 
-///缓存服务
-pub struct MemCacheService {
+///内存缓存服务
+pub struct MemService {
     pub cache: DashMap<String, String>,
 }
 
-impl Default for MemCacheService {
+impl Default for MemService {
     fn default() -> Self {
         Self {
             cache: Default::default()
@@ -17,7 +17,7 @@ impl Default for MemCacheService {
     }
 }
 
-impl MemCacheService {
+impl MemService {
     pub fn set_string(&self, k: &str, v: &str) -> Result<String> {
         return self.cache.insert(k.to_string(), v.to_string()).ok_or(Error::E("save cache none".to_string()));
     }

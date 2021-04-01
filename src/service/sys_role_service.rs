@@ -75,7 +75,7 @@ impl SysRoleService {
                 .await;
         } else {
             js = CONTEXT
-                .mem_cache_service
+                .mem_service
                 .get_json::<Option<Vec<SysRole>>>(RES_KEY);
         }
         if js.is_err()
@@ -97,7 +97,7 @@ impl SysRoleService {
         if CONTEXT.config.auth_cache_type == "redis" {
             CONTEXT.redis_service.set_json(RES_KEY, &all).await?;
         } else {
-            CONTEXT.mem_cache_service.set_json(RES_KEY, &all)?;
+            CONTEXT.mem_service.set_json(RES_KEY, &all)?;
         }
         return Ok(all);
     }
