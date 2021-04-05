@@ -1,6 +1,6 @@
+use crate::error::Result;
 use chrono::NaiveDateTime;
 use rbatis::core::value::DateTimeNow;
-use crate::error::Result;
 use rbatis::crud::CRUD;
 use rbatis::plugin::page::{Page, PageRequest};
 
@@ -10,7 +10,7 @@ use crate::domain::vo::SysRoleVO;
 use crate::service::CONTEXT;
 use crate::util::string::IsEmpty;
 use rbatis::plugin::snowflake::new_snowflake_id;
-use std::collections::{HashMap, BTreeMap};
+use std::collections::{BTreeMap, HashMap};
 
 const RES_KEY: &'static str = "sys_role:all";
 ///角色服务

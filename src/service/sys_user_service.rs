@@ -1,8 +1,8 @@
+use crate::error::Error;
+use crate::error::Result;
 use crate::service::CONTEXT;
 use chrono::NaiveDateTime;
 use rbatis::core::value::DateTimeNow;
-use crate::error::Error;
-use crate::error::Result;
 use rbatis::crud::CRUD;
 use rbatis::plugin::page::{Page, PageRequest};
 
@@ -12,9 +12,8 @@ use crate::domain::vo::user::SysUserVO;
 use crate::domain::vo::{JWTToken, SignInVO};
 use crate::util::password_encoder::PasswordEncoder;
 use rbatis::plugin::snowflake::new_snowflake_id;
-use std::collections::{BTreeMap};
-use std::time::{Duration};
-
+use std::collections::BTreeMap;
+use std::time::Duration;
 
 const REDIS_KEY_RETRY: &'static str = "login:login_retry";
 
@@ -130,7 +129,6 @@ impl SysUserService {
         return Ok(CONTEXT.rbatis.save("", &user).await?.rows_affected);
     }
 
-
     ///登陆后台
     pub async fn sign_in(&self, arg: &SignInDTO) -> Result<SignInVO> {
         self.is_need_wait_login_ex().await?;
@@ -206,7 +204,6 @@ impl SysUserService {
         return Ok(sign_in_vo);
     }
 
-
     ///是否需要等待
     pub async fn is_need_wait_login_ex(&self) -> Result<()> {
         if CONTEXT.config.login_fail_retry > 0 {
@@ -229,7 +226,16 @@ impl SysUserService {
             if num > CONTEXT.config.login_fail_retry {
                 num = CONTEXT.config.login_fail_retry;
             }
-            CONTEXT.redis_service.set_string_ex(REDIS_KEY_RETRY, &num.to_string(), Some(Duration::from_secs(CONTEXT.config.login_fail_retry_wait_sec as u64))).await?;
+            CONTEXT
+                .redis_service
+                .set_string_ex(
+                    REDIS_KEY_RETRY,
+                    &num.to_string(),
+                    Some(Duration::from_secs(
+                        CONTEXT.config.login_fail_retry_wait_sec as u64,
+                    )),
+                )
+                .await?;
         }
         return Ok(());
     }

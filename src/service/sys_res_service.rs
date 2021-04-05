@@ -1,4 +1,4 @@
-use std::collections::{HashMap, BTreeMap};
+use std::collections::{BTreeMap, HashMap};
 
 use rbatis::crud::CRUD;
 use rbatis::plugin::page::{Page, PageRequest};
@@ -76,7 +76,7 @@ impl SysResService {
                 rbatis::make_table_field_vec!(old, name)
             )));
         }
-        let result=Ok(CONTEXT.rbatis.save("", arg).await?.rows_affected);
+        let result = Ok(CONTEXT.rbatis.save("", arg).await?.rows_affected);
         self.update_cache().await?;
         return result;
     }
@@ -92,7 +92,7 @@ impl SysResService {
             del: None,
             create_date: None,
         };
-        let result=Ok(CONTEXT.rbatis.update_by_id("", &mut data).await?);
+        let result = Ok(CONTEXT.rbatis.update_by_id("", &mut data).await?);
         self.update_cache().await?;
         return result;
     }
@@ -140,9 +140,7 @@ impl SysResService {
                 .get_json::<Option<Vec<SysRes>>>(RES_KEY)
                 .await;
         } else {
-            js = CONTEXT
-                .mem_service
-                .get_json::<Option<Vec<SysRes>>>(RES_KEY);
+            js = CONTEXT.mem_service.get_json::<Option<Vec<SysRes>>>(RES_KEY);
         }
         if js.is_err()
             || js.as_ref().unwrap().is_none()

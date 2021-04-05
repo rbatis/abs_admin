@@ -8,7 +8,9 @@ impl IsEmpty for Option<String> {
             Some(s) => {
                 return s.is_empty();
             }
-            _ => { return true; }
+            _ => {
+                return true;
+            }
         }
     }
 }

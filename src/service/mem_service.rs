@@ -1,8 +1,8 @@
 use dashmap::DashMap;
-use serde::Serialize;
 use serde::de::DeserializeOwned;
+use serde::Serialize;
 
-use crate::error::{Result};
+use crate::error::Result;
 
 ///内存缓存服务
 pub struct MemService {
@@ -12,7 +12,7 @@ pub struct MemService {
 impl Default for MemService {
     fn default() -> Self {
         Self {
-            cache: Default::default()
+            cache: Default::default(),
         }
     }
 }
@@ -34,8 +34,8 @@ impl MemService {
         }
     }
     pub fn set_json<T>(&self, k: &str, v: &T) -> Result<String>
-        where
-            T: Serialize,
+    where
+        T: Serialize,
     {
         let data = serde_json::to_string(v);
         if data.is_err() {
@@ -49,8 +49,8 @@ impl MemService {
     }
 
     pub fn get_json<T>(&self, k: &str) -> Result<T>
-        where
-            T: DeserializeOwned,
+    where
+        T: DeserializeOwned,
     {
         let mut r = self.get_string(k)?;
         if r.is_empty() {
