@@ -18,7 +18,7 @@ async fn main() -> std::io::Result<()> {
     abs_admin::config::log::init_log();
     info!(
         " - Local:   http://{}",
-        CONTEXT.config.server_url.replace("0.0.0.0", "localhost")
+        CONTEXT.config.server_url.replace("0.0.0.0", "127.0.0.1")
     );
     //路由
     HttpServer::new(|| {
