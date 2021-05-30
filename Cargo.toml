@@ -10,7 +10,7 @@ edition = "2018"
 #runtime
 tokio = { version = "1.6", features = ["full"] }
 #rbatis orm dep
-rbatis = { version = "1.8.87", default-features = false, features = ["mysql","tokio1"] }
+rbatis = { version = "1.8.88", default-features = false, features = ["mysql","tokio1"] }
 #serde and json
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
