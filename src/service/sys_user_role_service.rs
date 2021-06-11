@@ -28,7 +28,6 @@ impl SysUserRoleService {
         let user_roles = CONTEXT
             .rbatis
             .fetch_list_by_wrapper::<SysUserRole>(
-                "",
                 &CONTEXT.rbatis.new_wrapper().in_("user_id", &user_ids),
             )
             .await?;
@@ -79,7 +78,7 @@ impl SysUserRoleService {
         }
         self.remove_by_user_id(&arg.user_id.clone().unwrap_or_default())
             .await?;
-        Ok(CONTEXT.rbatis.save("", &role).await?.rows_affected)
+        Ok(CONTEXT.rbatis.save( &role).await?.rows_affected)
     }
 
     ///角色删除
@@ -87,7 +86,6 @@ impl SysUserRoleService {
         Ok(CONTEXT
             .rbatis
             .remove_by_wrapper::<SysUserRole>(
-                "",
                 &CONTEXT.rbatis.new_wrapper().eq("role_id", role_id),
             )
             .await?)
@@ -97,7 +95,6 @@ impl SysUserRoleService {
         Ok(CONTEXT
             .rbatis
             .remove_by_wrapper::<SysUserRole>(
-                "",
                 &CONTEXT.rbatis.new_wrapper().eq("user_id", user_id),
             )
             .await?)
@@ -115,7 +112,6 @@ impl SysUserRoleService {
         let user_roles = CONTEXT
             .rbatis
             .fetch_list_by_wrapper::<SysUserRole>(
-                "",
                 &CONTEXT.rbatis.new_wrapper().eq("user_id", user_id),
             )
             .await?;

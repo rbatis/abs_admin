@@ -31,7 +31,6 @@ impl SysUserService {
         let sys_user_page: Page<SysUser> = CONTEXT
             .rbatis
             .fetch_page_by_wrapper(
-                "",
                 &wrapper,
                 &PageRequest::new(arg.page_no.unwrap_or(1), arg.page_size.unwrap_or(10)),
             )
@@ -70,13 +69,13 @@ impl SysUserService {
     ///后台用户根据id查找
     pub async fn find(&self, id: &str) -> Result<Option<SysUser>> {
         let wrapper = CONTEXT.rbatis.new_wrapper().eq("id", id);
-        return Ok(CONTEXT.rbatis.fetch_by_wrapper("", &wrapper).await?);
+        return Ok(CONTEXT.rbatis.fetch_by_wrapper( &wrapper).await?);
     }
 
     ///根据账户名查找
     pub async fn find_by_account(&self, account: &str) -> Result<Option<SysUser>> {
         let wrapper = CONTEXT.rbatis.new_wrapper().eq("account", account);
-        return Ok(CONTEXT.rbatis.fetch_by_wrapper("", &wrapper).await?);
+        return Ok(CONTEXT.rbatis.fetch_by_wrapper( &wrapper).await?);
     }
 
     ///添加后台账号
@@ -126,7 +125,7 @@ impl SysUserService {
             }
             _ => {}
         }
-        return Ok(CONTEXT.rbatis.save("", &user).await?.rows_affected);
+        return Ok(CONTEXT.rbatis.save( &user).await?.rows_affected);
     }
 
     ///登陆后台
@@ -135,7 +134,6 @@ impl SysUserService {
         let user: Option<SysUser> = CONTEXT
             .rbatis
             .fetch_by_wrapper(
-                "",
                 &CONTEXT.rbatis.new_wrapper().eq("account", &arg.account),
             )
             .await?;
@@ -243,7 +241,7 @@ impl SysUserService {
     pub async fn get_user_info_by_token(&self, token: &JWTToken) -> Result<SignInVO> {
         let user: Option<SysUser> = CONTEXT
             .rbatis
-            .fetch_by_wrapper("", &CONTEXT.rbatis.new_wrapper().eq("id", &token.id))
+            .fetch_by_wrapper( &CONTEXT.rbatis.new_wrapper().eq("id", &token.id))
             .await?;
         let user = user.ok_or_else(|| Error::from(format!("账号:{} 不存在!", token.account)))?;
         return self.get_user_info(&user).await;
@@ -315,7 +313,7 @@ impl SysUserService {
                 })
                 .await?;
         }
-        Ok(CONTEXT.rbatis.update_by_id("", &mut user).await?)
+        Ok(CONTEXT.rbatis.update_by_column("id", &mut user).await?)
     }
 
     pub async fn remove(&self, id: &str) -> Result<u64> {
@@ -324,7 +322,7 @@ impl SysUserService {
         }
         let r = CONTEXT
             .rbatis
-            .remove_by_id::<SysUser>("", &id.to_string())
+            .remove_by_column::<SysUser,_>("id", &id)
             .await;
         CONTEXT.sys_user_role_service.remove_by_user_id(id).await?;
         return Ok(r?);

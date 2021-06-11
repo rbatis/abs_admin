@@ -28,7 +28,6 @@ impl SysRoleService {
         let data = CONTEXT
             .rbatis
             .fetch_page_by_wrapper::<SysRole>(
-                "",
                 &wrapper,
                 &PageRequest::new(arg.page_no.unwrap_or(0), arg.page_size.unwrap_or(10)),
             )
@@ -93,7 +92,7 @@ impl SysRoleService {
 
     /// 更新所有
     pub async fn update_cache(&self) -> Result<Vec<SysRole>> {
-        let all = CONTEXT.rbatis.fetch_list("").await?;
+        let all = CONTEXT.rbatis.fetch_list().await?;
         if CONTEXT.config.auth_cache_type == "redis" {
             CONTEXT.redis_service.set_json(RES_KEY, &all).await?;
         } else {
@@ -121,7 +120,7 @@ impl SysRoleService {
             create_date: Some(NaiveDateTime::now()),
         };
         let result = (
-            CONTEXT.rbatis.save("", &role).await?.rows_affected,
+            CONTEXT.rbatis.save( &role).await?.rows_affected,
             role.id.clone().unwrap(),
         );
         self.update_cache().await?;
@@ -137,7 +136,7 @@ impl SysRoleService {
             del: None,
             create_date: None,
         };
-        let result = CONTEXT.rbatis.update_by_id("", &mut role).await;
+        let result = CONTEXT.rbatis.update_by_column("id", &mut role).await;
         self.update_cache().await?;
         Ok(result?)
     }
@@ -146,7 +145,7 @@ impl SysRoleService {
     pub async fn remove(&self, id: &str) -> Result<u64> {
         let result = CONTEXT
             .rbatis
-            .remove_by_id::<SysRole>("", &id.to_string())
+            .remove_by_column::<SysRole,_>("id", &id.to_string())
             .await;
         self.update_cache().await?;
         Ok(result?)
@@ -155,14 +154,14 @@ impl SysRoleService {
     pub async fn finds(&self, ids: &Vec<String>) -> Result<Vec<SysRole>> {
         Ok(CONTEXT
             .rbatis
-            .fetch_list_by_wrapper("", &CONTEXT.rbatis.new_wrapper().r#in("id", ids))
+            .fetch_list_by_wrapper( &CONTEXT.rbatis.new_wrapper().r#in("id", ids))
             .await?)
     }
 
     pub async fn find_role_res(&self, ids: &Vec<String>) -> Result<Vec<SysRoleRes>> {
         Ok(CONTEXT
             .rbatis
-            .fetch_list_by_wrapper("", &CONTEXT.rbatis.new_wrapper().r#in("role_id", ids))
+            .fetch_list_by_wrapper( &CONTEXT.rbatis.new_wrapper().r#in("role_id", ids))
             .await?)
     }
 
@@ -173,7 +172,7 @@ impl SysRoleService {
     ) -> Result<Vec<String>> {
         let user_roles: Vec<SysUserRole> = CONTEXT
             .rbatis
-            .fetch_list_by_wrapper("", &CONTEXT.rbatis.new_wrapper().eq("user_id", user_id))
+            .fetch_list_by_wrapper( &CONTEXT.rbatis.new_wrapper().eq("user_id", user_id))
             .await?;
         let role_res = self
             .find_role_res(&rbatis::make_table_field_vec!(&user_roles, role_id))

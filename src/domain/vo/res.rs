@@ -1,9 +1,10 @@
 use crate::domain::domain::SysRes;
 use chrono::NaiveDateTime;
-use rbatis::utils::table_util::FatherChildRelationship;
+use std::collections::HashMap;
+
 
 ///权限资源表
-#[crud_enable(table_name: "sys_res" | table_columns: "id,parent_id,name,permission,path,del")]
+#[crud_table(table_name: "sys_res" | table_columns: "id,parent_id,name,permission,path,del")]
 #[derive(Clone, Debug)]
 pub struct SysResVO {
     pub id: Option<String>,
@@ -34,12 +35,33 @@ impl From<&SysRes> for SysResVO {
     }
 }
 
-impl FatherChildRelationship for SysResVO {
-    fn get_father_id(&self) -> Option<&Self::IdType> {
-        self.parent_id.as_ref()
+impl SysResVO {
+    pub fn get_father_id(&self) -> &Option<String> {
+        &self.parent_id
     }
 
-    fn set_childs(&mut self, arg: Vec<Self>) {
-        self.childs = Option::from(arg);
+    pub fn set_childs_recursive(&mut self, all_record: &HashMap<String, Self>) {
+        let mut childs: Option<Vec<Self>> = None;
+        if self.id.is_some() {
+            for (key, x) in all_record {
+                if x.get_father_id().is_some() && self.id.eq(&x.get_father_id()) {
+                    let mut item = x.clone();
+                    item.set_childs_recursive(all_record);
+                    match &mut childs {
+                        Some(childs) => {
+                            childs.push(item);
+                        }
+                        None => {
+                            let mut vec = vec![];
+                            vec.push(item);
+                            childs = Some(vec);
+                        }
+                    }
+                }
+            }
+        }
+        if childs.is_some() {
+            self.childs = Some(childs.unwrap());
+        }
     }
 }

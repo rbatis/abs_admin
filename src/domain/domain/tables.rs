@@ -2,7 +2,7 @@ use crate::domain::domain::LoginCheck;
 use chrono::NaiveDateTime;
 
 ///权限资源表
-#[crud_enable]
+#[crud_table]
 #[derive(Clone, Debug)]
 pub struct SysRes {
     pub id: Option<String>,
@@ -18,7 +18,7 @@ pub struct SysRes {
 }
 
 ///角色表
-#[crud_enable]
+#[crud_table]
 #[derive(Clone, Debug)]
 pub struct SysRole {
     pub id: Option<String>,
@@ -30,7 +30,7 @@ pub struct SysRole {
 }
 
 ///角色资源关系表(关系表不使用逻辑删除)
-#[crud_enable]
+#[crud_table]
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct SysRoleRes {
     pub id: Option<String>,
@@ -42,7 +42,7 @@ pub struct SysRoleRes {
 }
 
 ///后台用户表
-#[crud_enable]
+#[crud_table]
 #[derive(Clone, Debug)]
 pub struct SysUser {
     pub id: Option<String>,
@@ -56,7 +56,7 @@ pub struct SysUser {
 }
 
 ///用户角色关系表(关系表不使用逻辑删除)
-#[crud_enable]
+#[crud_table]
 #[derive(Clone, Debug)]
 pub struct SysUserRole {
     pub id: Option<String>,
