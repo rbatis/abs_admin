@@ -22,6 +22,7 @@ impl SysRoleService {
         let wrapper = CONTEXT
             .rbatis
             .new_wrapper()
+            .eq("del", 0)
             .do_if(!arg.name.is_empty(), |w| w.like("name", &arg.name))
             .is_null("parent_id")
             .order_by(false, &["create_date"]);

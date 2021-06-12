@@ -26,6 +26,7 @@ impl SysUserService {
         let wrapper = CONTEXT
             .rbatis
             .new_wrapper()
+            .eq("del", 0)
             .do_if(arg.name.is_some(), |w| w.like("name", &arg.name))
             .do_if(arg.account.is_some(), |w| w.like("account", &arg.account));
         let sys_user_page: Page<SysUser> = CONTEXT

@@ -26,6 +26,7 @@ impl SysResService {
                 &CONTEXT
                     .rbatis
                     .new_wrapper()
+                    .eq("del", 0)
                     .do_if(!arg.name.is_empty(), |w| w.like("name", &arg.name))
                     .is_null("parent_id")
                     .order_by(false, &["create_date"]),
@@ -55,9 +56,6 @@ impl SysResService {
     }
 
 
-
-
-
     ///添加资源
     pub async fn add(&self, arg: &SysRes) -> Result<u64> {
         let old: Vec<SysRes> = CONTEXT
@@ -77,7 +75,7 @@ impl SysResService {
                 rbatis::make_table_field_vec!(old, name)
             )));
         }
-        let result = Ok(CONTEXT.rbatis.save( arg).await?.rows_affected);
+        let result = Ok(CONTEXT.rbatis.save(arg).await?.rows_affected);
         self.update_cache().await?;
         return result;
     }
@@ -102,12 +100,12 @@ impl SysResService {
     pub async fn remove(&self, id: &str) -> Result<u64> {
         let num = CONTEXT
             .rbatis
-            .remove_by_column::<SysRes,_>("id", &id.to_string())
+            .remove_by_column::<SysRes, _>("id", &id.to_string())
             .await?;
         //删除父级为id的记录
         CONTEXT
             .rbatis
-            .remove_by_wrapper::<SysRes>( &CONTEXT.rbatis.new_wrapper().eq("parent_id", id))
+            .remove_by_wrapper::<SysRes>(&CONTEXT.rbatis.new_wrapper().eq("parent_id", id))
             .await;
         //删除关联数据
         CONTEXT.sys_role_res_service.remove_by_res_id(id).await;
@@ -181,7 +179,7 @@ impl SysResService {
     pub async fn finds(&self, ids: &Vec<String>) -> Result<Vec<SysRes>> {
         Ok(CONTEXT
             .rbatis
-            .fetch_list_by_wrapper( &CONTEXT.rbatis.new_wrapper().r#in("id", ids))
+            .fetch_list_by_wrapper(&CONTEXT.rbatis.new_wrapper().r#in("id", ids))
             .await?)
     }
 
