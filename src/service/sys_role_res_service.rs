@@ -156,17 +156,16 @@ impl SysRoleResService {
     ///保存所以资源
     async fn save_resources(&self, role_id: &str, resource_ids: Vec<String>) -> Result<u64> {
         self.remove_by_role_id(role_id).await?;
-        let now = NaiveDateTime::now();
         let mut sys_role_res = vec![];
         for resource_id in resource_ids {
             sys_role_res.push(SysRoleRes {
                 id: new_snowflake_id().to_string().into(),
                 role_id: role_id.to_string().into(),
                 res_id: resource_id.clone().into(),
-                create_date:now.clone().into(),
+                create_date: NaiveDateTime::now().into(),
             });
         }
-        let save_ok = CONTEXT.rbatis.save_batch( &sys_role_res).await?;
+        let save_ok = CONTEXT.rbatis.save_batch(&sys_role_res).await?;
         return Ok(save_ok.rows_affected);
     }
 
@@ -191,14 +190,14 @@ impl SysRoleResService {
     pub async fn remove(&self, id: &str) -> Result<u64> {
         Ok(CONTEXT
             .rbatis
-            .remove_by_column::<SysRoleRes,_>("id", &id)
+            .remove_by_column::<SysRoleRes, _>("id", &id)
             .await?)
     }
 
     pub async fn remove_by_res_id(&self, res_id: &str) -> Result<u64> {
         Ok(CONTEXT
             .rbatis
-            .remove_by_wrapper::<SysRoleRes>( &CONTEXT.rbatis.new_wrapper().eq("res_id", res_id))
+            .remove_by_wrapper::<SysRoleRes>(&CONTEXT.rbatis.new_wrapper().eq("res_id", res_id))
             .await?)
     }
 
