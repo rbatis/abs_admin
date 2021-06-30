@@ -71,7 +71,7 @@ impl SysUserRoleService {
             id: arg.id.clone(),
             user_id: arg.user_id.clone(),
             role_id: arg.role_id.clone(),
-            create_date: Some(NaiveDateTime::now()),
+            create_date: NaiveDateTime::now().into(),
         };
         if role.id.is_none() {
             role.id = Some(new_snowflake_id().to_string());

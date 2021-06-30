@@ -104,14 +104,14 @@ impl SysUserService {
         }
         let id = new_snowflake_id().to_string();
         let user = SysUser {
-            id: Some(id.to_string()),
+            id: id.to_string().into(),
             account: arg.account.clone(),
-            password: Some(PasswordEncoder::encode(&password)),
+            password: PasswordEncoder::encode(&password).into(),
             name: arg.name.clone(),
             login_check: arg.login_check.clone(),
-            state: Some(0),
-            del: Some(0),
-            create_date: Some(NaiveDateTime::now()),
+            state: 0.into(),
+            del: 0.into(),
+            create_date: NaiveDateTime::now().into(),
         };
         match &arg.role_id {
             Some(role_id) => {
@@ -257,7 +257,7 @@ impl SysUserService {
             .clone()
             .ok_or_else(|| Error::from("错误的用户数据，id为空!"))?;
         let mut sign_vo = SignInVO {
-            user: Some(user.clone()),
+            user: user.clone().into(),
             permissions: vec![],
             access_token: String::new(),
             role: None,

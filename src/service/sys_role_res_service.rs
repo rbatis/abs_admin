@@ -160,10 +160,10 @@ impl SysRoleResService {
         let mut sys_role_res = vec![];
         for resource_id in resource_ids {
             sys_role_res.push(SysRoleRes {
-                id: Some(new_snowflake_id().to_string()),
-                role_id: Some(role_id.to_string()),
-                res_id: Some(resource_id.clone()),
-                create_date: Some(now.clone()),
+                id: new_snowflake_id().to_string().into(),
+                role_id: role_id.to_string().into(),
+                res_id: resource_id.clone().into(),
+                create_date:now.clone().into(),
             });
         }
         let save_ok = CONTEXT.rbatis.save_batch( &sys_role_res).await?;

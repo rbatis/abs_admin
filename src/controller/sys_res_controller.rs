@@ -38,13 +38,13 @@ pub async fn add(mut arg: web::Json<ResAddDTO>) -> impl Responder {
         arg.path = Some("".to_string());
     }
     let res = SysRes {
-        id: Some(new_snowflake_id().to_string()),
+        id: new_snowflake_id().to_string().into(),
         parent_id: arg.parent_id.clone(),
         name: arg.name.clone(),
         permission: arg.permission.clone(),
         path: arg.path.clone(),
-        del: Some(0),
-        create_date: Some(NaiveDateTime::now()),
+        del: 0.into(),
+        create_date: NaiveDateTime::now().into(),
     };
     let data = CONTEXT.sys_res_service.add(&res).await;
     CONTEXT.sys_res_service.update_cache().await;

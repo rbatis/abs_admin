@@ -114,11 +114,11 @@ impl SysRoleService {
     ///角色添加
     pub async fn add(&self, arg: &RoleAddDTO) -> Result<(u64, String)> {
         let role = SysRole {
-            id: Some(new_snowflake_id().to_string()),
+            id: new_snowflake_id().to_string().into(),
             name: arg.name.clone(),
             parent_id: arg.parent_id.clone(),
-            del: Some(0),
-            create_date: Some(NaiveDateTime::now()),
+            del: 0.into(),
+            create_date: NaiveDateTime::now().into(),
         };
         let result = (
             CONTEXT.rbatis.save( &role).await?.rows_affected,
