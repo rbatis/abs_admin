@@ -210,7 +210,7 @@ impl SysUserService {
             if num.unwrap_or(0) >= CONTEXT.config.login_fail_retry {
                 let wait_sec: i64 = CONTEXT.redis_service.ttl(REDIS_KEY_RETRY).await?;
                 if wait_sec > 0 {
-                    return Err(Error::from(format!("请等待{}秒后重试!", wait_sec)));
+                    return Err(Error::from(format!("操作过于频繁，请等待{}秒后重试!", wait_sec)));
                 }
             }
         }
@@ -225,6 +225,7 @@ impl SysUserService {
             if num > CONTEXT.config.login_fail_retry {
                 num = CONTEXT.config.login_fail_retry;
             }
+            num+=1;
             CONTEXT
                 .redis_service
                 .set_string_ex(
