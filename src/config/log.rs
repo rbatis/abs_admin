@@ -4,6 +4,9 @@ use fast_log::plugin::file_split::RollingType;
 use std::time::Duration;
 
 pub fn init_log() {
+    //create log dir
+    std::fs::create_dir_all(&CONTEXT.config.log_dir);
+    //init fast log
     fast_log::init_split_log(
         &CONTEXT.config.log_dir,
         CONTEXT.config.log_cup as usize,
