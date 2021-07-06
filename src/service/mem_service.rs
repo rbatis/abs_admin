@@ -11,7 +11,6 @@ use crate::service::CONTEXT;
 
 ///内存缓存服务
 pub struct MemService {
-    //因为Mutex不可重入，需要根据locked防止重入
     pub cache: Mutex<HashMap<String, (String, Option<(Instant, Duration)>), RandomState>>,
 }
 
