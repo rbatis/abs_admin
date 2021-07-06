@@ -1,12 +1,13 @@
 use serde::de::DeserializeOwned;
 use crate::error::Result;
 use crate::service::CONTEXT;
-use crate::service::cache_service::ProxyType::Mem;
+use crate::service::cache_service::CacheProxyType::Mem;
 use std::time::Duration;
 use async_trait::async_trait;
 use serde::{Serialize};
 
-pub enum ProxyType {
+
+pub enum CacheProxyType {
     Mem,
     Redis,
 }
@@ -29,7 +30,7 @@ pub trait ICacheService {
 
 ///内存缓存服务
 pub struct CacheService {
-    pub inner: ProxyType,
+    pub inner: CacheProxyType,
 }
 
 impl Default for CacheService {
@@ -47,7 +48,7 @@ impl ICacheService for CacheService {
             Mem => {
                 CONTEXT.mem_service.set_string(k, v)
             }
-            ProxyType::Redis => {
+            CacheProxyType::Redis => {
                 CONTEXT.redis_service.set_string(k, v).await
             }
         };
@@ -58,7 +59,7 @@ impl ICacheService for CacheService {
             Mem => {
                 CONTEXT.mem_service.get_string(k)
             }
-            ProxyType::Redis => {
+            CacheProxyType::Redis => {
                 CONTEXT.redis_service.get_string(k).await
             }
         };
@@ -72,7 +73,7 @@ impl ICacheService for CacheService {
             Mem => {
                 CONTEXT.mem_service.set_json::<T>(k, v)
             }
-            ProxyType::Redis => {
+            CacheProxyType::Redis => {
                 CONTEXT.redis_service.set_json::<T>(k, v).await
             }
         };
@@ -86,7 +87,7 @@ impl ICacheService for CacheService {
             Mem => {
                 CONTEXT.mem_service.get_json(k)
             }
-            ProxyType::Redis => {
+            CacheProxyType::Redis => {
                 CONTEXT.redis_service.get_json(k).await
             }
         };
@@ -97,7 +98,7 @@ impl ICacheService for CacheService {
             Mem => {
                 CONTEXT.mem_service.set_string_ex(k, v, ex)
             }
-            ProxyType::Redis => {
+            CacheProxyType::Redis => {
                 CONTEXT.redis_service.set_string_ex(k, v, ex).await
             }
         };
@@ -108,7 +109,7 @@ impl ICacheService for CacheService {
             Mem => {
                 CONTEXT.mem_service.ttl(k)
             }
-            ProxyType::Redis => {
+            CacheProxyType::Redis => {
                 CONTEXT.redis_service.ttl(k).await
             }
         };

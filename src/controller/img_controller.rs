@@ -1,6 +1,6 @@
 use crate::domain::dto::CatpchaDTO;
 use crate::domain::vo::RespVO;
-use crate::service::CONTEXT;
+use crate::service::{CONTEXT, ICacheService};
 use actix_web::{web, HttpResponse, Responder};
 use captcha::filters::{Dots, Noise, Wave};
 use captcha::Captcha;
@@ -29,7 +29,7 @@ pub async fn captcha(arg: web::Query<CatpchaDTO>) -> impl Responder {
     );
     if arg.account.is_some() {
         let result = CONTEXT
-            .redis_service
+            .cache_service
             .set_string(
                 &format!("captch:account_{}", &arg.account.as_ref().unwrap()),
                 captcha_str.as_str(),

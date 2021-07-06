@@ -14,6 +14,7 @@ use crate::util::password_encoder::PasswordEncoder;
 use rbatis::plugin::snowflake::new_snowflake_id;
 use std::collections::BTreeMap;
 use std::time::Duration;
+use crate::service::cache_service::ICacheService;
 
 const REDIS_KEY_RETRY: &'static str = "login:login_retry";
 
@@ -165,7 +166,7 @@ impl SysUserService {
             LoginCheck::PasswordImgCodeCheck => {
                 //check img code
                 let cache_code = CONTEXT
-                    .redis_service
+                    .cache_service
                     .get_string(&format!("captch:account_{}", &arg.account))
                     .await?;
                 if cache_code.eq(&arg.vcode) {
@@ -184,7 +185,7 @@ impl SysUserService {
             LoginCheck::PhoneCodeCheck => {
                 //短信验证码登录
                 let sms_code = CONTEXT
-                    .redis_service
+                    .cache_service
                     .get_string(&format!(
                         "{}{}",
                         CONTEXT.config.sms_redis_send_key_prefix, &arg.account
@@ -206,9 +207,9 @@ impl SysUserService {
     ///是否需要等待
     pub async fn is_need_wait_login_ex(&self) -> Result<()> {
         if CONTEXT.config.login_fail_retry > 0 {
-            let num: Option<i64> = CONTEXT.redis_service.get_json(REDIS_KEY_RETRY).await?;
+            let num: Option<i64> = CONTEXT.cache_service.get_json(REDIS_KEY_RETRY).await?;
             if num.unwrap_or(0) >= CONTEXT.config.login_fail_retry {
-                let wait_sec: i64 = CONTEXT.redis_service.ttl(REDIS_KEY_RETRY).await?;
+                let wait_sec: i64 = CONTEXT.cache_service.ttl(REDIS_KEY_RETRY).await?;
                 if wait_sec > 0 {
                     return Err(Error::from(format!("操作过于频繁，请等待{}秒后重试!", wait_sec)));
                 }
@@ -220,14 +221,14 @@ impl SysUserService {
     ///增加redis重试记录
     pub async fn add_retry_login_limit_num(&self) -> Result<()> {
         if CONTEXT.config.login_fail_retry > 0 {
-            let num: Option<i64> = CONTEXT.redis_service.get_json(REDIS_KEY_RETRY).await?;
+            let num: Option<i64> = CONTEXT.cache_service.get_json(REDIS_KEY_RETRY).await?;
             let mut num = num.unwrap_or(0);
             if num > CONTEXT.config.login_fail_retry {
                 num = CONTEXT.config.login_fail_retry;
             }
             num+=1;
             CONTEXT
-                .redis_service
+                .cache_service
                 .set_string_ex(
                     REDIS_KEY_RETRY,
                     &num.to_string(),

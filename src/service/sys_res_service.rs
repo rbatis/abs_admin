@@ -10,6 +10,7 @@ use crate::error::Error;
 use crate::error::Result;
 use crate::service::CONTEXT;
 use crate::util::string::IsEmpty;
+use crate::service::cache_service::ICacheService;
 
 const RES_KEY: &'static str = "sys_res:all";
 
@@ -132,15 +133,10 @@ impl SysResService {
 
     /// 查找res数组
     pub async fn finds_all(&self) -> Result<Vec<SysRes>> {
-        let js;
-        if CONTEXT.config.cache_type == "redis" {
-            js = CONTEXT
-                .redis_service
-                .get_json::<Option<Vec<SysRes>>>(RES_KEY)
-                .await;
-        } else {
-            js = CONTEXT.mem_service.get_json::<Option<Vec<SysRes>>>(RES_KEY);
-        }
+        let js = CONTEXT
+            .cache_service
+            .get_json::<Option<Vec<SysRes>>>(RES_KEY)
+            .await;
         if js.is_err()
             || js.as_ref().unwrap().is_none()
             || js.as_ref().unwrap().as_ref().unwrap().is_empty()
@@ -157,11 +153,7 @@ impl SysResService {
     /// 更新所有
     pub async fn update_cache(&self) -> Result<Vec<SysRes>> {
         let all = CONTEXT.rbatis.fetch_list::<SysRes>().await?;
-        if CONTEXT.config.cache_type == "redis" {
-            CONTEXT.redis_service.set_json(RES_KEY, &all).await?;
-        } else {
-            CONTEXT.mem_service.set_json(RES_KEY, &all)?;
-        }
+        CONTEXT.cache_service.set_json(RES_KEY, &all).await?;
         return Ok(all);
     }
 

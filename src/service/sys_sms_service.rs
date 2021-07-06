@@ -2,6 +2,7 @@ use crate::domain::domain::Sms;
 use crate::error::{Error, Result};
 use crate::service::CONTEXT;
 use std::collections::HashMap;
+use crate::service::cache_service::ICacheService;
 
 pub struct SysSmsService {}
 
@@ -14,7 +15,7 @@ impl SysSmsService {
         //验证码值
         templete_arg.insert("sms_code".to_string(), sms_code.to_string());
         let r = CONTEXT
-            .redis_service
+            .cache_service
             .set_json(
                 &format!("{},{}", CONTEXT.config.sms_redis_send_key_prefix, account),
                 &Sms {
@@ -29,7 +30,7 @@ impl SysSmsService {
     ///校验验证码
     pub async fn do_verify_sms(&self, account: &str, sms_code: &str) -> Result<bool> {
         let sms: Option<Sms> = CONTEXT
-            .redis_service
+            .cache_service
             .get_json(&format!(
                 "{},{}",
                 CONTEXT.config.sms_redis_send_key_prefix, account

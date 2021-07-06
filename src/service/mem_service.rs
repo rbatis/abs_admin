@@ -3,12 +3,11 @@ use serde::Serialize;
 
 use crate::error::Result;
 use std::time::{Duration, Instant};
-use std::sync::{Mutex, MutexGuard};
+use std::sync::{Mutex};
 use std::collections::hash_map::RandomState;
 use std::collections::HashMap;
 use std::ops::Sub;
 use crate::service::CONTEXT;
-use std::sync::atomic::{AtomicBool, Ordering};
 
 ///内存缓存服务
 pub struct MemService {

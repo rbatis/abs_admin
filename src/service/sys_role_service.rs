@@ -11,6 +11,7 @@ use crate::service::CONTEXT;
 use crate::util::string::IsEmpty;
 use rbatis::plugin::snowflake::new_snowflake_id;
 use std::collections::{BTreeMap, HashMap};
+use crate::service::cache_service::ICacheService;
 
 const RES_KEY: &'static str = "sys_role:all";
 ///角色服务
@@ -67,17 +68,10 @@ impl SysRoleService {
     /// 查找role数组
     pub async fn finds_all(&self) -> Result<Vec<SysRole>> {
         //查找的全部数据缓存于Redis，同时 remove，edit方法调用时刷新redis缓存
-        let js;
-        if CONTEXT.config.cache_type == "redis" {
-            js = CONTEXT
-                .redis_service
-                .get_json::<Option<Vec<SysRole>>>(RES_KEY)
-                .await;
-        } else {
-            js = CONTEXT
-                .mem_service
-                .get_json::<Option<Vec<SysRole>>>(RES_KEY);
-        }
+        let js = CONTEXT
+            .cache_service
+            .get_json::<Option<Vec<SysRole>>>(RES_KEY)
+            .await;
         if js.is_err()
             || js.as_ref().unwrap().is_none()
             || js.as_ref().unwrap().as_ref().unwrap().is_empty()
@@ -94,11 +88,7 @@ impl SysRoleService {
     /// 更新所有
     pub async fn update_cache(&self) -> Result<Vec<SysRole>> {
         let all = CONTEXT.rbatis.fetch_list().await?;
-        if CONTEXT.config.cache_type == "redis" {
-            CONTEXT.redis_service.set_json(RES_KEY, &all).await?;
-        } else {
-            CONTEXT.mem_service.set_json(RES_KEY, &all)?;
-        }
+        CONTEXT.cache_service.set_json(RES_KEY, &all).await?;
         return Ok(all);
     }
 
