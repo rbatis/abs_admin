@@ -1,24 +1,38 @@
-use dashmap::DashMap;
 use serde::de::DeserializeOwned;
-use serde::Serialize;
-
 use crate::error::Result;
-use crate::service::redis_service::RedisService;
 use crate::service::CONTEXT;
 use crate::service::cache_service::ProxyType::Mem;
 use std::time::Duration;
+use async_trait::async_trait;
+use serde::{Serialize,Deserialize};
 
 pub enum ProxyType {
     Mem,
     Redis,
 }
 
+#[async_trait]
+pub trait ICacheService {
+    async fn set_string(&self, k: &str, v: &str) -> Result<String>;
+
+    async fn get_string(&self, k: &str) -> Result<String>;
+
+    async fn set_json<T>(&self, k: &str, v: &T) -> Result<String>  where T: Serialize+Sync;
+
+    async fn get_json<T>(&self, k: &str) -> Result<T> where T: DeserializeOwned+Sync;
+
+    async fn set_string_ex(&self, k: &str, v: &str, ex: Option<Duration>) -> Result<String>;
+
+    async fn ttl(&self, k: &str) -> Result<i64>;
+}
+
+
 ///内存缓存服务
-pub struct MemService {
+pub struct CacheService {
     pub inner: ProxyType,
 }
 
-impl Default for MemService {
+impl Default for CacheService {
     fn default() -> Self {
         Self {
             inner: Mem,
@@ -26,8 +40,9 @@ impl Default for MemService {
     }
 }
 
-impl MemService {
-    pub async fn set_string(&self, k: &str, v: &str) -> Result<String> {
+#[async_trait]
+impl ICacheService for CacheService {
+    async fn set_string(&self, k: &str, v: &str) -> Result<String> {
         return match self.inner {
             Mem => {
                 CONTEXT.mem_service.set_string(k, v)
@@ -38,7 +53,7 @@ impl MemService {
         };
     }
 
-    pub async fn get_string(&self, k: &str) -> Result<String> {
+    async fn get_string(&self, k: &str) -> Result<String> {
         return match self.inner {
             Mem => {
                 CONTEXT.mem_service.get_string(k)
@@ -49,23 +64,23 @@ impl MemService {
         };
     }
 
-    pub async fn set_json<T>(&self, k: &str, v: &T) -> Result<String>
+    async fn set_json<T>(&self, k: &str, v: &T) -> Result<String>
         where
-            T: Serialize,
+            T: Serialize+Sync,
     {
         return match self.inner {
             Mem => {
-                CONTEXT.mem_service.set_json(k, v)
+                CONTEXT.mem_service.set_json::<T>(k, v)
             }
             ProxyType::Redis => {
-                CONTEXT.redis_service.set_json(k, v).await
+                CONTEXT.redis_service.set_json::<T>(k, v).await
             }
         };
     }
 
-    pub async fn get_json<T>(&self, k: &str) -> Result<T>
+    async fn get_json<T>(&self, k: &str) -> Result<T>
         where
-            T: DeserializeOwned,
+            T: DeserializeOwned+Sync,
     {
         return match self.inner {
             Mem => {
@@ -77,7 +92,7 @@ impl MemService {
         };
     }
 
-    pub async fn set_string_ex(&self, k: &str, v: &str, ex: Option<Duration>) -> Result<String> {
+    async fn set_string_ex(&self, k: &str, v: &str, ex: Option<Duration>) -> Result<String> {
         return match self.inner {
             Mem => {
                 CONTEXT.mem_service.set_string_ex(k, v, ex)
@@ -88,7 +103,7 @@ impl MemService {
         };
     }
 
-    pub async fn ttl(&self, k: &str) -> Result<i64> {
+    async fn ttl(&self, k: &str) -> Result<i64> {
         return match self.inner {
             Mem => {
                 CONTEXT.mem_service.ttl(k)
