@@ -7,7 +7,6 @@ use std::sync::{Mutex};
 use std::collections::hash_map::RandomState;
 use std::collections::HashMap;
 use std::ops::Sub;
-use crate::service::CONTEXT;
 
 ///内存缓存服务
 pub struct MemService {
@@ -117,7 +116,8 @@ impl MemService {
     pub fn ttl(&self, k: &str) -> Result<i64> {
         self.recycling();
         let locked = self.cache.lock().unwrap();
-        let v = locked.get(k);
+        let v = locked.get(k).cloned();
+        drop(locked);
         return match v {
             None => {
                 Ok(-2)
@@ -129,10 +129,9 @@ impl MemService {
                     }
                     Some((i, d)) => {
                         let use_time = i.elapsed();
-                        if *d > use_time {
+                        if d > use_time {
                             return Ok(d.sub(use_time).as_secs() as i64);
                         }
-                        drop(locked);
                         //clean data
                         self.set_string(k, "")?;
                         Ok(0)
