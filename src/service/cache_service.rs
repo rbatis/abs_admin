@@ -28,7 +28,7 @@ pub trait ICacheService {
 }
 
 
-///内存缓存服务
+///缓存服务-可选缓存介质，mem，redis
 pub struct CacheService {
     pub inner: CacheProxyType,
 }
