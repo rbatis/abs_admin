@@ -4,7 +4,7 @@ use crate::service::CONTEXT;
 use crate::service::cache_service::ProxyType::Mem;
 use std::time::Duration;
 use async_trait::async_trait;
-use serde::{Serialize,Deserialize};
+use serde::{Serialize};
 
 pub enum ProxyType {
     Mem,
