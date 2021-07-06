@@ -38,7 +38,7 @@ pub struct ApplicationConfig {
     pub white_list_api: Vec<String>,
 
     ///权限缓存类型
-    pub auth_cache_type: String,
+    pub cache_type: String,
 
     ///重试
     pub login_fail_retry: i64,
@@ -100,7 +100,7 @@ impl Default for ApplicationConfig {
             white_list_api: to_vec_string(
                 get_cfg(&docs, "white_list_api").as_vec().unwrap().to_vec(),
             ),
-            auth_cache_type: get_cfg(&docs, "auth_cache_type")
+            cache_type: get_cfg(&docs, "cache_type")
                 .as_str()
                 .unwrap_or("")
                 .to_owned(),

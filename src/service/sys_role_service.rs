@@ -68,7 +68,7 @@ impl SysRoleService {
     pub async fn finds_all(&self) -> Result<Vec<SysRole>> {
         //查找的全部数据缓存于Redis，同时 remove，edit方法调用时刷新redis缓存
         let js;
-        if CONTEXT.config.auth_cache_type == "redis" {
+        if CONTEXT.config.cache_type == "redis" {
             js = CONTEXT
                 .redis_service
                 .get_json::<Option<Vec<SysRole>>>(RES_KEY)
@@ -94,7 +94,7 @@ impl SysRoleService {
     /// 更新所有
     pub async fn update_cache(&self) -> Result<Vec<SysRole>> {
         let all = CONTEXT.rbatis.fetch_list().await?;
-        if CONTEXT.config.auth_cache_type == "redis" {
+        if CONTEXT.config.cache_type == "redis" {
             CONTEXT.redis_service.set_json(RES_KEY, &all).await?;
         } else {
             CONTEXT.mem_service.set_json(RES_KEY, &all)?;

@@ -24,8 +24,8 @@ log_zip: true
 log_rolling_type: "KeepNum(20)"
 #日志等级-info,error,warn,debug,trace
 log_level: "info"
-#权限、角色 缓存介质类型("mem","redis")
-auth_cache_type: "mem"
+#缓存介质类型("mem","redis")
+cache_type: "mem"
 #JwtToken秘钥
 jwt_secret: "abs_admin"
 #短信通道redis缓存（系统先把数据放入redis队列sms:send:，第三方短信sdk或程序需要从队列获取并发送，获得回执存入sms:resp:*）,格式为sms:send:手机号和sms:resp:手机号

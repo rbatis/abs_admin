@@ -19,6 +19,7 @@ mod sys_role_service;
 mod sys_sms_service;
 mod sys_user_role_service;
 mod sys_user_service;
+mod cache_service;
 
 pub struct ServiceContext {
     pub config: ApplicationConfig,

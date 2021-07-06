@@ -133,7 +133,7 @@ impl SysResService {
     /// 查找res数组
     pub async fn finds_all(&self) -> Result<Vec<SysRes>> {
         let js;
-        if CONTEXT.config.auth_cache_type == "redis" {
+        if CONTEXT.config.cache_type == "redis" {
             js = CONTEXT
                 .redis_service
                 .get_json::<Option<Vec<SysRes>>>(RES_KEY)
@@ -157,7 +157,7 @@ impl SysResService {
     /// 更新所有
     pub async fn update_cache(&self) -> Result<Vec<SysRes>> {
         let all = CONTEXT.rbatis.fetch_list::<SysRes>().await?;
-        if CONTEXT.config.auth_cache_type == "redis" {
+        if CONTEXT.config.cache_type == "redis" {
             CONTEXT.redis_service.set_json(RES_KEY, &all).await?;
         } else {
             CONTEXT.mem_service.set_json(RES_KEY, &all)?;

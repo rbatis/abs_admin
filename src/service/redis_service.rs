@@ -63,6 +63,30 @@ impl RedisService {
         Ok(data.unwrap())
     }
 
+
+    pub async fn set_string(&self, k: &str, v: &str) -> Result<String> {
+        return self.set_string_ex(k, v, None).await;
+    }
+
+    pub async fn get_string(&self, k: &str) -> Result<String> {
+        let mut conn = self.get_conn().await?;
+        let result: RedisResult<Option<String>> =
+            redis::cmd("GET").arg(&[k]).query_async(&mut conn).await;
+        match result {
+            Ok(v) => {
+                return Ok(v.unwrap_or(String::new()));
+            }
+            Err(e) => {
+                return Err(Error::from(format!(
+                    "RedisService get_string({}) fail:{}",
+                    k,
+                    e.to_string()
+                )));
+            }
+        }
+    }
+
+
     ///set_string 自动过期
     pub async fn set_string_ex(&self, k: &str, v: &str, ex: Option<Duration>) -> Result<String> {
         let mut conn = self.get_conn().await?;
@@ -86,28 +110,6 @@ impl RedisService {
                     e.to_string()
                 ))),
             };
-        }
-    }
-
-    pub async fn set_string(&self, k: &str, v: &str) -> Result<String> {
-        return self.set_string_ex(k, v, None).await;
-    }
-
-    pub async fn get_string(&self, k: &str) -> Result<String> {
-        let mut conn = self.get_conn().await?;
-        let result: RedisResult<Option<String>> =
-            redis::cmd("GET").arg(&[k]).query_async(&mut conn).await;
-        match result {
-            Ok(v) => {
-                return Ok(v.unwrap_or(String::new()));
-            }
-            Err(e) => {
-                return Err(Error::from(format!(
-                    "RedisService get_string({}) fail:{}",
-                    k,
-                    e.to_string()
-                )));
-            }
         }
     }
 

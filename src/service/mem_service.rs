@@ -1,12 +1,15 @@
-use dashmap::DashMap;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 
 use crate::error::Result;
+use std::time::Duration;
+use std::sync::Mutex;
+use std::collections::hash_map::RandomState;
+use std::collections::HashMap;
 
 ///内存缓存服务
 pub struct MemService {
-    pub cache: DashMap<String, String>,
+    pub cache: Mutex<HashMap<String, String, RandomState>>,
 }
 
 impl Default for MemService {
@@ -19,14 +22,16 @@ impl Default for MemService {
 
 impl MemService {
     pub fn set_string(&self, k: &str, v: &str) -> Result<String> {
-        self.cache.insert(k.to_string(), v.to_string());
+        let mut guard = self.cache.lock().unwrap();
+        guard.insert(k.to_string(), v.to_string());
         return Ok(v.to_string());
     }
     pub fn get_string(&self, k: &str) -> Result<String> {
-        let v = self.cache.get(k);
+        let guard = self.cache.lock().unwrap();
+        let v = guard.get(k);
         match v {
             Some(v) => {
-                return Ok(v.value().to_string());
+                return Ok(v.to_string());
             }
             _ => {
                 return Ok("".to_string());
@@ -34,8 +39,8 @@ impl MemService {
         }
     }
     pub fn set_json<T>(&self, k: &str, v: &T) -> Result<String>
-    where
-        T: Serialize,
+        where
+            T: Serialize,
     {
         let data = serde_json::to_string(v);
         if data.is_err() {
@@ -49,8 +54,8 @@ impl MemService {
     }
 
     pub fn get_json<T>(&self, k: &str) -> Result<T>
-    where
-        T: DeserializeOwned,
+        where
+            T: DeserializeOwned,
     {
         let mut r = self.get_string(k)?;
         if r.is_empty() {
@@ -64,5 +69,14 @@ impl MemService {
             )));
         }
         Ok(data.unwrap())
+    }
+
+
+    pub fn set_string_ex(&self, k: &str, v: &str, ex: Option<Duration>) -> Result<String> {
+        unimplemented!()
+    }
+
+    pub fn ttl(&self, k: &str) -> Result<i64> {
+        unimplemented!()
     }
 }
