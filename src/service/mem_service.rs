@@ -14,34 +14,33 @@ pub struct MemService {
     pub cache: Mutex<HashMap<String, (String, Option<(Instant, Duration)>), RandomState>>,
 }
 
+impl MemService {
+    pub fn recycling(&self) {
+        match self.cache.lock() {
+            Ok(mut l) => {
+                let mut need_removed = vec![];
+                for (k, v) in l.iter() {
+                    match v.1 {
+                        None => {}
+                        Some((i, d)) => {
+                            if i.elapsed() >= d {
+                                //out of time
+                                need_removed.push(k.to_string());
+                            }
+                        }
+                    }
+                }
+                for x in need_removed {
+                    l.remove(&x);
+                }
+            }
+            Err(_) => {}
+        }
+    }
+}
 
 impl Default for MemService {
     fn default() -> Self {
-        std::thread::spawn(|| {
-            loop {
-                match CONTEXT.mem_service.cache.lock() {
-                    Ok(mut l) => {
-                        let mut need_removed = vec![];
-                        for (k, v) in l.iter() {
-                            match v.1 {
-                                None => {}
-                                Some((i, d)) => {
-                                    if i.elapsed() >= d {
-                                        //out of time
-                                        need_removed.push(k.to_string());
-                                    }
-                                }
-                            }
-                        }
-                        for x in need_removed {
-                            l.remove(&x);
-                        }
-                    }
-                    Err(_) => {}
-                }
-                std::thread::sleep(Duration::from_secs(1));
-            }
-        });
         Self {
             cache: Default::default(),
         }
@@ -50,11 +49,13 @@ impl Default for MemService {
 
 impl MemService {
     pub fn set_string(&self, k: &str, v: &str) -> Result<String> {
+        self.recycling();
         let mut guard = self.cache.lock().unwrap();
         guard.insert(k.to_string(), (v.to_string(), None));
         return Ok(v.to_string());
     }
     pub fn get_string(&self, k: &str) -> Result<String> {
+        self.recycling();
         let guard = self.cache.lock().unwrap();
         let v = guard.get(k);
         match v {
@@ -100,6 +101,7 @@ impl MemService {
     }
 
     pub fn set_string_ex(&self, k: &str, v: &str, t: Option<Duration>) -> Result<String> {
+        self.recycling();
         let mut locked = self.cache.lock().unwrap();
         let mut e = Option::None;
         if let Some(ex) = t {
@@ -113,6 +115,7 @@ impl MemService {
     }
 
     pub fn ttl(&self, k: &str) -> Result<i64> {
+        self.recycling();
         let locked = self.cache.lock().unwrap();
         let v = locked.get(k);
         return match v {
