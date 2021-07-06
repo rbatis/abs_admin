@@ -46,7 +46,7 @@ impl ICacheService for CacheService {
     async fn set_string(&self, k: &str, v: &str) -> Result<String> {
         return match self.inner {
             Mem => {
-                CONTEXT.mem_service.set_string(k, v)
+                CONTEXT.mem_service.set_string(k, v).await
             }
             CacheProxyType::Redis => {
                 CONTEXT.redis_service.set_string(k, v).await
@@ -57,7 +57,7 @@ impl ICacheService for CacheService {
     async fn get_string(&self, k: &str) -> Result<String> {
         return match self.inner {
             Mem => {
-                CONTEXT.mem_service.get_string(k)
+                CONTEXT.mem_service.get_string(k).await
             }
             CacheProxyType::Redis => {
                 CONTEXT.redis_service.get_string(k).await
@@ -71,7 +71,7 @@ impl ICacheService for CacheService {
     {
         return match self.inner {
             Mem => {
-                CONTEXT.mem_service.set_json::<T>(k, v)
+                CONTEXT.mem_service.set_json::<T>(k, v).await
             }
             CacheProxyType::Redis => {
                 CONTEXT.redis_service.set_json::<T>(k, v).await
@@ -85,7 +85,7 @@ impl ICacheService for CacheService {
     {
         return match self.inner {
             Mem => {
-                CONTEXT.mem_service.get_json(k)
+                CONTEXT.mem_service.get_json(k).await
             }
             CacheProxyType::Redis => {
                 CONTEXT.redis_service.get_json(k).await
@@ -96,7 +96,7 @@ impl ICacheService for CacheService {
     async fn set_string_ex(&self, k: &str, v: &str, ex: Option<Duration>) -> Result<String> {
         return match self.inner {
             Mem => {
-                CONTEXT.mem_service.set_string_ex(k, v, ex)
+                CONTEXT.mem_service.set_string_ex(k, v, ex).await
             }
             CacheProxyType::Redis => {
                 CONTEXT.redis_service.set_string_ex(k, v, ex).await
@@ -107,7 +107,7 @@ impl ICacheService for CacheService {
     async fn ttl(&self, k: &str) -> Result<i64> {
         return match self.inner {
             Mem => {
-                CONTEXT.mem_service.ttl(k)
+                CONTEXT.mem_service.ttl(k).await
             }
             CacheProxyType::Redis => {
                 CONTEXT.redis_service.ttl(k).await

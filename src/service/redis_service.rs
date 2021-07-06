@@ -7,7 +7,8 @@ use serde::Serialize;
 
 use crate::error::{Error, Result};
 use redis::RedisResult;
-
+use crate::service::ICacheService;
+use async_trait::async_trait;
 ///缓存服务
 pub struct RedisService {
     pub client: redis::Client,
@@ -29,10 +30,12 @@ impl RedisService {
         }
         return Ok(conn.unwrap());
     }
+}
 
-    pub async fn set_json<T>(&self, k: &str, v: &T) -> Result<String>
-    where
-        T: Serialize,
+#[async_trait]
+impl ICacheService for RedisService {
+
+    async fn set_json<T>(&self, k: &str, v: &T) -> Result<String>  where T: Serialize+Sync,
     {
         let data = serde_json::to_string(v);
         if data.is_err() {
@@ -45,7 +48,7 @@ impl RedisService {
         Ok(data)
     }
 
-    pub async fn get_json<T>(&self, k: &str) -> Result<T>
+    async fn get_json<T>(&self, k: &str) -> Result<T>
     where
         T: DeserializeOwned,
     {
@@ -64,11 +67,11 @@ impl RedisService {
     }
 
 
-    pub async fn set_string(&self, k: &str, v: &str) -> Result<String> {
+    async fn set_string(&self, k: &str, v: &str) -> Result<String> {
         return self.set_string_ex(k, v, None).await;
     }
 
-    pub async fn get_string(&self, k: &str) -> Result<String> {
+    async fn get_string(&self, k: &str) -> Result<String> {
         let mut conn = self.get_conn().await?;
         let result: RedisResult<Option<String>> =
             redis::cmd("GET").arg(&[k]).query_async(&mut conn).await;
@@ -88,7 +91,7 @@ impl RedisService {
 
 
     ///set_string 自动过期
-    pub async fn set_string_ex(&self, k: &str, v: &str, ex: Option<Duration>) -> Result<String> {
+    async fn set_string_ex(&self, k: &str, v: &str, ex: Option<Duration>) -> Result<String> {
         let mut conn = self.get_conn().await?;
         if ex.is_none() {
             return match redis::cmd("SET").arg(&[k, v]).query_async(&mut conn).await {
@@ -114,7 +117,7 @@ impl RedisService {
     }
 
     ///set_string 自动过期
-    pub async fn ttl(&self, k: &str) -> Result<i64> {
+    async fn ttl(&self, k: &str) -> Result<i64> {
         let mut conn = self.get_conn().await?;
         return match redis::cmd("TTL").arg(&[k]).query_async(&mut conn).await {
             Ok(v) => Ok(v),
