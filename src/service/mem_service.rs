@@ -131,8 +131,6 @@ impl ICacheService for MemService {
                         if d > use_time {
                             return Ok(d.sub(use_time).as_secs() as i64);
                         }
-                        //clean data
-                        self.recycling();
                         Ok(0)
                     }
                 }
