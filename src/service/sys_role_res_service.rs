@@ -165,7 +165,7 @@ impl SysRoleResService {
                 create_date: NaiveDateTime::now().into(),
             });
         }
-        let save_ok = CONTEXT.rbatis.save_batch(&sys_role_res).await?;
+        let save_ok = CONTEXT.rbatis.save_batch(&sys_role_res,&[]).await?;
         return Ok(save_ok.rows_affected);
     }
 

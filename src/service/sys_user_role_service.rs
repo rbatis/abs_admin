@@ -78,7 +78,7 @@ impl SysUserRoleService {
         }
         self.remove_by_user_id(&arg.user_id.clone().unwrap_or_default())
             .await?;
-        Ok(CONTEXT.rbatis.save( &role).await?.rows_affected)
+        Ok(CONTEXT.rbatis.save( &role,&[]).await?.rows_affected)
     }
 
     ///角色删除

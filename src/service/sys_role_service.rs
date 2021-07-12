@@ -111,7 +111,7 @@ impl SysRoleService {
             create_date: NaiveDateTime::now().into(),
         };
         let result = (
-            CONTEXT.rbatis.save( &role).await?.rows_affected,
+            CONTEXT.rbatis.save(&role,&[]).await?.rows_affected,
             role.id.clone().unwrap(),
         );
         self.update_cache().await?;

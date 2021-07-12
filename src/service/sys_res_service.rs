@@ -76,7 +76,7 @@ impl SysResService {
                 rbatis::make_table_field_vec!(old, name)
             )));
         }
-        let result = Ok(CONTEXT.rbatis.save(arg).await?.rows_affected);
+        let result = Ok(CONTEXT.rbatis.save(arg,&[]).await?.rows_affected);
         self.update_cache().await?;
         return result;
     }

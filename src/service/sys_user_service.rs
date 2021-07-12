@@ -127,7 +127,7 @@ impl SysUserService {
             }
             _ => {}
         }
-        return Ok(CONTEXT.rbatis.save( &user).await?.rows_affected);
+        return Ok(CONTEXT.rbatis.save( &user,&[]).await?.rows_affected);
     }
 
     ///登陆后台
