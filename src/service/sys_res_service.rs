@@ -1,6 +1,6 @@
 use std::collections::{BTreeMap, HashMap};
 
-use rbatis::crud::CRUD;
+use rbatis::crud::{CRUD, Skip};
 use rbatis::plugin::page::{Page, PageRequest};
 
 use crate::domain::domain::SysRes;
@@ -92,7 +92,9 @@ impl SysResService {
             del: None,
             create_date: None,
         };
-        let result = Ok(CONTEXT.rbatis.update_by_column("id", &mut data).await?);
+        let result = Ok(CONTEXT.rbatis.update_by_wrapper(&mut data,
+                                                         &CONTEXT.rbatis.new_wrapper().eq("id",&arg.id),
+                                                         &[Skip::Column("del"), Skip::Column("id"), Skip::Column("create_date")]).await?);
         self.update_cache().await?;
         return result;
     }
