@@ -86,7 +86,7 @@ where
         return HttpResponse::Ok()
             .set_header("Access-Control-Allow-Origin", "*")
             .set_header("Cache-Control", "no-cache")
-            .content_type("json")
+            .set_header("Content-Type","text/json;charset=UTF-8")
             .body(self.to_string());
     }
 }
