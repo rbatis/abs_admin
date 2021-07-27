@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS public.sys_user
     );
 
 INSERT INTO sys_user
-VALUES ('205667537625681919', '00000000000', 'e10adc3949ba59abbe56e057f20f883e', 'xxxx', 'PasswordCheck', 0,
+VALUES ('205667537625681919', '00000000000', 'e10adc3949ba59abbe56e057f20f883e', '超级管理员', 'PasswordCheck', 0,
         '2020-07-28 08:34:40', 1);
 
 CREATE TABLE IF NOT EXISTS public.sys_user_role
