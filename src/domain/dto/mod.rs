@@ -137,6 +137,9 @@ pub struct UserRolePageDTO {
     pub page_size: Option<u64>,
     pub account: Option<String>,
     pub name: Option<String>,
+
+    //默认添加role
+    pub resp_set_role: Option<bool>,
 }
 
 /// 验证码

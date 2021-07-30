@@ -23,40 +23,42 @@ impl SysUserRoleService {
             .sys_user_service
             .page(&UserPageDTO::from(arg))
             .await?;
-        let all_role = CONTEXT.sys_role_service.finds_all_map().await?;
-        let user_ids = rbatis::make_table_field_vec!(&vo.records, id);
-        let user_roles = CONTEXT
-            .rbatis
-            .fetch_list_by_wrapper::<SysUserRole>(
-                &CONTEXT.rbatis.new_wrapper().in_("user_id", &user_ids),
-            )
-            .await?;
-        let user_role_map = rbatis::make_table_field_map!(&user_roles, user_id);
-        let role_ids = rbatis::make_table_field_vec!(&user_roles, role_id);
-        let roles = CONTEXT.sys_role_service.finds(&role_ids).await?;
-        let roles_map = rbatis::make_table_field_map!(&roles, id);
-        for mut x in &mut vo.records {
-            let user_role = user_role_map.get(&x.id.clone().unwrap_or_default());
-            match user_role {
-                Some(user_role) => {
-                    match &user_role.role_id {
-                        Some(role_id) => {
-                            let role = roles_map.get(role_id).cloned();
-                            x.role = SysRoleVO::from_option(role);
-                            //查找子集角色
-                            match &mut x.role {
-                                None => {}
-                                Some(role_vo) => {
-                                    CONTEXT
-                                        .sys_role_service
-                                        .loop_find_childs(role_vo, &all_role);
+        if arg.resp_set_role.unwrap_or(true){
+            let all_role = CONTEXT.sys_role_service.finds_all_map().await?;
+            let user_ids = rbatis::make_table_field_vec!(&vo.records, id);
+            let user_roles = CONTEXT
+                .rbatis
+                .fetch_list_by_wrapper::<SysUserRole>(
+                    &CONTEXT.rbatis.new_wrapper().in_("user_id", &user_ids),
+                )
+                .await?;
+            let user_role_map = rbatis::make_table_field_map!(&user_roles, user_id);
+            let role_ids = rbatis::make_table_field_vec!(&user_roles, role_id);
+            let roles = CONTEXT.sys_role_service.finds(&role_ids).await?;
+            let roles_map = rbatis::make_table_field_map!(&roles, id);
+            for mut x in &mut vo.records {
+                let user_role = user_role_map.get(&x.id.clone().unwrap_or_default());
+                match user_role {
+                    Some(user_role) => {
+                        match &user_role.role_id {
+                            Some(role_id) => {
+                                let role = roles_map.get(role_id).cloned();
+                                x.role = SysRoleVO::from_option(role);
+                                //查找子集角色
+                                match &mut x.role {
+                                    None => {}
+                                    Some(role_vo) => {
+                                        CONTEXT
+                                            .sys_role_service
+                                            .loop_find_childs(role_vo, &all_role);
+                                    }
                                 }
                             }
+                            _ => {}
                         }
-                        _ => {}
                     }
+                    _ => {}
                 }
-                _ => {}
             }
         }
         return Ok(vo);
