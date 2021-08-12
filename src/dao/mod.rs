@@ -20,5 +20,5 @@ pub async fn init_rbatis(config: &ApplicationConfig) -> Rbatis {
     //连接数据库
     rbatis.link(&config.database_url).await.expect("[abs_admin] rbatis link database fail!");
     println!("[abs_admin] rbatis link database success!");
-    return rbatis;
+    rbatis
 }

@@ -28,7 +28,8 @@ impl RedisService {
             error!("{}", err);
             return Err(crate::error::Error::from(err));
         }
-        return Ok(conn.unwrap());
+
+        Ok(conn.unwrap())
     }
 }
 
@@ -77,14 +78,14 @@ impl ICacheService for RedisService {
             redis::cmd("GET").arg(&[k]).query_async(&mut conn).await;
         match result {
             Ok(v) => {
-                return Ok(v.unwrap_or(String::new()));
+                Ok(v.unwrap_or_default())
             }
             Err(e) => {
-                return Err(Error::from(format!(
+                Err(Error::from(format!(
                     "RedisService get_string({}) fail:{}",
                     k,
                     e.to_string()
-                )));
+                )))
             }
         }
     }
@@ -93,8 +94,13 @@ impl ICacheService for RedisService {
     ///set_string 自动过期
     async fn set_string_ex(&self, k: &str, v: &str, ex: Option<Duration>) -> Result<String> {
         let mut conn = self.get_conn().await?;
-        if ex.is_none() {
-            return match redis::cmd("SET").arg(&[k, v]).query_async(&mut conn).await {
+
+        if let Some(ex) = ex {
+            return match redis::cmd("SET")
+                .arg(&[k, v, "EX", &ex.as_secs().to_string()])
+                .query_async(&mut conn)
+                .await
+            {
                 Ok(v) => Ok(v),
                 Err(e) => Err(Error::from(format!(
                     "RedisService set_string_ex fail:{}",
@@ -102,11 +108,7 @@ impl ICacheService for RedisService {
                 ))),
             };
         } else {
-            return match redis::cmd("SET")
-                .arg(&[k, v, "EX", &ex.unwrap().as_secs().to_string()])
-                .query_async(&mut conn)
-                .await
-            {
+            return match redis::cmd("SET").arg(&[k, v]).query_async(&mut conn).await {
                 Ok(v) => Ok(v),
                 Err(e) => Err(Error::from(format!(
                     "RedisService set_string_ex fail:{}",

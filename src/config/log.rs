@@ -17,7 +17,7 @@ pub fn init_log() {
         None,
         CONTEXT.config.debug,
     );
-    if CONTEXT.config.debug == false {
+    if !CONTEXT.config.debug {
         println!("[abs_admin] release_mode is up! [file_log] open,[console_log] disabled!");
     }
 }
@@ -46,12 +46,12 @@ fn str_to_temp_size(arg: &str) -> LogSize {
 fn str_to_rolling(arg: &str) -> RollingType {
     match arg {
         arg if arg.starts_with("KeepNum(") => {
-            let end = arg.find(")").unwrap();
+            let end = arg.find(')').unwrap();
             let num = arg["KeepNum(".len()..end].to_string();
             RollingType::KeepNum(num.parse::<i64>().unwrap())
         }
         arg if arg.starts_with("KeepTime(") => {
-            let end = arg.find(")").unwrap();
+            let end = arg.find(')').unwrap();
             let num = arg["KeepTime(".len()..end].to_string();
             RollingType::KeepTime(Duration::from_secs(num.parse::<u64>().unwrap()))
         }
@@ -60,12 +60,12 @@ fn str_to_rolling(arg: &str) -> RollingType {
 }
 
 fn str_to_log_level(arg: &str) -> log::Level {
-    return match arg {
+    match arg {
         "warn" => log::Level::Warn,
         "error" => log::Level::Error,
         "trace" => log::Level::Trace,
         "info" => log::Level::Info,
         "debug" => log::Level::Debug,
         _ => log::Level::Info,
-    };
+    }
 }

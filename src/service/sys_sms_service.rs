@@ -24,7 +24,8 @@ impl SysSmsService {
                 },
             )
             .await?;
-        return Ok(());
+
+        Ok(())
     }
 
     ///校验验证码
@@ -39,10 +40,10 @@ impl SysSmsService {
         match sms {
             Some(v) => {
                 let sms_code_cached = v.args.get("sms_code");
-                return Ok(sms_code_cached.eq(&Some(&sms_code.to_string())));
+                Ok(sms_code_cached.eq(&Some(&sms_code.to_string())))
             }
             _ => {
-                return Err(Error::from("请发送验证码!"));
+                Err(Error::from("请发送验证码!"))
             }
         }
     }

@@ -28,8 +28,8 @@ impl From<&SysRes> for SysResVO {
             name: arg.name.clone(),
             permission: arg.permission.clone(),
             path: arg.path.clone(),
-            del: arg.del.clone(),
-            create_date: arg.create_date.clone(),
+            del: arg.del,
+            create_date: arg.create_date,
             childs: None,
         }
     }
@@ -44,7 +44,7 @@ impl SysResVO {
         let mut childs: Option<Vec<Self>> = None;
         if self.id.is_some() {
             for (key, x) in all_record {
-                if x.get_father_id().is_some() && self.id.eq(&x.get_father_id()) {
+                if x.get_father_id().is_some() && self.id.eq(x.get_father_id()) {
                     let mut item = x.clone();
                     item.set_childs_recursive(all_record);
                     match &mut childs {
@@ -52,16 +52,15 @@ impl SysResVO {
                             childs.push(item);
                         }
                         None => {
-                            let mut vec = vec![];
-                            vec.push(item);
+                            let vec = vec![item];
                             childs = Some(vec);
                         }
                     }
                 }
             }
         }
-        if childs.is_some() {
-            self.childs = Some(childs.unwrap());
+        if let Some(childs) = childs {
+            self.childs = Some(childs)
         }
     }
 }

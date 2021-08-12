@@ -37,7 +37,7 @@ impl JWTToken {
             ..Validation::default()
         };
         return match decode::<JWTToken>(
-            &token,
+            token,
             &DecodingKey::from_secret(secret.as_ref()),
             &validation,
         ) {

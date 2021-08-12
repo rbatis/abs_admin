@@ -13,7 +13,7 @@ use rbatis::plugin::snowflake::new_snowflake_id;
 use std::collections::{BTreeMap, HashMap};
 use crate::service::cache_service::ICacheService;
 
-const RES_KEY: &'static str = "sys_role:all";
+const RES_KEY: &str = "sys_role:all";
 ///角色服务
 pub struct SysRoleService {}
 
@@ -62,7 +62,8 @@ impl SysRoleService {
                 data.push(top);
             }
         }
-        return Ok(data);
+
+        Ok(data)
     }
 
     /// 查找role数组
@@ -82,14 +83,16 @@ impl SysRoleService {
         if CONTEXT.config.debug {
             log::info!("[abs_admin] get from redis:{}", RES_KEY);
         }
-        return Ok(js?.unwrap_or_default());
+
+        Ok(js?.unwrap_or_default())
     }
 
     /// 更新所有
     pub async fn update_cache(&self) -> Result<Vec<SysRole>> {
         let all = CONTEXT.rbatis.fetch_list().await?;
         CONTEXT.cache_service.set_json(RES_KEY, &all).await?;
-        return Ok(all);
+
+        Ok(all)
     }
 
     pub async fn finds_all_map(&self) -> Result<HashMap<String, SysRole>> {
@@ -98,7 +101,8 @@ impl SysRoleService {
         for x in all {
             result.insert(x.id.clone().unwrap_or_default(), x);
         }
-        return Ok(result);
+
+        Ok(result)
     }
 
     ///角色添加
@@ -142,14 +146,14 @@ impl SysRoleService {
         Ok(result?)
     }
 
-    pub async fn finds(&self, ids: &Vec<String>) -> Result<Vec<SysRole>> {
+    pub async fn finds(&self, ids: &[String]) -> Result<Vec<SysRole>> {
         Ok(CONTEXT
             .rbatis
             .fetch_list_by_wrapper( &CONTEXT.rbatis.new_wrapper().r#in("id", ids))
             .await?)
     }
 
-    pub async fn find_role_res(&self, ids: &Vec<String>) -> Result<Vec<SysRoleRes>> {
+    pub async fn find_role_res(&self, ids: &[String]) -> Result<Vec<SysRoleRes>> {
         Ok(CONTEXT
             .rbatis
             .fetch_list_by_wrapper( &CONTEXT.rbatis.new_wrapper().r#in("role_id", ids))
@@ -170,10 +174,11 @@ impl SysRoleService {
             .await?;
         let res = CONTEXT
             .sys_res_service
-            .finds_layer(&rbatis::make_table_field_vec!(&role_res, res_id), &all_res)
+            .finds_layer(&rbatis::make_table_field_vec!(&role_res, res_id), all_res)
             .await?;
         let permissions = rbatis::make_table_field_vec!(&res, permission);
-        return Ok(permissions);
+
+        Ok(permissions)
     }
 
     ///死循环找出父-子 关联关系数组
@@ -188,15 +193,14 @@ impl SysRoleService {
                         childs.push(item);
                     }
                     None => {
-                        let mut vec = vec![];
-                        vec.push(item);
+                        let vec = vec![item];
                         childs = Some(vec);
                     }
                 }
             }
         }
-        if childs.is_some() {
-            arg.childs = Some(childs.unwrap());
+        if let Some(childs) = childs {
+            arg.childs = Some(childs);
         }
     }
 }

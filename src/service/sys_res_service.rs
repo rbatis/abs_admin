@@ -12,7 +12,7 @@ use crate::service::CONTEXT;
 use crate::util::string::IsEmpty;
 use crate::service::cache_service::ICacheService;
 
-const RES_KEY: &'static str = "sys_res:all";
+const RES_KEY: &str = "sys_res:all";
 
 /// 资源服务
 pub struct SysResService {}
@@ -70,7 +70,7 @@ impl SysResService {
                     .eq("name", &arg.name),
             )
             .await?;
-        if old.len() > 0 {
+        if !old.is_empty() {
             return Err(Error::from(format!(
                 "权限已存在! 权限:{:?}",
                 rbatis::make_table_field_vec!(old, name)
@@ -78,7 +78,8 @@ impl SysResService {
         }
         let result = Ok(CONTEXT.rbatis.save(arg,&[]).await?.rows_affected);
         self.update_cache().await?;
-        return result;
+
+        result
     }
 
     ///修改资源
@@ -96,7 +97,8 @@ impl SysResService {
                                                          &CONTEXT.rbatis.new_wrapper().eq("id",&arg.id),
                                                          &[Skip::Column("del"), Skip::Column("id"), Skip::Column("create_date")]).await?);
         self.update_cache().await?;
-        return result;
+
+        result
     }
 
     ///删除资源
@@ -113,21 +115,19 @@ impl SysResService {
         //删除关联数据
         CONTEXT.sys_role_res_service.remove_by_res_id(id).await;
         self.update_cache().await?;
-        return Ok(num);
+
+        Ok(num)
     }
 
-    pub fn make_res_ids(&self, args: &Vec<SysResVO>) -> Vec<String> {
+    pub fn make_res_ids(&self, args: &[SysResVO]) -> Vec<String> {
         let mut ids = vec![];
         for x in args {
             ids.push(x.id.clone().unwrap_or_default());
-            match &x.childs {
-                Some(childs) => {
-                    let child_ids = self.make_res_ids(childs);
-                    for child in child_ids {
-                        ids.push(child);
-                    }
+            if let Some(childs) = &x.childs {
+                let child_ids = self.make_res_ids(childs);
+                for child in child_ids {
+                    ids.push(child);
                 }
-                _ => {}
             }
         }
         ids
@@ -149,14 +149,16 @@ impl SysResService {
         if CONTEXT.config.debug {
             log::info!("[abs_admin] get from redis:{}", RES_KEY);
         }
-        return Ok(js?.unwrap_or_default());
+
+        Ok(js?.unwrap_or_default())
     }
 
     /// 更新所有
     pub async fn update_cache(&self) -> Result<Vec<SysRes>> {
         let all = CONTEXT.rbatis.fetch_list::<SysRes>().await?;
         CONTEXT.cache_service.set_json(RES_KEY, &all).await?;
-        return Ok(all);
+
+        Ok(all)
     }
 
     /// 查找res数组
@@ -166,11 +168,12 @@ impl SysResService {
         for x in all {
             result.insert(x.id.clone().unwrap_or_default(), x);
         }
-        return Ok(result);
+
+        Ok(result)
     }
 
     /// 查找res数组
-    pub async fn finds(&self, ids: &Vec<String>) -> Result<Vec<SysRes>> {
+    pub async fn finds(&self, ids: &[String]) -> Result<Vec<SysRes>> {
         Ok(CONTEXT
             .rbatis
             .fetch_list_by_wrapper(&CONTEXT.rbatis.new_wrapper().r#in("id", ids))
@@ -178,7 +181,7 @@ impl SysResService {
     }
 
     /// 查找res数组
-    pub fn finds_res(&self, ids: &Vec<String>, all_res: &BTreeMap<String, SysRes>) -> Vec<SysRes> {
+    pub fn finds_res(&self, ids: &[String], all_res: &BTreeMap<String, SysRes>) -> Vec<SysRes> {
         let mut res = vec![];
         //filter res id
         for (k, v) in all_res {
@@ -211,10 +214,10 @@ impl SysResService {
     ///带有层级结构的 res数组
     pub async fn finds_layer(
         &self,
-        ids: &Vec<String>,
+        ids: &[String],
         all_res: &BTreeMap<String, SysRes>,
     ) -> Result<Vec<SysResVO>> {
-        let res = self.finds_res(ids, &all_res);
+        let res = self.finds_res(ids, all_res);
         //find tops
         let mut tops = vec![];
         for item in res {
@@ -242,8 +245,7 @@ impl SysResService {
                         childs.push(item);
                     }
                     None => {
-                        let mut vec = vec![];
-                        vec.push(item);
+                        let vec = vec![item];
                         childs = Some(vec);
                     }
                 }

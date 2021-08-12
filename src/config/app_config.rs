@@ -50,7 +50,7 @@ pub struct ApplicationConfig {
 impl Default for ApplicationConfig {
     fn default() -> Self {
         let yml_data = include_str!("../../application.yml");
-        let docs = YamlLoader::load_from_str(&yml_data).unwrap();
+        let docs = YamlLoader::load_from_str(yml_data).unwrap();
         //读取配置
         let result = Self {
             debug: get_cfg(&docs, "debug").as_bool().unwrap_or(true),
@@ -126,16 +126,13 @@ impl Default for ApplicationConfig {
 
 /// 获取配置
 /// key: 需要获取配置的key
-fn get_cfg<'a>(docs: &'a Vec<Yaml>, key: &str) -> &'a Yaml {
+fn get_cfg<'a>(docs: &'a [Yaml], key: &str) -> &'a Yaml {
     for x in docs {
-        match x {
-            Yaml::Hash(hash) => {
-                let v = hash.get(&Yaml::String(key.to_string()));
-                if v.is_some() {
-                    return v.unwrap();
-                }
+        if let Yaml::Hash(hash) = x {
+            let v = hash.get(&Yaml::String(key.to_string()));
+            if let Some(v) = v {
+                return v;
             }
-            _ => {}
         }
     }
     panic!("[abs_admin] application.yml key: '{}' not exist!", key)
@@ -143,8 +140,8 @@ fn get_cfg<'a>(docs: &'a Vec<Yaml>, key: &str) -> &'a Yaml {
 
 fn to_vec_string(arg: Vec<Yaml>) -> Vec<String> {
     let mut arr = vec![];
-    for x in arg {
+    arg.iter().for_each(|x| {
         arr.push(x.as_str().unwrap_or("").to_string());
-    }
-    return arr;
+    });
+    arr
 }

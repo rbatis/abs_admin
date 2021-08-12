@@ -16,7 +16,7 @@ use std::collections::BTreeMap;
 use std::time::Duration;
 use crate::service::cache_service::ICacheService;
 
-const REDIS_KEY_RETRY: &'static str = "login:login_retry";
+const REDIS_KEY_RETRY: &str = "login:login_retry";
 
 ///后台用户服务
 pub struct SysUserService {}
@@ -41,14 +41,15 @@ impl SysUserService {
         for x in sys_user_page.records {
             vos.push(SysUserVO::from(x));
         }
-        return Ok(Page::<SysUserVO> {
+
+        Ok(Page::<SysUserVO> {
             records: vos,
             total: sys_user_page.total,
             pages: sys_user_page.pages,
             page_no: sys_user_page.page_no,
             page_size: sys_user_page.page_size,
             search_count: sys_user_page.search_count,
-        });
+        })
     }
 
     ///用户详情
@@ -65,7 +66,8 @@ impl SysUserService {
             .find_user_role(&user_id, &all_res)
             .await?;
         user_vo.role = role;
-        return Ok(user_vo);
+
+        Ok(user_vo)
     }
 
     ///后台用户根据id查找
@@ -114,19 +116,17 @@ impl SysUserService {
             del: 0.into(),
             create_date: NaiveDateTime::now().into(),
         };
-        match &arg.role_id {
-            Some(role_id) => {
-                CONTEXT
-                    .sys_user_role_service
-                    .add(&UserRoleAddDTO {
-                        id: None,
-                        user_id: user.id.clone(),
-                        role_id: arg.role_id.clone(),
-                    })
-                    .await?;
-            }
-            _ => {}
+        if let Some(role_id) = &arg.role_id {
+            CONTEXT
+                .sys_user_role_service
+                .add(&UserRoleAddDTO {
+                    id: None,
+                    user_id: user.id.clone(),
+                    role_id: arg.role_id.clone(),
+                })
+                .await?;
         }
+
         return Ok(CONTEXT.rbatis.save( &user,&[]).await?.rows_affected);
     }
 
@@ -201,7 +201,8 @@ impl SysUserService {
             return Err(error.unwrap());
         }
         let sign_in_vo = self.get_user_info(&user).await?;
-        return Ok(sign_in_vo);
+
+        Ok(sign_in_vo)
     }
 
     ///是否需要等待
@@ -215,7 +216,7 @@ impl SysUserService {
                 }
             }
         }
-        return Ok(());
+        Ok(())
     }
 
     ///增加redis重试记录
@@ -238,7 +239,8 @@ impl SysUserService {
                 )
                 .await?;
         }
-        return Ok(());
+
+        Ok(())
     }
 
     pub async fn get_user_info_by_token(&self, token: &JWTToken) -> Result<SignInVO> {
@@ -268,8 +270,8 @@ impl SysUserService {
         let all_res = CONTEXT.sys_res_service.finds_all_map().await?;
         sign_vo.permissions = self.loop_load_level_permission(&user_id, &all_res).await?;
         let jwt_token = JWTToken {
-            id: user.id.clone().unwrap_or(String::new()),
-            account: user.account.clone().unwrap_or(String::new()),
+            id: user.id.clone().unwrap_or_default(),
+            account: user.account.clone().unwrap_or_default(),
             permissions: sign_vo.permissions.clone(),
             role_ids: vec![],
             exp: chrono::NaiveDateTime::now().timestamp() as usize,
@@ -279,12 +281,13 @@ impl SysUserService {
             .sys_user_role_service
             .find_user_role(
                 &user.id.unwrap_or_else(|| {
-                    return String::new();
+                    String::new()
                 }),
                 &all_res,
             )
             .await?;
-        return Ok(sign_vo);
+
+        Ok(sign_vo)
     }
 
     ///登出后台
@@ -302,7 +305,7 @@ impl SysUserService {
             password: pwd,
             name: arg.name.clone(),
             login_check: arg.login_check.clone(),
-            state: arg.state.clone(),
+            state: arg.state,
             del: None,
             create_date: None,
         };
@@ -328,7 +331,7 @@ impl SysUserService {
             .remove_by_column::<SysUser,_>("id", &id)
             .await;
         CONTEXT.sys_user_role_service.remove_by_user_id(id).await?;
-        return Ok(r?);
+        Ok(r?)
     }
 
     ///递归查找层级结构权限

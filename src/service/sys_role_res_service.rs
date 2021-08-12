@@ -24,37 +24,36 @@ impl SysRoleResService {
         let mut role_page = CONTEXT
             .sys_role_service
             .page(&RolePageDTO {
-                page_no: arg.page_no.clone(),
-                page_size: arg.page_size.clone(),
+                page_no: arg.page_no,
+                page_size: arg.page_size,
                 name: arg.name.clone(),
             })
             .await?;
         let all = CONTEXT.sys_res_service.finds_all_map().await?;
         let role_res_map = self.find_role_res_map(&role_page.records).await?;
         role_page.records = self.loop_set_res_vec(role_page.records, &role_res_map, &all)?;
-        return Result::Ok(role_page);
+
+        Ok(role_page)
     }
 
-    fn loop_find_role_ids(&self, arg: &Vec<SysRoleVO>) -> Vec<String> {
+    fn loop_find_role_ids(&self, arg: &[SysRoleVO]) -> Vec<String> {
         let mut results = vec![];
         for x in arg {
             results.push(x.id.clone().unwrap_or_default());
-            match &x.childs {
-                Some(childs) => {
-                    let ids = self.loop_find_role_ids(childs);
-                    for id in ids {
-                        results.push(id);
-                    }
+            if let Some(childs) = &x.childs {
+                let ids = self.loop_find_role_ids(childs);
+                for id in ids {
+                    results.push(id);
                 }
-                _ => {}
             }
         }
-        return results;
+
+        results
     }
 
     async fn find_role_res_map(
         &self,
-        arg: &Vec<SysRoleVO>,
+        arg: &[SysRoleVO],
     ) -> Result<HashMap<String, Vec<SysRoleRes>>> {
         let role_ids = self.loop_find_role_ids(arg);
         let role_res_vec = CONTEXT
@@ -79,7 +78,8 @@ impl SysRoleResService {
             }
             sets.push(role_res);
         }
-        return Ok(role_res_map);
+
+        Ok(role_res_map)
     }
 
     /// 添加资源
@@ -93,33 +93,28 @@ impl SysRoleResService {
         for role in arg {
             let res_ids = role_res_map.get(role.id.as_ref().unwrap_or(&"".to_string()));
             let mut res_vos = vec![];
-            match res_ids {
-                Some(res_ids) => {
-                    for x in res_ids {
-                        match all.get(x.res_id.as_ref().unwrap_or(&String::new())) {
-                            Some(res) => {
-                                let vo = SysResVO::from(res);
-                                res_vos.push(vo);
-                            }
-                            _ => {}
-                        }
+            if let Some(res_ids) = res_ids {
+                for x in res_ids {
+                    if let Some(res) = all.get(x.res_id.as_ref().unwrap_or(&String::new())) {
+                        let vo = SysResVO::from(res);
+                        res_vos.push(vo);
                     }
                 }
-                _ => {}
             }
+
             let mut vo = SysRoleVO {
                 id: role.id.clone(),
                 name: role.name.clone(),
                 parent_id: role.parent_id.clone(),
-                del: role.del.clone(),
-                create_date: role.create_date.clone(),
+                del: role.del,
+                create_date: role.create_date,
                 resources: res_vos,
                 childs: None,
                 resource_ids: vec![],
             };
             if role.childs.is_some() {
                 vo.childs = Some(self.loop_set_res_vec(
-                    role.childs.unwrap_or(vec![]),
+                    role.childs.unwrap_or_default(),
                     role_res_map,
                     all,
                 )?);
@@ -127,7 +122,8 @@ impl SysRoleResService {
             vo.resource_ids = CONTEXT.sys_res_service.make_res_ids(&vo.resources);
             data.push(vo);
         }
-        return Ok(data);
+
+        Ok(data)
     }
 
     ///添加角色资源
@@ -166,7 +162,8 @@ impl SysRoleResService {
             });
         }
         let save_ok = CONTEXT.rbatis.save_batch(&sys_role_res,&[]).await?;
-        return Ok(save_ok.rows_affected);
+
+        Ok(save_ok.rows_affected)
     }
 
     ///角色删除,同时删除用户关系，权限关系
@@ -183,7 +180,8 @@ impl SysRoleResService {
             .sys_role_res_service
             .remove_by_role_id(role_id)
             .await?;
-        return Ok(remove_roles + remove_user_roles + remove_role_res);
+
+        Ok(remove_roles + remove_user_roles + remove_role_res)
     }
 
     ///删除角色资源

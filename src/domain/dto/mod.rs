@@ -81,8 +81,8 @@ pub struct UserPageDTO {
 impl From<&UserRolePageDTO> for UserPageDTO {
     fn from(arg: &UserRolePageDTO) -> Self {
         Self {
-            page_no: arg.page_no.clone(),
-            page_size: arg.page_size.clone(),
+            page_no: arg.page_no,
+            page_size: arg.page_size,
             account: arg.account.clone(),
             name: arg.name.clone(),
         }

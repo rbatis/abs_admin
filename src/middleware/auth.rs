@@ -104,7 +104,7 @@ fn is_white_list_api(path: &str) -> bool {
             return true;
         }
     }
-    return false;
+    false
 }
 
 ///校验token是否有效，未过期
@@ -114,10 +114,10 @@ async fn checked_token(token: &HeaderValue, path: &str) -> Result<JWTToken, crat
     let token = JWTToken::verify(&CONTEXT.config.jwt_secret, token_value);
     match token {
         Ok(token) => {
-            return Ok(token);
+            Ok(token)
         }
         Err(e) => {
-            return Err(crate::error::Error::from(e.to_string()));
+            Err(crate::error::Error::from(e.to_string()))
         }
     }
 }
@@ -128,18 +128,18 @@ async fn check_auth(token: JWTToken, path: &str) -> Result<(), crate::error::Err
     //权限校验
     for token_permission in &token.permissions {
         for x in &sys_res {
-            match &x.permission {
-                Some(permission) => match &x.path {
+            if let Some(permission) = &x.permission {
+                match &x.path {
                     None => {}
                     Some(x_path) => {
                         if permission.eq(token_permission) && path.contains(x_path) {
                             return Ok(());
                         }
                     }
-                },
-                _ => {}
+                }
             }
         }
     }
-    return Err(crate::error::Error::from("无权限访问!"));
+
+    Err(crate::error::Error::from("无权限访问!"))
 }

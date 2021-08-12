@@ -36,7 +36,7 @@ pub async fn captcha(arg: web::Query<CatpchaDTO>) -> impl Responder {
             )
             .await;
         println!("{:?}", result);
-        if CONTEXT.config.debug == false {
+        if !CONTEXT.config.debug  {
             //release mode, return the error
             if result.is_err() {
                 return RespVO::from_result(&result).resp_json();

@@ -16,25 +16,22 @@ pub struct MemService {
 
 impl MemService {
     pub fn recycling(&self) {
-        match self.cache.lock() {
-            Ok(mut l) => {
-                let mut need_removed = vec![];
-                for (k, v) in l.iter() {
-                    match v.1 {
-                        None => {}
-                        Some((i, d)) => {
-                            if i.elapsed() >= d {
-                                //out of time
-                                need_removed.push(k.to_string());
-                            }
+        if let Ok(mut l) = self.cache.lock() {
+            let mut need_removed = vec![];
+            for (k, v) in l.iter() {
+                match v.1 {
+                    None => {}
+                    Some((i, d)) => {
+                        if i.elapsed() >= d {
+                            //out of time
+                            need_removed.push(k.to_string());
                         }
                     }
                 }
-                for x in need_removed {
-                    l.remove(&x);
-                }
             }
-            Err(_) => {}
+            for x in need_removed {
+                l.remove(&x);
+            }
         }
     }
 }
@@ -109,7 +106,7 @@ impl ICacheService for MemService {
         if inserted.is_some() {
             return Ok(v.to_string());
         }
-        return Result::Err(crate::error::Error::E(format!("[abs_admin][mem_service]insert fail!")));
+        return Result::Err(crate::error::Error::E("[abs_admin][mem_service]insert fail!".to_string()));
     }
 
     async fn ttl(&self, k: &str) -> Result<i64> {
