@@ -66,3 +66,14 @@ pub struct SysUserRole {
     pub role_id: Option<String>,
     pub create_date: Option<NaiveDateTime>,
 }
+///字典表
+#[crud_table]
+#[derive(Clone, Debug)]
+pub struct SysDict {
+    pub id: Option<String>,
+    pub parent_id: Option<String>,
+    pub name: Option<String>,
+    pub code: Option<String>,
+    pub state: Option<i32>,
+    pub create_date: Option<NaiveDateTime>,
+}
