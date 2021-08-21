@@ -3,7 +3,7 @@
 *  坚如磐石（Rust语言），高性能，无GC无内存泄漏，无协程竞争
 *  DDD领域驱动,Mysql,Redis，通用中间件和数据库，通用企业级框架选型
 *  [rbatis-orm](https://github.com/rbatis/rbatis) 和Mybatis-Plus一样的好用，简洁，易扩展的ORM框架
-*  [fast_log](https://github.com/rbatis/fast_log) 超快速异步日志框架，支持zip压缩，切割
+*  [fast_log](https://github.com/rbatis/fast_log) 超快速异步日志框架，支持zip、lz4压缩/分割
 *  [actix-web](https://actix.rs/) 常年屠榜web框架压测网站的框架
 *  前后端分离,基于 [Vue-JS](https://cn.vuejs.org/) +[Vue-AntDesign](https://www.antdv.com/docs/vue/introduce-cn/) + [Vue-AntDesign-Pro](https://pro.antdv.com/)
 *  RBAC权限控制,自带JwtToken鉴权登陆，图形验证码登陆，二维码扫码登陆,基础权限管理

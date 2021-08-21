@@ -22,7 +22,7 @@ pub struct ApplicationConfig {
     ///"100MB"
     pub log_temp_size: String,
     ///true
-    pub log_zip: bool,
+    pub log_pack_compress: bool,
     ///日志滚动配置   保留全部:All,按时间保留:KeepTime(Duration),按版本保留:KeepNum(i64)
     pub log_rolling_type: String,
     ///日志等级
@@ -80,7 +80,7 @@ impl Default for ApplicationConfig {
                 .as_str()
                 .unwrap_or("")
                 .to_owned(),
-            log_zip: get_cfg(&docs, "log_zip").as_bool().unwrap_or(false),
+            log_pack_compress: get_cfg(&docs, "log_pack_compress").as_bool().unwrap_or(false),
             log_rolling_type: get_cfg(&docs, "log_rolling_type")
                 .as_str()
                 .unwrap_or("")

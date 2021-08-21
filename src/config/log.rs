@@ -12,7 +12,7 @@ pub fn init_log() {
         &CONTEXT.config.log_dir,
         CONTEXT.config.log_cup as usize,
         str_to_temp_size(&CONTEXT.config.log_temp_size),
-        CONTEXT.config.log_zip,
+        CONTEXT.config.log_pack_compress,
         str_to_rolling(&CONTEXT.config.log_rolling_type),
         str_to_log_level(&CONTEXT.config.log_level),
         None,
