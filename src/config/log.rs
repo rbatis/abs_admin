@@ -1,8 +1,8 @@
 use crate::service::CONTEXT;
 use fast_log::consts::LogSize;
-use fast_log::plugin::file_split::RollingType;
+use fast_log::plugin::file_split::{RollingType, Packer};
 use std::time::Duration;
-use fast_log::plugin::packer::{LZ4Packer};
+use fast_log::plugin::packer::{LZ4Packer, ZipPacker};
 
 pub fn init_log() {
     //create log dir
@@ -12,15 +12,26 @@ pub fn init_log() {
         &CONTEXT.config.log_dir,
         CONTEXT.config.log_cup as usize,
         str_to_temp_size(&CONTEXT.config.log_temp_size),
-        CONTEXT.config.log_pack_compress,
+        !CONTEXT.config.log_pack_compress.is_empty(),
         str_to_rolling(&CONTEXT.config.log_rolling_type),
         str_to_log_level(&CONTEXT.config.log_level),
         None,
-        Box::new(LZ4Packer{}),
+        choose_packer(&CONTEXT.config.log_pack_compress),
         CONTEXT.config.debug,
     );
     if CONTEXT.config.debug == false {
         println!("[abs_admin] release_mode is up! [file_log] open,[console_log] disabled!");
+    }
+}
+
+fn choose_packer(packer:&str) -> Box<dyn Packer>{
+    match packer{
+        "lz4"=>{
+            Box::new(LZ4Packer{})
+        }
+        _ => {
+            Box::new(ZipPacker{})
+        }
     }
 }
 
