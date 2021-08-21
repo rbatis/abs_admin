@@ -2,6 +2,7 @@ use crate::service::CONTEXT;
 use fast_log::consts::LogSize;
 use fast_log::plugin::file_split::RollingType;
 use std::time::Duration;
+use fast_log::plugin::packer::{ZipPacker, LZ4Packer};
 
 pub fn init_log() {
     //create log dir
@@ -15,6 +16,7 @@ pub fn init_log() {
         str_to_rolling(&CONTEXT.config.log_rolling_type),
         str_to_log_level(&CONTEXT.config.log_level),
         None,
+        Box::new(LZ4Packer{}),
         CONTEXT.config.debug,
     );
     if CONTEXT.config.debug == false {
