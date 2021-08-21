@@ -2,7 +2,7 @@ use crate::service::CONTEXT;
 use fast_log::consts::LogSize;
 use fast_log::plugin::file_split::RollingType;
 use std::time::Duration;
-use fast_log::plugin::packer::{ZipPacker, LZ4Packer};
+use fast_log::plugin::packer::{LZ4Packer};
 
 pub fn init_log() {
     //create log dir
