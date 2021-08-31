@@ -101,17 +101,20 @@ impl SysDictService {
 
     ///删除资源
     pub async fn remove(&self, id: &str) -> Result<u64> {
+        let vo = self
+            .find_by_id(id)
+            .await?
+            .ok_or_else(|| Error::from(format!("用户:{:?} 不存在！", id)))?;
+        let vo_list = vec![vo];
+        let vo_id_list = self.make_dict_ids(&vo_list);
         let num = CONTEXT
             .rbatis
-            .remove_by_column::<SysDict, _>("id", &id.to_string())
+            .remove_batch_by_column::<SysDict, _>("id", &vo_id_list)
             .await?;
-        //删除父级为id的记录
-        CONTEXT
-            .rbatis
-            .remove_by_wrapper::<SysDict>(&CONTEXT.rbatis.new_wrapper().eq("parent_id", id))
-            .await;
+
         self.update_cache().await?;
-        return Ok(num);
+
+        Ok(num)
     }
 
     pub fn make_dict_ids(&self, args: &Vec<SysDictVO>) -> Vec<String> {
@@ -173,6 +176,23 @@ impl SysDictService {
             .rbatis
             .fetch_list_by_wrapper(&CONTEXT.rbatis.new_wrapper().r#in("id", ids))
             .await?)
+    }
+
+    pub async fn find_by_id(&self, id: &str) -> Result<Option<SysDictVO>> {
+        let all_dict = self.finds_all_map().await?;
+        let mut all_dict_vo = HashMap::new();
+        for (k, v) in all_dict {
+            all_dict_vo.insert(k, SysDictVO::from(&v));
+        }
+        let mut dict_vo = None;
+        for (k, v) in &all_dict_vo {
+            if k.eq(id) {
+                let mut _v = v.clone();
+                _v.set_childs_recursive(&all_dict_vo);
+                dict_vo = Some(_v);
+            }
+        }
+        Ok(dict_vo)
     }
 
     /// 查找dict数组
