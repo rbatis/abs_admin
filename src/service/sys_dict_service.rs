@@ -14,11 +14,11 @@ use crate::util::string::IsEmpty;
 
 const DICT_KEY: &'static str = "sys_dict:all";
 
-/// 资源服务
+/// 字典服务
 pub struct SysDictService {}
 
 impl SysDictService {
-    ///资源分页
+    ///字典分页
     pub async fn page(&self, arg: &DictPageDTO) -> Result<Page<SysDictVO>> {
         let page_req = PageRequest::new(arg.page_no.unwrap_or(1), arg.page_size.unwrap_or(10));
         let data = CONTEXT
@@ -56,7 +56,7 @@ impl SysDictService {
         Ok(new_page)
     }
 
-    ///添加资源
+    ///添加字典
     pub async fn add(&self, arg: &SysDict) -> Result<u64> {
         let old: Vec<SysDict> = CONTEXT
             .rbatis
@@ -77,7 +77,7 @@ impl SysDictService {
         return result;
     }
 
-    ///修改资源
+    ///修改字典
     pub async fn edit(&self, arg: &DictEditDTO) -> Result<u64> {
         let mut data = SysDict {
             id: arg.id.clone(),
@@ -99,7 +99,7 @@ impl SysDictService {
         return result;
     }
 
-    ///删除资源
+    ///删除字典
     pub async fn remove(&self, id: &str) -> Result<u64> {
         let vo = self
             .find_by_id(id)
@@ -134,7 +134,7 @@ impl SysDictService {
         ids
     }
 
-    /// 查找res数组
+    /// 查找字典数组
     pub async fn finds_all(&self) -> Result<Vec<SysDict>> {
         let js = CONTEXT
             .cache_service
@@ -160,7 +160,7 @@ impl SysDictService {
         return Ok(all);
     }
 
-    /// 查找res数组
+    /// 查找字典数组
     pub async fn finds_all_map(&self) -> Result<BTreeMap<String, SysDict>> {
         let all = self.finds_all().await?;
         let mut result = BTreeMap::new();
@@ -170,7 +170,7 @@ impl SysDictService {
         return Ok(result);
     }
 
-    /// 查找res数组
+    /// 查找字典数组
     pub async fn finds(&self, ids: &Vec<String>) -> Result<Vec<SysDict>> {
         Ok(CONTEXT
             .rbatis
@@ -230,7 +230,7 @@ impl SysDictService {
             .await
     }
 
-    ///带有层级结构的 res数组
+    ///带有层级结构的 字典数组
     pub async fn finds_layer(
         &self,
         ids: &Vec<String>,
