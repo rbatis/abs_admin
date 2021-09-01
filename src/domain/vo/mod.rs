@@ -1,9 +1,11 @@
+pub mod dict;
 pub mod jwt;
 pub mod res;
 pub mod role;
 pub mod sign_in;
 pub mod user;
 
+pub use dict::*;
 pub use jwt::*;
 pub use res::*;
 pub use role::*;
@@ -86,7 +88,7 @@ where
         return HttpResponse::Ok()
             .set_header("Access-Control-Allow-Origin", "*")
             .set_header("Cache-Control", "no-cache")
-            .set_header("Content-Type","text/json;charset=UTF-8")
+            .set_header("Content-Type", "text/json;charset=UTF-8")
             .body(self.to_string());
     }
 }

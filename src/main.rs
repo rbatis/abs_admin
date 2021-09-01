@@ -1,5 +1,6 @@
 use abs_admin::controller::{
-    img_controller, sys_res_controller, sys_role_controller, sys_user_controller,
+    img_controller, sys_dict_controller, sys_res_controller, sys_role_controller,
+    sys_user_controller,
 };
 use abs_admin::service::CONTEXT;
 use actix_web::{web, App, HttpResponse, HttpServer, Responder};
@@ -25,7 +26,10 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .wrap(abs_admin::middleware::auth::Auth)
             .route("/", web::get().to(index))
-            .route("/admin/sys_login", web::post().to(sys_user_controller::login))
+            .route(
+                "/admin/sys_login",
+                web::post().to(sys_user_controller::login),
+            )
             .route(
                 "/admin/sys_user_info",
                 web::post().to(sys_user_controller::info),
@@ -43,12 +47,18 @@ async fn main() -> std::io::Result<()> {
                 "/admin/sys_res_remove",
                 web::post().to(sys_res_controller::remove),
             )
-            .route("/admin/sys_res_add", web::post().to(sys_res_controller::add))
+            .route(
+                "/admin/sys_res_add",
+                web::post().to(sys_res_controller::add),
+            )
             .route(
                 "/admin/sys_res_page",
                 web::post().to(sys_res_controller::page),
             )
-            .route("/admin/sys_res_all", web::post().to(sys_res_controller::all))
+            .route(
+                "/admin/sys_res_all",
+                web::post().to(sys_res_controller::all),
+            )
             .route(
                 "/admin/sys_res_layer_top",
                 web::post().to(sys_res_controller::layer_top),
@@ -90,6 +100,30 @@ async fn main() -> std::io::Result<()> {
                 web::post().to(sys_role_controller::layer_top),
             )
             .route("/admin/captcha", web::get().to(img_controller::captcha))
+            .route(
+                "/admin/sys_dict_add",
+                web::post().to(sys_dict_controller::add),
+            )
+            .route(
+                "/admin/sys_dict_update",
+                web::post().to(sys_dict_controller::update),
+            )
+            .route(
+                "/admin/sys_dict_remove",
+                web::post().to(sys_dict_controller::remove),
+            )
+            .route(
+                "/admin/sys_dict_page",
+                web::post().to(sys_dict_controller::page),
+            )
+            .route(
+                "/admin/sys_dict_all",
+                web::post().to(sys_dict_controller::all),
+            )
+            .route(
+                "/admin/sys_dict_layer_top",
+                web::post().to(sys_dict_controller::layer_top),
+            )
     })
     .bind(&CONTEXT.config.server_url)?
     .run()
