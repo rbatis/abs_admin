@@ -9,7 +9,7 @@ use crate::error::{Error, Result};
 use redis::RedisResult;
 use crate::service::ICacheService;
 use async_trait::async_trait;
-///缓存服务
+///Redis缓存服务
 pub struct RedisService {
     pub client: redis::Client,
 }
