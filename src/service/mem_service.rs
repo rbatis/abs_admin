@@ -108,7 +108,7 @@ impl ICacheService for MemService {
 
     async fn set_string_ex(&self, k: &str, v: &str, t: Option<Duration>) -> Result<String> {
         self.recycling();
-        let mut locked = self.cache.lock().unwrap();
+        let mut locked = self.cache.lock()?;
         let mut e = Option::None;
         if let Some(ex) = t {
             e = Some((Instant::now(), ex));
@@ -122,7 +122,7 @@ impl ICacheService for MemService {
 
     async fn ttl(&self, k: &str) -> Result<i64> {
         self.recycling();
-        let locked = self.cache.lock().unwrap();
+        let locked = self.cache.lock()?;
         let v = locked.get(k).cloned();
         drop(locked);
         return match v {
