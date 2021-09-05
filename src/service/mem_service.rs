@@ -1,14 +1,15 @@
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 
-use crate::error::Result;
+use crate::error::{Result, Error};
 use std::time::{Duration, Instant};
-use std::sync::{Mutex};
+use std::sync::{Mutex, PoisonError};
 use std::collections::hash_map::RandomState;
 use std::collections::HashMap;
 use std::ops::Sub;
 use crate::service::ICacheService;
 use async_trait::async_trait;
+
 ///内存缓存服务
 pub struct MemService {
     pub cache: Mutex<HashMap<String, (String, Option<(Instant, Duration)>), RandomState>>,
@@ -48,17 +49,24 @@ impl Default for MemService {
 }
 
 
+impl<T> std::convert::From<PoisonError<T>> for Error {
+    fn from(arg: PoisonError<T>) -> Self {
+        Error::E(arg.to_string())
+    }
+}
+
+
 #[async_trait]
 impl ICacheService for MemService {
     async fn set_string(&self, k: &str, v: &str) -> Result<String> {
         self.recycling();
-        let mut guard = self.cache.lock().unwrap();
+        let mut guard = self.cache.lock()?;
         guard.insert(k.to_string(), (v.to_string(), None));
         return Ok(v.to_string());
     }
     async fn get_string(&self, k: &str) -> Result<String> {
         self.recycling();
-        let guard = self.cache.lock().unwrap();
+        let guard = self.cache.lock()?;
         let v = guard.get(k);
         match v {
             Some((v, _)) => {
@@ -69,7 +77,7 @@ impl ICacheService for MemService {
             }
         }
     }
-    async fn set_json<T>(&self, k: &str, v: &T) -> Result<String>  where T: Serialize+Sync,
+    async fn set_json<T>(&self, k: &str, v: &T) -> Result<String> where T: Serialize + Sync,
     {
         let data = serde_json::to_string(v);
         if data.is_err() {
@@ -82,7 +90,7 @@ impl ICacheService for MemService {
         Ok(data)
     }
 
-    async fn get_json<T>(&self, k: &str) -> Result<T> where T: DeserializeOwned+Sync,
+    async fn get_json<T>(&self, k: &str) -> Result<T> where T: DeserializeOwned + Sync,
     {
         let mut r = self.get_string(k).await?;
         if r.is_empty() {
@@ -100,7 +108,7 @@ impl ICacheService for MemService {
 
     async fn set_string_ex(&self, k: &str, v: &str, t: Option<Duration>) -> Result<String> {
         self.recycling();
-        let mut locked = self.cache.lock().unwrap();
+        let mut locked = self.cache.lock()?;
         let mut e = Option::None;
         if let Some(ex) = t {
             e = Some((Instant::now(), ex));
@@ -114,7 +122,7 @@ impl ICacheService for MemService {
 
     async fn ttl(&self, k: &str) -> Result<i64> {
         self.recycling();
-        let locked = self.cache.lock().unwrap();
+        let locked = self.cache.lock()?;
         let v = locked.get(k).cloned();
         drop(locked);
         return match v {
