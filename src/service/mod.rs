@@ -28,8 +28,6 @@ pub use sys_user_service::*;
 pub struct ServiceContext {
     pub config: ApplicationConfig,
     pub rbatis: Rbatis,
-    pub redis_service: RedisService,
-    pub mem_service: MemService,
     pub cache_service: CacheService,
     pub sys_res_service: SysResService,
     pub sys_user_service: SysUserService,
@@ -42,14 +40,11 @@ pub struct ServiceContext {
 impl Default for ServiceContext {
     fn default() -> Self {
         let config = ApplicationConfig::default();
-        let cache_type;
         match config.cache_type.as_str() {
             "mem" => {
-                cache_type = CacheProxyType::Mem;
                 log::info!("[abs_admin] cache_type: mem");
             }
             "redis" => {
-                cache_type = CacheProxyType::Redis;
                 log::info!("[abs_admin] cache_type: redis");
             }
             e => {
@@ -60,9 +55,7 @@ impl Default for ServiceContext {
             rbatis: rbatis::core::runtime::task::block_on(async {
                 crate::dao::init_rbatis(&config).await
             }),
-            redis_service: RedisService::new(&config.redis_url),
-            mem_service: MemService::default(),
-            cache_service: CacheService { inner: cache_type },
+            cache_service: CacheService::new(),
             sys_res_service: SysResService {},
             sys_user_service: SysUserService {},
             sys_role_service: SysRoleService {},

@@ -1,26 +1,17 @@
 use serde::de::DeserializeOwned;
 use crate::error::Result;
-use crate::service::CONTEXT;
-use crate::service::cache_service::CacheProxyType::Mem;
+use crate::service::{CONTEXT, RedisService, MemService};
 use std::time::Duration;
 use async_trait::async_trait;
 use serde::{Serialize};
+use std::ops::Deref;
 
-
-pub enum CacheProxyType {
-    Mem,
-    Redis,
-}
 
 #[async_trait]
-pub trait ICacheService {
+pub trait ICacheService: Sync + Send {
     async fn set_string(&self, k: &str, v: &str) -> Result<String>;
 
     async fn get_string(&self, k: &str) -> Result<String>;
-
-    async fn set_json<T>(&self, k: &str, v: &T) -> Result<String>  where T: Serialize+Sync;
-
-    async fn get_json<T>(&self, k: &str) -> Result<T> where T: DeserializeOwned+Sync;
 
     async fn set_string_ex(&self, k: &str, v: &str, ex: Option<Duration>) -> Result<String>;
 
@@ -28,90 +19,67 @@ pub trait ICacheService {
 }
 
 
-///缓存服务-可选缓存介质，mem，redis
 pub struct CacheService {
-    pub inner: CacheProxyType,
+    pub inner: Box<dyn ICacheService>,
 }
 
-impl Default for CacheService {
-    fn default() -> Self {
+impl CacheService {
+    pub fn new() -> Self {
         Self {
-            inner: Mem,
+            inner: match CONTEXT.config.cache_type.as_str() {
+                "redis" => {
+                    Box::new(RedisService::new(&CONTEXT.config.redis_url))
+                }
+                //"mem"
+                _ => {
+                    Box::new(MemService::default())
+                }
+            }
         }
     }
-}
 
-#[async_trait]
-impl ICacheService for CacheService {
-    async fn set_string(&self, k: &str, v: &str) -> Result<String> {
-        return match self.inner {
-            Mem => {
-                CONTEXT.mem_service.set_string(k, v).await
-            }
-            CacheProxyType::Redis => {
-                CONTEXT.redis_service.set_string(k, v).await
-            }
-        };
+    pub async fn set_string(&self, k: &str, v: &str) -> Result<String> {
+        self.inner.set_string(k, v).await
     }
 
-    async fn get_string(&self, k: &str) -> Result<String> {
-        return match self.inner {
-            Mem => {
-                CONTEXT.mem_service.get_string(k).await
-            }
-            CacheProxyType::Redis => {
-                CONTEXT.redis_service.get_string(k).await
-            }
-        };
+    pub async fn get_string(&self, k: &str) -> Result<String> {
+        self.inner.get_string(k).await
     }
 
-    async fn set_json<T>(&self, k: &str, v: &T) -> Result<String>
-        where
-            T: Serialize+Sync,
+    pub async fn set_json<T>(&self, k: &str, v: &T) -> Result<String> where T: Serialize + Sync,
     {
-        return match self.inner {
-            Mem => {
-                CONTEXT.mem_service.set_json::<T>(k, v).await
-            }
-            CacheProxyType::Redis => {
-                CONTEXT.redis_service.set_json::<T>(k, v).await
-            }
-        };
+        let data = serde_json::to_string(v);
+        if data.is_err() {
+            return Err(crate::error::Error::from(format!(
+                "MemCacheService set_json fail:{}",
+                data.err().unwrap()
+            )));
+        }
+        let data = self.set_string(k, data.unwrap().as_str()).await?;
+        Ok(data)
     }
 
-    async fn get_json<T>(&self, k: &str) -> Result<T>
-        where
-            T: DeserializeOwned+Sync,
+    pub async fn get_json<T>(&self, k: &str) -> Result<T> where T: DeserializeOwned + Sync,
     {
-        return match self.inner {
-            Mem => {
-                CONTEXT.mem_service.get_json(k).await
-            }
-            CacheProxyType::Redis => {
-                CONTEXT.redis_service.get_json(k).await
-            }
-        };
+        let mut r = self.get_string(k).await?;
+        if r.is_empty() {
+            r = "null".to_string();
+        }
+        let data: serde_json::Result<T> = serde_json::from_str(r.as_str());
+        if data.is_err() {
+            return Err(crate::error::Error::from(format!(
+                "MemCacheService GET fail:{}",
+                data.err().unwrap()
+            )));
+        }
+        Ok(data.unwrap())
     }
 
-    async fn set_string_ex(&self, k: &str, v: &str, ex: Option<Duration>) -> Result<String> {
-        return match self.inner {
-            Mem => {
-                CONTEXT.mem_service.set_string_ex(k, v, ex).await
-            }
-            CacheProxyType::Redis => {
-                CONTEXT.redis_service.set_string_ex(k, v, ex).await
-            }
-        };
+    pub async fn set_string_ex(&self, k: &str, v: &str, ex: Option<Duration>) -> Result<String> {
+        self.inner.set_string_ex(k, v, ex).await
     }
 
-    async fn ttl(&self, k: &str) -> Result<i64> {
-        return match self.inner {
-            Mem => {
-                CONTEXT.mem_service.ttl(k).await
-            }
-            CacheProxyType::Redis => {
-                CONTEXT.redis_service.ttl(k).await
-            }
-        };
+    pub async fn ttl(&self, k: &str) -> Result<i64> {
+        self.inner.ttl(k).await
     }
 }

@@ -35,38 +35,6 @@ impl RedisService {
 #[async_trait]
 impl ICacheService for RedisService {
 
-    async fn set_json<T>(&self, k: &str, v: &T) -> Result<String>  where T: Serialize+Sync,
-    {
-        let data = serde_json::to_string(v);
-        if data.is_err() {
-            return Err(crate::error::Error::from(format!(
-                "RedisService set_json fail:{}",
-                data.err().unwrap()
-            )));
-        }
-        let data = self.set_string(k, data.unwrap().as_str()).await?;
-        Ok(data)
-    }
-
-    async fn get_json<T>(&self, k: &str) -> Result<T>
-    where
-        T: DeserializeOwned,
-    {
-        let mut r = self.get_string(k).await?;
-        if r.is_empty() {
-            r = "null".to_string();
-        }
-        let data: serde_json::Result<T> = serde_json::from_str(r.as_str());
-        if data.is_err() {
-            return Err(crate::error::Error::from(format!(
-                "RedisService get_json fail:{}",
-                data.err().unwrap()
-            )));
-        }
-        Ok(data.unwrap())
-    }
-
-
     async fn set_string(&self, k: &str, v: &str) -> Result<String> {
         return self.set_string_ex(k, v, None).await;
     }
