@@ -4,7 +4,7 @@ debug: true
 server_name: "dev"
 #server 地址
 server_url: "0.0.0.0:8000"
-#redis地址
+#redis地址(cache_type为“redis”时有效)
 redis_url: "redis://127.0.0.1:6379"
 #数据库地址
 database_url: "mysql://root:123456@localhost:3306/test"

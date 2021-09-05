@@ -16,6 +16,7 @@ pub struct RedisService {
 
 impl RedisService {
     pub fn new(url: &str) -> Self {
+        println!("[abs_admin] conncect redis...");
         let client = redis::Client::open(url).unwrap();
         println!("[abs_admin] conncect redis success!");
         Self { client }
