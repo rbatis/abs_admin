@@ -30,8 +30,7 @@ log_level: "info"
 jwt_secret: "abs_admin"
 #短信通道缓存（系统先把数据放入队列sms:send:，第三方短信sdk或程序需要从队列获取并发送，获得回执存入sms:resp:*）,格式为sms:send:手机号和sms:resp:手机号
 sms_cache_send_key_prefix: "sms:send:"
-#登陆错误重试可以简单的办法拒绝大量恶意登陆
-#登陆失败重试次数限制(0次无限制)
+#登陆失败拒绝策略，重试次数限制(0次无限制)
 login_fail_retry: 3
 #登陆失败重试次数限制超过后提示的等待时间（秒）
 login_fail_retry_wait_sec: 30
