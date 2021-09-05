@@ -188,7 +188,7 @@ impl SysUserService {
                     .cache_service
                     .get_string(&format!(
                         "{}{}",
-                        CONTEXT.config.sms_redis_send_key_prefix, &arg.account
+                        CONTEXT.config.sms_cache_send_key_prefix, &arg.account
                     ))
                     .await?;
                 if sms_code.eq(&arg.vcode) {

@@ -9,12 +9,10 @@ pub struct ApplicationConfig {
     pub redis_url: String,
     /// 数据库地址
     pub database_url: String,
-
     /// 逻辑删除字段
     pub logic_column: String,
     pub logic_un_deleted: i64,
     pub logic_deleted: i64,
-
     ///日志目录 "target/logs/"
     pub log_dir: String,
     ///1000
@@ -27,19 +25,14 @@ pub struct ApplicationConfig {
     pub log_rolling_type: String,
     ///日志等级
     pub log_level: String,
-
-    ///短信redis队列
-    pub sms_redis_send_key_prefix: String,
-
+    ///短信缓存队列（mem/redis）
+    pub sms_cache_send_key_prefix: String,
     ///jwt 秘钥
     pub jwt_secret: String,
-
     ///白名单接口
     pub white_list_api: Vec<String>,
-
     ///权限缓存类型
     pub cache_type: String,
-
     ///重试
     pub login_fail_retry: i64,
     ///重试等待时间
@@ -89,7 +82,7 @@ impl Default for ApplicationConfig {
                 .as_str()
                 .unwrap_or("")
                 .to_owned(),
-            sms_redis_send_key_prefix: get_cfg(&docs, "sms_redis_send_key_prefix")
+            sms_cache_send_key_prefix: get_cfg(&docs, "sms_cache_send_key_prefix")
                 .as_str()
                 .unwrap_or("")
                 .to_owned(),

@@ -17,7 +17,7 @@ impl SysSmsService {
         let r = CONTEXT
             .cache_service
             .set_json(
-                &format!("{},{}", CONTEXT.config.sms_redis_send_key_prefix, account),
+                &format!("{},{}", CONTEXT.config.sms_cache_send_key_prefix, account),
                 &Sms {
                     account: account.to_string(),
                     args: templete_arg,
@@ -33,7 +33,7 @@ impl SysSmsService {
             .cache_service
             .get_json(&format!(
                 "{},{}",
-                CONTEXT.config.sms_redis_send_key_prefix, account
+                CONTEXT.config.sms_cache_send_key_prefix, account
             ))
             .await?;
         match sms {
