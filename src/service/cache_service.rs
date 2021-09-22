@@ -1,10 +1,11 @@
 use crate::error::Result;
-use crate::service::{MemService, RedisService, CONTEXT};
+use crate::service::{MemService, RedisService};
 use async_trait::async_trait;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 use std::ops::Deref;
 use std::time::Duration;
+use crate::config::app_config::ApplicationConfig;
 
 #[async_trait]
 pub trait ICacheService: Sync + Send {
@@ -22,10 +23,10 @@ pub struct CacheService {
 }
 
 impl CacheService {
-    pub fn new() -> Self {
+    pub fn new(cfg:&ApplicationConfig) -> Self {
         Self {
-            inner: match CONTEXT.config.cache_type.as_str() {
-                "redis" => Box::new(RedisService::new(&CONTEXT.config.redis_url)),
+            inner: match cfg.cache_type.as_str() {
+                "redis" => Box::new(RedisService::new(&cfg.redis_url)),
                 //"mem"
                 _ => Box::new(MemService::default()),
             },

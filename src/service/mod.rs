@@ -42,10 +42,10 @@ impl Default for ServiceContext {
         let config = ApplicationConfig::default();
         match config.cache_type.as_str() {
             "mem" => {
-                log::info!("[abs_admin] cache_type: mem");
+                println!("[abs_admin] cache_type: mem");
             }
             "redis" => {
-                log::info!("[abs_admin] cache_type: redis");
+                println!("[abs_admin] cache_type: redis");
             }
             e => {
                 panic!("[abs_admin] unsupport cache type of {}", e);
@@ -55,7 +55,7 @@ impl Default for ServiceContext {
             rbatis: rbatis::core::runtime::task::block_on(async {
                 crate::dao::init_rbatis(&config).await
             }),
-            cache_service: CacheService::new(),
+            cache_service: CacheService::new(&config),
             sys_res_service: SysResService {},
             sys_user_service: SysUserService {},
             sys_role_service: SysRoleService {},
