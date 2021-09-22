@@ -214,6 +214,24 @@ LOCK TABLES `sys_user_role` WRITE;
 INSERT INTO `sys_user_role` VALUES ('1','2d4886bd-ad2a-4644-86b9-460afad05cbf','1','2020-07-28 08:34:40'),('270466997110837248','270466997106642944','1','2021-08-18 16:19:17');
 /*!40000 ALTER TABLE `sys_user_role` ENABLE KEYS */;
 UNLOCK TABLES;
+
+
+
+DROP TABLE IF EXISTS `sys_dict`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+SET character_set_client = utf8mb4 ;
+CREATE TABLE `sys_dict` (
+                                 `id` varchar(45)  NOT NULL,
+                                 `name` varchar(255)  NOT NULL,
+                                 `code` varchar(512)  NOT NULL,
+                                 `state` int(11)  NOT NULL,
+                                 `create_date` datetime NOT NULL,
+                                 PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

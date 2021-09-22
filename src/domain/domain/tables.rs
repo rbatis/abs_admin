@@ -71,7 +71,6 @@ pub struct SysUserRole {
 #[derive(Clone, Debug)]
 pub struct SysDict {
     pub id: Option<String>,
-    pub parent_id: Option<String>,
     pub name: Option<String>,
     pub code: Option<String>,
     pub state: Option<i32>,

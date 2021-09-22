@@ -13,7 +13,6 @@ pub struct DictPageDTO {
 /// 字典分添加DTO
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct DictAddDTO {
-    pub parent_id: Option<String>,
     pub name: Option<String>,
     pub code: Option<String>,
     pub state: Option<i32>,
@@ -23,7 +22,6 @@ pub struct DictAddDTO {
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct DictEditDTO {
     pub id: Option<String>,
-    pub parent_id: Option<String>,
     pub name: Option<String>,
     pub code: Option<String>,
     pub state: Option<i32>,

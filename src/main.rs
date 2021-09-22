@@ -116,14 +116,6 @@ async fn main() -> std::io::Result<()> {
                 "/admin/sys_dict_page",
                 web::post().to(sys_dict_controller::page),
             )
-            .route(
-                "/admin/sys_dict_all",
-                web::post().to(sys_dict_controller::all),
-            )
-            .route(
-                "/admin/sys_dict_layer_top",
-                web::post().to(sys_dict_controller::layer_top),
-            )
     })
     .bind(&CONTEXT.config.server_url)?
     .run()
