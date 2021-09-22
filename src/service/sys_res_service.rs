@@ -1,6 +1,6 @@
 use std::collections::{BTreeMap, HashMap};
 
-use rbatis::crud::{CRUD, Skip};
+use rbatis::crud::{Skip, CRUD};
 use rbatis::plugin::page::{Page, PageRequest};
 
 use crate::domain::domain::SysRes;
@@ -8,9 +8,9 @@ use crate::domain::dto::{ResEditDTO, ResPageDTO};
 use crate::domain::vo::SysResVO;
 use crate::error::Error;
 use crate::error::Result;
+use crate::service::cache_service::ICacheService;
 use crate::service::CONTEXT;
 use crate::util::string::IsEmpty;
-use crate::service::cache_service::ICacheService;
 
 const RES_KEY: &'static str = "sys_res:all";
 
@@ -24,7 +24,7 @@ impl SysResService {
         let data = CONTEXT
             .rbatis
             .fetch_page_by_wrapper::<SysRes>(
-                &CONTEXT
+                CONTEXT
                     .rbatis
                     .new_wrapper()
                     .eq("del", 0)
@@ -56,13 +56,12 @@ impl SysResService {
         Ok(new_page)
     }
 
-
     ///添加资源
     pub async fn add(&self, arg: &SysRes) -> Result<u64> {
         let old: Vec<SysRes> = CONTEXT
             .rbatis
             .fetch_list_by_wrapper(
-                &CONTEXT
+                CONTEXT
                     .rbatis
                     .new_wrapper()
                     .eq("permission", &arg.permission)
@@ -76,7 +75,7 @@ impl SysResService {
                 rbatis::make_table_field_vec!(old, name)
             )));
         }
-        let result = Ok(CONTEXT.rbatis.save(arg,&[]).await?.rows_affected);
+        let result = Ok(CONTEXT.rbatis.save(arg, &[]).await?.rows_affected);
         self.update_cache().await?;
         return result;
     }
@@ -92,9 +91,18 @@ impl SysResService {
             del: None,
             create_date: None,
         };
-        let result = Ok(CONTEXT.rbatis.update_by_wrapper(&mut data,
-                                                         &CONTEXT.rbatis.new_wrapper().eq("id",&arg.id),
-                                                         &[Skip::Column("del"), Skip::Column("id"), Skip::Column("create_date")]).await?);
+        let result = Ok(CONTEXT
+            .rbatis
+            .update_by_wrapper(
+                &mut data,
+                CONTEXT.rbatis.new_wrapper().eq("id", &arg.id),
+                &[
+                    Skip::Column("del"),
+                    Skip::Column("id"),
+                    Skip::Column("create_date"),
+                ],
+            )
+            .await?);
         self.update_cache().await?;
         return result;
     }
@@ -108,7 +116,7 @@ impl SysResService {
         //删除父级为id的记录
         CONTEXT
             .rbatis
-            .remove_by_wrapper::<SysRes>(&CONTEXT.rbatis.new_wrapper().eq("parent_id", id))
+            .remove_by_wrapper::<SysRes>(CONTEXT.rbatis.new_wrapper().eq("parent_id", id))
             .await;
         //删除关联数据
         CONTEXT.sys_role_res_service.remove_by_res_id(id).await;
@@ -173,7 +181,7 @@ impl SysResService {
     pub async fn finds(&self, ids: &Vec<String>) -> Result<Vec<SysRes>> {
         Ok(CONTEXT
             .rbatis
-            .fetch_list_by_wrapper(&CONTEXT.rbatis.new_wrapper().r#in("id", ids))
+            .fetch_list_by_wrapper(CONTEXT.rbatis.new_wrapper().r#in("id", ids))
             .await?)
     }
 
@@ -196,7 +204,7 @@ impl SysResService {
         let list = CONTEXT
             .rbatis
             .fetch_list_by_wrapper::<SysRes>(
-                &CONTEXT
+                CONTEXT
                     .rbatis
                     .new_wrapper()
                     .is_null("parent_id")

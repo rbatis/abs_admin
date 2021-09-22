@@ -24,7 +24,7 @@ impl SysDictService {
         let data = CONTEXT
             .rbatis
             .fetch_page_by_wrapper::<SysDict>(
-                &CONTEXT
+                CONTEXT
                     .rbatis
                     .new_wrapper()
                     .do_if(!arg.code.is_empty(), |w| w.eq("code", &arg.code))
@@ -61,7 +61,7 @@ impl SysDictService {
         let old: Vec<SysDict> = CONTEXT
             .rbatis
             .fetch_list_by_wrapper(
-                &CONTEXT
+                CONTEXT
                     .rbatis
                     .new_wrapper()
                     .eq("code", &arg.code)
@@ -91,7 +91,7 @@ impl SysDictService {
             .rbatis
             .update_by_wrapper(
                 &mut data,
-                &CONTEXT.rbatis.new_wrapper().eq("id", &arg.id),
+                CONTEXT.rbatis.new_wrapper().eq("id", &arg.id),
                 &[Skip::Column("id"), Skip::Column("create_date")],
             )
             .await?);
@@ -174,7 +174,7 @@ impl SysDictService {
     pub async fn finds(&self, ids: &Vec<String>) -> Result<Vec<SysDict>> {
         Ok(CONTEXT
             .rbatis
-            .fetch_list_by_wrapper(&CONTEXT.rbatis.new_wrapper().r#in("id", ids))
+            .fetch_list_by_wrapper(CONTEXT.rbatis.new_wrapper().r#in("id", ids))
             .await?)
     }
 
@@ -218,7 +218,7 @@ impl SysDictService {
         let list = CONTEXT
             .rbatis
             .fetch_list_by_wrapper::<SysDict>(
-                &CONTEXT
+                CONTEXT
                     .rbatis
                     .new_wrapper()
                     .is_null("parent_id")

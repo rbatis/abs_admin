@@ -73,7 +73,10 @@ impl Default for ApplicationConfig {
                 .as_str()
                 .unwrap_or("")
                 .to_owned(),
-            log_pack_compress: get_cfg(&docs, "log_pack_compress").as_str().unwrap_or_default().to_string(),
+            log_pack_compress: get_cfg(&docs, "log_pack_compress")
+                .as_str()
+                .unwrap_or_default()
+                .to_string(),
             log_rolling_type: get_cfg(&docs, "log_rolling_type")
                 .as_str()
                 .unwrap_or("")

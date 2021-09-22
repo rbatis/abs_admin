@@ -1,14 +1,14 @@
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 
-use crate::error::{Result, Error};
-use std::time::{Duration, Instant};
-use std::sync::{Mutex, PoisonError};
+use crate::error::{Error, Result};
+use crate::service::ICacheService;
+use async_trait::async_trait;
 use std::collections::hash_map::RandomState;
 use std::collections::HashMap;
 use std::ops::Sub;
-use crate::service::ICacheService;
-use async_trait::async_trait;
+use std::sync::{Mutex, PoisonError};
+use std::time::{Duration, Instant};
 
 ///内存缓存服务
 pub struct MemService {
@@ -48,13 +48,11 @@ impl Default for MemService {
     }
 }
 
-
 impl<T> std::convert::From<PoisonError<T>> for Error {
     fn from(arg: PoisonError<T>) -> Self {
         Error::E(arg.to_string())
     }
 }
-
 
 #[async_trait]
 impl ICacheService for MemService {
@@ -89,7 +87,9 @@ impl ICacheService for MemService {
         if inserted.is_some() {
             return Ok(v.to_string());
         }
-        return Result::Err(crate::error::Error::E(format!("[abs_admin][mem_service]insert fail!")));
+        return Result::Err(crate::error::Error::E(format!(
+            "[abs_admin][mem_service]insert fail!"
+        )));
     }
 
     async fn ttl(&self, k: &str) -> Result<i64> {
@@ -98,23 +98,17 @@ impl ICacheService for MemService {
         let v = locked.get(k).cloned();
         drop(locked);
         return match v {
-            None => {
-                Ok(-2)
-            }
-            Some((r, o)) => {
-                match o {
-                    None => {
-                        Ok(-1)
+            None => Ok(-2),
+            Some((r, o)) => match o {
+                None => Ok(-1),
+                Some((i, d)) => {
+                    let use_time = i.elapsed();
+                    if d > use_time {
+                        return Ok(d.sub(use_time).as_secs() as i64);
                     }
-                    Some((i, d)) => {
-                        let use_time = i.elapsed();
-                        if d > use_time {
-                            return Ok(d.sub(use_time).as_secs() as i64);
-                        }
-                        Ok(0)
-                    }
+                    Ok(0)
                 }
-            }
+            },
         };
     }
 }

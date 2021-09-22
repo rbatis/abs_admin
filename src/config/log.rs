@@ -1,8 +1,8 @@
 use crate::service::CONTEXT;
 use fast_log::consts::LogSize;
-use fast_log::plugin::file_split::{RollingType, Packer};
-use std::time::Duration;
+use fast_log::plugin::file_split::{Packer, RollingType};
 use fast_log::plugin::packer::{LZ4Packer, ZipPacker};
+use std::time::Duration;
 
 pub fn init_log() {
     //create log dir
@@ -24,14 +24,10 @@ pub fn init_log() {
     }
 }
 
-fn choose_packer(packer:&str) -> Box<dyn Packer>{
-    match packer{
-        "lz4"=>{
-            Box::new(LZ4Packer{})
-        }
-        _ => {
-            Box::new(ZipPacker{})
-        }
+fn choose_packer(packer: &str) -> Box<dyn Packer> {
+    match packer {
+        "lz4" => Box::new(LZ4Packer {}),
+        _ => Box::new(ZipPacker {}),
     }
 }
 

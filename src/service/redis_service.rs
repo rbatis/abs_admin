@@ -6,9 +6,9 @@ use serde::de::DeserializeOwned;
 use serde::Serialize;
 
 use crate::error::{Error, Result};
-use redis::RedisResult;
 use crate::service::ICacheService;
 use async_trait::async_trait;
+use redis::RedisResult;
 ///Redis缓存服务
 pub struct RedisService {
     pub client: redis::Client,
@@ -35,7 +35,6 @@ impl RedisService {
 
 #[async_trait]
 impl ICacheService for RedisService {
-
     async fn set_string(&self, k: &str, v: &str) -> Result<String> {
         return self.set_string_ex(k, v, None).await;
     }
@@ -57,7 +56,6 @@ impl ICacheService for RedisService {
             }
         }
     }
-
 
     ///set_string 自动过期
     async fn set_string_ex(&self, k: &str, v: &str, ex: Option<Duration>) -> Result<String> {

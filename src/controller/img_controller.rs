@@ -1,6 +1,6 @@
 use crate::domain::dto::CatpchaDTO;
 use crate::domain::vo::RespVO;
-use crate::service::{CONTEXT, ICacheService};
+use crate::service::{ICacheService, CONTEXT};
 use actix_web::{web, HttpResponse, Responder};
 use captcha::filters::{Dots, Noise, Wave};
 use captcha::Captcha;

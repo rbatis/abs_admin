@@ -10,11 +10,11 @@ use crate::domain::domain::{LoginCheck, SysRes, SysUser};
 use crate::domain::dto::{IdDTO, SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO, UserRoleAddDTO};
 use crate::domain::vo::user::SysUserVO;
 use crate::domain::vo::{JWTToken, SignInVO};
+use crate::service::cache_service::ICacheService;
 use crate::util::password_encoder::PasswordEncoder;
 use rbatis::plugin::snowflake::new_snowflake_id;
 use std::collections::BTreeMap;
 use std::time::Duration;
-use crate::service::cache_service::ICacheService;
 
 const REDIS_KEY_RETRY: &'static str = "login:login_retry";
 
@@ -33,7 +33,7 @@ impl SysUserService {
         let sys_user_page: Page<SysUser> = CONTEXT
             .rbatis
             .fetch_page_by_wrapper(
-                &wrapper,
+                wrapper,
                 &PageRequest::new(arg.page_no.unwrap_or(1), arg.page_size.unwrap_or(10)),
             )
             .await?;
@@ -71,13 +71,13 @@ impl SysUserService {
     ///后台用户根据id查找
     pub async fn find(&self, id: &str) -> Result<Option<SysUser>> {
         let wrapper = CONTEXT.rbatis.new_wrapper().eq("id", id);
-        return Ok(CONTEXT.rbatis.fetch_by_wrapper( &wrapper).await?);
+        return Ok(CONTEXT.rbatis.fetch_by_wrapper(wrapper).await?);
     }
 
     ///根据账户名查找
     pub async fn find_by_account(&self, account: &str) -> Result<Option<SysUser>> {
         let wrapper = CONTEXT.rbatis.new_wrapper().eq("account", account);
-        return Ok(CONTEXT.rbatis.fetch_by_wrapper( &wrapper).await?);
+        return Ok(CONTEXT.rbatis.fetch_by_wrapper(wrapper).await?);
     }
 
     ///添加后台账号
@@ -127,7 +127,7 @@ impl SysUserService {
             }
             _ => {}
         }
-        return Ok(CONTEXT.rbatis.save( &user,&[]).await?.rows_affected);
+        return Ok(CONTEXT.rbatis.save(&user, &[]).await?.rows_affected);
     }
 
     ///登陆后台
@@ -135,9 +135,7 @@ impl SysUserService {
         self.is_need_wait_login_ex().await?;
         let user: Option<SysUser> = CONTEXT
             .rbatis
-            .fetch_by_wrapper(
-                &CONTEXT.rbatis.new_wrapper().eq("account", &arg.account),
-            )
+            .fetch_by_wrapper(CONTEXT.rbatis.new_wrapper().eq("account", &arg.account))
             .await?;
         let user = user.ok_or_else(|| Error::from(format!("账号:{} 不存在!", arg.account)))?;
         if user.state.eq(&Some(0)) {
@@ -211,7 +209,10 @@ impl SysUserService {
             if num.unwrap_or(0) >= CONTEXT.config.login_fail_retry {
                 let wait_sec: i64 = CONTEXT.cache_service.ttl(REDIS_KEY_RETRY).await?;
                 if wait_sec > 0 {
-                    return Err(Error::from(format!("操作过于频繁，请等待{}秒后重试!", wait_sec)));
+                    return Err(Error::from(format!(
+                        "操作过于频繁，请等待{}秒后重试!",
+                        wait_sec
+                    )));
                 }
             }
         }
@@ -226,7 +227,7 @@ impl SysUserService {
             if num > CONTEXT.config.login_fail_retry {
                 num = CONTEXT.config.login_fail_retry;
             }
-            num+=1;
+            num += 1;
             CONTEXT
                 .cache_service
                 .set_string_ex(
@@ -244,7 +245,7 @@ impl SysUserService {
     pub async fn get_user_info_by_token(&self, token: &JWTToken) -> Result<SignInVO> {
         let user: Option<SysUser> = CONTEXT
             .rbatis
-            .fetch_by_wrapper( &CONTEXT.rbatis.new_wrapper().eq("id", &token.id))
+            .fetch_by_wrapper(CONTEXT.rbatis.new_wrapper().eq("id", &token.id))
             .await?;
         let user = user.ok_or_else(|| Error::from(format!("账号:{} 不存在!", token.account)))?;
         return self.get_user_info(&user).await;
@@ -325,7 +326,7 @@ impl SysUserService {
         }
         let r = CONTEXT
             .rbatis
-            .remove_by_column::<SysUser,_>("id", &id)
+            .remove_by_column::<SysUser, _>("id", &id)
             .await;
         CONTEXT.sys_user_role_service.remove_by_user_id(id).await?;
         return Ok(r?);
