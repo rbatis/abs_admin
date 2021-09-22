@@ -29,7 +29,6 @@ impl SysDictService {
                     .new_wrapper()
                     .do_if(!arg.code.is_empty(), |w| w.eq("code", &arg.code))
                     .do_if(!arg.name.is_empty(), |w| w.like("name", &arg.name))
-                    .is_null("parent_id")
                     .order_by(false, &["create_date"]),
                 &page_req,
             )
