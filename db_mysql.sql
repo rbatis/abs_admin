@@ -85,11 +85,11 @@ DROP TABLE IF EXISTS `sys_res`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `sys_res` (
-  `id` varchar(45) CHARACTER SET latin1 NOT NULL,
-  `parent_id` varchar(45) CHARACTER SET latin1 DEFAULT NULL,
+  `id` varchar(45) CHARACTER SET utf8 NOT NULL,
+  `parent_id` varchar(45) CHARACTER SET utf8 DEFAULT NULL,
   `name` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `permission` varchar(45) CHARACTER SET latin1 NOT NULL,
-  `path` varchar(45) CHARACTER SET latin1 DEFAULT NULL,
+  `permission` varchar(45) CHARACTER SET utf8 NOT NULL,
+  `path` varchar(45) CHARACTER SET utf8 DEFAULT NULL,
   `del` int(1) NOT NULL DEFAULT '1',
   `create_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
@@ -114,8 +114,8 @@ DROP TABLE IF EXISTS `sys_role`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `sys_role` (
-  `id` varchar(45) CHARACTER SET latin1 NOT NULL,
-  `name` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
+  `id` varchar(45) CHARACTER SET utf8 NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `del` int(1) NOT NULL DEFAULT '1',
   `create_date` datetime NOT NULL,
   `parent_id` varchar(255) DEFAULT NULL COMMENT '父id',
@@ -141,9 +141,9 @@ DROP TABLE IF EXISTS `sys_role_res`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `sys_role_res` (
-  `id` varchar(45) CHARACTER SET latin1 NOT NULL,
-  `role_id` varchar(45) CHARACTER SET latin1 NOT NULL,
-  `res_id` varchar(45) CHARACTER SET latin1 NOT NULL,
+  `id` varchar(45) CHARACTER SET utf8 NOT NULL,
+  `role_id` varchar(45) CHARACTER SET utf8 NOT NULL,
+  `res_id` varchar(45) CHARACTER SET utf8 NOT NULL,
   `create_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -197,9 +197,9 @@ DROP TABLE IF EXISTS `sys_user_role`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `sys_user_role` (
-  `id` varchar(45) CHARACTER SET latin1 NOT NULL,
-  `user_id` varchar(45) CHARACTER SET latin1 NOT NULL,
-  `role_id` varchar(45) CHARACTER SET latin1 NOT NULL,
+  `id` varchar(45) CHARACTER SET utf8 NOT NULL,
+  `user_id` varchar(45) CHARACTER SET utf8 NOT NULL,
+  `role_id` varchar(45) CHARACTER SET utf8 NOT NULL,
   `create_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
