@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS public.sys_res
     del         integer                DEFAULT '1',
     create_date timestamp              NOT NULL,
     PRIMARY KEY (id)
-    );
+);
 
 INSERT INTO sys_res
 VALUES ('1', NULL, 'qx', '/', '/', 0, '2020-02-09 00:00:00'),
@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS public.sys_role
     create_date timestamp              NOT NULL,
     parent_id   varchar(255)                    DEFAULT NULL COMMENT '父id',
     PRIMARY KEY (id)
-    );
+);
 
 INSERT INTO sys_role
 VALUES ('1', 'super', 0, '2020-07-28 08:34:40', NULL);
@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS public.sys_role_res
     res_id      character varying(256) NOT NULL,
     create_date timestamp              NOT NULL,
     PRIMARY KEY (id)
-    );
+);
 
 INSERT INTO sys_role_res
 VALUES ('1', '1', '1', '2020-07-28 08:34:40'),
@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS public.sys_user
     create_date timestamp    NOT NULL,
     state       integer      NOT NULL DEFAULT '1',
     PRIMARY KEY (id)
-    );
+);
 
 INSERT INTO sys_user
 VALUES ('205667537625681919', '00000000000', 'e10adc3949ba59abbe56e057f20f883e', '超级管理员', 'PasswordCheck', 0,
@@ -81,6 +81,18 @@ CREATE TABLE IF NOT EXISTS public.sys_user_role
     role_id     character varying(256) NOT NULL,
     create_date timestamp              NOT NULL,
     PRIMARY KEY (id)
-    );
+);
 
-INSERT INTO sys_user_role VALUES ('1','2d4886bd-ad2a-4644-86b9-460afad05cbf','1','2020-07-28 08:34:40');
+INSERT INTO sys_user_role
+VALUES ('1', '2d4886bd-ad2a-4644-86b9-460afad05cbf', '1', '2020-07-28 08:34:40');
+
+
+CREATE TABLE IF NOT EXISTS public.sys_dict
+(
+    id          character varying(256) NOT NULL,
+    name        character varying(512) NOT NULL,
+    code        character varying(512) NOT NULL,
+    state       integer                NOT NULL,
+    create_date timestamp              NOT NULL,
+    PRIMARY KEY (id)
+);
