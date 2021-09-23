@@ -4,13 +4,18 @@ use crate::service::{ICacheService, CONTEXT};
 use actix_web::{web, HttpResponse, Responder};
 use captcha::filters::{Dots, Noise, Wave};
 use captcha::Captcha;
+use crate::util::string::IsEmpty;
+use crate::error::Error;
 
-///图形验证码接口(注意，debug模式无论redis是否连接成功都返回图片，release模式则校验redis是否存储成功)
+///图形验证码接口(注意，debug模式无论缓存是否连接成功都返回图片，release模式则校验缓存(例如redis)是否存储成功)
 /// 请求方式 GET
 /// 例子：
-/// http://localhost:8000/captcha?account=18900000000
+/// http://localhost:8000/admin/captcha?account=18900000000
 ///
 pub async fn captcha(arg: web::Query<CatpchaDTO>) -> impl Responder {
+    if arg.account.is_empty() {
+        return RespVO::<()>::from_error("-1", &Error::from("account is empty!")).resp_json();
+    }
     let mut captcha = Captcha::new();
     captcha
         .add_chars(4)
@@ -20,13 +25,10 @@ pub async fn captcha(arg: web::Query<CatpchaDTO>) -> impl Responder {
         .view(160, 60)
         .apply_filter(Dots::new(4));
     let png = captcha.as_png().unwrap();
-
     let captcha_str = captcha.chars_as_string().to_lowercase();
-    println!(
-        "account:{},captcha:{}",
-        arg.account.as_ref().unwrap_or(&"".to_string()),
-        &captcha_str
-    );
+    if CONTEXT.config.debug {
+        log::info!("account:{},captcha:{}",arg.account.as_ref().unwrap(),&captcha_str);
+    }
     if arg.account.is_some() {
         let result = CONTEXT
             .cache_service
@@ -35,7 +37,7 @@ pub async fn captcha(arg: web::Query<CatpchaDTO>) -> impl Responder {
                 captcha_str.as_str(),
             )
             .await;
-        println!("{:?}", result);
+        //println!("{:?}", result);
         if CONTEXT.config.debug == false {
             //release mode, return the error
             if result.is_err() {
