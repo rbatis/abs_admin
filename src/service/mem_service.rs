@@ -17,25 +17,22 @@ pub struct MemService {
 
 impl MemService {
     pub fn recycling(&self) {
-        match self.cache.lock() {
-            Ok(mut l) => {
-                let mut need_removed = vec![];
-                for (k, v) in l.iter() {
-                    match v.1 {
-                        None => {}
-                        Some((i, d)) => {
-                            if i.elapsed() >= d {
-                                //out of time
-                                need_removed.push(k.to_string());
-                            }
+        if let Ok(mut map_lock_guard) = self.cache.lock() {
+            let mut need_removed = vec![];
+            for (k, v) in map_lock_guard.iter() {
+                match v.1 {
+                    None => {}
+                    Some((i, d)) => {
+                        if i.elapsed() >= d {
+                            //out of time
+                            need_removed.push(k.to_string());
                         }
                     }
                 }
-                for x in need_removed {
-                    l.remove(&x);
-                }
             }
-            Err(_) => {}
+            for x in need_removed {
+                map_lock_guard.remove(&x);
+            }
         }
     }
 }
