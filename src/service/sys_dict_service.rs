@@ -134,27 +134,9 @@ impl SysDictService {
             .await?)
     }
 
+    ///根据id查找，id=key
     pub async fn find_by_id(&self, id: &str) -> Result<Option<SysDict>> {
         let v=CONTEXT.rbatis.fetch_by_column::<Option<SysDict>,_>("id",&id.to_owned()).await?;
         Ok(v)
     }
-
-    /// 查找dict数组
-    pub fn finds_dict(
-        &self,
-        ids: &Vec<String>,
-        all_dict: &BTreeMap<String, SysDict>,
-    ) -> Vec<SysDict> {
-        let mut res = vec![];
-        //filter res id
-        for (k, v) in all_dict {
-            for x in ids {
-                if k.eq(x) {
-                    res.push(v.clone());
-                }
-            }
-        }
-        res
-    }
-
 }
