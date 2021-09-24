@@ -17,7 +17,7 @@ chrono = { version = "0.4", features = ["serde"] }
 lazy_static = "1.4.0"
 #log
 log = "0.4"
-fast_log = { version="1.3", features = ["lz4","zip"]}
+fast_log = { version="1.3", features = ["lz4","zip", "gzip"]}
 #futures
 futures = "0.3"
 #web server
