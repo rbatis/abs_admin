@@ -17,9 +17,9 @@ pub struct ApplicationConfig {
     pub log_dir: String,
     ///1000
     pub log_cup: i64,
-    ///"100MB"
+    /// "100MB" 日志分割尺寸-单位KB,MB,GB
     pub log_temp_size: String,
-    ///true
+    /// 日志打包格式可选“”（空-不压缩）“gzip”（gz压缩包）“zip”（zip压缩包）“lz4”（lz4压缩包（非常快））
     pub log_pack_compress: String,
     ///日志滚动配置   保留全部:All,按时间保留:KeepTime(Duration),按版本保留:KeepNum(i64)
     pub log_rolling_type: String,
