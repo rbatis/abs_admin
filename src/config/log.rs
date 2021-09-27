@@ -26,7 +26,7 @@ pub fn init_log() {
 fn choose_packer(packer: &str) -> Box<dyn Packer> {
     match packer {
         "lz4" => Box::new(LZ4Packer {}),
-        "zip" => Box::new(LZ4Packer {}),
+        "zip" => Box::new(ZipPacker {}),
         "gzip" => Box::new(GZipPacker {}),
         _ => Box::new(LogPacker {}),
     }
