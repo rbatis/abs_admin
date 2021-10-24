@@ -39,7 +39,7 @@ docker run -it -d --name redis -p 6379:6379 redis
 docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 --name mysql -e TZ=Asia/Shanghai mysql:5.7
 ```
 
-- 2.（rust 服务器端安装）使用 MysqlWorkBench 或 Navicat 等工具 导入 database.sql 脚本到 Mysql 数据库（mysql 用户名密码 root 123456）（redis 无密码）中
+- 2.（rust 服务器端安装）使用 Clion Database 窗口 或者 MysqlWorkBench 或 Navicat 等工具 导入 database.sql 脚本到 Mysql 数据库（mysql 用户名密码 root 123456）（redis 无密码）中
 
 # （前端 node 服务安装）快速安装教程
 
