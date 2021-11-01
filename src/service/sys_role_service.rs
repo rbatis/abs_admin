@@ -1,5 +1,5 @@
 use crate::error::Result;
-use chrono::NaiveDateTime;
+use rbatis::DateTimeNative;
 use rbatis::core::value::DateTimeNow;
 use rbatis::crud::CRUD;
 use rbatis::plugin::page::{Page, PageRequest};
@@ -108,7 +108,7 @@ impl SysRoleService {
             name: arg.name.clone(),
             parent_id: arg.parent_id.clone(),
             del: 0.into(),
-            create_date: NaiveDateTime::now().into(),
+            create_date: DateTimeNative::now().into(),
         };
         let result = (
             CONTEXT.rbatis.save(&role, &[]).await?.rows_affected,

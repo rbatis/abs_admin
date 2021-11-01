@@ -1,5 +1,5 @@
 use crate::domain::domain::SysDict;
-use chrono::NaiveDateTime;
+use rbatis::DateTimeNative;
 use std::collections::HashMap;
 
 ///权限资源表
@@ -10,7 +10,7 @@ pub struct SysDictVO {
     pub name: Option<String>,
     pub code: Option<String>,
     pub state: Option<i32>,
-    pub create_date: Option<NaiveDateTime>,
+    pub create_date: Option<DateTimeNative>,
 }
 
 impl From<&SysDict> for SysDictVO {

@@ -1,7 +1,7 @@
 use crate::error::Error;
 use crate::error::Result;
 use crate::service::CONTEXT;
-use chrono::NaiveDateTime;
+use rbatis::DateTimeNative;
 use rbatis::core::value::DateTimeNow;
 use rbatis::crud::CRUD;
 use rbatis::plugin::page::{Page, PageRequest};
@@ -112,7 +112,7 @@ impl SysUserService {
             login_check: arg.login_check.clone(),
             state: 0.into(),
             del: 0.into(),
-            create_date: NaiveDateTime::now().into(),
+            create_date: DateTimeNative::now().into(),
         };
         match &arg.role_id {
             Some(role_id) => {
@@ -273,7 +273,7 @@ impl SysUserService {
             account: user.account.clone().unwrap_or(String::new()),
             permissions: sign_vo.permissions.clone(),
             role_ids: vec![],
-            exp: chrono::NaiveDateTime::now().timestamp() as usize,
+            exp: DateTimeNative::now().timestamp() as usize,
         };
         sign_vo.access_token = jwt_token.create_token(&CONTEXT.config.jwt_secret)?;
         sign_vo.role = CONTEXT

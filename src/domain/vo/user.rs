@@ -1,6 +1,6 @@
 use crate::domain::domain::{LoginCheck, SysUser};
 use crate::domain::vo::SysRoleVO;
-use chrono::NaiveDateTime;
+use rbatis::DateTimeNative;
 use serde::{Deserialize, Serialize};
 
 ///后台用户
@@ -13,7 +13,7 @@ pub struct SysUserVO {
     pub login_check: Option<LoginCheck>,
     pub state: Option<i32>,
     pub del: Option<i32>,
-    pub create_date: Option<NaiveDateTime>,
+    pub create_date: Option<DateTimeNative>,
 
     pub role: Option<SysRoleVO>,
 }

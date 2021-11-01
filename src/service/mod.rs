@@ -52,7 +52,7 @@ impl Default for ServiceContext {
             }
         }
         ServiceContext {
-            rbatis: rbatis::core::runtime::task::block_on(async {
+            rbatis: async_std::task::block_on(async {
                 crate::dao::init_rbatis(&config).await
             }),
             cache_service: CacheService::new(&config),

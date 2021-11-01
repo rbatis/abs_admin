@@ -7,7 +7,7 @@ use crate::domain::vo::{SysResVO, SysRoleVO};
 use crate::error::Error;
 use crate::error::Result;
 use crate::service::CONTEXT;
-use chrono::NaiveDateTime;
+use rbatis::DateTimeNative;
 use rbatis::core::value::DateTimeNow;
 use rbatis::crud::CRUD;
 use rbatis::plugin::page::Page;
@@ -73,7 +73,7 @@ impl SysUserRoleService {
             id: arg.id.clone(),
             user_id: arg.user_id.clone(),
             role_id: arg.role_id.clone(),
-            create_date: NaiveDateTime::now().into(),
+            create_date: DateTimeNative::now().into(),
         };
         if role.id.is_none() {
             role.id = Some(new_snowflake_id().to_string());

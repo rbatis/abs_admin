@@ -1,5 +1,5 @@
 use actix_web::{web, Responder};
-use chrono::NaiveDateTime;
+use rbatis::DateTimeNative;
 use rbatis::core::value::DateTimeNow;
 
 use crate::domain::domain::SysDict;
@@ -30,7 +30,7 @@ pub async fn add(mut arg: web::Json<DictAddDTO>) -> impl Responder {
         name: arg.name.clone(),
         code: arg.code.clone(),
         state: arg.state.clone(),
-        create_date: NaiveDateTime::now().into(),
+        create_date: DateTimeNative::now().into(),
     };
     let data = CONTEXT.sys_dict_service.add(&res).await;
     CONTEXT.sys_dict_service.update_cache().await;

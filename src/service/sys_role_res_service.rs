@@ -11,7 +11,7 @@ use crate::domain::dto::{
 };
 use crate::domain::vo::{SysResVO, SysRoleVO};
 use crate::service::CONTEXT;
-use chrono::NaiveDateTime;
+use rbatis::DateTimeNative;
 use rbatis::core::value::DateTimeNow;
 use rbatis::plugin::snowflake::new_snowflake_id;
 
@@ -162,7 +162,7 @@ impl SysRoleResService {
                 id: new_snowflake_id().to_string().into(),
                 role_id: role_id.to_string().into(),
                 res_id: resource_id.clone().into(),
-                create_date: NaiveDateTime::now().into(),
+                create_date: DateTimeNative::now().into(),
             });
         }
         let save_ok = CONTEXT.rbatis.save_batch(&sys_role_res, &[]).await?;

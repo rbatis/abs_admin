@@ -1,6 +1,6 @@
 use crate::domain::domain::SysRole;
 use crate::domain::vo::SysResVO;
-use chrono::NaiveDateTime;
+use rbatis::DateTimeNative;
 
 #[crud_table(table_name: "sys_role"| table_columns: "id,name,parent_id,create_date,del")]
 #[derive(Debug, Clone)]
@@ -10,7 +10,7 @@ pub struct SysRoleVO {
     //父id(可空)
     pub parent_id: Option<String>,
     pub del: Option<i32>,
-    pub create_date: Option<NaiveDateTime>,
+    pub create_date: Option<DateTimeNative>,
     pub resources: Vec<SysResVO>,
     pub childs: Option<Vec<SysRoleVO>>,
     pub resource_ids: Vec<String>,

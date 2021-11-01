@@ -1,5 +1,5 @@
 use crate::domain::domain::SysRes;
-use chrono::NaiveDateTime;
+use rbatis::DateTimeNative;
 use std::collections::HashMap;
 
 ///权限资源表
@@ -15,7 +15,7 @@ pub struct SysResVO {
     //前端-菜单路径
     pub path: Option<String>,
     pub del: Option<i32>,
-    pub create_date: Option<NaiveDateTime>,
+    pub create_date: Option<DateTimeNative>,
     pub childs: Option<Vec<SysResVO>>,
 }
 

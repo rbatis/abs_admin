@@ -1,5 +1,5 @@
 use crate::domain::domain::LoginCheck;
-use chrono::NaiveDateTime;
+use rbatis::DateTimeNative;
 
 ///权限资源表
 #[crud_table]
@@ -14,7 +14,7 @@ pub struct SysRes {
     //前端-菜单路径
     pub path: Option<String>,
     pub del: Option<i32>,
-    pub create_date: Option<NaiveDateTime>,
+    pub create_date: Option<DateTimeNative>,
 }
 
 ///角色表
@@ -26,7 +26,7 @@ pub struct SysRole {
     //父id(可空)
     pub parent_id: Option<String>,
     pub del: Option<i32>,
-    pub create_date: Option<NaiveDateTime>,
+    pub create_date: Option<DateTimeNative>,
 }
 
 ///角色资源关系表(关系表不使用逻辑删除)
@@ -38,7 +38,7 @@ pub struct SysRoleRes {
     pub role_id: Option<String>,
     //资源id
     pub res_id: Option<String>,
-    pub create_date: Option<NaiveDateTime>,
+    pub create_date: Option<DateTimeNative>,
 }
 
 ///后台用户表
@@ -52,7 +52,7 @@ pub struct SysUser {
     pub login_check: Option<LoginCheck>,
     pub state: Option<i32>,
     pub del: Option<i32>,
-    pub create_date: Option<NaiveDateTime>,
+    pub create_date: Option<DateTimeNative>,
 }
 
 ///用户角色关系表(关系表不使用逻辑删除)
@@ -64,7 +64,7 @@ pub struct SysUserRole {
     pub user_id: Option<String>,
     //角色id
     pub role_id: Option<String>,
-    pub create_date: Option<NaiveDateTime>,
+    pub create_date: Option<DateTimeNative>,
 }
 ///字典表
 #[crud_table]
@@ -74,5 +74,5 @@ pub struct SysDict {
     pub name: Option<String>,
     pub code: Option<String>,
     pub state: Option<i32>,
-    pub create_date: Option<NaiveDateTime>,
+    pub create_date: Option<DateTimeNative>,
 }
