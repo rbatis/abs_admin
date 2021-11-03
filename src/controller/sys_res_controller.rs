@@ -1,12 +1,13 @@
 use actix_web::{web, Responder};
 use rbatis::DateTimeNative;
 use rbatis::core::value::DateTimeNow;
+use rbatis::plugin::object_id::ObjectId;
 
 use crate::domain::domain::SysRes;
 use crate::domain::dto::{EmptyDTO, IdDTO, ResAddDTO, ResEditDTO, ResPageDTO};
 use crate::domain::vo::RespVO;
 use crate::service::CONTEXT;
-use rbatis::plugin::snowflake::new_snowflake_id;
+
 
 /// 资源分页(json请求)
 pub async fn page(page: web::Json<ResPageDTO>) -> impl Responder {
@@ -38,7 +39,7 @@ pub async fn add(mut arg: web::Json<ResAddDTO>) -> impl Responder {
         arg.path = Some("".to_string());
     }
     let res = SysRes {
-        id: new_snowflake_id().to_string().into(),
+        id: ObjectId::new().to_string().into(),
         parent_id: arg.parent_id.clone(),
         name: arg.name.clone(),
         permission: arg.permission.clone(),

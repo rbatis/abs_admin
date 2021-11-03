@@ -6,7 +6,7 @@ use crate::domain::domain::SysDict;
 use crate::domain::dto::{DictAddDTO, DictEditDTO, DictPageDTO, EmptyDTO, IdDTO};
 use crate::domain::vo::RespVO;
 use crate::service::CONTEXT;
-use rbatis::plugin::snowflake::new_snowflake_id;
+
 
 /// 字典分页(json请求)
 pub async fn page(page: web::Json<DictPageDTO>) -> impl Responder {

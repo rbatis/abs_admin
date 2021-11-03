@@ -10,8 +10,9 @@ use crate::service::CONTEXT;
 use rbatis::DateTimeNative;
 use rbatis::core::value::DateTimeNow;
 use rbatis::crud::CRUD;
+use rbatis::plugin::object_id::ObjectId;
 use rbatis::plugin::page::Page;
-use rbatis::plugin::snowflake::new_snowflake_id;
+
 
 ///用户角色服务
 pub struct SysUserRoleService {}
@@ -76,7 +77,7 @@ impl SysUserRoleService {
             create_date: DateTimeNative::now().into(),
         };
         if role.id.is_none() {
-            role.id = Some(new_snowflake_id().to_string());
+            role.id = Some(ObjectId::new().to_string());
         }
         self.remove_by_user_id(&arg.user_id.clone().unwrap_or_default())
             .await?;

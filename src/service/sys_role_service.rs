@@ -10,8 +10,9 @@ use crate::domain::vo::SysRoleVO;
 use crate::service::cache_service::ICacheService;
 use crate::service::CONTEXT;
 use crate::util::string::IsEmpty;
-use rbatis::plugin::snowflake::new_snowflake_id;
+
 use std::collections::{BTreeMap, HashMap};
+use rbatis::plugin::object_id::ObjectId;
 
 const RES_KEY: &'static str = "sys_role:all";
 ///角色服务
@@ -104,7 +105,7 @@ impl SysRoleService {
     ///角色添加
     pub async fn add(&self, arg: &RoleAddDTO) -> Result<(u64, String)> {
         let role = SysRole {
-            id: new_snowflake_id().to_string().into(),
+            id: ObjectId::new().to_string().into(),
             name: arg.name.clone(),
             parent_id: arg.parent_id.clone(),
             del: 0.into(),

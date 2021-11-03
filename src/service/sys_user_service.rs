@@ -12,7 +12,7 @@ use crate::domain::vo::user::SysUserVO;
 use crate::domain::vo::{JWTToken, SignInVO};
 use crate::service::cache_service::ICacheService;
 use crate::util::password_encoder::PasswordEncoder;
-use rbatis::plugin::snowflake::new_snowflake_id;
+use rbatis::plugin::object_id::ObjectId;
 use std::collections::BTreeMap;
 use std::time::Duration;
 
@@ -103,7 +103,7 @@ impl SysUserService {
             //默认密码
             password = "123456".to_string();
         }
-        let id = new_snowflake_id().to_string();
+        let id = ObjectId::new().to_string();
         let user = SysUser {
             id: id.to_string().into(),
             account: arg.account.clone(),

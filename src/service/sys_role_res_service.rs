@@ -13,7 +13,8 @@ use crate::domain::vo::{SysResVO, SysRoleVO};
 use crate::service::CONTEXT;
 use rbatis::DateTimeNative;
 use rbatis::core::value::DateTimeNow;
-use rbatis::plugin::snowflake::new_snowflake_id;
+use rbatis::plugin::object_id::ObjectId;
+
 
 /// 角色资源服务
 pub struct SysRoleResService {}
@@ -159,7 +160,7 @@ impl SysRoleResService {
         let mut sys_role_res = vec![];
         for resource_id in resource_ids {
             sys_role_res.push(SysRoleRes {
-                id: new_snowflake_id().to_string().into(),
+                id: ObjectId::new().to_string().into(),
                 role_id: role_id.to_string().into(),
                 res_id: resource_id.clone().into(),
                 create_date: DateTimeNative::now().into(),
