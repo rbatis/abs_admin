@@ -1,6 +1,6 @@
 # Rust enterprise-class one-stop backend solution
 
-
+![简体中文](README_CH.md)
 
 - Rock solid (Rust language), high performance, no GC, no memory leaks, no coroutine contention
 
