@@ -27,9 +27,9 @@ impl SysDictService {
                 CONTEXT
                     .rbatis
                     .new_wrapper()
-                    .do_if(!arg.code.is_empty(), |w| w.eq("code", &arg.code))
-                    .do_if(!arg.name.is_empty(), |w| w.like("name", &arg.name))
-                    .order_by(false, &["create_date"]),
+                    .do_if(!arg.code.is_empty(), |w| w.eq(field_name!(SysDict.code), &arg.code))
+                    .do_if(!arg.name.is_empty(), |w| w.like(field_name!(SysDict.name), &arg.name))
+                    .order_by(false, &[field_name!(SysDict.create_date)]),
                 &page_req,
             )
             .await?;
@@ -44,9 +44,9 @@ impl SysDictService {
                 CONTEXT
                     .rbatis
                     .new_wrapper()
-                    .eq("code", &arg.code)
+                    .eq(field_name!(SysDict.code), &arg.code)
                     .and()
-                    .eq("name", &arg.name),
+                    .eq(field_name!(SysDict.name), &arg.name),
             )
             .await?;
         if old.len() > 0 {
@@ -70,8 +70,8 @@ impl SysDictService {
             .rbatis
             .update_by_wrapper(
                 &mut data,
-                CONTEXT.rbatis.new_wrapper().eq("id", &arg.id),
-                &[Skip::Column("id"), Skip::Column("create_date")],
+                CONTEXT.rbatis.new_wrapper().eq(field_name!(SysDict.id), &arg.id),
+                &[Skip::Column(field_name!(SysDict.id)), Skip::Column(field_name!(SysDict.create_date))],
             )
             .await?);
         self.update_cache().await?;
@@ -82,9 +82,9 @@ impl SysDictService {
     pub async fn remove(&self, id: &str) -> Result<u64> {
         let num = CONTEXT
             .rbatis
-            .remove_batch_by_column::<SysDict, _>("id", &[id])
+            .remove_batch_by_column::<SysDict, _>(field_name!(SysDict.id), &[id])
             .await?;
-        if num > 0{
+        if num > 0 {
             self.update_cache().await?;
         }
         Ok(num)
@@ -130,13 +130,13 @@ impl SysDictService {
     pub async fn finds(&self, ids: &Vec<String>) -> Result<Vec<SysDict>> {
         Ok(CONTEXT
             .rbatis
-            .fetch_list_by_wrapper(CONTEXT.rbatis.new_wrapper().r#in("id", ids))
+            .fetch_list_by_wrapper(CONTEXT.rbatis.new_wrapper().r#in(field_name!(SysDict.id), ids))
             .await?)
     }
 
     ///根据id查找，id=key
     pub async fn find_by_id(&self, id: &str) -> Result<Option<SysDict>> {
-        let v=CONTEXT.rbatis.fetch_by_column::<Option<SysDict>,_>("id",&id.to_owned()).await?;
+        let v = CONTEXT.rbatis.fetch_by_column::<Option<SysDict>, _>(field_name!(SysDict.id), &id.to_owned()).await?;
         Ok(v)
     }
 }

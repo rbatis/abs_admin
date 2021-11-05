@@ -61,7 +61,7 @@ impl SysRoleResService {
         let role_res_vec = CONTEXT
             .rbatis
             .fetch_list_by_wrapper::<SysRoleRes>(
-                CONTEXT.rbatis.new_wrapper().r#in("role_id", &role_ids),
+                CONTEXT.rbatis.new_wrapper().r#in(field_name!(SysRoleRes.role_id), &role_ids),
             )
             .await?;
         let mut role_res_map: HashMap<String, Vec<SysRoleRes>> = HashMap::new();
@@ -191,14 +191,14 @@ impl SysRoleResService {
     pub async fn remove(&self, id: &str) -> Result<u64> {
         Ok(CONTEXT
             .rbatis
-            .remove_by_column::<SysRoleRes, _>("id", &id)
+            .remove_by_column::<SysRoleRes, _>(field_name!(SysRoleRes.id), &id)
             .await?)
     }
 
     pub async fn remove_by_res_id(&self, res_id: &str) -> Result<u64> {
         Ok(CONTEXT
             .rbatis
-            .remove_by_wrapper::<SysRoleRes>(CONTEXT.rbatis.new_wrapper().eq("res_id", res_id))
+            .remove_by_wrapper::<SysRoleRes>(CONTEXT.rbatis.new_wrapper().eq(field_name!(SysRoleRes.res_id), res_id))
             .await?)
     }
 
@@ -206,7 +206,7 @@ impl SysRoleResService {
     pub async fn remove_by_role_id(&self, role_id: &str) -> Result<u64> {
         Ok(CONTEXT
             .rbatis
-            .remove_by_wrapper::<SysRoleRes>(CONTEXT.rbatis.new_wrapper().eq("role_id", role_id))
+            .remove_by_wrapper::<SysRoleRes>(CONTEXT.rbatis.new_wrapper().eq(field_name!(SysRoleRes.role_id), role_id))
             .await?)
     }
 }
