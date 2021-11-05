@@ -37,7 +37,7 @@ impl SysResService {
         let all_res = self.finds_all_map().await?;
         let mut all_res_vo = HashMap::new();
         for (k, v) in all_res {
-            all_res_vo.insert(k, SysResVO::from(&v));
+            all_res_vo.insert(k, v);
         }
         let mut datas = vec![];
         for x in data.records {
@@ -142,7 +142,7 @@ impl SysResService {
     }
 
     /// 查找res数组
-    pub async fn finds_all(&self) -> Result<Vec<SysRes>> {
+    pub async fn finds_all(&self) -> Result<Vec<SysResVO>> {
         let js = CONTEXT
             .cache_service
             .get_json::<Option<Vec<SysRes>>>(RES_KEY)
@@ -157,18 +157,28 @@ impl SysResService {
         if CONTEXT.config.debug {
             log::info!("[abs_admin] get from redis:{}", RES_KEY);
         }
-        return Ok(js?.unwrap_or_default());
+        let mut arr = vec![];
+        if let Ok(v) = js {
+            for x in v.unwrap_or(vec![]) {
+                arr.push(x.into());
+            }
+        }
+        return Ok(arr);
     }
 
     /// 更新所有
-    pub async fn update_cache(&self) -> Result<Vec<SysRes>> {
+    pub async fn update_cache(&self) -> Result<Vec<SysResVO>> {
         let all = CONTEXT.rbatis.fetch_list::<SysRes>().await?;
         CONTEXT.cache_service.set_json(RES_KEY, &all).await?;
-        return Ok(all);
+        let mut v = vec![];
+        for x in all {
+            v.push(x.into());
+        }
+        return Ok(v);
     }
 
     /// 查找res数组
-    pub async fn finds_all_map(&self) -> Result<BTreeMap<String, SysRes>> {
+    pub async fn finds_all_map(&self) -> Result<BTreeMap<String, SysResVO>> {
         let all = self.finds_all().await?;
         let mut result = BTreeMap::new();
         for x in all {
@@ -186,7 +196,7 @@ impl SysResService {
     }
 
     /// 查找res数组
-    pub fn finds_res(&self, ids: &Vec<String>, all_res: &BTreeMap<String, SysRes>) -> Vec<SysRes> {
+    pub fn finds_res(&self, ids: &Vec<String>, all_res: &BTreeMap<String, SysResVO>) -> Vec<SysResVO> {
         let mut res = vec![];
         //filter res id
         for (k, v) in all_res {
@@ -220,7 +230,7 @@ impl SysResService {
     pub async fn finds_layer(
         &self,
         ids: &Vec<String>,
-        all_res: &BTreeMap<String, SysRes>,
+        all_res: &BTreeMap<String, SysResVO>,
     ) -> Result<Vec<SysResVO>> {
         let res = self.finds_res(ids, &all_res);
         //find tops
@@ -228,7 +238,7 @@ impl SysResService {
         for item in res {
             //parent id null, it is an top resource
             if item.parent_id.is_none() {
-                tops.push(SysResVO::from(&item));
+                tops.push(item);
             }
         }
         //find child
@@ -239,11 +249,11 @@ impl SysResService {
     }
 
     ///死循环找出父-子 关联关系数组
-    pub fn loop_find_childs(&self, arg: &mut SysResVO, all_res: &BTreeMap<String, SysRes>) {
+    pub fn loop_find_childs(&self, arg: &mut SysResVO, all_res: &BTreeMap<String, SysResVO>) {
         let mut childs: Option<Vec<SysResVO>> = None;
         for (key, x) in all_res {
             if x.parent_id.is_some() && x.parent_id.eq(&arg.id) {
-                let mut item = SysResVO::from(x);
+                let mut item = x.clone();
                 self.loop_find_childs(&mut item, all_res);
                 match &mut childs {
                     Some(childs) => {

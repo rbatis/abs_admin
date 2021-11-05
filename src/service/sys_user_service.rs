@@ -9,7 +9,7 @@ use rbatis::plugin::page::{Page, PageRequest};
 use crate::domain::domain::{LoginCheck, SysRes, SysUser};
 use crate::domain::dto::{IdDTO, SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO, UserRoleAddDTO};
 use crate::domain::vo::user::SysUserVO;
-use crate::domain::vo::{JWTToken, SignInVO};
+use crate::domain::vo::{JWTToken, SignInVO, SysResVO};
 use crate::service::cache_service::ICacheService;
 use crate::util::password_encoder::PasswordEncoder;
 use rbatis::plugin::object_id::ObjectId;
@@ -260,7 +260,7 @@ impl SysUserService {
             .clone()
             .ok_or_else(|| Error::from("错误的用户数据，id为空!"))?;
         let mut sign_vo = SignInVO {
-            user: user.clone().into(),
+            user: Some(user.clone().into()),
             permissions: vec![],
             access_token: String::new(),
             role: None,
@@ -273,7 +273,7 @@ impl SysUserService {
             account: user.account.clone().unwrap_or(String::new()),
             permissions: sign_vo.permissions.clone(),
             role_ids: vec![],
-            exp: DateTimeNative::now().timestamp() as usize,
+            exp: DateTimeNative::now().naive_local().timestamp() as usize,
         };
         sign_vo.access_token = jwt_token.create_token(&CONTEXT.config.jwt_secret)?;
         sign_vo.role = CONTEXT
@@ -336,7 +336,7 @@ impl SysUserService {
     pub async fn loop_load_level_permission(
         &self,
         user_id: &str,
-        all_res: &BTreeMap<String, SysRes>,
+        all_res: &BTreeMap<String, SysResVO>,
     ) -> Result<Vec<String>> {
         return CONTEXT
             .sys_role_service

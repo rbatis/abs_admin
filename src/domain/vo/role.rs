@@ -1,6 +1,6 @@
+use chrono::Local;
 use crate::domain::domain::SysRole;
 use crate::domain::vo::SysResVO;
-use rbatis::DateTimeNative;
 
 #[crud_table(table_name: "sys_role"| table_columns: "id,name,parent_id,create_date,del")]
 #[derive(Debug, Clone)]
@@ -10,7 +10,7 @@ pub struct SysRoleVO {
     //父id(可空)
     pub parent_id: Option<String>,
     pub del: Option<i32>,
-    pub create_date: Option<DateTimeNative>,
+    pub create_date: Option<chrono::NaiveDateTime>,
     pub resources: Vec<SysResVO>,
     pub childs: Option<Vec<SysRoleVO>>,
     pub resource_ids: Vec<String>,
@@ -23,7 +23,13 @@ impl From<SysRole> for SysRoleVO {
             name: arg.name,
             parent_id: arg.parent_id,
             del: arg.del,
-            create_date: arg.create_date,
+            create_date: {
+                if let Some(v) = arg.create_date{
+                    Some(v.inner.naive_local())
+                }else{
+                    None
+                }
+            },
             resources: vec![],
             childs: None,
             resource_ids: vec![],
@@ -39,7 +45,13 @@ impl SysRoleVO {
                 name: arg.name,
                 parent_id: arg.parent_id,
                 del: arg.del,
-                create_date: arg.create_date,
+                create_date:  {
+                    if let Some(v) = arg.create_date{
+                        Some(v.inner.naive_local())
+                    }else{
+                        None
+                    }
+                },
                 resources: vec![],
                 childs: None,
                 resource_ids: vec![],

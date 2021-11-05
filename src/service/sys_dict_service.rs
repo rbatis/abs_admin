@@ -1,7 +1,9 @@
 use std::collections::{BTreeMap, HashMap};
 
 use rbatis::crud::{Skip, CRUD};
+use rbatis::{IPage, IPageRequest};
 use rbatis::plugin::page::{Page, PageRequest};
+use crate::controller::sys_res_controller::page;
 
 use crate::domain::domain::SysDict;
 use crate::domain::dto::{DictEditDTO, DictPageDTO};
@@ -19,7 +21,7 @@ pub struct SysDictService {}
 
 impl SysDictService {
     ///字典分页
-    pub async fn page(&self, arg: &DictPageDTO) -> Result<Page<SysDict>> {
+    pub async fn page(&self, arg: &DictPageDTO) -> Result<Page<SysDictVO>> {
         let page_req = PageRequest::new(arg.page_no.unwrap_or(1), arg.page_size.unwrap_or(10));
         let data = CONTEXT
             .rbatis
@@ -33,7 +35,15 @@ impl SysDictService {
                 &page_req,
             )
             .await?;
-        Ok(data)
+        let mut page = Page::<SysDictVO>::new(page_req.page_no, page_req.page_size);
+        let mut records = vec![];
+        for x in data.records {
+            let vo = SysDictVO::from(x);
+            records.push(vo);
+        }
+        page.set_records(records);
+        page.set_total(data.total);
+        Ok(page)
     }
 
     ///添加字典
@@ -90,53 +100,10 @@ impl SysDictService {
         Ok(num)
     }
 
-    /// 查找字典数组
-    pub async fn finds_all(&self) -> Result<Vec<SysDict>> {
-        let js = CONTEXT
-            .cache_service
-            .get_json::<Option<Vec<SysDict>>>(DICT_KEY)
-            .await;
-        if js.is_err()
-            || js.as_ref().unwrap().is_none()
-            || js.as_ref().unwrap().as_ref().unwrap().is_empty()
-        {
-            let all = self.update_cache().await?;
-            return Ok(all);
-        }
-        if CONTEXT.config.debug {
-            log::info!("[abs_admin] get from redis:{}", DICT_KEY);
-        }
-        return Ok(js?.unwrap_or_default());
-    }
-
     /// 更新所有
-    pub async fn update_cache(&self) -> Result<Vec<SysDict>> {
+    pub async fn update_cache(&self) -> Result<()> {
         let all = CONTEXT.rbatis.fetch_list::<SysDict>().await?;
         CONTEXT.cache_service.set_json(DICT_KEY, &all).await?;
-        return Ok(all);
-    }
-
-    /// 查找字典数组
-    pub async fn finds_all_map(&self) -> Result<BTreeMap<String, SysDict>> {
-        let all = self.finds_all().await?;
-        let mut result = BTreeMap::new();
-        for x in all {
-            result.insert(x.id.clone().unwrap_or_default(), x);
-        }
-        return Ok(result);
-    }
-
-    /// 查找字典数组
-    pub async fn finds(&self, ids: &Vec<String>) -> Result<Vec<SysDict>> {
-        Ok(CONTEXT
-            .rbatis
-            .fetch_list_by_wrapper(CONTEXT.rbatis.new_wrapper().r#in(field_name!(SysDict.id), ids))
-            .await?)
-    }
-
-    ///根据id查找，id=key
-    pub async fn find_by_id(&self, id: &str) -> Result<Option<SysDict>> {
-        let v = CONTEXT.rbatis.fetch_by_column::<Option<SysDict>, _>(field_name!(SysDict.id), &id.to_owned()).await?;
-        Ok(v)
+        return Ok(());
     }
 }

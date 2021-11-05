@@ -1,6 +1,6 @@
 use crate::domain::domain::SysRes;
-use rbatis::DateTimeNative;
 use std::collections::HashMap;
+use chrono::Local;
 
 ///权限资源表
 #[crud_table(table_name: "sys_res" | table_columns: "id,parent_id,name,permission,path,del")]
@@ -15,8 +15,29 @@ pub struct SysResVO {
     //前端-菜单路径
     pub path: Option<String>,
     pub del: Option<i32>,
-    pub create_date: Option<DateTimeNative>,
+    pub create_date: Option<chrono::NaiveDateTime>,
     pub childs: Option<Vec<SysResVO>>,
+}
+
+impl From<SysRes> for SysResVO {
+    fn from(arg: SysRes) -> Self {
+        Self {
+            id: arg.id,
+            parent_id: arg.parent_id,
+            name: arg.name,
+            permission: arg.permission,
+            path: arg.path,
+            del: arg.del,
+            create_date: {
+                if let Some(x) = arg.create_date{
+                    Some(x.inner.naive_local())
+                }else{
+                    None
+                }
+            },
+            childs: None,
+        }
+    }
 }
 
 impl From<&SysRes> for SysResVO {
@@ -27,8 +48,14 @@ impl From<&SysRes> for SysResVO {
             name: arg.name.clone(),
             permission: arg.permission.clone(),
             path: arg.path.clone(),
-            del: arg.del.clone(),
-            create_date: arg.create_date.clone(),
+            del: arg.del,
+            create_date: {
+                if let Some(x) = &arg.create_date{
+                    Some(x.inner.naive_local())
+                }else{
+                    None
+                }
+            },
             childs: None,
         }
     }

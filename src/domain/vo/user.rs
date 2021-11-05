@@ -1,6 +1,6 @@
+use chrono::Local;
 use crate::domain::domain::{LoginCheck, SysUser};
 use crate::domain::vo::SysRoleVO;
-use rbatis::DateTimeNative;
 use serde::{Deserialize, Serialize};
 
 ///后台用户
@@ -13,7 +13,7 @@ pub struct SysUserVO {
     pub login_check: Option<LoginCheck>,
     pub state: Option<i32>,
     pub del: Option<i32>,
-    pub create_date: Option<DateTimeNative>,
+    pub create_date: Option<chrono::NaiveDateTime>,
 
     pub role: Option<SysRoleVO>,
 }
@@ -29,7 +29,13 @@ impl From<SysUser> for SysUserVO {
             login_check: arg.login_check,
             state: arg.state,
             del: arg.del,
-            create_date: arg.create_date,
+            create_date: {
+                if let Some(v) = arg.create_date{
+                    Some(v.inner.naive_local())
+                }else{
+                    None
+                }
+            },
             role: None,
         }
     }

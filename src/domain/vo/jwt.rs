@@ -2,8 +2,9 @@ use crate::error::Error;
 use jsonwebtoken::errors::ErrorKind;
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
 use serde::{Deserialize, Serialize};
+
 /// JWT 鉴权 Token结构
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone,Eq, PartialEq)]
 pub struct JWTToken {
     //账号id
     pub id: String,
@@ -48,5 +49,28 @@ impl JWTToken {
                 _ => return Err(Error::from("InvalidToken other errors")),
             },
         };
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use std::thread::sleep;
+    use std::time::Duration;
+    use chrono::NaiveDateTime;
+    use rbatis::DateTimeNative;
+    use crate::domain::vo::JWTToken;
+
+    #[test]
+    fn test_jwt() {
+        let j = JWTToken {
+            id: "1".to_string(),
+            account: "189".to_string(),
+            permissions: vec![],
+            role_ids: vec![],
+            exp: DateTimeNative::now().naive_local().timestamp() as usize,
+        };
+        sleep(Duration::from_secs(5));
+        let token = j.create_token("ssss").unwrap();
+        assert_eq!(JWTToken::verify("ssss", &token).unwrap(), j);
     }
 }

@@ -6,7 +6,7 @@ use rbatis::plugin::page::{Page, PageRequest};
 
 use crate::domain::domain::{SysRes, SysRole, SysRoleRes, SysUserRole};
 use crate::domain::dto::{RoleAddDTO, RoleEditDTO, RolePageDTO};
-use crate::domain::vo::SysRoleVO;
+use crate::domain::vo::{SysResVO, SysRoleVO};
 use crate::service::cache_service::ICacheService;
 use crate::service::CONTEXT;
 use crate::util::string::IsEmpty;
@@ -161,7 +161,7 @@ impl SysRoleService {
     pub async fn find_user_permission(
         &self,
         user_id: &str,
-        all_res: &BTreeMap<String, SysRes>,
+        all_res: &BTreeMap<String, SysResVO>,
     ) -> Result<Vec<String>> {
         let user_roles: Vec<SysUserRole> = CONTEXT
             .rbatis

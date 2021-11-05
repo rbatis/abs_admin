@@ -88,7 +88,7 @@ impl SysRoleResService {
         &self,
         arg: Vec<SysRoleVO>,
         role_res_map: &HashMap<String, Vec<SysRoleRes>>,
-        all: &BTreeMap<String, SysRes>,
+        all: &BTreeMap<String, SysResVO>,
     ) -> Result<Vec<SysRoleVO>> {
         let mut data = vec![];
         for role in arg {
@@ -99,8 +99,7 @@ impl SysRoleResService {
                     for x in res_ids {
                         match all.get(x.res_id.as_ref().unwrap_or(&String::new())) {
                             Some(res) => {
-                                let vo = SysResVO::from(res);
-                                res_vos.push(vo);
+                                res_vos.push(res.clone());
                             }
                             _ => {}
                         }

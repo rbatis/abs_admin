@@ -103,7 +103,7 @@ impl SysUserRoleService {
     pub async fn find_user_role(
         &self,
         user_id: &str,
-        all_res: &BTreeMap<String, SysRes>,
+        all_res: &BTreeMap<String, SysResVO>,
     ) -> Result<Option<SysRoleVO>> {
         if user_id.is_empty() {
             return Ok(None);
@@ -130,7 +130,7 @@ impl SysUserRoleService {
                     let res = all_res.get(role_res.res_id.as_ref().unwrap_or(&String::new()));
                     match res {
                         Some(res) => {
-                            resources.push(SysResVO::from(res));
+                            resources.push(res.clone());
                         }
                         _ => {}
                     }
@@ -141,7 +141,13 @@ impl SysUserRoleService {
                 name: role.name,
                 parent_id: role.parent_id,
                 del: role.del,
-                create_date: role.create_date,
+                create_date: {
+                    if let Some(v) = role.create_date{
+                        Some(v.inner.naive_local())
+                    }else{
+                        None
+                    }
+                },
                 resource_ids: CONTEXT.sys_res_service.make_res_ids(&resources),
                 resources: resources,
                 childs: None,
