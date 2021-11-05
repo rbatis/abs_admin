@@ -2,6 +2,8 @@
 
 ![简体中文](README_CH.md)
 
+![demo](demo.png)
+
 - Rock solid (Rust language), high performance, no GC, no memory leaks, no coroutine contention
 
 DDD domain driver,Mysql,Redis, general middleware and database, general enterprise-level framework selection
