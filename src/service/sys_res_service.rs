@@ -27,10 +27,10 @@ impl SysResService {
                 CONTEXT
                     .rbatis
                     .new_wrapper()
-                    .eq(field_name!(SysRes.del), 0)
-                    .do_if(!arg.name.is_empty(), |w| w.like(field_name!(SysRes.name), &arg.name))
-                    .is_null(field_name!(SysRes.parent_id))
-                    .order_by(false, &[field_name!(SysRes.create_date)]),
+                    .eq(SysRes::del(), 0)
+                    .do_if(!arg.name.is_empty(), |w| w.like(SysRes::name(), &arg.name))
+                    .is_null(SysRes::parent_id())
+                    .order_by(false, &[SysRes::create_date()]),
                 &page_req,
             )
             .await?;
@@ -64,9 +64,9 @@ impl SysResService {
                 CONTEXT
                     .rbatis
                     .new_wrapper()
-                    .eq(field_name!(SysRes.permission), &arg.permission)
+                    .eq(SysRes::permission(), &arg.permission)
                     .or()
-                    .eq(field_name!(SysRes.name), &arg.name),
+                    .eq(SysRes::name(), &arg.name),
             )
             .await?;
         if old.len() > 0 {
@@ -95,11 +95,11 @@ impl SysResService {
             .rbatis
             .update_by_wrapper(
                 &mut data,
-                CONTEXT.rbatis.new_wrapper().eq(field_name!(SysRes.id), &arg.id),
+                CONTEXT.rbatis.new_wrapper().eq(SysRes::id(), &arg.id),
                 &[
-                    Skip::Column(field_name!(SysRes.del)),
-                    Skip::Column(field_name!(SysRes.id)),
-                    Skip::Column(field_name!(SysRes.create_date)),
+                    Skip::Column(SysRes::del()),
+                    Skip::Column(SysRes::id()),
+                    Skip::Column(SysRes::create_date()),
                 ],
             )
             .await?);
@@ -111,12 +111,12 @@ impl SysResService {
     pub async fn remove(&self, id: &str) -> Result<u64> {
         let num = CONTEXT
             .rbatis
-            .remove_by_column::<SysRes, _>(field_name!(SysRes.id), &id.to_string())
+            .remove_by_column::<SysRes, _>(SysRes::id(), &id.to_string())
             .await?;
         //删除父级为id的记录
         CONTEXT
             .rbatis
-            .remove_by_wrapper::<SysRes>(CONTEXT.rbatis.new_wrapper().eq(field_name!(SysRes.parent_id), id))
+            .remove_by_wrapper::<SysRes>(CONTEXT.rbatis.new_wrapper().eq(SysRes::parent_id(), id))
             .await;
         //删除关联数据
         CONTEXT.sys_role_res_service.remove_by_res_id(id).await;
@@ -191,7 +191,7 @@ impl SysResService {
     pub async fn finds(&self, ids: &Vec<String>) -> Result<Vec<SysRes>> {
         Ok(CONTEXT
             .rbatis
-            .fetch_list_by_wrapper(CONTEXT.rbatis.new_wrapper().r#in(field_name!(SysRes.id), ids))
+            .fetch_list_by_wrapper(CONTEXT.rbatis.new_wrapper().r#in(SysRes::id(), ids))
             .await?)
     }
 
@@ -217,8 +217,8 @@ impl SysResService {
                 CONTEXT
                     .rbatis
                     .new_wrapper()
-                    .is_null(field_name!(SysRes.parent_id))
-                    .order_by(false, &[field_name!(SysRes.create_date)]),
+                    .is_null(SysRes::parent_id())
+                    .order_by(false, &[SysRes::create_date()]),
             )
             .await?;
         let all = self.finds_all_map().await?;

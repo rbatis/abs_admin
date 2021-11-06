@@ -30,7 +30,7 @@ impl SysUserRoleService {
             let user_roles = CONTEXT
                 .rbatis
                 .fetch_list_by_wrapper::<SysUserRole>(
-                    CONTEXT.rbatis.new_wrapper().in_(field_name!(SysUserRole.user_id), &user_ids),
+                    CONTEXT.rbatis.new_wrapper().in_(SysUserRole::user_id(), &user_ids),
                 )
                 .await?;
             let user_role_map = rbatis::make_table_field_map!(&user_roles, user_id);
@@ -88,14 +88,14 @@ impl SysUserRoleService {
     pub async fn remove_by_role_id(&self, role_id: &str) -> Result<u64> {
         Ok(CONTEXT
             .rbatis
-            .remove_by_wrapper::<SysUserRole>(CONTEXT.rbatis.new_wrapper().eq(field_name!(SysUserRole.role_id), role_id))
+            .remove_by_wrapper::<SysUserRole>(CONTEXT.rbatis.new_wrapper().eq(SysUserRole::role_id(), role_id))
             .await?)
     }
 
     pub async fn remove_by_user_id(&self, user_id: &str) -> Result<u64> {
         Ok(CONTEXT
             .rbatis
-            .remove_by_wrapper::<SysUserRole>(CONTEXT.rbatis.new_wrapper().eq(field_name!(SysUserRole.user_id), user_id))
+            .remove_by_wrapper::<SysUserRole>(CONTEXT.rbatis.new_wrapper().eq(SysUserRole::user_id(), user_id))
             .await?)
     }
 
@@ -111,7 +111,7 @@ impl SysUserRoleService {
         let user_roles = CONTEXT
             .rbatis
             .fetch_list_by_wrapper::<SysUserRole>(
-                CONTEXT.rbatis.new_wrapper().eq(field_name!(SysUserRole.user_id), user_id),
+                CONTEXT.rbatis.new_wrapper().eq(SysUserRole::user_id(), user_id),
             )
             .await?;
         let role_ids = &rbatis::make_table_field_vec!(&user_roles, role_id);

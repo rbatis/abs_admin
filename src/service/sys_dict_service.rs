@@ -29,9 +29,9 @@ impl SysDictService {
                 CONTEXT
                     .rbatis
                     .new_wrapper()
-                    .do_if(!arg.code.is_empty(), |w| w.eq(field_name!(SysDict.code), &arg.code))
-                    .do_if(!arg.name.is_empty(), |w| w.like(field_name!(SysDict.name), &arg.name))
-                    .order_by(false, &[field_name!(SysDict.create_date)]),
+                    .do_if(!arg.code.is_empty(), |w| w.eq(SysDict::code(), &arg.code))
+                    .do_if(!arg.name.is_empty(), |w| w.like(SysDict::name(), &arg.name))
+                    .order_by(false, &[SysDict::create_date()]),
                 &page_req,
             )
             .await?;
@@ -54,9 +54,9 @@ impl SysDictService {
                 CONTEXT
                     .rbatis
                     .new_wrapper()
-                    .eq(field_name!(SysDict.code), &arg.code)
+                    .eq(SysDict::code(), &arg.code)
                     .and()
-                    .eq(field_name!(SysDict.name), &arg.name),
+                    .eq(SysDict::name(), &arg.name),
             )
             .await?;
         if old.len() > 0 {
@@ -80,8 +80,8 @@ impl SysDictService {
             .rbatis
             .update_by_wrapper(
                 &mut data,
-                CONTEXT.rbatis.new_wrapper().eq(field_name!(SysDict.id), &arg.id),
-                &[Skip::Column(field_name!(SysDict.id)), Skip::Column(field_name!(SysDict.create_date))],
+                CONTEXT.rbatis.new_wrapper().eq(SysDict::id(), &arg.id),
+                &[Skip::Column(SysDict::id()), Skip::Column(SysDict::create_date())],
             )
             .await?);
         self.update_cache().await?;
@@ -92,7 +92,7 @@ impl SysDictService {
     pub async fn remove(&self, id: &str) -> Result<u64> {
         let num = CONTEXT
             .rbatis
-            .remove_batch_by_column::<SysDict, _>(field_name!(SysDict.id), &[id])
+            .remove_batch_by_column::<SysDict, _>(SysDict::id(), &[id])
             .await?;
         if num > 0 {
             self.update_cache().await?;

@@ -27,9 +27,9 @@ impl SysUserService {
         let wrapper = CONTEXT
             .rbatis
             .new_wrapper()
-            .eq(field_name!(SysUserVO.del), 0)
-            .do_if(arg.name.is_some(), |w| w.like(field_name!(SysUserVO.name), &arg.name))
-            .do_if(arg.account.is_some(), |w| w.like(field_name!(SysUserVO.account), &arg.account));
+            .eq(SysUserVO::del(), 0)
+            .do_if(arg.name.is_some(), |w| w.like(SysUserVO::name(), &arg.name))
+            .do_if(arg.account.is_some(), |w| w.like(SysUserVO::account(), &arg.account));
         let sys_user_page: Page<SysUser> = CONTEXT
             .rbatis
             .fetch_page_by_wrapper(
@@ -70,13 +70,13 @@ impl SysUserService {
 
     ///后台用户根据id查找
     pub async fn find(&self, id: &str) -> Result<Option<SysUser>> {
-        let wrapper = CONTEXT.rbatis.new_wrapper().eq(field_name!(SysUser.id), id);
+        let wrapper = CONTEXT.rbatis.new_wrapper().eq(SysUser::id(), id);
         return Ok(CONTEXT.rbatis.fetch_by_wrapper(wrapper).await?);
     }
 
     ///根据账户名查找
     pub async fn find_by_account(&self, account: &str) -> Result<Option<SysUser>> {
-        let wrapper = CONTEXT.rbatis.new_wrapper().eq(field_name!(SysUser.account), account);
+        let wrapper = CONTEXT.rbatis.new_wrapper().eq(SysUser::account(), account);
         return Ok(CONTEXT.rbatis.fetch_by_wrapper(wrapper).await?);
     }
 
@@ -135,7 +135,7 @@ impl SysUserService {
         self.is_need_wait_login_ex().await?;
         let user: Option<SysUser> = CONTEXT
             .rbatis
-            .fetch_by_wrapper(CONTEXT.rbatis.new_wrapper().eq(field_name!(SysUser.account), &arg.account))
+            .fetch_by_wrapper(CONTEXT.rbatis.new_wrapper().eq(SysUser::account(), &arg.account))
             .await?;
         let user = user.ok_or_else(|| Error::from(format!("账号:{} 不存在!", arg.account)))?;
         if user.state.eq(&Some(0)) {
@@ -245,7 +245,7 @@ impl SysUserService {
     pub async fn get_user_info_by_token(&self, token: &JWTToken) -> Result<SignInVO> {
         let user: Option<SysUser> = CONTEXT
             .rbatis
-            .fetch_by_wrapper(CONTEXT.rbatis.new_wrapper().eq(field_name!(SysUser.id), &token.id))
+            .fetch_by_wrapper(CONTEXT.rbatis.new_wrapper().eq(SysUser::id(), &token.id))
             .await?;
         let user = user.ok_or_else(|| Error::from(format!("账号:{} 不存在!", token.account)))?;
         return self.get_user_info(&user).await;
@@ -326,7 +326,7 @@ impl SysUserService {
         }
         let r = CONTEXT
             .rbatis
-            .remove_by_column::<SysUser, _>(field_name!(SysUser.id), &id)
+            .remove_by_column::<SysUser, _>(SysUser::id(), &id)
             .await;
         CONTEXT.sys_user_role_service.remove_by_user_id(id).await?;
         return Ok(r?);

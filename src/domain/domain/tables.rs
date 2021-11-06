@@ -17,6 +17,8 @@ pub struct SysRes {
     pub create_date: Option<DateTimeNative>,
 }
 
+impl_field_name_method!(SysRes{id,parent_id,name,permission,path,del,create_date});
+
 ///角色表
 #[crud_table]
 #[derive(Clone, Debug)]
@@ -29,6 +31,8 @@ pub struct SysRole {
     pub create_date: Option<DateTimeNative>,
 }
 
+impl_field_name_method!(SysRole{id,parent_id,name,del,create_date});
+
 ///角色资源关系表(关系表不使用逻辑删除)
 #[crud_table]
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -40,6 +44,8 @@ pub struct SysRoleRes {
     pub res_id: Option<String>,
     pub create_date: Option<DateTimeNative>,
 }
+
+impl_field_name_method!(SysRoleRes{id,role_id,res_id,create_date});
 
 ///后台用户表
 #[crud_table]
@@ -55,6 +61,8 @@ pub struct SysUser {
     pub create_date: Option<DateTimeNative>,
 }
 
+impl_field_name_method!(SysUser{id,account,password,name,login_check,state,del,create_date});
+
 ///用户角色关系表(关系表不使用逻辑删除)
 #[crud_table]
 #[derive(Clone, Debug)]
@@ -66,6 +74,7 @@ pub struct SysUserRole {
     pub role_id: Option<String>,
     pub create_date: Option<DateTimeNative>,
 }
+impl_field_name_method!(SysUserRole{id,user_id,role_id,create_date});
 ///字典表
 #[crud_table]
 #[derive(Clone, Debug)]
@@ -76,3 +85,4 @@ pub struct SysDict {
     pub state: Option<i32>,
     pub create_date: Option<DateTimeNative>,
 }
+impl_field_name_method!(SysDict{id,name,code,state,create_date});
