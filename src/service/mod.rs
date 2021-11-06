@@ -48,7 +48,7 @@ impl Default for ServiceContext {
                 println!("[abs_admin] cache_type: redis");
             }
             e => {
-                panic!("[abs_admin] unsupport cache type of {}", e);
+                panic!("[abs_admin] unsupport of cache_type: \"{}\"", e);
             }
         }
         ServiceContext {
