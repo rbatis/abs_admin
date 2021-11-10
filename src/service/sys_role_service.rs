@@ -96,7 +96,7 @@ impl SysRoleService {
 
     pub async fn finds_all_map(&self) -> Result<HashMap<String, SysRole>> {
         let all = self.finds_all().await?;
-        let mut result = HashMap::new();
+        let mut result = HashMap::with_capacity(all.capacity());
         for x in all {
             result.insert(x.id.clone().unwrap_or_default(), x);
         }

@@ -64,7 +64,7 @@ impl SysRoleResService {
                 CONTEXT.rbatis.new_wrapper().r#in(SysRoleRes::role_id(), &role_ids),
             )
             .await?;
-        let mut role_res_map: HashMap<String, Vec<SysRoleRes>> = HashMap::new();
+        let mut role_res_map: HashMap<String, Vec<SysRoleRes>> = HashMap::with_capacity(role_res_vec.capacity());
         for role_res in role_res_vec {
             let role_id = role_res.role_id.clone().unwrap_or_default();
             if role_res_map.get(&role_id).is_none() {
@@ -73,12 +73,16 @@ impl SysRoleResService {
             }
             let sets = role_res_map.get_mut(&role_id).unwrap();
             //去重添加
+            let mut is_push = true;
             for x in sets.iter() {
                 if x.id.eq(&role_res.id) {
-                    continue;
+                    is_push = false;
+                    break;
                 }
             }
-            sets.push(role_res);
+            if is_push {
+                sets.push(role_res);
+            }
         }
         return Ok(role_res_map);
     }
