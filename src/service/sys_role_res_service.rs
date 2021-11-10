@@ -1,4 +1,4 @@
-use std::collections::{BTreeMap, HashMap};
+use std::collections::{BTreeMap, HashMap, HashSet};
 
 use crate::error::Error;
 use crate::error::Result;
@@ -56,7 +56,7 @@ impl SysRoleResService {
     async fn find_role_res_map(
         &self,
         arg: &Vec<SysRoleVO>,
-    ) -> Result<HashMap<String, Vec<SysRoleRes>>> {
+    ) -> Result<HashMap<String, HashSet<SysRoleRes>>> {
         let role_ids = self.loop_find_role_ids(arg);
         let role_res_vec = CONTEXT
             .rbatis
@@ -64,25 +64,16 @@ impl SysRoleResService {
                 CONTEXT.rbatis.new_wrapper().r#in(SysRoleRes::role_id(), &role_ids),
             )
             .await?;
-        let mut role_res_map: HashMap<String, Vec<SysRoleRes>> = HashMap::with_capacity(role_res_vec.capacity());
+        let mut role_res_map: HashMap<String, HashSet<SysRoleRes>> = HashMap::with_capacity(role_res_vec.capacity());
         for role_res in role_res_vec {
             let role_id = role_res.role_id.clone().unwrap_or_default();
             if role_res_map.get(&role_id).is_none() {
-                let datas = vec![];
+                let datas = HashSet::new();
                 role_res_map.insert(role_id.clone(), datas);
             }
             let sets = role_res_map.get_mut(&role_id).unwrap();
             //去重添加
-            let mut is_push = true;
-            for x in sets.iter() {
-                if x.id.eq(&role_res.id) {
-                    is_push = false;
-                    break;
-                }
-            }
-            if is_push {
-                sets.push(role_res);
-            }
+            sets.insert(role_res);
         }
         return Ok(role_res_map);
     }
@@ -91,7 +82,7 @@ impl SysRoleResService {
     fn loop_set_res_vec(
         &self,
         arg: Vec<SysRoleVO>,
-        role_res_map: &HashMap<String, Vec<SysRoleRes>>,
+        role_res_map: &HashMap<String, HashSet<SysRoleRes>>,
         all: &BTreeMap<String, SysResVO>,
     ) -> Result<Vec<SysRoleVO>> {
         let mut data = vec![];

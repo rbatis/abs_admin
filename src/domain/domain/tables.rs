@@ -35,7 +35,7 @@ impl_field_name_method!(SysRole{id,parent_id,name,del,create_date});
 
 ///角色资源关系表(关系表不使用逻辑删除)
 #[crud_table]
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq, Hash)]
 pub struct SysRoleRes {
     pub id: Option<String>,
     //角色id
