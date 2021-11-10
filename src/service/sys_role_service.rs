@@ -180,25 +180,16 @@ impl SysRoleService {
 
     ///死循环找出父-子 关联关系数组
     pub fn loop_find_childs(&self, arg: &mut SysRoleVO, all: &HashMap<String, SysRole>) {
-        let mut childs: Option<Vec<SysRoleVO>> = None;
+        let mut childs = vec![];
         for (key, x) in all {
             if x.parent_id.is_some() && x.parent_id.eq(&arg.id) {
                 let mut item = SysRoleVO::from(x.clone());
                 self.loop_find_childs(&mut item, all);
-                match &mut childs {
-                    Some(childs) => {
-                        childs.push(item);
-                    }
-                    None => {
-                        let mut vec = vec![];
-                        vec.push(item);
-                        childs = Some(vec);
-                    }
-                }
+                childs.push(item);
             }
         }
-        if childs.is_some() {
-            arg.childs = Some(childs.unwrap());
+        if !childs.is_empty() {
+            arg.childs = Some(childs);
         }
     }
 }

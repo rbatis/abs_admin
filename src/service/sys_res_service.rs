@@ -128,14 +128,11 @@ impl SysResService {
         let mut ids = vec![];
         for x in args {
             ids.push(x.id.clone().unwrap_or_default());
-            match &x.childs {
-                Some(childs) => {
-                    let child_ids = self.make_res_ids(childs);
-                    for child in child_ids {
-                        ids.push(child);
-                    }
+            if let Some(childs) = &x.childs{
+                let child_ids = self.make_res_ids(childs);
+                for child in child_ids {
+                    ids.push(child);
                 }
-                _ => {}
             }
         }
         ids
@@ -250,25 +247,16 @@ impl SysResService {
 
     ///死循环找出父-子 关联关系数组
     pub fn loop_find_childs(&self, arg: &mut SysResVO, all_res: &BTreeMap<String, SysResVO>) {
-        let mut childs: Option<Vec<SysResVO>> = None;
+        let mut childs = vec![];
         for (key, x) in all_res {
             if x.parent_id.is_some() && x.parent_id.eq(&arg.id) {
                 let mut item = x.clone();
                 self.loop_find_childs(&mut item, all_res);
-                match &mut childs {
-                    Some(childs) => {
-                        childs.push(item);
-                    }
-                    None => {
-                        let mut vec = vec![];
-                        vec.push(item);
-                        childs = Some(vec);
-                    }
-                }
+                childs.push(item);
             }
         }
-        if childs.is_some() {
-            arg.childs = childs;
+        if !childs.is_empty() {
+            arg.childs = Some(childs);
         }
     }
 }

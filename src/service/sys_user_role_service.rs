@@ -38,27 +38,17 @@ impl SysUserRoleService {
             let roles = CONTEXT.sys_role_service.finds(&role_ids).await?;
             let roles_map = rbatis::make_table_field_map!(&roles, id);
             for mut x in &mut vo.records {
-                let user_role = user_role_map.get(&x.id.clone().unwrap_or_default());
-                match user_role {
-                    Some(user_role) => {
-                        match &user_role.role_id {
-                            Some(role_id) => {
-                                let role = roles_map.get(role_id).cloned();
-                                x.role = SysRoleVO::from_option(role);
-                                //查找子集角色
-                                match &mut x.role {
-                                    None => {}
-                                    Some(role_vo) => {
-                                        CONTEXT
-                                            .sys_role_service
-                                            .loop_find_childs(role_vo, &all_role);
-                                    }
-                                }
-                            }
-                            _ => {}
+                if let Some(user_role) = user_role_map.get(&x.id.clone().unwrap_or_default()) {
+                    if let Some(role_id) = &user_role.role_id {
+                        let role = roles_map.get(role_id).cloned();
+                        x.role = SysRoleVO::from_option(role);
+                        //查找子集角色
+                        if let Some(role_vo) = &mut x.role{
+                            CONTEXT
+                                .sys_role_service
+                                .loop_find_childs(role_vo, &all_role);
                         }
                     }
-                    _ => {}
                 }
             }
         }
@@ -127,12 +117,8 @@ impl SysUserRoleService {
             let mut resources = vec![];
             for role_res in &role_res_vec {
                 if role.id.is_some() && role.id.eq(&role_res.role_id) {
-                    let res = all_res.get(role_res.res_id.as_ref().unwrap_or(&String::new()));
-                    match res {
-                        Some(res) => {
-                            resources.push(res.clone());
-                        }
-                        _ => {}
+                    if let Some(res) = all_res.get(role_res.res_id.as_ref().unwrap_or(&String::new())){
+                        resources.push(res.clone());
                     }
                 }
             }
@@ -142,9 +128,9 @@ impl SysUserRoleService {
                 parent_id: role.parent_id,
                 del: role.del,
                 create_date: {
-                    if let Some(v) = role.create_date{
+                    if let Some(v) = role.create_date {
                         Some(v.inner.naive_local())
-                    }else{
+                    } else {
                         None
                     }
                 },

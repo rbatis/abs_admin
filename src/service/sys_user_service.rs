@@ -114,18 +114,15 @@ impl SysUserService {
             del: 0.into(),
             create_date: DateTimeNative::now().into(),
         };
-        match &arg.role_id {
-            Some(role_id) => {
-                CONTEXT
-                    .sys_user_role_service
-                    .add(&UserRoleAddDTO {
-                        id: None,
-                        user_id: user.id.clone(),
-                        role_id: arg.role_id.clone(),
-                    })
-                    .await?;
-            }
-            _ => {}
+        if let Some(_) = &arg.role_id{
+            CONTEXT
+                .sys_user_role_service
+                .add(&UserRoleAddDTO {
+                    id: None,
+                    user_id: user.id.clone(),
+                    role_id: arg.role_id.clone(),
+                })
+                .await?;
         }
         return Ok(CONTEXT.rbatis.save(&user, &[]).await?.rows_affected);
     }
