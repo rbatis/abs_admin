@@ -22,7 +22,7 @@ impl From<SysDict> for SysDictVO {
             state: arg.state,
             create_date: {
                 if let Some(v) = arg.create_date {
-                    Some(v.inner.naive_local())
+                    Some(v.inner)
                 } else {
                     None
                 }

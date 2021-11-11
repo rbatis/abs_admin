@@ -129,7 +129,7 @@ impl SysUserRoleService {
                 del: role.del,
                 create_date: {
                     if let Some(v) = role.create_date {
-                        Some(v.inner.naive_local())
+                        Some(v.inner)
                     } else {
                         None
                     }

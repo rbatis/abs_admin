@@ -30,7 +30,7 @@ impl From<SysRes> for SysResVO {
             del: arg.del,
             create_date: {
                 if let Some(x) = arg.create_date{
-                    Some(x.inner.naive_local())
+                    Some(x.inner)
                 }else{
                     None
                 }
@@ -51,7 +51,7 @@ impl From<&SysRes> for SysResVO {
             del: arg.del,
             create_date: {
                 if let Some(x) = &arg.create_date{
-                    Some(x.inner.naive_local())
+                    Some(x.inner)
                 }else{
                     None
                 }

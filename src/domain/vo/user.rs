@@ -33,7 +33,7 @@ impl From<SysUser> for SysUserVO {
             del: arg.del,
             create_date: {
                 if let Some(v) = arg.create_date{
-                    Some(v.inner.naive_local())
+                    Some(v.inner)
                 }else{
                     None
                 }
