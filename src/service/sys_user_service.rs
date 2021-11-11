@@ -270,7 +270,7 @@ impl SysUserService {
             account: user.account.clone().unwrap_or(String::new()),
             permissions: sign_vo.permissions.clone(),
             role_ids: vec![],
-            exp: DateTimeNative::now().timestamp() as usize,
+            exp: DateTimeNative::now().timestamp_millis() as usize,
         };
         sign_vo.access_token = jwt_token.create_token(&CONTEXT.config.jwt_secret)?;
         sign_vo.role = CONTEXT
