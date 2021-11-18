@@ -11,6 +11,7 @@ mod sys_role_service;
 mod sys_sms_service;
 mod sys_user_role_service;
 mod sys_user_service;
+mod sys_auth_service;
 
 pub use crate::config::app_config::ApplicationConfig;
 pub use cache_service::*;
@@ -24,6 +25,7 @@ pub use sys_role_service::*;
 pub use sys_sms_service::*;
 pub use sys_user_role_service::*;
 pub use sys_user_service::*;
+pub use sys_auth_service::*;
 
 pub struct ServiceContext {
     pub config: ApplicationConfig,
@@ -35,6 +37,7 @@ pub struct ServiceContext {
     pub sys_role_res_service: SysRoleResService,
     pub sys_user_role_service: SysUserRoleService,
     pub sys_dict_service: SysDictService,
+    pub sys_auth_service: SysAuthService,
 }
 
 impl Default for ServiceContext {
@@ -42,13 +45,13 @@ impl Default for ServiceContext {
         let config = ApplicationConfig::default();
         match config.cache_type.as_str() {
             "mem" => {
-                println!("[abs_admin] cache_type: mem");
+                println!("[bio_admin] cache_type: mem");
             }
             "redis" => {
-                println!("[abs_admin] cache_type: redis");
+                println!("[bio_admin] cache_type: redis");
             }
             e => {
-                panic!("[abs_admin] unsupport of cache_type: \"{}\"", e);
+                panic!("[bio_admin] unsupport of cache_type: \"{}\"", e);
             }
         }
         ServiceContext {
@@ -62,6 +65,7 @@ impl Default for ServiceContext {
             sys_role_res_service: SysRoleResService {},
             sys_user_role_service: SysUserRoleService {},
             sys_dict_service: SysDictService {},
+            sys_auth_service: SysAuthService{},
             config,
         }
     }

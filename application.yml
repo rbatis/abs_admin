@@ -1,7 +1,7 @@
 #debug模式，true输出控制台日志，false只输出文件日志.生产环境需要关闭debug，rbatis也需移除"debug_mode"
 debug: true
 #名称
-server_name: "dev"
+server_name: "abs_admin"
 #server 地址
 server_url: "0.0.0.0:8000"
 #缓存介质类型,单选("mem","redis")

@@ -1,7 +1,4 @@
-use abs_admin::controller::{
-    img_controller, sys_dict_controller, sys_res_controller, sys_role_controller,
-    sys_user_controller,
-};
+use abs_admin::controller::{img_controller, sys_auth_controller, sys_dict_controller, sys_res_controller, sys_role_controller, sys_user_controller};
 use abs_admin::service::CONTEXT;
 use actix_web::{web, App, HttpResponse, HttpServer, Responder};
 use log::info;
@@ -115,6 +112,9 @@ async fn main() -> std::io::Result<()> {
             .route(
                 "/admin/sys_dict_page",
                 web::post().to(sys_dict_controller::page),
+            )
+            .route("/admin/auth/check",
+                   web::post().to(sys_auth_controller::check)
             )
     })
     .bind(&CONTEXT.config.server_url)?

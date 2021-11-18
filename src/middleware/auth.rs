@@ -59,9 +59,10 @@ where
             let path = req.path().to_string();
             if !is_white_list_api(&path) {
                 //非白名单检查token是否有效
-                match checked_token(token, &path).await {
+                let token_value = token.to_str().unwrap_or("");
+                match checked_token(token_value, &path).await {
                     Ok(data) => {
-                        match check_auth(data, &path).await {
+                        match check_auth(&data, &path).await {
                             Ok(_) => {}
                             Err(e) => {
                                 //仅提示拦截
@@ -108,10 +109,9 @@ fn is_white_list_api(path: &str) -> bool {
 }
 
 ///校验token是否有效，未过期
-async fn checked_token(token: &HeaderValue, path: &str) -> Result<JWTToken, crate::error::Error> {
+pub async fn checked_token(token: &str, path: &str) -> Result<JWTToken, crate::error::Error> {
     //check token alive
-    let token_value = token.to_str().unwrap_or("");
-    let token = JWTToken::verify(&CONTEXT.config.jwt_secret, token_value);
+    let token = JWTToken::verify(&CONTEXT.config.jwt_secret, token);
     match token {
         Ok(token) => {
             return Ok(token);
@@ -123,7 +123,7 @@ async fn checked_token(token: &HeaderValue, path: &str) -> Result<JWTToken, crat
 }
 
 ///权限校验
-async fn check_auth(token: JWTToken, path: &str) -> Result<(), crate::error::Error> {
+pub async fn check_auth(token: &JWTToken, path: &str) -> Result<(), crate::error::Error> {
     let sys_res = CONTEXT.sys_res_service.finds_all().await?;
     //权限校验
     for token_permission in &token.permissions {

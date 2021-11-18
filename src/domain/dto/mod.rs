@@ -3,12 +3,14 @@ pub mod res;
 pub mod role;
 pub mod sign_in;
 pub mod user;
+pub mod auth;
 
 pub use dict::*;
 pub use res::*;
 pub use role::*;
 pub use sign_in::*;
 pub use user::*;
+pub use auth::*;
 
 use serde::{Deserialize, Serialize};
 
