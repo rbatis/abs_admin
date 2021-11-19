@@ -202,7 +202,7 @@ impl SysUserService {
     ///是否需要等待
     pub async fn is_need_wait_login_ex(&self) -> Result<()> {
         if CONTEXT.config.login_fail_retry > 0 {
-            let num: Option<i64> = CONTEXT.cache_service.get_json(REDIS_KEY_RETRY).await?;
+            let num: Option<u64> = CONTEXT.cache_service.get_json(REDIS_KEY_RETRY).await?;
             if num.unwrap_or(0) >= CONTEXT.config.login_fail_retry {
                 let wait_sec: i64 = CONTEXT.cache_service.ttl(REDIS_KEY_RETRY).await?;
                 if wait_sec > 0 {
@@ -219,7 +219,7 @@ impl SysUserService {
     ///增加redis重试记录
     pub async fn add_retry_login_limit_num(&self) -> Result<()> {
         if CONTEXT.config.login_fail_retry > 0 {
-            let num: Option<i64> = CONTEXT.cache_service.get_json(REDIS_KEY_RETRY).await?;
+            let num: Option<u64> = CONTEXT.cache_service.get_json(REDIS_KEY_RETRY).await?;
             let mut num = num.unwrap_or(0);
             if num > CONTEXT.config.login_fail_retry {
                 num = CONTEXT.config.login_fail_retry;

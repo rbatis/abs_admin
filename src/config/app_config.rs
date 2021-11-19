@@ -15,7 +15,7 @@ pub struct ApplicationConfig {
     ///日志目录 "target/logs/"
     pub log_dir: String,
     ///1000
-    pub log_cup: i64,
+    pub log_cup: u64,
     /// "100MB" 日志分割尺寸-单位KB,MB,GB
     pub log_temp_size: String,
     /// 日志打包格式可选“”（空-不压缩）“gzip”（gz压缩包）“zip”（zip压缩包）“lz4”（lz4压缩包（非常快））
@@ -33,9 +33,9 @@ pub struct ApplicationConfig {
     ///权限缓存类型
     pub cache_type: String,
     ///重试
-    pub login_fail_retry: i64,
+    pub login_fail_retry: u64,
     ///重试等待时间
-    pub login_fail_retry_wait_sec: i64,
+    pub login_fail_retry_wait_sec: u64,
 }
 
 ///默认配置
