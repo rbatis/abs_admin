@@ -45,7 +45,8 @@ impl Default for ApplicationConfig {
         //读取配置
         let result:ApplicationConfig = serde_yaml::from_str(yml_data).expect("load config file fail");
         if result.debug {
-            println!("[abs_admin] debug_mode is enable!")
+            println!("[abs_admin] load config:{:?}",result);
+            println!("[abs_admin] ///////////////////// Start On Debug Mode ////////////////////////////");
         } else {
             println!("[abs_admin] release_mode is enable!")
         }
