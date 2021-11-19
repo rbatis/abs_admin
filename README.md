@@ -1,6 +1,6 @@
 # Rust enterprise-class one-stop backend solution
 
-![简体中文](README_CH.md)
+[简体中文](README_CH.md)
 
 ![demo2](demo1.png)
 
