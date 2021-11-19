@@ -2,7 +2,7 @@
 
 ![简体中文](README_CH.md)
 
-![demo](demo.png)
+![demo2](demo1.png)
 
 - Rock solid (Rust language), high performance, no GC, no memory leaks, no coroutine contention
 
