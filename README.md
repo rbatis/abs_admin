@@ -24,27 +24,17 @@ The separation - both before and after the end, based on [Vue - JS] + [Vue - Ant
 
 
 
-| function (including the web front end and rust back-end) | (fx), on (x) |
-
+| function (including the web front end and rust back-end) | support |
 | -------------------------------------------------------- | ------------------ |
-
-| dynamic menu (routing table permissions dynamically generated menu) | |)
-
-| | JWT interceptor check |)
-
-| | JWT account password |)
-
-| set permissions/management (father and son, permissions + menu button permissions, cache redis) | |)
-
-| Settings/role management (father and son, hierarchical level authority tree, cache redis) | |)
-
-| Settings/account management background (hierarchical role tree) | |)
-
-| Settings/keys to constant management | |)
-
-| JWT graphical verification code + password | | x
-
-| JWT text login (based on redis SMS message) | | x
+| dynamic menu (routing table permissions dynamically generated menu) | √ |
+| JWT interceptor check | √ |
+| JWT account password | √ |
+| set permissions/management (father and son, permissions + menu button permissions, cache redis) | √ |
+| Settings/role management (father and son, hierarchical level authority tree, cache redis) | √ |
+| Settings/account management background (hierarchical role tree) | √ |
+| Settings/keys to constant management | √ |
+| JWT graphical verification code + password |  x |
+| JWT text login (based on redis SMS message) |  x |
 
 
 
