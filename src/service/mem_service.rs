@@ -1,18 +1,18 @@
+use std::collections::hash_map::RandomState;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 
 use crate::error::{Error, Result};
 use crate::service::ICacheService;
 use async_trait::async_trait;
-use std::collections::hash_map::RandomState;
-use std::collections::HashMap;
 use std::ops::Sub;
 use std::sync::{Mutex, PoisonError};
 use std::time::{Duration, Instant};
+use indexmap::IndexMap;
 
 ///内存缓存服务
 pub struct MemService {
-    pub cache: Mutex<HashMap<String, (String, Option<(Instant, Duration)>), RandomState>>,
+    pub cache: Mutex<IndexMap<String, (String, Option<(Instant, Duration)>), RandomState>>,
 }
 
 impl MemService {
@@ -20,13 +20,10 @@ impl MemService {
         if let Ok(mut map_lock_guard) = self.cache.lock() {
             let mut need_removed = vec![];
             for (k, v) in map_lock_guard.iter() {
-                match v.1 {
-                    None => {}
-                    Some((i, d)) => {
-                        if i.elapsed() >= d {
-                            //out of time
-                            need_removed.push(k.to_string());
-                        }
+                if let Some((i,d)) = v.1{
+                    if i.elapsed() >= d {
+                        //out of time
+                        need_removed.push(k.to_string());
                     }
                 }
             }
@@ -59,6 +56,7 @@ impl ICacheService for MemService {
         guard.insert(k.to_string(), (v.to_string(), None));
         return Ok(v.to_string());
     }
+
     async fn get_string(&self, k: &str) -> Result<String> {
         self.recycling();
         let guard = self.cache.lock()?;
