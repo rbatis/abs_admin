@@ -27,12 +27,7 @@ impl SysUserRoleService {
         if arg.resp_set_role.unwrap_or(true) {
             let all_role = CONTEXT.sys_role_service.finds_all_map().await?;
             let user_ids = rbatis::make_table_field_vec!(&vo.records, id);
-            let user_roles = CONTEXT
-                .rbatis
-                .fetch_list_by_wrapper::<SysUserRole>(
-                    CONTEXT.rbatis.new_wrapper().in_(SysUserRole::user_id(), &user_ids),
-                )
-                .await?;
+            let user_roles = CONTEXT.rbatis.fetch_list_by_wrapper::<SysUserRole>(CONTEXT.rbatis.new_wrapper().in_(SysUserRole::user_id(), &user_ids)).await?;
             let user_role_map = rbatis::make_table_field_map!(&user_roles, user_id);
             let role_ids = rbatis::make_table_field_vec!(&user_roles, role_id);
             let roles = CONTEXT.sys_role_service.finds(&role_ids).await?;
@@ -43,7 +38,7 @@ impl SysUserRoleService {
                         let role = roles_map.get(role_id).cloned();
                         x.role = SysRoleVO::from_option(role);
                         //查找子集角色
-                        if let Some(role_vo) = &mut x.role{
+                        if let Some(role_vo) = &mut x.role {
                             CONTEXT
                                 .sys_role_service
                                 .loop_find_childs(role_vo, &all_role);
@@ -117,7 +112,7 @@ impl SysUserRoleService {
             let mut resources = vec![];
             for role_res in &role_res_vec {
                 if role.id.is_some() && role.id.eq(&role_res.role_id) {
-                    if let Some(res) = all_res.get(role_res.res_id.as_ref().unwrap_or(&String::new())){
+                    if let Some(res) = all_res.get(role_res.res_id.as_ref().unwrap_or(&String::new())) {
                         resources.push(res.clone());
                     }
                 }
