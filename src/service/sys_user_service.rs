@@ -29,7 +29,8 @@ impl SysUserService {
             .new_wrapper()
             .eq(SysUserVO::del(), 0)
             .do_if(arg.name.is_some(), |w| w.like(SysUserVO::name(), &arg.name))
-            .do_if(arg.account.is_some(), |w| w.like(SysUserVO::account(), &arg.account));
+            .do_if(arg.account.is_some(), |w| w.like(SysUserVO::account(), &arg.account))
+            .order_by(false,&[SysUser::create_date()]);
         let sys_user_page: Page<SysUser> = CONTEXT
             .rbatis
             .fetch_page_by_wrapper(
