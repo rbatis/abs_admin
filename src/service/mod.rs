@@ -13,7 +13,7 @@ mod sys_user_role_service;
 mod sys_user_service;
 mod sys_auth_service;
 
-pub use crate::config::app_config::ApplicationConfig;
+pub use crate::config::config::ApplicationConfig;
 pub use cache_service::*;
 pub use mem_service::*;
 pub use redis_service::*;

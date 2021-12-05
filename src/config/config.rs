@@ -14,8 +14,6 @@ pub struct ApplicationConfig {
     pub logic_deleted: i64,
     ///日志目录 "target/logs/"
     pub log_dir: String,
-    ///1000
-    pub log_cup: u64,
     /// "100MB" 日志分割尺寸-单位KB,MB,GB
     pub log_temp_size: String,
     /// 日志打包格式可选“”（空-不压缩）“gzip”（gz压缩包）“zip”（zip压缩包）“lz4”（lz4压缩包（非常快））

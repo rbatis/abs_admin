@@ -5,7 +5,7 @@ use serde::de::DeserializeOwned;
 use serde::Serialize;
 use std::ops::Deref;
 use std::time::Duration;
-use crate::config::app_config::ApplicationConfig;
+use crate::config::config::ApplicationConfig;
 
 #[async_trait]
 pub trait ICacheService: Sync + Send {

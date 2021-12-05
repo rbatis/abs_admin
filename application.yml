@@ -16,8 +16,6 @@ logic_un_deleted: 0
 logic_deleted: 1
 #日志文件存放目录
 log_dir: "target/logs/"
-#日志通道最大缓存日志条数
-log_cup: 10000
 #日志分割尺寸-单位KB,MB,GB
 log_temp_size: "100MB"
 #日志打包格式可选“”（空-不压缩）“gzip”（gz压缩包）“zip”（zip压缩包）“lz4”（lz4压缩包（非常快））

@@ -1,4 +1,4 @@
-use crate::config::app_config::ApplicationConfig;
+use crate::config::config::ApplicationConfig;
 use rbatis::plugin::logic_delete::RbatisLogicDeletePlugin;
 use rbatis::rbatis::Rbatis;
 
