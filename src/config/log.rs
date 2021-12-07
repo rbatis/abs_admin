@@ -10,7 +10,6 @@ pub fn init_log() {
     //init fast log
     fast_log::init_split_log(
         &CONTEXT.config.log_dir,
-        CONTEXT.config.log_cup as usize,
         str_to_temp_size(&CONTEXT.config.log_temp_size),
         str_to_rolling(&CONTEXT.config.log_rolling_type),
         str_to_log_level(&CONTEXT.config.log_level),
