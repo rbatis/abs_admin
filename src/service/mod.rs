@@ -45,13 +45,13 @@ impl Default for ServiceContext {
         let config = ApplicationConfig::default();
         match config.cache_type.as_str() {
             "mem" => {
-                println!("[bio_admin] cache_type: mem");
+                println!("[abs_admin] cache_type: mem");
             }
             "redis" => {
-                println!("[bio_admin] cache_type: redis");
+                println!("[abs_admin] cache_type: redis");
             }
             e => {
-                panic!("[bio_admin] unsupport of cache_type: \"{}\"", e);
+                panic!("[abs_admin] unsupport of cache_type: \"{}\"", e);
             }
         }
         ServiceContext {
