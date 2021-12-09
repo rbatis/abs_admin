@@ -15,7 +15,7 @@ pub struct SysResVO {
     //前端-菜单路径
     pub path: Option<String>,
     pub del: Option<i32>,
-    pub create_date: Option<chrono::NaiveDateTime>,
+    pub create_date: Option<rbatis::DateTimeNative>,
     pub childs: Option<Vec<SysResVO>>,
 }
 
@@ -28,13 +28,7 @@ impl From<SysRes> for SysResVO {
             permission: arg.permission,
             path: arg.path,
             del: arg.del,
-            create_date: {
-                if let Some(x) = arg.create_date{
-                    Some(x.inner)
-                }else{
-                    None
-                }
-            },
+            create_date: arg.create_date,
             childs: None,
         }
     }
@@ -49,13 +43,7 @@ impl From<&SysRes> for SysResVO {
             permission: arg.permission.clone(),
             path: arg.path.clone(),
             del: arg.del,
-            create_date: {
-                if let Some(x) = &arg.create_date{
-                    Some(x.inner)
-                }else{
-                    None
-                }
-            },
+            create_date: arg.create_date,
             childs: None,
         }
     }

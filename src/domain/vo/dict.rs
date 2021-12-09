@@ -10,7 +10,7 @@ pub struct SysDictVO {
     pub name: Option<String>,
     pub code: Option<String>,
     pub state: Option<i32>,
-    pub create_date: Option<chrono::NaiveDateTime>,
+    pub create_date: Option<rbatis::DateTimeNative>,
 }
 
 impl From<SysDict> for SysDictVO {
@@ -20,13 +20,7 @@ impl From<SysDict> for SysDictVO {
             name: arg.name,
             code: arg.code,
             state: arg.state,
-            create_date: {
-                if let Some(v) = arg.create_date {
-                    Some(v.inner)
-                } else {
-                    None
-                }
-            },
+            create_date: arg.create_date,
         }
     }
 }

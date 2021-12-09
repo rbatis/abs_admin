@@ -8,7 +8,7 @@ edition = "2021"
 
 [dependencies]
 #rbatis orm dep must use async-std(Because actix-web relies on tokio0.2)
-bson2 = "2.0"
+rbson = "2.0"
 rbatis = { version = "3.0", default-features = false, features = ["mysql","runtime-async-std-rustls"] }
 #must use async-std(Because actix-web relies on tokio0.2)
 async-std = "1.10"

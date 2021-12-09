@@ -122,13 +122,7 @@ impl SysUserRoleService {
                 name: role.name,
                 parent_id: role.parent_id,
                 del: role.del,
-                create_date: {
-                    if let Some(v) = role.create_date {
-                        Some(v.inner)
-                    } else {
-                        None
-                    }
-                },
+                create_date: role.create_date,
                 resource_ids: CONTEXT.sys_res_service.make_res_ids(&resources),
                 resources: resources,
                 childs: None,

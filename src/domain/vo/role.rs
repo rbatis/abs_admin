@@ -10,7 +10,7 @@ pub struct SysRoleVO {
     //父id(可空)
     pub parent_id: Option<String>,
     pub del: Option<i32>,
-    pub create_date: Option<chrono::NaiveDateTime>,
+    pub create_date: Option<rbatis::DateTimeNative>,
     pub resources: Vec<SysResVO>,
     pub childs: Option<Vec<SysRoleVO>>,
     pub resource_ids: Vec<String>,
@@ -23,13 +23,7 @@ impl From<SysRole> for SysRoleVO {
             name: arg.name,
             parent_id: arg.parent_id,
             del: arg.del,
-            create_date: {
-                if let Some(v) = arg.create_date{
-                    Some(v.inner)
-                }else{
-                    None
-                }
-            },
+            create_date: arg.create_date,
             resources: vec![],
             childs: None,
             resource_ids: vec![],
@@ -45,13 +39,7 @@ impl SysRoleVO {
                 name: arg.name,
                 parent_id: arg.parent_id,
                 del: arg.del,
-                create_date:  {
-                    if let Some(v) = arg.create_date{
-                        Some(v.inner)
-                    }else{
-                        None
-                    }
-                },
+                create_date: arg.create_date,
                 resources: vec![],
                 childs: None,
                 resource_ids: vec![],
