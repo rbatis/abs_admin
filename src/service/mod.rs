@@ -1,16 +1,28 @@
-use rbatis::rbatis::Rbatis;
-
+/// 服务层
+///
+/// 缓存抽象服务
 mod cache_service;
+/// 内存缓存服务
 mod mem_service;
+/// redis服务
 mod redis_service;
+/// 系统配置服务
 mod sys_config_service;
+/// 系统字典服务
 mod sys_dict_service;
+/// 系统权限资源服务
 mod sys_res_service;
+/// 系统角色-权限资源服务
 mod sys_role_res_service;
+/// 系统角色服务
 mod sys_role_service;
+/// 系统短信消息服务
 mod sys_sms_service;
+/// 系统用户/角色服务
 mod sys_user_role_service;
+/// 系统用户服务
 mod sys_user_service;
+/// 系统授权服务
 mod sys_auth_service;
 
 pub use crate::config::config::ApplicationConfig;

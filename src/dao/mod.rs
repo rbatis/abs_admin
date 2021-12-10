@@ -3,7 +3,7 @@ use rbatis::plugin::logic_delete::RbatisLogicDeletePlugin;
 use rbatis::rbatis::Rbatis;
 
 pub mod mapper;
-
+///实例化 rbatis orm 连接池
 pub async fn init_rbatis(config: &ApplicationConfig) -> Rbatis {
     let mut rbatis = Rbatis::new();
     //logic plugin 设置逻辑删除插件
