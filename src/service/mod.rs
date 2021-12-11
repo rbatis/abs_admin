@@ -25,6 +25,7 @@ mod sys_user_service;
 /// 系统授权服务
 mod sys_auth_service;
 
+use rbatis::rbatis::Rbatis;
 pub use crate::config::config::ApplicationConfig;
 pub use cache_service::*;
 pub use mem_service::*;
