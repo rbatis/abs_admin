@@ -43,16 +43,16 @@ impl ICacheService for RedisService {
         let mut conn = self.get_conn().await?;
         let result: RedisResult<Option<String>> =
             redis::cmd("GET").arg(&[k]).query_async(&mut conn).await;
-        match result {
+        return match result {
             Ok(v) => {
-                return Ok(v.unwrap_or(String::new()));
+                Ok(v.unwrap_or(String::new()))
             }
             Err(e) => {
-                return Err(Error::from(format!(
+                Err(Error::from(format!(
                     "RedisService get_string({}) fail:{}",
                     k,
                     e.to_string()
-                )));
+                )))
             }
         }
     }
@@ -60,16 +60,16 @@ impl ICacheService for RedisService {
     ///set_string 自动过期
     async fn set_string_ex(&self, k: &str, v: &str, ex: Option<Duration>) -> Result<String> {
         let mut conn = self.get_conn().await?;
-        if ex.is_none() {
-            return match redis::cmd("SET").arg(&[k, v]).query_async(&mut conn).await {
+        return if ex.is_none() {
+            match redis::cmd("SET").arg(&[k, v]).query_async(&mut conn).await {
                 Ok(v) => Ok(v),
                 Err(e) => Err(Error::from(format!(
                     "RedisService set_string_ex fail:{}",
                     e.to_string()
                 ))),
-            };
+            }
         } else {
-            return match redis::cmd("SET")
+            match redis::cmd("SET")
                 .arg(&[k, v, "EX", &ex.unwrap().as_secs().to_string()])
                 .query_async(&mut conn)
                 .await
@@ -79,7 +79,7 @@ impl ICacheService for RedisService {
                     "RedisService set_string_ex fail:{}",
                     e.to_string()
                 ))),
-            };
+            }
         }
     }
 
