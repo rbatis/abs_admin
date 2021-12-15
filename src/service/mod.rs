@@ -56,22 +56,11 @@ pub struct ServiceContext {
 impl Default for ServiceContext {
     fn default() -> Self {
         let config = ApplicationConfig::default();
-        match config.cache_type.as_str() {
-            "mem" => {
-                println!("[abs_admin] cache_type: mem");
-            }
-            "redis" => {
-                println!("[abs_admin] cache_type: redis");
-            }
-            e => {
-                panic!("[abs_admin] unsupport of cache_type: \"{}\"", e);
-            }
-        }
         ServiceContext {
             rbatis: async_std::task::block_on(async {
                 crate::dao::init_rbatis(&config).await
             }),
-            cache_service: CacheService::new(&config),
+            cache_service: CacheService::new(&config).unwrap(),
             sys_res_service: SysResService {},
             sys_user_service: SysUserService {},
             sys_role_service: SysRoleService {},
