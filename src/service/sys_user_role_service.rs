@@ -12,7 +12,7 @@ use rbatis::core::value::DateTimeNow;
 use rbatis::crud::CRUD;
 use rbatis::plugin::object_id::ObjectId;
 use rbatis::plugin::page::Page;
-
+use crate::util::options::OptionUnwrapOrDefault;
 
 ///用户角色服务
 pub struct SysUserRoleService {}
@@ -112,7 +112,7 @@ impl SysUserRoleService {
             let mut resources = vec![];
             for role_res in &role_res_vec {
                 if role.id.is_some() && role.id.eq(&role_res.role_id) {
-                    if let Some(res) = all_res.get(role_res.res_id.as_ref().unwrap_or(&String::new())) {
+                    if let Some(res) = all_res.get(role_res.res_id.as_ref().unwrap_or_default()) {
                         resources.push(res.clone());
                     }
                 }

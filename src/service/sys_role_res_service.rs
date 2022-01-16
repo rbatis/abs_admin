@@ -14,7 +14,7 @@ use crate::service::CONTEXT;
 use rbatis::DateTimeNative;
 use rbatis::core::value::DateTimeNow;
 use rbatis::plugin::object_id::ObjectId;
-
+use crate::util::options::OptionUnwrapOrDefault;
 
 /// 角色资源服务
 pub struct SysRoleResService {}
@@ -87,11 +87,11 @@ impl SysRoleResService {
     ) -> Result<Vec<SysRoleVO>> {
         let mut data = vec![];
         for mut role in arg {
-            let res_ids = role_res_map.get(role.id.as_ref().unwrap_or(&"".to_string()));
+            let res_ids = role_res_map.get(role.id.as_ref().unwrap_or_default());
             let mut res_vos = vec![];
             if let Some(res_ids) = res_ids{
                 for x in res_ids {
-                    match all.get(x.res_id.as_ref().unwrap_or(&String::new())) {
+                    match all.get(x.res_id.as_ref().unwrap_or_default()) {
                         Some(res) => {
                             res_vos.push(res.clone());
                         }

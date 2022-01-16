@@ -15,6 +15,7 @@ use crate::util::password_encoder::PasswordEncoder;
 use rbatis::plugin::object_id::ObjectId;
 use std::collections::BTreeMap;
 use std::time::Duration;
+use crate::util::options::OptionUnwrapOrDefault;
 
 const REDIS_KEY_RETRY: &'static str = "login:login_retry";
 
@@ -91,7 +92,7 @@ impl SysUserService {
             return Err(Error::from("用户名和姓名不能为空!"));
         }
         let old_user = self
-            .find_by_account(arg.account.as_ref().unwrap_or(&"".to_string()))
+            .find_by_account(arg.account.as_ref().unwrap_or_default())
             .await?;
         if old_user.is_some() {
             return Err(Error::from(format!(
