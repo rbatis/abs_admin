@@ -269,7 +269,7 @@ impl SysUserService {
         sign_vo.permissions = self.loop_load_level_permission(&user_id, &all_res).await?;
         let jwt_token = JWTToken {
             id: user.id.clone().unwrap_or_default(),
-            account: user.account.clone().unwrap_or_default(),
+            account: user.account.unwrap_or_default(),
             permissions: sign_vo.permissions.clone(),
             role_ids: vec![],
             exp: DateTimeNative::now().timestamp_millis() as usize,
