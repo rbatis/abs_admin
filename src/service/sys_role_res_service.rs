@@ -86,7 +86,7 @@ impl SysRoleResService {
         all: &BTreeMap<String, SysResVO>,
     ) -> Result<Vec<SysRoleVO>> {
         let mut data = vec![];
-        for role in arg {
+        for mut role in arg {
             let res_ids = role_res_map.get(role.id.as_ref().unwrap_or(&"".to_string()));
             let mut res_vos = vec![];
             if let Some(res_ids) = res_ids{
@@ -99,25 +99,16 @@ impl SysRoleResService {
                     }
                 }
             }
-            let mut vo = SysRoleVO {
-                id: role.id.clone(),
-                name: role.name.clone(),
-                parent_id: role.parent_id.clone(),
-                del: role.del.clone(),
-                create_date: role.create_date.clone(),
-                resources: res_vos,
-                childs: None,
-                resource_ids: vec![],
-            };
+            role.resources = res_vos;
             if role.childs.is_some() {
-                vo.childs = Some(self.loop_set_res_vec(
+                role.childs = Some(self.loop_set_res_vec(
                     role.childs.unwrap_or(vec![]),
                     role_res_map,
                     all,
                 )?);
             }
-            vo.resource_ids = CONTEXT.sys_res_service.make_res_ids(&vo.resources);
-            data.push(vo);
+            role.resource_ids = CONTEXT.sys_res_service.make_res_ids(&role.resources);
+            data.push(role);
         }
         return Ok(data);
     }

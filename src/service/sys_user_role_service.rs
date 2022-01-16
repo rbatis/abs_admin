@@ -117,16 +117,10 @@ impl SysUserRoleService {
                     }
                 }
             }
-            role_vos.push(SysRoleVO {
-                id: role.id,
-                name: role.name,
-                parent_id: role.parent_id,
-                del: role.del,
-                create_date: role.create_date,
-                resource_ids: CONTEXT.sys_res_service.make_res_ids(&resources),
-                resources: resources,
-                childs: None,
-            });
+            let mut vo=SysRoleVO::from(role);
+            vo.resource_ids = CONTEXT.sys_res_service.make_res_ids(&resources);
+            vo.resources = resources;
+            role_vos.push(vo);
         }
         if role_vos.is_empty() {
             return Ok(None);
