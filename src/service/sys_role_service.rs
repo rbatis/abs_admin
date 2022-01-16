@@ -9,7 +9,7 @@ use crate::domain::dto::{RoleAddDTO, RoleEditDTO, RolePageDTO};
 use crate::domain::vo::{SysResVO, SysRoleVO};
 use crate::service::cache_service::ICacheService;
 use crate::service::CONTEXT;
-use crate::util::string::IsEmpty;
+use crate::util::string::IsEmptyString;
 
 use std::collections::{BTreeMap, HashMap};
 use rbatis::plugin::object_id::ObjectId;

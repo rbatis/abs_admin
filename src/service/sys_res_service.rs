@@ -10,7 +10,7 @@ use crate::error::Error;
 use crate::error::Result;
 use crate::service::cache_service::ICacheService;
 use crate::service::CONTEXT;
-use crate::util::string::IsEmpty;
+use crate::util::string::IsEmptyString;
 
 const RES_KEY: &'static str = "sys_res:all";
 

@@ -4,7 +4,7 @@ use crate::service::{ICacheService, CONTEXT};
 use actix_web::{web, HttpResponse, Responder};
 use captcha::filters::{Dots, Noise, Wave};
 use captcha::Captcha;
-use crate::util::string::IsEmpty;
+use crate::util::string::IsEmptyString;
 use crate::error::Error;
 
 ///图形验证码接口(注意，debug模式无论缓存是否连接成功都返回图片，release模式则校验缓存(例如redis)是否存储成功)
