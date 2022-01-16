@@ -45,7 +45,7 @@ impl ICacheService for RedisService {
             redis::cmd("GET").arg(&[k]).query_async(&mut conn).await;
         return match result {
             Ok(v) => {
-                Ok(v.unwrap_or(String::new()))
+                Ok(v.unwrap_or_default())
             }
             Err(e) => {
                 Err(Error::from(format!(
