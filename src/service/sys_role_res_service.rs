@@ -14,7 +14,7 @@ use crate::service::CONTEXT;
 use rbatis::DateTimeNative;
 use rbatis::core::value::DateTimeNow;
 use rbatis::plugin::object_id::ObjectId;
-use crate::util::options::OptionUnwrapOrDefault;
+use crate::util::options::OptionStringRefUnwrapOrDefault;
 
 /// 角色资源服务
 pub struct SysRoleResService {}

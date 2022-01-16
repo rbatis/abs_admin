@@ -1,6 +1,6 @@
 use once_cell::sync::Lazy;
 
-pub trait OptionUnwrapOrDefault<T> {
+pub trait OptionStringRefUnwrapOrDefault<T> {
     fn unwrap_or_default(&self) -> T;
 }
 
@@ -9,7 +9,7 @@ static EmptyStr: Lazy<String> = Lazy::new(|| {
 });
 
 
-impl<'a> OptionUnwrapOrDefault<&'a String> for Option<&'a String> {
+impl<'a> OptionStringRefUnwrapOrDefault<&'a String> for Option<&'a String> {
     fn unwrap_or_default(&self) -> &'a String {
         return match self {
             None => { &EmptyStr }

@@ -15,7 +15,7 @@ use crate::util::password_encoder::PasswordEncoder;
 use rbatis::plugin::object_id::ObjectId;
 use std::collections::BTreeMap;
 use std::time::Duration;
-use crate::util::options::OptionUnwrapOrDefault;
+use crate::util::options::OptionStringRefUnwrapOrDefault;
 
 const REDIS_KEY_RETRY: &'static str = "login:login_retry";
 
