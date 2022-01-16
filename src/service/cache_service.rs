@@ -23,13 +23,23 @@ pub struct CacheService {
 }
 
 impl CacheService {
-    pub fn new(cfg:&ApplicationConfig) -> Self {
-        Self {
-            inner: match cfg.cache_type.as_str() {
-                "redis" => Box::new(RedisService::new(&cfg.redis_url)),
-                //"mem"
-                _ => Box::new(MemService::default()),
-            },
+    pub fn new(cfg:&ApplicationConfig) -> crate::error::Result<Self> {
+        match cfg.cache_type.as_str() {
+            "mem" => {
+                println!("[abs_admin] cache_type: mem");
+                Ok(Self{
+                    inner:Box::new(MemService::default())
+                })
+            }
+            "redis" => {
+                println!("[abs_admin] cache_type: redis");
+                Ok(Self{
+                    inner:Box::new(RedisService::new(&cfg.redis_url))
+                })
+            }
+            e => {
+                panic!("[abs_admin] unknown of cache_type: \"{}\",current support 'mem' or 'redis'", e);
+            }
         }
     }
 
