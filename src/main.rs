@@ -21,7 +21,7 @@ async fn main() -> std::io::Result<()> {
     //路由
     HttpServer::new(|| {
         App::new()
-            .wrap(abs_admin::middleware::auth::Auth)
+            //.wrap(abs_admin::middleware::auth::Auth)
             .route("/", web::get().to(index))
             .route(
                 "/admin/sys_login",

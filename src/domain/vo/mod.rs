@@ -14,7 +14,7 @@ pub use sign_in::*;
 use crate::error::Error;
 use crate::service::CONTEXT;
 use actix_http::Response;
-use actix_web::HttpResponse;
+use actix_web::{HttpResponse, Responder};
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 
@@ -81,7 +81,7 @@ where
         }
     }
 
-    pub fn resp_json(&self) -> Response {
+    pub fn resp_json(&self) -> HttpResponse {
         if CONTEXT.config.debug {
             println!("[abs_admin][debug] resp:{}", self.to_string());
         }

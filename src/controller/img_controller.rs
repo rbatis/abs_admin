@@ -1,3 +1,5 @@
+use actix_http::http::StatusCode;
+use actix_http::Response;
 use crate::domain::dto::CatpchaDTO;
 use crate::domain::vo::RespVO;
 use crate::service::{ICacheService, CONTEXT};
@@ -49,5 +51,5 @@ pub async fn captcha(arg: web::Query<CatpchaDTO>) -> impl Responder {
         .set_header("Access-Control-Allow-Origin", "*")
         .set_header("Cache-Control", "no-cache")
         .content_type("image/png")
-        .body(png)
+        .body(png).into()
 }
