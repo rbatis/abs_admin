@@ -1,49 +1,34 @@
 use std::cell::RefCell;
+use std::future::ready;
 use std::pin::Pin;
 use std::rc::Rc;
 use std::task::{Context, Poll};
-
-// use actix_web::dev::{Body, Service, ServiceRequest, ServiceResponse, Transform};
-// use actix_web::http::HeaderValue;
-use actix_web::{error, Error};
+use actix_http::header;
+use actix_http::header::HeaderValue;
+use actix_web::dev::{Service, ServiceRequest, ServiceResponse, Transform};
+use actix_web::error;
+use actix_web::error::ErrorUnauthorized;
 use futures::future::{ok, Ready};
 use futures::Future;
+use reqwest::Body;
 
 use crate::domain::vo::{JWTToken, RespVO};
+use actix_web::{Error};
 use crate::service::CONTEXT;
 pub struct Auth;
 
-// impl<S> Transform<S> for Auth
-// where
-//     S: Service<Request = ServiceRequest, Response = ServiceResponse<Body>, Error = Error> + 'static,
-//     S::Future: 'static,
-// {
-//     type Request = ServiceRequest;
-//     type Response = ServiceResponse<Body>;
-//     type Error = Error;
-//     type Transform = AuthMiddleware<S>;
-//     type InitError = ();
-//     type Future = Ready<Result<Self::Transform, Self::InitError>>;
 //
-//     fn new_transform(&self, service: S) -> Self::Future {
-//         ok(AuthMiddleware {
-//             service: Rc::new(RefCell::new(service)),
-//         })
-//     }
+// pub struct AuthMiddleware<S> {
+//     service: Rc<RefCell<S>>,
 // }
-
-pub struct AuthMiddleware<S> {
-    service: Rc<RefCell<S>>,
-}
-
-// impl<S> Service for AuthMiddleware<S>
+//
+// impl<S> Service<ServiceRequest> for AuthMiddleware<S>
 // where
-//     S: Service<Request = ServiceRequest, Response = ServiceResponse<Body>, Error = Error> + 'static,
+//     S: Service<ServiceRequest, Response = ServiceResponse<Body>, Error = Error> + 'static,
 //     S::Future: 'static,
 // {
-//     type Request = ServiceRequest;
 //     type Response = ServiceResponse<Body>;
-//     type Error = Error;
+//     type Error = <S as actix_web::dev::Service<ServiceRequest>>::Error;
 //     type Future = Pin<Box<dyn Future<Output = Result<Self::Response, Self::Error>>>>;
 //
 //     fn poll_ready(&mut self, cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
@@ -82,9 +67,7 @@ pub struct AuthMiddleware<S> {
 //                             msg: Some(format!("Unauthorized for:{}", e.to_string())),
 //                             data: None,
 //                         };
-//                         return Err(error::ErrorUnauthorized(
-//                             serde_json::json!(&resp).to_string(),
-//                         ));
+//                         return Err(error::ErrorUnauthorized(serde_json::json!(&resp).to_string()));
 //                     }
 //                 }
 //             }
@@ -96,7 +79,7 @@ pub struct AuthMiddleware<S> {
 // }
 
 ///是否处在白名单接口中
-fn is_white_list_api(path: &str) -> bool {
+pub fn is_white_list_api(path: &str) -> bool {
     if path.eq("/") {
         return true;
     }
