@@ -45,3 +45,8 @@ async-trait = "0.1"
 indexmap = "1.7.0"
 
 once_cell = "1.9"
+
+[profile.release]
+lto = true
+opt-level = 3
+codegen-units = 1
