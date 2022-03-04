@@ -16,7 +16,7 @@ async fn index() -> impl Responder {
         .body("[abs_admin] Hello !")
 }
 
-#[actix_web::main]
+#[tokio::main]
 async fn main() -> std::io::Result<()> {
     //日志追加器
     abs_admin::config::log::init_log();
