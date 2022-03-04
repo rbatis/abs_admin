@@ -87,11 +87,11 @@ impl SysRoleResService {
     ) -> Result<Vec<SysRoleVO>> {
         let mut data = vec![];
         for mut role in arg {
-            let res_ids = role_res_map.get(role.id.as_ref().unwrap_or_default());
+            let res_ids = role_res_map.get(role.id.as_ref().unwrap_or_def());
             let mut res_vos = vec![];
             if let Some(res_ids) = res_ids{
                 for x in res_ids {
-                    match all.get(x.res_id.as_ref().unwrap_or_default()) {
+                    match all.get(x.res_id.as_ref().unwrap_or_def()) {
                         Some(res) => {
                             res_vos.push(res.clone());
                         }

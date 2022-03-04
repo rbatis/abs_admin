@@ -24,8 +24,8 @@ fast_log = { version="1.4", features = ["lz4","zip", "gzip"]}
 #futures
 futures = "0.3"
 #web server
-actix-web = "4.0.0-rc.2"
-actix-http = "2.2"
+actix-web = "4.0"
+actix-http = "3"
 #redis
 redis = {version = "0.20", features = ["async-std-comp"] }
 #jwt

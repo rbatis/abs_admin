@@ -92,7 +92,7 @@ impl SysUserService {
             return Err(Error::from("用户名和姓名不能为空!"));
         }
         let old_user = self
-            .find_by_account(arg.account.as_ref().unwrap_or_default())
+            .find_by_account(arg.account.as_ref().unwrap_or_def())
             .await?;
         if old_user.is_some() {
             return Err(Error::from(format!(
