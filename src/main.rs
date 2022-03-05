@@ -26,15 +26,13 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
         App::new()
             .wrap_fn(|req, srv| {
-                let value = HeaderValue::from_str("").unwrap();
-                let token = req.headers().get("access_token").unwrap_or(&value).clone();
+                let token = req.headers().get("access_token").map(|v|v.to_str().unwrap_or_default().to_string()).unwrap_or_default();
                 let path = req.path().to_string();
                 let fut = srv.call(req);
                 Box::pin(async move {
                     if !is_white_list_api(&path) {
                         //非白名单检查token是否有效
-                        let token_value = token.to_str().unwrap_or("");
-                        match checked_token(token_value, &path).await {
+                        match checked_token(&token, &path).await {
                             Ok(data) => {
                                 match check_auth(&data, &path).await {
                                     Ok(_) => {}
