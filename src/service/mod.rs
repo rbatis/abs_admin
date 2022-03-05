@@ -53,6 +53,22 @@ pub struct ServiceContext {
     pub sys_auth_service: SysAuthService,
 }
 
+impl ServiceContext {
+    pub async fn link_db(&self) {
+        //连接数据库
+        println!("[abs_admin] rbatis link database ({})...", CONTEXT.config.database_url);
+        CONTEXT.rbatis
+            .link(&CONTEXT.config.database_url)
+            .await
+            .expect("[abs_admin] rbatis link database fail!");
+        println!("[abs_admin] rbatis link database success!");
+        log::info!(
+        " - Local:   http://{}",
+        CONTEXT.config.server_url.replace("0.0.0.0", "127.0.0.1")
+    );
+    }
+}
+
 impl Default for ServiceContext {
     fn default() -> Self {
         let config = ApplicationConfig::default();
@@ -65,7 +81,7 @@ impl Default for ServiceContext {
             sys_role_res_service: SysRoleResService {},
             sys_user_role_service: SysUserRoleService {},
             sys_dict_service: SysDictService {},
-            sys_auth_service: SysAuthService{},
+            sys_auth_service: SysAuthService {},
             config,
         }
     }
