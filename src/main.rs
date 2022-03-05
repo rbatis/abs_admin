@@ -11,8 +11,8 @@ use actix_web::dev::{Service, ServiceResponse};
 
 async fn index() -> impl Responder {
     HttpResponse::Ok()
-        .set_header("Access-Control-Allow-Origin", "*")
-        .set_header("Cache-Control", "no-cache")
+        .insert_header(("Access-Control-Allow-Origin", "*"))
+        .insert_header(("Cache-Control", "no-cache"))
         .body("[abs_admin] Hello !")
 }
 
