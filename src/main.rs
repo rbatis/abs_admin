@@ -20,6 +20,14 @@ async fn index() -> impl Responder {
 async fn main() -> std::io::Result<()> {
     //日志追加器
     abs_admin::config::log::init_log();
+    //连接数据库
+    println!("[abs_admin] rbatis link database ({})...", CONTEXT.config.database_url);
+    CONTEXT.rbatis
+        .link(&CONTEXT.config.database_url)
+        .await
+        .expect("[abs_admin] rbatis link database fail!");
+    println!("[abs_admin] rbatis link database success!");
+
     info!(
         " - Local:   http://{}",
         CONTEXT.config.server_url.replace("0.0.0.0", "127.0.0.1")

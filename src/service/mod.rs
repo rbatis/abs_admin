@@ -57,9 +57,7 @@ impl Default for ServiceContext {
     fn default() -> Self {
         let config = ApplicationConfig::default();
         ServiceContext {
-            rbatis: futures::executor::block_on(async {
-                crate::dao::init_rbatis(&config).await
-            }),
+            rbatis: crate::dao::init_rbatis(&config),
             cache_service: CacheService::new(&config).unwrap(),
             sys_res_service: SysResService {},
             sys_user_service: SysUserService {},

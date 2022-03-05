@@ -4,7 +4,7 @@ use rbatis::rbatis::Rbatis;
 
 pub mod mapper;
 ///实例化 rbatis orm 连接池
-pub async fn init_rbatis(config: &ApplicationConfig) -> Rbatis {
+pub  fn init_rbatis(config: &ApplicationConfig) -> Rbatis {
     let mut rbatis = Rbatis::new();
     //logic plugin 设置逻辑删除插件
     rbatis.logic_plugin = Some(Box::new(RbatisLogicDeletePlugin::new_opt(
@@ -17,12 +17,5 @@ pub async fn init_rbatis(config: &ApplicationConfig) -> Rbatis {
             r#"已使用release模式，但是rbatis仍使用debug模式！请删除 Cargo.toml 中 rbatis的配置 features = ["debug_mode"]"#
         );
     }
-    //连接数据库
-    println!("[abs_admin] rbatis link database ({})...", config.database_url);
-    rbatis
-        .link(&config.database_url)
-        .await
-        .expect("[abs_admin] rbatis link database fail!");
-    println!("[abs_admin] rbatis link database success!");
     return rbatis;
 }
