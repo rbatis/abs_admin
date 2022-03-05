@@ -16,6 +16,7 @@ async fn index() -> impl Responder {
         .body("[abs_admin] Hello !")
 }
 
+/// use tokio,because Rbatis specifies the runtime-tokio
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
     //日志追加器
