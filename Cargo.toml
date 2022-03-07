@@ -25,7 +25,7 @@ fast_log = { version = "1.5", features = ["lz4", "zip", "gzip"] }
 actix-web = "4.0"
 actix-http = "3"
 #redis
-redis = { version = "0.20", features = ["async-std-comp"] }
+redis = { version = "0.20", features = ["tokio-comp"] }
 #jwt
 jsonwebtoken = "7"
 #snowflake
@@ -34,7 +34,7 @@ md5 = "0.7.0"
 #captcha
 captcha = "0.0.8"
 #http client,use rust-tls replace to native tls
-reqwest = { version = "0.11", default-features = false, features = ["json", "rustls-tls"] }
+reqwest = { version = "0.11", default-features = false, features = ["json", "tokio-rustls"] }
 #image code
 image = "0.23"
 #async trait
