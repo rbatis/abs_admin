@@ -41,7 +41,7 @@ impl SysResService {
         }
         let mut datas = vec![];
         for x in data.records {
-            let mut vo = SysResVO::from(&x);
+            let mut vo = SysResVO::from(x);
             vo.set_childs_recursive(&all_res_vo);
             datas.push(vo);
         }

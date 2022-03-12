@@ -34,21 +34,6 @@ impl From<SysRes> for SysResVO {
     }
 }
 
-impl From<&SysRes> for SysResVO {
-    fn from(arg: &SysRes) -> Self {
-        Self {
-            id: arg.id.clone(),
-            parent_id: arg.parent_id.clone(),
-            name: arg.name.clone(),
-            permission: arg.permission.clone(),
-            path: arg.path.clone(),
-            del: arg.del,
-            create_date: arg.create_date,
-            childs: None,
-        }
-    }
-}
-
 impl SysResVO {
     pub fn get_father_id(&self) -> &Option<String> {
         &self.parent_id
