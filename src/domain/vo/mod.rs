@@ -13,8 +13,7 @@ pub use sign_in::*;
 
 use crate::error::Error;
 use crate::service::CONTEXT;
-use actix_http::Response;
-use actix_web::{HttpResponse, Responder};
+use actix_web::{HttpResponse};
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 
@@ -86,9 +85,9 @@ where
             println!("[abs_admin][debug] resp:{}", self.to_string());
         }
         return HttpResponse::Ok()
-            .set_header("Access-Control-Allow-Origin", "*")
-            .set_header("Cache-Control", "no-cache")
-            .set_header("Content-Type", "text/json;charset=UTF-8")
+            .insert_header(("Access-Control-Allow-Origin", "*"))
+            .insert_header(("Cache-Control", "no-cache"))
+            .insert_header(("Content-Type", "text/json;charset=UTF-8"))
             .body(self.to_string());
     }
 }

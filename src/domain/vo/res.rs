@@ -1,6 +1,5 @@
 use crate::domain::domain::SysRes;
 use std::collections::HashMap;
-use chrono::Local;
 
 ///权限资源表
 #[crud_table(table_name: "sys_res" | table_columns: "id,parent_id,name,permission,path,del")]
