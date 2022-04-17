@@ -56,7 +56,7 @@ async fn main() -> std::io::Result<()> {
                             }
                         }
                     }
-                    let mut res = fut.await?;
+                    let res = fut.await?;
                     Ok(res)
                 })
             })

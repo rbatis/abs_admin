@@ -1,7 +1,4 @@
 use crate::domain::domain::SysDict;
-use std::collections::HashMap;
-use chrono::Local;
-
 ///权限资源表
 #[crud_table(table_name: "sys_dict" | table_columns: "id,name,code,state")]
 #[derive(Clone, Debug)]

@@ -57,7 +57,6 @@ mod test {
     use std::thread::sleep;
     use std::time::Duration;
     use rbatis::DateTimeNative;
-    use rbatis::DateTimeNative;
     use crate::domain::vo::JWTToken;
 
     #[test]

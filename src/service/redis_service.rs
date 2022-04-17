@@ -2,9 +2,6 @@ use std::time::Duration;
 
 use log::error;
 use redis::aio::Connection;
-use serde::de::DeserializeOwned;
-use serde::Serialize;
-
 use crate::error::{Error, Result};
 use crate::service::ICacheService;
 use async_trait::async_trait;

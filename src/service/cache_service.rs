@@ -3,7 +3,6 @@ use crate::service::{MemService, RedisService};
 use async_trait::async_trait;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
-use std::ops::Deref;
 use std::time::Duration;
 use crate::config::config::ApplicationConfig;
 

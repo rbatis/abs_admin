@@ -8,7 +8,6 @@ use crate::domain::dto::{ResEditDTO, ResPageDTO};
 use crate::domain::vo::SysResVO;
 use crate::error::Error;
 use crate::error::Result;
-use crate::service::cache_service::ICacheService;
 use crate::service::CONTEXT;
 use crate::util::string::IsEmptyString;
 

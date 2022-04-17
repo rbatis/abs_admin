@@ -1,16 +1,4 @@
-use std::cell::RefCell;
-use std::future::ready;
-use std::pin::Pin;
-use std::rc::Rc;
-use std::task::{Context, Poll};
-use actix_http::header;
-use actix_http::header::HeaderValue;
-use actix_web::dev::{Service, ServiceRequest, ServiceResponse, Transform};
-use actix_web::error;
-use actix_web::error::ErrorUnauthorized;
-use reqwest::Body;
-use crate::domain::vo::{JWTToken, RespVO};
-use actix_web::{Error};
+use crate::domain::vo::{JWTToken};
 use crate::service::CONTEXT;
 pub struct Auth;
 
