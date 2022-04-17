@@ -1,4 +1,5 @@
 use std::collections::hash_map::RandomState;
+use std::collections::HashMap;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 
@@ -12,7 +13,7 @@ use indexmap::IndexMap;
 
 ///内存缓存服务
 pub struct MemService {
-    pub cache: Mutex<IndexMap<String, (String, Option<(Instant, Duration)>), RandomState>>,
+    pub cache: Mutex<HashMap<String, (String, Option<(Instant, Duration)>), RandomState>>,
 }
 
 impl MemService {
