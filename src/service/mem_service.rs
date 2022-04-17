@@ -9,7 +9,6 @@ use async_trait::async_trait;
 use std::ops::Sub;
 use std::sync::{Mutex, PoisonError};
 use std::time::{Duration, Instant};
-use indexmap::IndexMap;
 
 ///内存缓存服务
 pub struct MemService {
