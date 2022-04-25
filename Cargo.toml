@@ -22,7 +22,7 @@ lazy_static = "1.4.0"
 log = "0.4"
 fast_log = { version = "1.5", features = ["lz4", "zip", "gzip"] }
 #web server
-actix-web = "4.0"
+actix-web = {version="4.0", default-features = false, features = ["macros"]}
 #redis
 redis = { version = "0.20", features = ["tokio-comp"] }
 #jwt
