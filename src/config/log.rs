@@ -72,13 +72,13 @@ fn str_to_rolling(arg: &str) -> RollingType {
     }
 }
 
-fn str_to_log_level(arg: &str) -> log::Level {
+fn str_to_log_level(arg: &str) -> log::LevelFilter {
     return match arg {
-        "warn" => log::Level::Warn,
-        "error" => log::Level::Error,
-        "trace" => log::Level::Trace,
-        "info" => log::Level::Info,
-        "debug" => log::Level::Debug,
-        _ => log::Level::Info,
+        "warn" => log::LevelFilter::Warn,
+        "error" => log::LevelFilter::Error,
+        "trace" => log::LevelFilter::Trace,
+        "info" => log::LevelFilter::Info,
+        "debug" => log::LevelFilter::Debug,
+        _ => log::LevelFilter::Info,
     };
 }
