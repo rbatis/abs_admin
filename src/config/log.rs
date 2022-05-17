@@ -74,6 +74,7 @@ fn str_to_rolling(arg: &str) -> RollingType {
 
 fn str_to_log_level(arg: &str) -> log::LevelFilter {
     return match arg {
+        "off" => log::LevelFilter::Off,
         "warn" => log::LevelFilter::Warn,
         "error" => log::LevelFilter::Error,
         "trace" => log::LevelFilter::Trace,

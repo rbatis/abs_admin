@@ -24,7 +24,7 @@ log_temp_size: "100MB"
 log_pack_compress: ""
 #日志滚动保留-保留全部: All,按时间保留(秒): KeepTime(i64),按版本保留: KeepNum(i64)
 log_rolling_type: "KeepNum(20)"
-#日志等级-info,error,warn,debug,trace
+#日志等级: off,info,error,warn,debug,trace
 log_level: "info"
 #JwtToken秘钥
 jwt_secret: "abs_admin"
