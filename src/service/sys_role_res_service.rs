@@ -54,25 +54,26 @@ impl SysRoleResService {
         &self,
         arg: &Vec<SysRoleVO>,
     ) -> Result<HashMap<String, HashSet<SysRoleRes>>> {
-        let role_ids = self.loop_find_role_ids(arg);
-        let role_res_vec = CONTEXT
-            .rbatis
-            .fetch_list_by_wrapper::<SysRoleRes>(
-                CONTEXT.rbatis.new_wrapper().r#in(SysRoleRes::role_id(), &role_ids),
-            )
-            .await?;
-        let mut role_res_map: HashMap<String, HashSet<SysRoleRes>> = HashMap::with_capacity(role_res_vec.capacity());
-        for role_res in role_res_vec {
-            let role_id = role_res.role_id.clone().unwrap_or_default();
-            if role_res_map.get(&role_id).is_none() {
-                let datas = HashSet::new();
-                role_res_map.insert(role_id.clone(), datas);
-            }
-            let sets = role_res_map.get_mut(&role_id).unwrap();
-            //去重添加
-            sets.insert(role_res);
-        }
-        return Ok(role_res_map);
+        // let role_ids = self.loop_find_role_ids(arg);
+        // let role_res_vec = CONTEXT
+        //     .rbatis
+        //     .fetch_list_by_wrapper::<SysRoleRes>(
+        //         CONTEXT.rbatis.new_wrapper().r#in(SysRoleRes::role_id(), &role_ids),
+        //     )
+        //     .await?;
+        // let mut role_res_map: HashMap<String, HashSet<SysRoleRes>> = HashMap::with_capacity(role_res_vec.capacity());
+        // for role_res in role_res_vec {
+        //     let role_id = role_res.role_id.clone().unwrap_or_default();
+        //     if role_res_map.get(&role_id).is_none() {
+        //         let datas = HashSet::new();
+        //         role_res_map.insert(role_id.clone(), datas);
+        //     }
+        //     let sets = role_res_map.get_mut(&role_id).unwrap();
+        //     //去重添加
+        //     sets.insert(role_res);
+        // }
+        // return Ok(role_res_map);
+        todo!()
     }
 
     /// 添加资源
@@ -145,8 +146,9 @@ impl SysRoleResService {
                 create_date: FastDateTime::now().into(),
             });
         }
-        let save_ok = CONTEXT.rbatis.save_batch(&sys_role_res, &[]).await?;
-        return Ok(save_ok.rows_affected);
+        //todo let save_ok = CONTEXT.rbatis.save_batch(&sys_role_res, &[]).await?;
+        // return Ok(save_ok.rows_affected);
+        todo!()
     }
 
     ///角色删除,同时删除用户关系，权限关系
@@ -168,24 +170,27 @@ impl SysRoleResService {
 
     ///删除角色资源
     pub async fn remove(&self, id: &str) -> Result<u64> {
-        Ok(CONTEXT
-            .rbatis
-            .remove_by_column::<SysRoleRes, _>(SysRoleRes::id(), &id)
-            .await?)
+        // Ok(CONTEXT
+        //     .rbatis
+        //     .remove_by_column::<SysRoleRes, _>(SysRoleRes::id(), &id)
+        //     .await?)
+        todo!()
     }
 
     pub async fn remove_by_res_id(&self, res_id: &str) -> Result<u64> {
-        Ok(CONTEXT
-            .rbatis
-            .remove_by_wrapper::<SysRoleRes>(CONTEXT.rbatis.new_wrapper().eq(SysRoleRes::res_id(), res_id))
-            .await?)
+        // Ok(CONTEXT
+        //     .rbatis
+        //     .remove_by_wrapper::<SysRoleRes>(CONTEXT.rbatis.new_wrapper().eq(SysRoleRes::res_id(), res_id))
+        //     .await?)
+        todo!()
     }
 
     ///删除角色资源
     pub async fn remove_by_role_id(&self, role_id: &str) -> Result<u64> {
-        Ok(CONTEXT
-            .rbatis
-            .remove_by_wrapper::<SysRoleRes>(CONTEXT.rbatis.new_wrapper().eq(SysRoleRes::role_id(), role_id))
-            .await?)
+        // Ok(CONTEXT
+        //     .rbatis
+        //     .remove_by_wrapper::<SysRoleRes>(CONTEXT.rbatis.new_wrapper().eq(SysRoleRes::role_id(), role_id))
+        //     .await?)
+        todo!()
     }
 }

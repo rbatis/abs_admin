@@ -2,7 +2,7 @@ use rbdc::datetime::FastDateTime;
 use crate::domain::domain::SysRole;
 use crate::domain::vo::SysResVO;
 
-#[derive(Debug, Clone)]
+#[derive(Clone, Debug, serde::Serialize,serde::Deserialize)]
 pub struct SysRoleVO {
     pub id: Option<String>,
     pub name: Option<String>,

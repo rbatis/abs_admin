@@ -18,36 +18,37 @@ pub struct SysRoleService {}
 impl SysRoleService {
     ///角色分页
     pub async fn page(&self, arg: &RolePageDTO) -> Result<Page<SysRoleVO>> {
-        let wrapper = CONTEXT
-            .rbatis
-            .new_wrapper()
-            .eq(SysRole::del(), 0)
-            .do_if(!arg.name.is_empty(), |w| w.like(SysRole::name(), &arg.name))
-            .is_null(SysRole::parent_id())
-            .order_by(false, &[SysRole::create_date()]);
-        let data = CONTEXT
-            .rbatis
-            .fetch_page_by_wrapper::<SysRole>(
-                wrapper,
-                &PageRequest::new(arg.page_no.unwrap_or(0), arg.page_size.unwrap_or(10)),
-            )
-            .await?;
-        let all_role = self.finds_all_map().await?;
-        let mut datas = vec![];
-        for x in data.records {
-            let mut vo = SysRoleVO::from(x);
-            self.loop_find_childs(&mut vo, &all_role);
-            datas.push(vo);
-        }
-        let new_page = Page {
-            records: datas,
-            total: data.total,
-            pages: data.pages,
-            page_no: data.page_no,
-            page_size: data.page_size,
-            search_count: data.search_count,
-        };
-        Ok(new_page)
+        // let wrapper = CONTEXT
+        //     .rbatis
+        //     .new_wrapper()
+        //     .eq(SysRole::del(), 0)
+        //     .do_if(!arg.name.is_empty(), |w| w.like(SysRole::name(), &arg.name))
+        //     .is_null(SysRole::parent_id())
+        //     .order_by(false, &[SysRole::create_date()]);
+        // let data = CONTEXT
+        //     .rbatis
+        //     .fetch_page_by_wrapper::<SysRole>(
+        //         wrapper,
+        //         &PageRequest::new(arg.page_no.unwrap_or(0), arg.page_size.unwrap_or(10)),
+        //     )
+        //     .await?;
+        // let all_role = self.finds_all_map().await?;
+        // let mut datas = vec![];
+        // for x in data.records {
+        //     let mut vo = SysRoleVO::from(x);
+        //     self.loop_find_childs(&mut vo, &all_role);
+        //     datas.push(vo);
+        // }
+        // let new_page = Page {
+        //     records: datas,
+        //     total: data.total,
+        //     pages: data.pages,
+        //     page_no: data.page_no,
+        //     page_size: data.page_size,
+        //     search_count: data.search_count,
+        // };
+        // Ok(new_page)
+        todo!()
     }
 
     pub async fn finds_layer(&self) -> Result<Vec<SysRoleVO>> {
@@ -85,9 +86,10 @@ impl SysRoleService {
 
     /// 更新所有
     pub async fn update_cache(&self) -> Result<Vec<SysRole>> {
-        let all = CONTEXT.rbatis.fetch_list().await?;
-        CONTEXT.cache_service.set_json(RES_KEY, &all).await?;
-        return Ok(all);
+        // let all = CONTEXT.rbatis.fetch_list().await?;
+        // CONTEXT.cache_service.set_json(RES_KEY, &all).await?;
+        // return Ok(all);
+        todo!()
     }
 
     pub async fn finds_all_map(&self) -> Result<HashMap<String, SysRole>> {
@@ -101,57 +103,62 @@ impl SysRoleService {
 
     ///角色添加
     pub async fn add(&self, arg: &RoleAddDTO) -> Result<(u64, String)> {
-        let role = SysRole {
-            id: ObjectId::new().to_string().into(),
-            name: arg.name.clone(),
-            parent_id: arg.parent_id.clone(),
-            del: 0.into(),
-            create_date: FastDateTime::now().into(),
-        };
-        let result = (
-            CONTEXT.rbatis.save(&role, &[]).await?.rows_affected,
-            role.id.clone().unwrap(),
-        );
-        self.update_cache().await?;
-        Ok(result)
+        //todo let role = SysRole {
+        //     id: ObjectId::new().to_string().into(),
+        //     name: arg.name.clone(),
+        //     parent_id: arg.parent_id.clone(),
+        //     del: 0.into(),
+        //     create_date: FastDateTime::now().into(),
+        // };
+        // let result = (
+        //     CONTEXT.rbatis.save(&role, &[]).await?.rows_affected,
+        //     role.id.clone().unwrap(),
+        // );
+        // self.update_cache().await?;
+        // Ok(result)
+        todo!()
     }
 
     ///角色修改
     pub async fn edit(&self, arg: &RoleEditDTO) -> Result<u64> {
-        let mut role = SysRole {
-            id: arg.id.clone(),
-            name: arg.name.clone(),
-            parent_id: arg.parent_id.clone(),
-            del: None,
-            create_date: None,
-        };
-        let result = CONTEXT.rbatis.update_by_column(SysRole::id(), &mut role).await;
-        self.update_cache().await?;
-        Ok(result?)
+        // let mut role = SysRole {
+        //     id: arg.id.clone(),
+        //     name: arg.name.clone(),
+        //     parent_id: arg.parent_id.clone(),
+        //     del: None,
+        //     create_date: None,
+        // };
+        // let result = CONTEXT.rbatis.update_by_column(SysRole::id(), &mut role).await;
+        // self.update_cache().await?;
+        // Ok(result?)
+        todo!()
     }
 
     ///角色删除
     pub async fn remove(&self, id: &str) -> Result<u64> {
-        let result = CONTEXT
-            .rbatis
-            .remove_by_column::<SysRole, _>(SysRole::id(), &id.to_string())
-            .await;
-        self.update_cache().await?;
-        Ok(result?)
+        // let result = CONTEXT
+        //     .rbatis
+        //     .remove_by_column::<SysRole, _>(SysRole::id(), &id.to_string())
+        //     .await;
+        // self.update_cache().await?;
+        // Ok(result?)
+        todo!()
     }
 
     pub async fn finds(&self, ids: &Vec<String>) -> Result<Vec<SysRole>> {
-        Ok(CONTEXT
-            .rbatis
-            .fetch_list_by_wrapper(CONTEXT.rbatis.new_wrapper().r#in(SysRole::id(), ids))
-            .await?)
+        // Ok(CONTEXT
+        //     .rbatis
+        //     .fetch_list_by_wrapper(CONTEXT.rbatis.new_wrapper().r#in(SysRole::id(), ids))
+        //     .await?)
+        todo!()
     }
 
     pub async fn find_role_res(&self, ids: &Vec<String>) -> Result<Vec<SysRoleRes>> {
-        Ok(CONTEXT
-            .rbatis
-            .fetch_list_by_wrapper(CONTEXT.rbatis.new_wrapper().r#in(SysRoleRes::role_id(), ids))
-            .await?)
+        // Ok(CONTEXT
+        //     .rbatis
+        //     .fetch_list_by_wrapper(CONTEXT.rbatis.new_wrapper().r#in(SysRoleRes::role_id(), ids))
+        //     .await?)
+        todo!()
     }
 
     pub async fn find_user_permission(
@@ -159,19 +166,20 @@ impl SysRoleService {
         user_id: &str,
         all_res: &BTreeMap<String, SysResVO>,
     ) -> Result<Vec<String>> {
-        let user_roles: Vec<SysUserRole> = CONTEXT
-            .rbatis
-            .fetch_list_by_wrapper(CONTEXT.rbatis.new_wrapper().eq(SysUserRole::user_id(), user_id))
-            .await?;
-        let role_res = self
-            .find_role_res(&rbatis::make_table_field_vec!(&user_roles, role_id))
-            .await?;
-        let res = CONTEXT
-            .sys_res_service
-            .finds_layer(&rbatis::make_table_field_vec!(&role_res, res_id), &all_res)
-            .await?;
-        let permissions = rbatis::make_table_field_vec!(&res, permission);
-        return Ok(permissions);
+        // let user_roles: Vec<SysUserRole> = CONTEXT
+        //     .rbatis
+        //     .fetch_list_by_wrapper(CONTEXT.rbatis.new_wrapper().eq(SysUserRole::user_id(), user_id))
+        //     .await?;
+        // let role_res = self
+        //     .find_role_res(&rbatis::make_table_field_vec!(&user_roles, role_id))
+        //     .await?;
+        // let res = CONTEXT
+        //     .sys_res_service
+        //     .finds_layer(&rbatis::make_table_field_vec!(&role_res, res_id), &all_res)
+        //     .await?;
+        // let permissions = rbatis::make_table_field_vec!(&res, permission);
+        // return Ok(permissions);
+        todo!()
     }
 
     ///死循环找出父-子 关联关系数组

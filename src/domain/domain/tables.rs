@@ -2,7 +2,7 @@ use crate::domain::domain::LoginCheck;
 use rbdc::datetime::FastDateTime;
 
 ///权限资源表
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, serde::Serialize,serde::Deserialize)]
 pub struct SysRes {
     pub id: Option<String>,
     //父id(可空)
@@ -19,7 +19,7 @@ pub struct SysRes {
 impl_field_name_method!(SysRes{id,parent_id,name,permission,path,del,create_date});
 
 ///角色表
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, serde::Serialize,serde::Deserialize)]
 pub struct SysRole {
     pub id: Option<String>,
     pub name: Option<String>,
@@ -33,7 +33,7 @@ impl_field_name_method!(SysRole{id,parent_id,name,del,create_date});
 
 ///角色资源关系表(关系表不使用逻辑删除)
 
-#[derive(Clone, Debug, Eq, PartialEq, Hash)]
+#[derive(Clone, Debug, Eq, PartialEq, Hash,serde::Serialize,serde::Deserialize)]
 pub struct SysRoleRes {
     pub id: Option<String>,
     //角色id
@@ -47,7 +47,7 @@ impl_field_name_method!(SysRoleRes{id,role_id,res_id,create_date});
 
 ///后台用户表
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug,serde::Serialize,serde::Deserialize)]
 pub struct SysUser {
     pub id: Option<String>,
     pub account: Option<String>,
@@ -63,7 +63,7 @@ impl_field_name_method!(SysUser{id,account,password,name,login_check,state,del,c
 
 ///用户角色关系表(关系表不使用逻辑删除)
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug,serde::Serialize,serde::Deserialize)]
 pub struct SysUserRole {
     pub id: Option<String>,
     //用户id
@@ -75,7 +75,7 @@ pub struct SysUserRole {
 impl_field_name_method!(SysUserRole{id,user_id,role_id,create_date});
 ///字典表
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug,serde::Serialize,serde::Deserialize)]
 pub struct SysDict {
     pub id: Option<String>,
     pub name: Option<String>,
