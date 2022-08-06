@@ -86,7 +86,7 @@ impl SysDictService {
 
     ///删除字典
     pub async fn remove(&self, id: &str) -> Result<u64> {
-        //todo let num = CONTEXT
+        //let num = CONTEXT
         //     .rbatis
         //     .remove_batch_by_column::<SysDict, _>(SysDict::id(), &[id])
         //     .await?;

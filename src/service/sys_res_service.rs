@@ -57,7 +57,7 @@ impl SysResService {
 
     ///添加资源
     pub async fn add(&self, arg: &SysRes) -> Result<u64> {
-        //todo let old: Vec<SysRes> = CONTEXT
+        //let old: Vec<SysRes> = CONTEXT
         //     .rbatis
         //     .fetch_list_by_wrapper(
         //         CONTEXT
@@ -110,7 +110,7 @@ impl SysResService {
 
     ///删除资源
     pub async fn remove(&self, id: &str) -> Result<u64> {
-        //todo let num = CONTEXT
+        //let num = CONTEXT
         //     .rbatis
         //     .remove_by_column::<SysRes, _>(SysRes::id(), &id.to_string())
         //     .await?;
@@ -212,7 +212,7 @@ impl SysResService {
 
     ///顶层权限
     pub async fn finds_layer_top(&self) -> Result<Vec<SysResVO>> {
-        //todo let list = CONTEXT
+        //let list = CONTEXT
         //     .rbatis
         //     .fetch_list_by_wrapper::<SysRes>(
         //         CONTEXT
