@@ -16,28 +16,16 @@ impl SysDictService {
     ///字典分页
     pub async fn page(&self, arg: &DictPageDTO) -> Result<Page<SysDictVO>> {
         let page_req = PageRequest::new(arg.page_no.unwrap_or(1), arg.page_size.unwrap_or(10));
-        // let data = CONTEXT
-        //     .rbatis
-        //     .fetch_page_by_wrapper::<SysDict>(
-        //         CONTEXT
-        //             .rbatis
-        //             .new_wrapper()
-        //             .do_if(!arg.code.is_empty(), |w| w.eq(SysDict::code(), &arg.code))
-        //             .do_if(!arg.name.is_empty(), |w| w.like(SysDict::name(), &arg.name))
-        //             .order_by(false, &[SysDict::create_date()]),
-        //         &page_req,
-        //     )
-        //     .await?;
-        // let mut page = Page::<SysDictVO>::new(page_req.page_no, page_req.page_size);
-        // let mut records = vec![];
-        // for x in data.records {
-        //     let vo = SysDictVO::from(x);
-        //     records.push(vo);
-        // }
-        // page.set_records(records);
-        // page.set_total(data.total);
-        // Ok(page)
-        todo!()
+        let data = SysDict::sys_dict_page(&mut CONTEXT.rbatis.clone(),&PageRequest::from(arg),arg).await?;
+        let mut page = Page::<SysDictVO>::new(page_req.page_no, page_req.page_size);
+        let mut records = vec![];
+        for x in data.records {
+            let vo = SysDictVO::from(x);
+            records.push(vo);
+        }
+        page.set_records(records);
+        page.set_total(data.total);
+        Ok(page)
     }
 
     ///添加字典

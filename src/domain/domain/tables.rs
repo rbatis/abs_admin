@@ -1,6 +1,5 @@
 use crate::domain::domain::LoginCheck;
 use rbdc::datetime::FastDateTime;
-
 ///权限资源表
 #[derive(Clone, Debug, serde::Serialize,serde::Deserialize)]
 pub struct SysRes {
@@ -84,3 +83,12 @@ pub struct SysDict {
     pub create_date: Option<FastDateTime>,
 }
 impl_field_name_method!(SysDict{id,name,code,state,create_date});
+
+crud!(SysDict{});
+impl_select_page!(SysDict{sys_dict_page(dto: &crate::domain::dto::DictPageDTO) =>
+    "`where id!=''`
+      if dto.code!=null:
+         `and code = #{dto.code}`
+      if dto.name!=null:
+         `and name = #{dto.name}`
+      ` order by create_date `"});

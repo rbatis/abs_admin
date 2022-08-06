@@ -7,11 +7,13 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+rbs = { version = "0.1"}
+rbatis = { version = "4"}
+rbdc = { version ="0.1"}
+rbdc-mysql = { version ="0.1"}
+
 #rbatis orm dep must use async-std(Because actix-web relies on tokio0.2)
 tokio = { version = "1", features = ["full"] }
-rbatis = { version = "4" }
-rbdc = "0.1"
-rbdc-mysql = "0.1"
 #serde and json
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
