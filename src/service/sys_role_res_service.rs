@@ -2,17 +2,15 @@ use std::collections::{BTreeMap, HashMap, HashSet};
 
 use crate::error::Error;
 use crate::error::Result;
-use rbatis::crud::CRUD;
-use rbatis::plugin::page::Page;
-
 use crate::domain::domain::{SysRoleRes};
 use crate::domain::dto::{
     RoleAddDTO, RoleEditDTO, RolePageDTO, SysRoleResAddDTO, SysRoleResPageDTO, SysRoleResUpdateDTO,
 };
 use crate::domain::vo::{SysResVO, SysRoleVO};
 use crate::service::CONTEXT;
-use rbatis::DateTimeNative;
+use rbdc::types::datetime::FastDateTime;
 use rbatis::plugin::object_id::ObjectId;
+use rbatis::sql::Page;
 use crate::util::options::OptionStringRefUnwrapOrDefault;
 
 /// 角色资源服务
@@ -144,7 +142,7 @@ impl SysRoleResService {
                 id: ObjectId::new().to_string().into(),
                 role_id: role_id.to_string().into(),
                 res_id: resource_id.clone().into(),
-                create_date: DateTimeNative::now().into(),
+                create_date: FastDateTime::now().into(),
             });
         }
         let save_ok = CONTEXT.rbatis.save_batch(&sys_role_res, &[]).await?;

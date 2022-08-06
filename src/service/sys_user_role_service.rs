@@ -7,10 +7,9 @@ use crate::domain::vo::{SysResVO, SysRoleVO};
 use crate::error::Error;
 use crate::error::Result;
 use crate::service::CONTEXT;
-use rbatis::DateTimeNative;
-use rbatis::crud::CRUD;
+use rbdc::types::datetime::FastDateTime;
 use rbatis::plugin::object_id::ObjectId;
-use rbatis::plugin::page::Page;
+use rbatis::sql::Page;
 use crate::util::options::OptionStringRefUnwrapOrDefault;
 
 ///用户角色服务
@@ -58,7 +57,7 @@ impl SysUserRoleService {
             id: arg.id.clone(),
             user_id: arg.user_id.clone(),
             role_id: arg.role_id.clone(),
-            create_date: DateTimeNative::now().into(),
+            create_date: FastDateTime::now().into(),
         };
         if role.id.is_none() {
             role.id = Some(ObjectId::new().to_string());

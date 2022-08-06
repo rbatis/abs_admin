@@ -1,8 +1,5 @@
 use crate::error::Result;
-use rbatis::DateTimeNative;
-use rbatis::crud::CRUD;
-use rbatis::plugin::page::{Page, PageRequest};
-
+use rbdc::types::datetime::FastDateTime;
 use crate::domain::domain::{SysRole, SysRoleRes, SysUserRole};
 use crate::domain::dto::{RoleAddDTO, RoleEditDTO, RolePageDTO};
 use crate::domain::vo::{SysResVO, SysRoleVO};
@@ -11,6 +8,7 @@ use crate::util::string::IsEmptyString;
 
 use std::collections::{BTreeMap, HashMap};
 use rbatis::plugin::object_id::ObjectId;
+use rbatis::sql::{Page, PageRequest};
 
 const RES_KEY: &'static str = "sys_role:all";
 
@@ -108,7 +106,7 @@ impl SysRoleService {
             name: arg.name.clone(),
             parent_id: arg.parent_id.clone(),
             del: 0.into(),
-            create_date: DateTimeNative::now().into(),
+            create_date: FastDateTime::now().into(),
         };
         let result = (
             CONTEXT.rbatis.save(&role, &[]).await?.rows_affected,

@@ -1,6 +1,4 @@
-use rbatis::crud::{Skip, CRUD};
-use rbatis::{IPage, IPageRequest};
-use rbatis::plugin::page::{Page, PageRequest};
+use rbatis::sql::{IPage, IPageRequest, Page, PageRequest};
 use crate::domain::domain::SysDict;
 use crate::domain::dto::{DictEditDTO, DictPageDTO};
 use crate::domain::vo::SysDictVO;

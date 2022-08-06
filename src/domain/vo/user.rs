@@ -1,3 +1,4 @@
+use rbdc::datetime::FastDateTime;
 use crate::domain::domain::{LoginCheck, SysUser};
 use crate::domain::vo::SysRoleVO;
 use serde::{Deserialize, Serialize};
@@ -12,7 +13,7 @@ pub struct SysUserVO {
     pub login_check: Option<LoginCheck>,
     pub state: Option<i32>,
     pub del: Option<i32>,
-    pub create_date: Option<rbatis::DateTimeNative>,
+    pub create_date: Option<FastDateTime>,
 
     pub role: Option<SysRoleVO>,
 }

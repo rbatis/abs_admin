@@ -8,9 +8,10 @@ edition = "2021"
 
 [dependencies]
 #rbatis orm dep must use async-std(Because actix-web relies on tokio0.2)
-rbson = "2.0"
 tokio = { version = "1", features = ["full"] }
-rbatis = { version = "3.1", default-features = false, features = ["mysql", "runtime-tokio-rustls"] }
+rbatis = { version = "4" }
+rbdc = "0.1"
+rbdc-mysql = "0.1"
 #serde and json
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"

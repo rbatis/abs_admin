@@ -1,7 +1,6 @@
 use std::collections::{BTreeMap, HashMap};
+use rbatis::sql::{Page, PageRequest};
 
-use rbatis::crud::{Skip, CRUD};
-use rbatis::plugin::page::{Page, PageRequest};
 
 use crate::domain::domain::SysRes;
 use crate::domain::dto::{ResEditDTO, ResPageDTO};
