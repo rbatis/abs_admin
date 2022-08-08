@@ -17,18 +17,18 @@ impl SysDictService {
     ///字典分页
     pub async fn page(&self, arg: &DictPageDTO) -> Result<Page<SysDictVO>> {
         let page_req = PageRequest::new(arg.page_no.unwrap_or(1), arg.page_size.unwrap_or(10));
-        let data = SysDict::sys_dict_page(&mut CONTEXT.rbatis.clone(),&PageRequest::from(arg),arg).await?;
+        let data = SysDict::sys_dict_page(&mut CONTEXT.rbatis.clone(), &PageRequest::from(arg), arg).await?;
         let mut page = Page::<SysDictVO>::from(data);
         Ok(page)
     }
 
     ///添加字典
     pub async fn add(&self, arg: &SysDict) -> Result<u64> {
-        let old= SysDict::select_by_id(&mut CONTEXT.rbatis.clone(),arg.id.as_deref().unwrap_or_default()).await?;
+        let old = SysDict::select_by_id(&mut CONTEXT.rbatis.clone(), arg.id.as_deref().unwrap_or_default()).await?;
         if old.len() > 0 {
             return Err(Error::from(format!("字典已存在! {:?}", &arg.name)));
         }
-        let result = Ok(SysDict::insert(&mut CONTEXT.rbatis.clone(),&arg).await?.rows_affected);
+        let result = Ok(SysDict::insert(&mut CONTEXT.rbatis.clone(), &arg).await?.rows_affected);
         self.update_cache().await?;
         return result;
     }
@@ -42,30 +42,20 @@ impl SysDictService {
             state: arg.state.clone(),
             create_date: None,
         };
-        // let result = Ok(CONTEXT
-        //     .rbatis
-        //     .update_by_wrapper(
-        //         &mut data,
-        //         CONTEXT.rbatis.new_wrapper().eq(SysDict::id(), &arg.id),
-        //         &[Skip::Column(SysDict::id()), Skip::Column(SysDict::create_date())],
-        //     )
-        //     .await?);
-        // self.update_cache().await?;
-        // return result;
-        todo!()
+        let result = SysDict::update_by_column(&mut CONTEXT.rbatis.clone(), &data, "id").await;
+        if result.is_ok() {
+            self.update_cache().await?;
+        }
+        return Ok(result?.rows_affected);
     }
 
     ///删除字典
     pub async fn remove(&self, id: &str) -> Result<u64> {
-        //let num = CONTEXT
-        //     .rbatis
-        //     .remove_batch_by_column::<SysDict, _>(SysDict::id(), &[id])
-        //     .await?;
-        // if num > 0 {
-        //     self.update_cache().await?;
-        // }
-        // Ok(num)
-        todo!()
+        let r=SysDict::delete_by_column(&mut CONTEXT.rbatis.clone(),"id",&id.into()).await?;
+        if r.rows_affected > 0 {
+            self.update_cache().await?;
+        }
+        Ok(r.rows_affected)
     }
 
     /// 更新所有
