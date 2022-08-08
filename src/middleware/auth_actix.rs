@@ -81,6 +81,7 @@ impl<S, B> Service<ServiceRequest> for AuthMiddleware<S>
                                         data: None,
                                     };
                                     return Err(ErrorUnauthorized(serde_json::json!(&resp).to_string()));
+                                    //TODO should return response to this:
                                     // let resp=resp.resp_json();
                                     // return Ok(req.into_response(resp));
                                 }
