@@ -17,6 +17,24 @@ pub struct SysRes {
 
 impl_field_name_method!(SysRes{id,parent_id,name,permission,path,del,create_date});
 
+crud!(SysRes{});
+impl_select_page!(SysRes{select_page(dto: &crate::domain::dto::ResPageDTO) =>
+    "`where del = 0 `
+      if dto.name!=null && dto.name!= '':
+         `and name like %#{dto.name}%`
+      ` and parent_id == null`
+      ` order by create_date `"});
+impl_select!(SysRes{select_by_id(id:&str) => "`where id = #{id}`"});
+impl_select!(SysRes{select_by_permission_or_name(permission:&str,name:&str) => "`where permission = #{permission} or name = #{name}`"});
+impl_delete!(SysRes{delete_by_parent_id(parent_id:&str) => "`where parent_id = #{parent_id}`"});
+impl_select!(SysRes{select_by_ids(ids:&Vec<String>)=>
+    "`where id in (`
+      for _,id in ids:
+        #{id}
+     `)`"});
+impl_select!(SysRes{select_by_parent_id_null()=>"`where parent_id = null order_by create_date desc`"});
+
+
 ///角色表
 #[derive(Clone, Debug, serde::Serialize,serde::Deserialize)]
 pub struct SysRole {
@@ -85,7 +103,7 @@ pub struct SysDict {
 impl_field_name_method!(SysDict{id,name,code,state,create_date});
 
 crud!(SysDict{});
-impl_select_page!(SysDict{sys_dict_page(dto: &crate::domain::dto::DictPageDTO) =>
+impl_select_page!(SysDict{select_page(dto: &crate::domain::dto::DictPageDTO) =>
     "`where id!=''`
       if dto.code!=null:
          `and code = #{dto.code}`

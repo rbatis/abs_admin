@@ -17,7 +17,7 @@ impl SysDictService {
     ///字典分页
     pub async fn page(&self, arg: &DictPageDTO) -> Result<Page<SysDictVO>> {
         let page_req = PageRequest::new(arg.page_no.unwrap_or(1), arg.page_size.unwrap_or(10));
-        let data = SysDict::sys_dict_page(&mut CONTEXT.rbatis.clone(), &PageRequest::from(arg), arg).await?;
+        let data = SysDict::select_page(&mut CONTEXT.rbatis.clone(), &PageRequest::from(arg), arg).await?;
         let mut page = Page::<SysDictVO>::from(data);
         Ok(page)
     }
@@ -51,7 +51,7 @@ impl SysDictService {
 
     ///删除字典
     pub async fn remove(&self, id: &str) -> Result<u64> {
-        let r=SysDict::delete_by_column(&mut CONTEXT.rbatis.clone(),"id",&id.into()).await?;
+        let r=SysDict::delete_by_column(&mut CONTEXT.rbatis.clone(),"id",id).await?;
         if r.rows_affected > 0 {
             self.update_cache().await?;
         }
