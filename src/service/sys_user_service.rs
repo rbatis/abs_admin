@@ -12,7 +12,7 @@ use crate::util::password_encoder::PasswordEncoder;
 use rbatis::plugin::object_id::ObjectId;
 use std::collections::BTreeMap;
 use std::time::Duration;
-use crate::domain::AsStr;
+
 use crate::util::options::OptionStringRefUnwrapOrDefault;
 
 const REDIS_KEY_RETRY: &'static str = "login:login_retry";
@@ -54,7 +54,7 @@ impl SysUserService {
 
     ///用户详情
     pub async fn detail(&self, arg: &IdDTO) -> Result<SysUserVO> {
-        let user_id = arg.id.as_str_default();
+        let user_id = arg.id.as_deref().unwrap_or_default();
         let user = self
             .find(&user_id)
             .await?
@@ -101,7 +101,7 @@ impl SysUserService {
                 arg.account.as_ref().unwrap()
             )));
         }
-        let mut password = arg.password.as_str_default().to_string();
+        let mut password = arg.password.as_deref().unwrap_or_default().to_string();
         if password.is_empty() {
             //默认密码
             password = "123456".to_string();
@@ -272,7 +272,7 @@ impl SysUserService {
         // let all_res = CONTEXT.sys_res_service.finds_all_map().await?;
         // sign_vo.permissions = self.loop_load_level_permission(&user_id, &all_res).await?;
         // let jwt_token = JWTToken {
-        //     id: user.id.as_str_default(),
+        //     id: user.id.as_deref().unwrap_or_default(),
         //     account: user.account.unwrap_or_default(),
         //     permissions: sign_vo.permissions.clone(),
         //     role_ids: vec![],

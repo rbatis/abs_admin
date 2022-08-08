@@ -1,5 +1,5 @@
 use rbatis::sql::{IPage, IPageRequest, Page, PageRequest};
-use crate::domain::AsStr;
+
 use crate::domain::domain::SysDict;
 use crate::domain::dto::{DictEditDTO, DictPageDTO};
 use crate::domain::vo::SysDictVO;
@@ -24,7 +24,7 @@ impl SysDictService {
 
     ///添加字典
     pub async fn add(&self, arg: &SysDict) -> Result<u64> {
-        let old= SysDict::select_by_id(&mut CONTEXT.rbatis.clone(),arg.id.as_str_default()).await?;
+        let old= SysDict::select_by_id(&mut CONTEXT.rbatis.clone(),arg.id.as_deref().unwrap_or_default()).await?;
         if old.len() > 0 {
             return Err(Error::from(format!("字典已存在! {:?}", &arg.name)));
         }

@@ -11,7 +11,7 @@ use crate::service::CONTEXT;
 use rbdc::types::datetime::FastDateTime;
 use rbatis::plugin::object_id::ObjectId;
 use rbatis::sql::Page;
-use crate::domain::AsStr;
+
 use crate::util::options::OptionStringRefUnwrapOrDefault;
 
 /// 角色资源服务
@@ -37,7 +37,7 @@ impl SysRoleResService {
     fn loop_find_role_ids(&self, arg: &Vec<SysRoleVO>) -> Vec<String> {
         let mut results = vec![];
         for x in arg {
-            results.push(x.id.as_str_default().to_string());
+            results.push(x.id.as_deref().unwrap_or_default().to_string());
             match &x.childs {
                 Some(childs) => {
                     let ids = self.loop_find_role_ids(childs);
@@ -64,7 +64,7 @@ impl SysRoleResService {
         //     .await?;
         // let mut role_res_map: HashMap<String, HashSet<SysRoleRes>> = HashMap::with_capacity(role_res_vec.capacity());
         // for role_res in role_res_vec {
-        //     let role_id = role_res.role_id.as_str_default();
+        //     let role_id = role_res.role_id.as_deref().unwrap_or_default();
         //     if role_res_map.get(&role_id).is_none() {
         //         let datas = HashSet::new();
         //         role_res_map.insert(role_id.clone(), datas);

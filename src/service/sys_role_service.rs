@@ -9,7 +9,7 @@ use crate::util::string::IsEmptyString;
 use std::collections::{BTreeMap, HashMap};
 use rbatis::plugin::object_id::ObjectId;
 use rbatis::sql::{Page, PageRequest};
-use crate::domain::AsStr;
+
 
 const RES_KEY: &'static str = "sys_role:all";
 
@@ -97,7 +97,7 @@ impl SysRoleService {
         let all = self.finds_all().await?;
         let mut result = HashMap::with_capacity(all.capacity());
         for x in all {
-            result.insert(x.id.as_str_default().to_string(), x);
+            result.insert(x.id.as_deref().unwrap_or_default().to_string(), x);
         }
         return Ok(result);
     }

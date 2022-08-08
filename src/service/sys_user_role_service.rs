@@ -10,7 +10,7 @@ use crate::service::CONTEXT;
 use rbdc::types::datetime::FastDateTime;
 use rbatis::plugin::object_id::ObjectId;
 use rbatis::sql::Page;
-use crate::domain::AsStr;
+
 use crate::util::options::OptionStringRefUnwrapOrDefault;
 
 ///用户角色服务
@@ -32,7 +32,7 @@ impl SysUserRoleService {
         //     let roles = CONTEXT.sys_role_service.finds(&role_ids).await?;
         //     let roles_map = rbatis::make_table_field_map!(&roles, id);
         //     for mut x in &mut vo.records {
-        //         if let Some(user_role) = user_role_map.get(&x.id.as_str_default()) {
+        //         if let Some(user_role) = user_role_map.get(&x.id.as_deref().unwrap_or_default()) {
         //             if let Some(role_id) = &user_role.role_id {
         //                 let role = roles_map.get(role_id).cloned();
         //                 x.role = SysRoleVO::from_option(role);
@@ -64,7 +64,7 @@ impl SysUserRoleService {
         if role.id.is_none() {
             role.id = Some(ObjectId::new().to_string());
         }
-        self.remove_by_user_id(arg.user_id.as_str_default())
+        self.remove_by_user_id(arg.user_id.as_deref().unwrap_or_default())
             .await?;
         // Ok(CONTEXT.rbatis.save(&role, &[]).await?.rows_affected)
         todo!()

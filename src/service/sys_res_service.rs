@@ -1,6 +1,6 @@
 use std::collections::{BTreeMap, HashMap};
 use rbatis::sql::{Page, PageRequest};
-use crate::domain::AsStr;
+
 
 
 use crate::domain::domain::SysRes;
@@ -130,7 +130,7 @@ impl SysResService {
     pub fn make_res_ids(&self, args: &Vec<SysResVO>) -> Vec<String> {
         let mut ids = vec![];
         for x in args {
-            ids.push(x.id.as_str_default().to_string());
+            ids.push(x.id.as_deref().unwrap_or_default().to_string());
             if let Some(childs) = &x.childs{
                 let child_ids = rbatis::make_table_field_vec!(childs,id);
                 for child_id in child_ids {
@@ -183,7 +183,7 @@ impl SysResService {
         let all = self.finds_all().await?;
         let mut result = BTreeMap::new();
         for x in all {
-            result.insert(x.id.as_str_default().to_string(), x);
+            result.insert(x.id.as_deref().unwrap_or_default().to_string(), x);
         }
         return Ok(result);
     }
