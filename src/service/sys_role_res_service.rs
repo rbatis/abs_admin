@@ -55,26 +55,20 @@ impl SysRoleResService {
         &self,
         arg: &Vec<SysRoleVO>,
     ) -> Result<HashMap<String, HashSet<SysRoleRes>>> {
-        // let role_ids = self.loop_find_role_ids(arg);
-        // let role_res_vec = CONTEXT
-        //     .rbatis
-        //     .fetch_list_by_wrapper::<SysRoleRes>(
-        //         CONTEXT.rbatis.new_wrapper().r#in(SysRoleRes::role_id(), &role_ids),
-        //     )
-        //     .await?;
-        // let mut role_res_map: HashMap<String, HashSet<SysRoleRes>> = HashMap::with_capacity(role_res_vec.capacity());
-        // for role_res in role_res_vec {
-        //     let role_id = role_res.role_id.as_deref().unwrap_or_default();
-        //     if role_res_map.get(&role_id).is_none() {
-        //         let datas = HashSet::new();
-        //         role_res_map.insert(role_id.clone(), datas);
-        //     }
-        //     let sets = role_res_map.get_mut(&role_id).unwrap();
-        //     //去重添加
-        //     sets.insert(role_res);
-        // }
-        // return Ok(role_res_map);
-        todo!()
+        let role_ids = self.loop_find_role_ids(arg);
+        let role_res_vec=SysRoleRes::select_by_role_id(&mut CONTEXT.rbatis.clone(), role_ids).await?;
+        let mut role_res_map: HashMap<String, HashSet<SysRoleRes>> = HashMap::with_capacity(role_res_vec.capacity());
+        for role_res in role_res_vec {
+            let role_id = role_res.role_id.as_deref().unwrap_or_default();
+            if role_res_map.get(role_id).is_none() {
+                let datas = HashSet::new();
+                role_res_map.insert(role_id.to_string(), datas);
+            }
+            let sets = role_res_map.get_mut(role_id).unwrap();
+            //去重添加
+            sets.insert(role_res);
+        }
+        return Ok(role_res_map);
     }
 
     /// 添加资源
@@ -88,7 +82,7 @@ impl SysRoleResService {
         for mut role in arg {
             let res_ids = role_res_map.get(role.id.as_ref().unwrap_or_def());
             let mut res_vos = vec![];
-            if let Some(res_ids) = res_ids{
+            if let Some(res_ids) = res_ids {
                 for x in res_ids {
                     match all.get(x.res_id.as_ref().unwrap_or_def()) {
                         Some(res) => {
