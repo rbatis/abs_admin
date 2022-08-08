@@ -58,7 +58,7 @@ impl SysUserRoleService {
             id: arg.id.clone(),
             user_id: arg.user_id.clone(),
             role_id: arg.role_id.clone(),
-            create_date: FastDateTime::now().into(),
+            create_date: FastDateTime::now().set_micro(0).into(),
         };
         if role.id.is_none() {
             role.id = Some(ObjectId::new().to_string());

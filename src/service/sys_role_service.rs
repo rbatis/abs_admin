@@ -108,7 +108,7 @@ impl SysRoleService {
         //     name: arg.name.clone(),
         //     parent_id: arg.parent_id.clone(),
         //     del: 0.into(),
-        //     create_date: FastDateTime::now().into(),
+        //     create_date: FastDateTime::now().set_micro(0).into(),
         // };
         // let result = (
         //     CONTEXT.rbatis.save(&role, &[]).await?.rows_affected,

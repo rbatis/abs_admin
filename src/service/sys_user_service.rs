@@ -114,7 +114,7 @@ impl SysUserService {
             login_check: arg.login_check.clone(),
             state: 0.into(),
             del: 0.into(),
-            create_date: FastDateTime::now().into(),
+            create_date: FastDateTime::now().set_micro(0).into(),
         };
         if let Some(_) = &arg.role_id{
             CONTEXT
@@ -275,7 +275,7 @@ impl SysUserService {
         //     account: user.account.unwrap_or_default(),
         //     permissions: sign_vo.permissions.clone(),
         //     role_ids: vec![],
-        //     exp: FastDateTime::now().timestamp_millis() as usize,
+        //     exp: FastDateTime::now().set_micro(0).timestamp_millis() as usize,
         // };
         // sign_vo.access_token = jwt_token.create_token(&CONTEXT.config.jwt_secret)?;
         // sign_vo.role = CONTEXT

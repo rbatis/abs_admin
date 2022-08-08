@@ -143,7 +143,7 @@ impl SysRoleResService {
                 id: ObjectId::new().to_string().into(),
                 role_id: role_id.to_string().into(),
                 res_id: resource_id.clone().into(),
-                create_date: FastDateTime::now().into(),
+                create_date: FastDateTime::now().set_micro(0).into(),
             });
         }
         // let save_ok = CONTEXT.rbatis.save_batch(&sys_role_res, &[]).await?;

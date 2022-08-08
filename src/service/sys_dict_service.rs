@@ -69,9 +69,8 @@ impl SysDictService {
 
     /// 更新所有
     pub async fn update_cache(&self) -> Result<()> {
-        // let all = CONTEXT.rbatis.fetch_list::<SysDict>().await?;
-        // CONTEXT.cache_service.set_json(DICT_KEY, &all).await?;
-        // return Ok(());
-        todo!()
+        let all = SysDict::select_all(&mut CONTEXT.rbatis.clone()).await?;
+        CONTEXT.cache_service.set_json(DICT_KEY, &all).await?;
+        return Ok(());
     }
 }

@@ -28,7 +28,7 @@ pub async fn add(mut arg: web::Json<DictAddDTO>) -> impl Responder {
         name: arg.name.clone(),
         code: arg.code.clone(),
         state: arg.state.clone(),
-        create_date: FastDateTime::now().into(),
+        create_date: FastDateTime::now().set_micro(0).into(),
     };
     let data = CONTEXT.sys_dict_service.add(&res).await;
     CONTEXT.sys_dict_service.update_cache().await;

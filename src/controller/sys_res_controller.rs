@@ -44,7 +44,7 @@ pub async fn add(mut arg: web::Json<ResAddDTO>) -> impl Responder {
         permission: arg.permission.clone(),
         path: arg.path.clone(),
         del: 0.into(),
-        create_date: FastDateTime::now().into(),
+        create_date: FastDateTime::now().set_micro(0).into(),
     };
     let data = CONTEXT.sys_res_service.add(&res).await;
     CONTEXT.sys_res_service.update_cache().await;
