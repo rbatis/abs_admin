@@ -1,3 +1,4 @@
+use rbatis::sql::PageRequest;
 use serde::{Deserialize, Serialize};
 
 /// 资源分页DTO
@@ -6,6 +7,12 @@ pub struct ResPageDTO {
     pub page_no: Option<u64>,
     pub page_size: Option<u64>,
     pub name: Option<String>,
+}
+
+impl From<&ResPageDTO> for PageRequest{
+    fn from(arg: &ResPageDTO) -> Self {
+        PageRequest::new(arg.page_no.unwrap_or(1),arg.page_size.unwrap_or(10))
+    }
 }
 
 /// 资源添加DTO
