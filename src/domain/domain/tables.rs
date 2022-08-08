@@ -92,3 +92,4 @@ impl_select_page!(SysDict{sys_dict_page(dto: &crate::domain::dto::DictPageDTO) =
       if dto.name!=null:
          `and name = #{dto.name}`
       ` order by create_date `"});
+impl_select!(SysDict{select_by_id(id:&str) => "`where id = #{id}`"});

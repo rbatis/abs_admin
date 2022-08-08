@@ -23,24 +23,13 @@ impl SysDictService {
 
     ///添加字典
     pub async fn add(&self, arg: &SysDict) -> Result<u64> {
-        // let old: Vec<SysDict> = CONTEXT
-        //     .rbatis
-        //     .fetch_list_by_wrapper(
-        //         CONTEXT
-        //             .rbatis
-        //             .new_wrapper()
-        //             .eq(SysDict::code(), &arg.code)
-        //             .and()
-        //             .eq(SysDict::name(), &arg.name),
-        //     )
-        //     .await?;
-        // if old.len() > 0 {
-        //     return Err(Error::from(format!("字典已存在! {:?}", &arg.name)));
-        // }
-        // let result = Ok(CONTEXT.rbatis.save(arg, &[]).await?.rows_affected);
-        // self.update_cache().await?;
-        // return result;
-        todo!()
+        let old= SysDict::select_by_id(&mut CONTEXT.rbatis.clone(),&arg.id.clone().unwrap_or_default()).await?;
+        if old.len() > 0 {
+            return Err(Error::from(format!("字典已存在! {:?}", &arg.name)));
+        }
+        let result = Ok(SysDict::insert(&mut CONTEXT.rbatis.clone(),&arg).await?.rows_affected);
+        self.update_cache().await?;
+        return result;
     }
 
     ///修改字典
