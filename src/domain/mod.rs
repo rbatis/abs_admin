@@ -6,3 +6,17 @@ pub mod domain;
 pub mod dto;
 /// * 展示层（vo，View Object），存放展示的结构体
 pub mod vo;
+
+
+pub trait AsStr {
+    fn as_str_default(&self) -> &str;
+}
+
+impl AsStr for Option<String> {
+    fn as_str_default(&self) -> &str {
+        match self {
+            None => { "" }
+            Some(v) => { v.as_str() }
+        }
+    }
+}
