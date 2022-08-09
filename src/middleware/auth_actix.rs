@@ -2,11 +2,8 @@ use std::{
     future::{ready, Ready},
     rc::Rc,
 };
-use actix_web::{
-    dev::{self, Service, ServiceRequest, ServiceResponse, Transform},
-    web::BytesMut,
-    Error, HttpMessage,
-};
+use actix_web::{dev::{self, Service, ServiceRequest, ServiceResponse, Transform}, web::BytesMut, Error, HttpMessage, HttpResponse};
+use actix_web::body::BoxBody;
 use actix_web::dev::Response;
 use actix_web::error::ErrorUnauthorized;
 use futures_util::{future::LocalBoxFuture, stream::StreamExt};
@@ -16,13 +13,13 @@ use crate::service::CONTEXT;
 
 pub struct Auth;
 
-impl<S: 'static, B> Transform<S, ServiceRequest> for Auth
+impl<S: 'static> Transform<S, ServiceRequest> for Auth
     where
-        S: Service<ServiceRequest, Response=ServiceResponse<B>, Error=Error>,
+        S: Service<ServiceRequest, Response=ServiceResponse<BoxBody>, Error=Error>,
         S::Future: 'static,
-        B: 'static,
+
 {
-    type Response = ServiceResponse<B>;
+    type Response = ServiceResponse<BoxBody>;
     type Error = Error;
     type InitError = ();
     type Transform = AuthMiddleware<S>;
@@ -40,13 +37,12 @@ pub struct AuthMiddleware<S> {
     service: Rc<S>,
 }
 
-impl<S, B> Service<ServiceRequest> for AuthMiddleware<S>
+impl<S> Service<ServiceRequest> for AuthMiddleware<S>
     where
-        S: Service<ServiceRequest, Response=ServiceResponse<B>, Error=Error> + 'static,
+        S: Service<ServiceRequest, Response=ServiceResponse<BoxBody>, Error=Error> + 'static,
         S::Future: 'static,
-        B: 'static,
 {
-    type Response = ServiceResponse<B>;
+    type Response = ServiceResponse<BoxBody>;
     type Error = Error;
     type Future = LocalBoxFuture<'static, Result<Self::Response, Self::Error>>;
 
@@ -80,10 +76,8 @@ impl<S, B> Service<ServiceRequest> for AuthMiddleware<S>
                                         msg: Some(format!("无权限访问:{}", e.to_string())),
                                         data: None,
                                     };
-                                    return Err(ErrorUnauthorized(serde_json::json!(&resp).to_string()));
-                                    //TODO should return response to this:
-                                    // let resp=resp.resp_json();
-                                    // return Ok(req.into_response(resp));
+                                    let resp= HttpResponse::Ok();
+                                    return Ok(req.into_response(resp));
                                 }
                             }
                         }
