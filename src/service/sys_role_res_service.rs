@@ -141,9 +141,7 @@ impl SysRoleResService {
                 create_date: FastDateTime::now().set_micro(0).into(),
             });
         }
-        // let save_ok = CONTEXT.rbatis.save_batch(&sys_role_res, &[]).await?;
-        // return Ok(save_ok.rows_affected);
-        todo!()
+        Ok(SysRoleRes::insert_batch(&mut CONTEXT.rbatis.clone(),&sys_role_res).await?.rows_affected)
     }
 
     ///角色删除,同时删除用户关系，权限关系
@@ -165,27 +163,15 @@ impl SysRoleResService {
 
     ///删除角色资源
     pub async fn remove(&self, id: &str) -> Result<u64> {
-        // Ok(CONTEXT
-        //     .rbatis
-        //     .remove_by_column::<SysRoleRes, _>(SysRoleRes::id(), &id)
-        //     .await?)
-        todo!()
+        Ok(SysRoleRes::delete_by_column(&mut CONTEXT.rbatis.clone(),"id",id).await?.rows_affected)
     }
 
     pub async fn remove_by_res_id(&self, res_id: &str) -> Result<u64> {
-        // Ok(CONTEXT
-        //     .rbatis
-        //     .remove_by_wrapper::<SysRoleRes>(CONTEXT.rbatis.new_wrapper().eq(SysRoleRes::res_id(), res_id))
-        //     .await?)
-        todo!()
+        Ok(SysRoleRes::delete_by_column(&mut CONTEXT.rbatis.clone(),"res_id",res_id).await?.rows_affected)
     }
 
     ///删除角色资源
     pub async fn remove_by_role_id(&self, role_id: &str) -> Result<u64> {
-        // Ok(CONTEXT
-        //     .rbatis
-        //     .remove_by_wrapper::<SysRoleRes>(CONTEXT.rbatis.new_wrapper().eq(SysRoleRes::role_id(), role_id))
-        //     .await?)
-        todo!()
+        Ok(SysRoleRes::delete_by_column(&mut CONTEXT.rbatis.clone(),"role_id",role_id).await?.rows_affected)
     }
 }
