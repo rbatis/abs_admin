@@ -78,7 +78,6 @@ impl_select!(SysRoleRes{select_by_role_id(role_ids: &[String]) =>
            #{item}`"});
 
 
-
 ///后台用户表
 
 #[derive(Clone, Debug,serde::Serialize,serde::Deserialize)]
