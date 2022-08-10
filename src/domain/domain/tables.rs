@@ -50,6 +50,13 @@ impl_field_name_method!(SysRole{id,parent_id,name,del,create_date});
 
 crud!(SysRole{});
 
+impl_select!(SysRole{select_list_by_ids(ids:&[String])=>
+    "`where id in (`
+     trim ',':
+       for _,item in ids:
+         #{item},
+     )"});
+
 ///角色资源关系表(关系表不使用逻辑删除)
 
 #[derive(Clone, Debug, Eq, PartialEq, Hash,serde::Serialize,serde::Deserialize)]
@@ -65,10 +72,12 @@ pub struct SysRoleRes {
 impl_field_name_method!(SysRoleRes{id,role_id,res_id,create_date});
 
 crud!(SysRoleRes{});
-impl_select!(SysRoleRes{select_by_role_id(role_ids:Vec<String>) =>
+impl_select!(SysRoleRes{select_by_role_id(role_ids: &Vec<String>) =>
     "`where role_id in
        for _,item in role_ids:
            #{item}`"});
+
+
 
 ///后台用户表
 

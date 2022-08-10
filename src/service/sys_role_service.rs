@@ -141,19 +141,11 @@ impl SysRoleService {
     }
 
     pub async fn finds(&self, ids: &Vec<String>) -> Result<Vec<SysRole>> {
-        // Ok(CONTEXT
-        //     .rbatis
-        //     .fetch_list_by_wrapper(CONTEXT.rbatis.new_wrapper().r#in(SysRole::id(), ids))
-        //     .await?)
-        todo!()
+        Ok( SysRole::select_list_by_ids(pool!(),ids).await? )
     }
 
     pub async fn find_role_res(&self, ids: &Vec<String>) -> Result<Vec<SysRoleRes>> {
-        // Ok(CONTEXT
-        //     .rbatis
-        //     .fetch_list_by_wrapper(CONTEXT.rbatis.new_wrapper().r#in(SysRoleRes::role_id(), ids))
-        //     .await?)
-        todo!()
+        Ok( SysRoleRes::select_by_role_id(pool!(),ids).await? )
     }
 
     pub async fn find_user_permission(
