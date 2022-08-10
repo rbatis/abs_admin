@@ -11,6 +11,7 @@ use crate::service::CONTEXT;
 use rbdc::types::datetime::FastDateTime;
 use rbatis::plugin::object_id::ObjectId;
 use rbatis::sql::Page;
+use crate::pool;
 
 use crate::util::options::OptionStringRefUnwrapOrDefault;
 
@@ -56,7 +57,7 @@ impl SysRoleResService {
         arg: &Vec<SysRoleVO>,
     ) -> Result<HashMap<String, HashSet<SysRoleRes>>> {
         let role_ids = self.loop_find_role_ids(arg);
-        let role_res_vec=SysRoleRes::select_by_role_id(&mut CONTEXT.rbatis.clone(), role_ids).await?;
+        let role_res_vec=SysRoleRes::select_by_role_id(pool!(), role_ids).await?;
         let mut role_res_map: HashMap<String, HashSet<SysRoleRes>> = HashMap::with_capacity(role_res_vec.capacity());
         for role_res in role_res_vec {
             let role_id = role_res.role_id.as_deref().unwrap_or_default();
@@ -141,7 +142,7 @@ impl SysRoleResService {
                 create_date: FastDateTime::now().set_micro(0).into(),
             });
         }
-        Ok(SysRoleRes::insert_batch(&mut CONTEXT.rbatis.clone(),&sys_role_res).await?.rows_affected)
+        Ok(SysRoleRes::insert_batch(pool!(),&sys_role_res).await?.rows_affected)
     }
 
     ///角色删除,同时删除用户关系，权限关系
@@ -163,15 +164,15 @@ impl SysRoleResService {
 
     ///删除角色资源
     pub async fn remove(&self, id: &str) -> Result<u64> {
-        Ok(SysRoleRes::delete_by_column(&mut CONTEXT.rbatis.clone(),"id",id).await?.rows_affected)
+        Ok(SysRoleRes::delete_by_column(pool!(),"id",id).await?.rows_affected)
     }
 
     pub async fn remove_by_res_id(&self, res_id: &str) -> Result<u64> {
-        Ok(SysRoleRes::delete_by_column(&mut CONTEXT.rbatis.clone(),"res_id",res_id).await?.rows_affected)
+        Ok(SysRoleRes::delete_by_column(pool!(),"res_id",res_id).await?.rows_affected)
     }
 
     ///删除角色资源
     pub async fn remove_by_role_id(&self, role_id: &str) -> Result<u64> {
-        Ok(SysRoleRes::delete_by_column(&mut CONTEXT.rbatis.clone(),"role_id",role_id).await?.rows_affected)
+        Ok(SysRoleRes::delete_by_column(pool!(),"role_id",role_id).await?.rows_affected)
     }
 }

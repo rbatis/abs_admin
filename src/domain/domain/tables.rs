@@ -48,6 +48,8 @@ pub struct SysRole {
 
 impl_field_name_method!(SysRole{id,parent_id,name,del,create_date});
 
+crud!(SysRole{});
+
 ///角色资源关系表(关系表不使用逻辑删除)
 
 #[derive(Clone, Debug, Eq, PartialEq, Hash,serde::Serialize,serde::Deserialize)]

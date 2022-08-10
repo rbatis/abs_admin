@@ -9,6 +9,7 @@ use crate::util::string::IsEmptyString;
 use std::collections::{BTreeMap, HashMap};
 use rbatis::plugin::object_id::ObjectId;
 use rbatis::sql::{Page, PageRequest};
+use crate::pool;
 
 
 const RES_KEY: &'static str = "sys_role:all";
@@ -87,10 +88,9 @@ impl SysRoleService {
 
     /// 更新所有
     pub async fn update_cache(&self) -> Result<Vec<SysRole>> {
-        // let all = CONTEXT.rbatis.fetch_list().await?;
-        // CONTEXT.cache_service.set_json(RES_KEY, &all).await?;
-        // return Ok(all);
-        todo!()
+        let all = SysRole::select_all(pool!()).await?;
+        CONTEXT.cache_service.set_json(RES_KEY, &all).await?;
+        return Ok(all);
     }
 
     pub async fn finds_all_map(&self) -> Result<HashMap<String, SysRole>> {
@@ -104,46 +104,40 @@ impl SysRoleService {
 
     ///角色添加
     pub async fn add(&self, arg: &RoleAddDTO) -> Result<(u64, String)> {
-        //let role = SysRole {
-        //     id: ObjectId::new().to_string().into(),
-        //     name: arg.name.clone(),
-        //     parent_id: arg.parent_id.clone(),
-        //     del: 0.into(),
-        //     create_date: FastDateTime::now().set_micro(0).into(),
-        // };
-        // let result = (
-        //     CONTEXT.rbatis.save(&role, &[]).await?.rows_affected,
-        //     role.id.clone().unwrap(),
-        // );
-        // self.update_cache().await?;
-        // Ok(result)
-        todo!()
+        let role = SysRole {
+            id: ObjectId::new().to_string().into(),
+            name: arg.name.clone(),
+            parent_id: arg.parent_id.clone(),
+            del: 0.into(),
+            create_date: FastDateTime::now().set_micro(0).into(),
+        };
+        let result = (
+            SysRole::insert(pool!(),&role).await?.rows_affected,
+            role.id.clone().unwrap(),
+        );
+        self.update_cache().await?;
+        Ok(result)
     }
 
     ///角色修改
     pub async fn edit(&self, arg: &RoleEditDTO) -> Result<u64> {
-        // let mut role = SysRole {
-        //     id: arg.id.clone(),
-        //     name: arg.name.clone(),
-        //     parent_id: arg.parent_id.clone(),
-        //     del: None,
-        //     create_date: None,
-        // };
-        // let result = CONTEXT.rbatis.update_by_column(SysRole::id(), &mut role).await;
-        // self.update_cache().await?;
-        // Ok(result?)
-        todo!()
+        let mut role = SysRole {
+            id: arg.id.clone(),
+            name: arg.name.clone(),
+            parent_id: arg.parent_id.clone(),
+            del: None,
+            create_date: None,
+        };
+        let result = SysRole::update_by_column(pool!(),&role,SysRole::id()).await;
+        self.update_cache().await?;
+        Ok(result?.rows_affected)
     }
 
     ///角色删除
     pub async fn remove(&self, id: &str) -> Result<u64> {
-        // let result = CONTEXT
-        //     .rbatis
-        //     .remove_by_column::<SysRole, _>(SysRole::id(), &id.to_string())
-        //     .await;
-        // self.update_cache().await?;
-        // Ok(result?)
-        todo!()
+        let result = SysRole::delete_by_column(  pool!(), SysRole::id(), id).await;
+        self.update_cache().await?;
+        Ok(result?.rows_affected)
     }
 
     pub async fn finds(&self, ids: &Vec<String>) -> Result<Vec<SysRole>> {

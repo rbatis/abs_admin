@@ -8,6 +8,7 @@ use crate::domain::dto::{ResEditDTO, ResPageDTO};
 use crate::domain::vo::SysResVO;
 use crate::error::Error;
 use crate::error::Result;
+use crate::pool;
 use crate::service::CONTEXT;
 use crate::util::string::IsEmptyString;
 
@@ -20,7 +21,7 @@ impl SysResService {
     ///资源分页
     pub async fn page(&self, arg: &ResPageDTO) -> Result<Page<SysResVO>> {
         let page_req = PageRequest::new(arg.page_no.unwrap_or(1), arg.page_size.unwrap_or(10));
-        let data = SysRes::select_page(&mut CONTEXT.rbatis.clone(),&PageRequest::from(arg),arg).await?;
+        let data = SysRes::select_page(pool!(),&PageRequest::from(arg),arg).await?;
         let all_res = self.finds_all_map().await?;
         let mut all_res_vo = HashMap::new();
         for (k, v) in all_res {
@@ -45,14 +46,14 @@ impl SysResService {
 
     ///添加资源
     pub async fn add(&self, arg: &SysRes) -> Result<u64> {
-        let old=SysRes::select_by_permission_or_name(&mut CONTEXT.rbatis.clone(),arg.permission.as_deref().unwrap_or_default(),arg.name.as_deref().unwrap_or_default()).await?;
+        let old=SysRes::select_by_permission_or_name(pool!(),arg.permission.as_deref().unwrap_or_default(),arg.name.as_deref().unwrap_or_default()).await?;
         if old.len() > 0 {
             return Err(Error::from(format!(
                 "权限已存在! 权限:{:?}",
                 rbatis::make_table_field_vec!(old, name)
             )));
         }
-        let result = Ok(SysRes::insert(&mut CONTEXT.rbatis.clone(),&arg).await?.rows_affected);
+        let result = Ok(SysRes::insert(pool!(),&arg).await?.rows_affected);
         self.update_cache().await?;
         return result;
     }
@@ -68,16 +69,16 @@ impl SysResService {
             del: None,
             create_date: None,
         };
-        let result = SysRes::update_by_column(&mut CONTEXT.rbatis.clone(),&data,"id").await?;
+        let result = SysRes::update_by_column(pool!(),&data,"id").await?;
         self.update_cache().await?;
         return Ok(result.rows_affected);
     }
 
     ///删除资源
     pub async fn remove(&self, id: &str) -> Result<u64> {
-        let num=SysRes::delete_by_column(&mut CONTEXT.rbatis.clone(),"id",id).await?.rows_affected;
+        let num=SysRes::delete_by_column(pool!(),"id",id).await?.rows_affected;
          //删除父级为id的记录
-        SysRes::delete_by_parent_id(&mut CONTEXT.rbatis.clone(),id).await?.rows_affected;
+        SysRes::delete_by_parent_id(pool!(),id).await?.rows_affected;
         // //删除关联数据
         CONTEXT.sys_role_res_service.remove_by_res_id(id).await;
         self.update_cache().await?;
@@ -125,7 +126,7 @@ impl SysResService {
 
     /// 更新所有
     pub async fn update_cache(&self) -> Result<Vec<SysResVO>> {
-        let all= SysRes::select_all(&mut CONTEXT.rbatis.clone()).await?;
+        let all= SysRes::select_all(pool!()).await?;
         CONTEXT.cache_service.set_json(RES_KEY, &all).await?;
         let mut v = vec![];
         for x in all {
@@ -146,7 +147,7 @@ impl SysResService {
 
     /// 查找res数组
     pub async fn finds(&self, ids: &Vec<String>) -> Result<Vec<SysRes>> {
-        let res=SysRes::select_by_ids(&mut CONTEXT.rbatis.clone(),ids).await?;
+        let res=SysRes::select_by_ids(pool!(),ids).await?;
         Ok(res)
     }
 
@@ -166,7 +167,7 @@ impl SysResService {
 
     ///顶层权限
     pub async fn finds_layer_top(&self) -> Result<Vec<SysResVO>> {
-        let list = SysRes::select_by_parent_id_null(&mut CONTEXT.rbatis.clone()).await?;
+        let list = SysRes::select_by_parent_id_null(pool!()).await?;
         let all = self.finds_all_map().await?;
         self.finds_layer(&rbatis::make_table_field_vec!(list, id), &all).await
     }

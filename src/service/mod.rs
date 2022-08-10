@@ -91,3 +91,10 @@ impl Default for ServiceContext {
 lazy_static! {
     pub static ref CONTEXT: ServiceContext = ServiceContext::default();
 }
+
+#[macro_export]
+macro_rules! pool {
+    () => {
+       &mut CONTEXT.rbatis.clone()
+    };
+}
