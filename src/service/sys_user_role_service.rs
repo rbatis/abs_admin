@@ -10,6 +10,7 @@ use crate::service::CONTEXT;
 use rbdc::types::datetime::FastDateTime;
 use rbatis::plugin::object_id::ObjectId;
 use rbatis::sql::Page;
+use crate::pool;
 
 use crate::util::options::OptionStringRefUnwrapOrDefault;
 
@@ -72,19 +73,11 @@ impl SysUserRoleService {
 
     ///角色删除
     pub async fn remove_by_role_id(&self, role_id: &str) -> Result<u64> {
-        // Ok(CONTEXT
-        //     .rbatis
-        //     .remove_by_wrapper::<SysUserRole>(CONTEXT.rbatis.new_wrapper().eq(SysUserRole::role_id(), role_id))
-        //     .await?)
-    todo!()
+        Ok(SysUserRole::delete_by_column(pool!(),SysUserRole::role_id(),role_id).await?.rows_affected)
     }
 
     pub async fn remove_by_user_id(&self, user_id: &str) -> Result<u64> {
-        // Ok(CONTEXT
-        //     .rbatis
-        //     .remove_by_wrapper::<SysUserRole>(CONTEXT.rbatis.new_wrapper().eq(SysUserRole::user_id(), user_id))
-        //     .await?)
-        todo!()
+        Ok(SysUserRole::delete_by_column(pool!(),SysUserRole::user_id(),user_id).await?.rows_affected)
     }
 
     ///找出角色

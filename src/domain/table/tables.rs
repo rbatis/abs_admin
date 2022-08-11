@@ -100,6 +100,8 @@ pub struct SysUser {
 
 impl_field_name_method!(SysUser{id,account,password,name,login_check,state,del,create_date});
 
+crud!(SysUser{});
+
 ///用户角色关系表(关系表不使用逻辑删除)
 
 #[derive(Clone, Debug,serde::Serialize,serde::Deserialize)]

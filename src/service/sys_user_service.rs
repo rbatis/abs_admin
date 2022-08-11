@@ -12,6 +12,7 @@ use crate::util::password_encoder::PasswordEncoder;
 use rbatis::plugin::object_id::ObjectId;
 use std::collections::BTreeMap;
 use std::time::Duration;
+use crate::pool;
 
 use crate::util::options::OptionStringRefUnwrapOrDefault;
 
@@ -71,16 +72,12 @@ impl SysUserService {
 
     ///后台用户根据id查找
     pub async fn find(&self, id: &str) -> Result<Option<SysUser>> {
-        // let wrapper = CONTEXT.rbatis.new_wrapper().eq(SysUser::id(), id);
-        // return Ok(CONTEXT.rbatis.fetch_by_wrapper(wrapper).await?);
-        todo!()
+        Ok(SysUser::select_by_column(pool!(),SysUser::id(),id).await?.into_iter().next())
     }
 
     ///根据账户名查找
     pub async fn find_by_account(&self, account: &str) -> Result<Option<SysUser>> {
-        // let wrapper = CONTEXT.rbatis.new_wrapper().eq(SysUser::account(), account);
-        // return Ok(CONTEXT.rbatis.fetch_by_wrapper(wrapper).await?);
-        todo!()
+        Ok(SysUser::select_by_column(pool!(),SysUser::account(),account).await?.into_iter().next())
     }
 
     ///添加后台账号
@@ -127,8 +124,7 @@ impl SysUserService {
                 })
                 .await?;
         }
-        // return Ok(CONTEXT.rbatis.save(&user, &[]).await?.rows_affected);
-        todo!()
+        Ok(SysUser::insert(pool!(),&user).await?.rows_affected)
     }
 
     ///登陆后台
@@ -245,13 +241,9 @@ impl SysUserService {
     }
 
     pub async fn get_user_info_by_token(&self, token: &JWTToken) -> Result<SignInVO> {
-        // let user: Option<SysUser> = CONTEXT
-        //     .rbatis
-        //     .fetch_by_wrapper(CONTEXT.rbatis.new_wrapper().eq(SysUser::id(), &token.id))
-        //     .await?;
-        // let user = user.ok_or_else(|| Error::from(format!("账号:{} 不存在!", token.account)))?;
-        // return self.get_user_info(&user).await;
-        todo!()
+        let user = SysUser::select_by_column(pool!(),SysUser::id(),&token.id).await?.into_iter().next();
+        let user = user.ok_or_else(|| Error::from(format!("账号:{} 不存在!", token.account)))?;
+        return self.get_user_info(&user).await;
     }
 
     pub async fn get_user_info(&self, user: &SysUser) -> Result<SignInVO> {
@@ -321,21 +313,16 @@ impl SysUserService {
                 })
                 .await?;
         }
-        // Ok(CONTEXT.rbatis.update_by_column("id", &mut user).await?)
-        todo!()
+        Ok(SysUser::update_by_column(pool!(),&user,SysUser::id()).await?.rows_affected)
     }
 
     pub async fn remove(&self, id: &str) -> Result<u64> {
         if id.is_empty() {
             return Err(Error::from("id 不能为空！"));
         }
-        // let r = CONTEXT
-        //     .rbatis
-        //     .remove_by_column::<SysUser, _>(SysUser::id(), &id)
-        //     .await;
-        // CONTEXT.sys_user_role_service.remove_by_user_id(id).await?;
-        // return Ok(r?);
-        todo!()
+        let r= SysUser::delete_by_column(pool!(),SysUser::id(),id).await;
+        CONTEXT.sys_user_role_service.remove_by_user_id(id).await?;
+        return Ok(r?.rows_affected);
     }
 
     ///递归查找层级结构权限
