@@ -1,6 +1,6 @@
 use crate::error::Result;
 use rbdc::types::datetime::FastDateTime;
-use crate::domain::domain::{SysRole, SysRoleRes, SysUserRole};
+use crate::domain::table::{SysRole, SysRoleRes, SysUserRole};
 use crate::domain::dto::{RoleAddDTO, RoleEditDTO, RolePageDTO};
 use crate::domain::vo::{SysResVO, SysRoleVO};
 use crate::service::CONTEXT;

@@ -1,5 +1,5 @@
 use rbatis::sql::PageRequest;
-use crate::domain::domain::LoginCheck;
+use crate::domain::table::LoginCheck;
 use serde::{Deserialize, Serialize};
 
 /// 用户

@@ -1,5 +1,5 @@
 use rbdc::datetime::FastDateTime;
-use crate::domain::domain::SysRole;
+use crate::domain::table::SysRole;
 use crate::domain::vo::SysResVO;
 
 #[derive(Clone, Debug, serde::Serialize,serde::Deserialize)]

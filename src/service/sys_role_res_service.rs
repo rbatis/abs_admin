@@ -2,7 +2,7 @@ use std::collections::{BTreeMap, HashMap, HashSet};
 
 use crate::error::Error;
 use crate::error::Result;
-use crate::domain::domain::{SysRoleRes};
+use crate::domain::table::{SysRoleRes};
 use crate::domain::dto::{
     RoleAddDTO, RoleEditDTO, RolePageDTO, SysRoleResAddDTO, SysRoleResPageDTO, SysRoleResUpdateDTO,
 };

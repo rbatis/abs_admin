@@ -1,6 +1,6 @@
 use actix_web::{web, Responder};
 use rbdc::datetime::FastDateTime;
-use crate::domain::domain::SysDict;
+use crate::domain::table::SysDict;
 use crate::domain::dto::{DictAddDTO, DictEditDTO, DictPageDTO, IdDTO};
 use crate::domain::vo::RespVO;
 use crate::service::CONTEXT;

@@ -1,4 +1,4 @@
-use crate::domain::domain::SysRes;
+use crate::domain::table::SysRes;
 use std::collections::HashMap;
 use rbdc::types::datetime::FastDateTime;
 ///权限资源表

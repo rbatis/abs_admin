@@ -3,7 +3,7 @@ use rbatis::sql::{Page, PageRequest};
 
 
 
-use crate::domain::domain::SysRes;
+use crate::domain::table::SysRes;
 use crate::domain::dto::{ResEditDTO, ResPageDTO};
 use crate::domain::vo::SysResVO;
 use crate::error::Error;

@@ -1,4 +1,4 @@
-use crate::domain::domain::SysDict;
+use crate::domain::table::SysDict;
 use rbdc::types::datetime::FastDateTime;
 ///权限资源表
 #[derive(Clone, Debug, serde::Serialize,serde::Deserialize)]

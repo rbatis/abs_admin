@@ -1,4 +1,4 @@
-use crate::domain::domain::Sms;
+use crate::domain::table::Sms;
 use crate::error::{Error, Result};
 use crate::service::CONTEXT;
 use std::collections::HashMap;

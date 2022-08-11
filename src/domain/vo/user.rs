@@ -1,5 +1,5 @@
 use rbdc::datetime::FastDateTime;
-use crate::domain::domain::{LoginCheck, SysUser};
+use crate::domain::table::{LoginCheck, SysUser};
 use crate::domain::vo::SysRoleVO;
 use serde::{Deserialize, Serialize};
 

@@ -4,7 +4,7 @@ use crate::service::CONTEXT;
 use rbdc::types::datetime::FastDateTime;
 use rbatis::sql::page::{Page, PageRequest};
 
-use crate::domain::domain::{LoginCheck, SysUser};
+use crate::domain::table::{LoginCheck, SysUser};
 use crate::domain::dto::{IdDTO, SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO, UserRoleAddDTO};
 use crate::domain::vo::user::SysUserVO;
 use crate::domain::vo::{JWTToken, SignInVO, SysResVO};

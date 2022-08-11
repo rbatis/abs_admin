@@ -2,7 +2,7 @@ use actix_web::{web, Responder};
 use rbdc::types::datetime::FastDateTime;
 use rbatis::plugin::object_id::ObjectId;
 
-use crate::domain::domain::SysRes;
+use crate::domain::table::SysRes;
 use crate::domain::dto::{EmptyDTO, IdDTO, ResAddDTO, ResEditDTO, ResPageDTO};
 use crate::domain::vo::RespVO;
 use crate::service::CONTEXT;

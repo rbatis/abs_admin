@@ -1,4 +1,4 @@
-use crate::domain::domain::LoginCheck;
+use crate::domain::table::LoginCheck;
 use rbdc::datetime::FastDateTime;
 ///权限资源表
 #[derive(Clone, Debug, serde::Serialize,serde::Deserialize)]
