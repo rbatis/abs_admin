@@ -32,7 +32,7 @@ impl_select!(SysRes{select_by_ids(ids:&Vec<String>)=>
        for _,id in ids:
          #{id},
      `)`"});
-impl_select!(SysRes{select_by_parent_id_null()=>"`where parent_id = null order_by create_date desc`"});
+impl_select!(SysRes{select_by_parent_id_null()=>"`where parent_id = null order by create_date desc`"});
 
 
 ///角色表
@@ -61,7 +61,9 @@ impl_select_page!(SysRole{select_page_by_name(name:&str)=>
     "`where del = 0`
     if name != '':
       ` and name like %#{name}%`
-    ` and parent_id = null order_by create_date desc`"});
+    ` and parent_id = null `
+    if !sql.contains('count'):
+     `order by create_date desc`"});
 
 
 ///角色资源关系表(关系表不使用逻辑删除)
@@ -111,7 +113,8 @@ impl_select_page!(SysUser{select_page(name:&str,account:&str)=>
       ` and name like %#{name}%`
     if account != '':
       ` and account like %#{account}%`
-    ` order_by create_date desc`"});
+    if !sql.contains('count'):
+     ` order by create_date desc`"});
 
 ///用户角色关系表(关系表不使用逻辑删除)
 
@@ -154,4 +157,5 @@ impl_select_page!(SysDict{select_page(dto: &crate::domain::dto::DictPageDTO) =>
          `and code = #{dto.code}`
       if dto.name!=null:
          `and name = #{dto.name}`
-      ` order by create_date `"});
+      if !sql.contains('count'):
+         ` order by create_date `"});
