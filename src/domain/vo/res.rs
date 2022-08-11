@@ -1,9 +1,8 @@
-use crate::domain::domain::SysRes;
+use crate::domain::table::SysRes;
 use std::collections::HashMap;
-
+use rbdc::types::datetime::FastDateTime;
 ///权限资源表
-#[crud_table(table_name: "sys_res" | table_columns: "id,parent_id,name,permission,path,del")]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, serde::Serialize,serde::Deserialize)]
 pub struct SysResVO {
     pub id: Option<String>,
     //父id(可空)
@@ -14,7 +13,7 @@ pub struct SysResVO {
     //前端-菜单路径
     pub path: Option<String>,
     pub del: Option<i32>,
-    pub create_date: Option<rbatis::DateTimeNative>,
+    pub create_date: Option<FastDateTime>,
     pub childs: Option<Vec<SysResVO>>,
 }
 

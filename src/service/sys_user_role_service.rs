@@ -1,16 +1,17 @@
 use std::collections::BTreeMap;
 
-use crate::domain::domain::{SysUserRole};
+use crate::domain::table::{SysUserRole};
 use crate::domain::dto::{UserPageDTO, UserRoleAddDTO, UserRolePageDTO};
 use crate::domain::vo::user::SysUserVO;
 use crate::domain::vo::{SysResVO, SysRoleVO};
 use crate::error::Error;
 use crate::error::Result;
 use crate::service::CONTEXT;
-use rbatis::DateTimeNative;
-use rbatis::crud::CRUD;
+use rbdc::types::datetime::FastDateTime;
 use rbatis::plugin::object_id::ObjectId;
-use rbatis::plugin::page::Page;
+use rbatis::sql::Page;
+use crate::pool;
+
 use crate::util::options::OptionStringRefUnwrapOrDefault;
 
 ///用户角色服务
@@ -26,13 +27,13 @@ impl SysUserRoleService {
         if arg.resp_set_role.unwrap_or(true) {
             let all_role = CONTEXT.sys_role_service.finds_all_map().await?;
             let user_ids = rbatis::make_table_field_vec!(&vo.records, id);
-            let user_roles = CONTEXT.rbatis.fetch_list_by_wrapper::<SysUserRole>(CONTEXT.rbatis.new_wrapper().in_(SysUserRole::user_id(), &user_ids)).await?;
+            let user_roles = SysUserRole::select_list_in_user_id(pool!(), &user_ids).await?;
             let user_role_map = rbatis::make_table_field_map!(&user_roles, user_id);
             let role_ids = rbatis::make_table_field_vec!(&user_roles, role_id);
             let roles = CONTEXT.sys_role_service.finds(&role_ids).await?;
             let roles_map = rbatis::make_table_field_map!(&roles, id);
             for mut x in &mut vo.records {
-                if let Some(user_role) = user_role_map.get(&x.id.clone().unwrap_or_default()) {
+                if let Some(user_role) = user_role_map.get(x.id.as_deref().unwrap_or_default()) {
                     if let Some(role_id) = &user_role.role_id {
                         let role = roles_map.get(role_id).cloned();
                         x.role = SysRoleVO::from_option(role);
@@ -58,29 +59,23 @@ impl SysUserRoleService {
             id: arg.id.clone(),
             user_id: arg.user_id.clone(),
             role_id: arg.role_id.clone(),
-            create_date: DateTimeNative::now().into(),
+            create_date: FastDateTime::now().set_micro(0).into(),
         };
         if role.id.is_none() {
             role.id = Some(ObjectId::new().to_string());
         }
-        self.remove_by_user_id(&arg.user_id.clone().unwrap_or_default())
+        self.remove_by_user_id(arg.user_id.as_deref().unwrap_or_default())
             .await?;
-        Ok(CONTEXT.rbatis.save(&role, &[]).await?.rows_affected)
+        Ok(SysUserRole::insert(pool!(),&role).await?.rows_affected)
     }
 
     ///角色删除
     pub async fn remove_by_role_id(&self, role_id: &str) -> Result<u64> {
-        Ok(CONTEXT
-            .rbatis
-            .remove_by_wrapper::<SysUserRole>(CONTEXT.rbatis.new_wrapper().eq(SysUserRole::role_id(), role_id))
-            .await?)
+        Ok(SysUserRole::delete_by_column(pool!(),SysUserRole::role_id(),role_id).await?.rows_affected)
     }
 
     pub async fn remove_by_user_id(&self, user_id: &str) -> Result<u64> {
-        Ok(CONTEXT
-            .rbatis
-            .remove_by_wrapper::<SysUserRole>(CONTEXT.rbatis.new_wrapper().eq(SysUserRole::user_id(), user_id))
-            .await?)
+        Ok(SysUserRole::delete_by_column(pool!(),SysUserRole::user_id(),user_id).await?.rows_affected)
     }
 
     ///找出角色
@@ -92,19 +87,13 @@ impl SysUserRoleService {
         if user_id.is_empty() {
             return Ok(None);
         }
-        let user_roles = CONTEXT
-            .rbatis
-            .fetch_list_by_wrapper::<SysUserRole>(
-                CONTEXT.rbatis.new_wrapper().eq(SysUserRole::user_id(), user_id),
-            )
-            .await?;
+        let user_roles = SysUserRole::select_list_by_user_id(pool!(),user_id).await?;
         let role_ids = &rbatis::make_table_field_vec!(&user_roles, role_id);
         let roles = CONTEXT.sys_role_service.finds(role_ids).await?;
         let role_res_vec = CONTEXT
             .sys_role_service
             .find_role_res(&rbatis::make_table_field_vec!(&user_roles, role_id))
             .await?;
-
         let mut role_vos = vec![];
         for role in roles {
             //load res

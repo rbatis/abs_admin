@@ -26,6 +26,7 @@ mod sys_user_service;
 mod sys_auth_service;
 
 use rbatis::rbatis::Rbatis;
+use rbdc_mysql::driver::MysqlDriver;
 pub use crate::config::config::ApplicationConfig;
 pub use cache_service::*;
 pub use mem_service::*;
@@ -58,7 +59,7 @@ impl ServiceContext {
         //连接数据库
         println!("[abs_admin] rbatis connect database ({})...", self.config.database_url);
         self.rbatis
-            .link(&self.config.database_url)
+            .link(MysqlDriver{},&self.config.database_url)
             .await
             .expect("[abs_admin] rbatis connect database fail!");
         println!("[abs_admin] rbatis connect database success!");
@@ -89,4 +90,11 @@ impl Default for ServiceContext {
 
 lazy_static! {
     pub static ref CONTEXT: ServiceContext = ServiceContext::default();
+}
+
+#[macro_export]
+macro_rules! pool {
+    () => {
+       &mut CONTEXT.rbatis.clone()
+    };
 }

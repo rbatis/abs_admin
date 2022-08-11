@@ -1,3 +1,4 @@
+use rbatis::sql::PageRequest;
 use serde::{Deserialize, Serialize};
 
 /// 字典分页DTO
@@ -8,6 +9,18 @@ pub struct DictPageDTO {
     pub name: Option<String>,
     pub code: Option<String>,
     pub state: Option<i32>,
+}
+
+impl From<DictPageDTO> for PageRequest{
+    fn from(arg: DictPageDTO) -> Self {
+        PageRequest::new(arg.page_no.unwrap_or(1),arg.page_size.unwrap_or(10))
+    }
+}
+
+impl From<&DictPageDTO> for PageRequest{
+    fn from(arg: &DictPageDTO) -> Self {
+        PageRequest::new(arg.page_no.unwrap_or(1),arg.page_size.unwrap_or(10))
+    }
 }
 
 /// 字典分添加DTO

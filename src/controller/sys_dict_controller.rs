@@ -1,6 +1,6 @@
 use actix_web::{web, Responder};
-use rbatis::DateTimeNative;
-use crate::domain::domain::SysDict;
+use rbdc::datetime::FastDateTime;
+use crate::domain::table::SysDict;
 use crate::domain::dto::{DictAddDTO, DictEditDTO, DictPageDTO, IdDTO};
 use crate::domain::vo::RespVO;
 use crate::service::CONTEXT;
@@ -28,7 +28,7 @@ pub async fn add(mut arg: web::Json<DictAddDTO>) -> impl Responder {
         name: arg.name.clone(),
         code: arg.code.clone(),
         state: arg.state.clone(),
-        create_date: DateTimeNative::now().into(),
+        create_date: FastDateTime::now().set_micro(0).into(),
     };
     let data = CONTEXT.sys_dict_service.add(&res).await;
     CONTEXT.sys_dict_service.update_cache().await;

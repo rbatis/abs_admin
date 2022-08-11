@@ -1,11 +1,10 @@
 use crate::error::Error;
 use crate::error::Result;
 use crate::service::CONTEXT;
-use rbatis::DateTimeNative;
-use rbatis::crud::CRUD;
-use rbatis::plugin::page::{Page, PageRequest};
+use rbdc::types::datetime::FastDateTime;
+use rbatis::sql::page::{Page, PageRequest};
 
-use crate::domain::domain::{LoginCheck, SysUser};
+use crate::domain::table::{LoginCheck, SysUser};
 use crate::domain::dto::{IdDTO, SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO, UserRoleAddDTO};
 use crate::domain::vo::user::SysUserVO;
 use crate::domain::vo::{JWTToken, SignInVO, SysResVO};
@@ -13,6 +12,8 @@ use crate::util::password_encoder::PasswordEncoder;
 use rbatis::plugin::object_id::ObjectId;
 use std::collections::BTreeMap;
 use std::time::Duration;
+use crate::pool;
+
 use crate::util::options::OptionStringRefUnwrapOrDefault;
 
 const REDIS_KEY_RETRY: &'static str = "login:login_retry";
@@ -23,37 +24,17 @@ pub struct SysUserService {}
 impl SysUserService {
     /// 后台用户分页
     pub async fn page(&self, arg: &UserPageDTO) -> Result<Page<SysUserVO>> {
-        let wrapper = CONTEXT
-            .rbatis
-            .new_wrapper()
-            .eq(SysUserVO::del(), 0)
-            .do_if(arg.name.is_some(), |w| w.like(SysUserVO::name(), &arg.name))
-            .do_if(arg.account.is_some(), |w| w.like(SysUserVO::account(), &arg.account))
-            .order_by(false,&[SysUser::create_date()]);
-        let sys_user_page: Page<SysUser> = CONTEXT
-            .rbatis
-            .fetch_page_by_wrapper(
-                wrapper,
-                &PageRequest::new(arg.page_no.unwrap_or(1), arg.page_size.unwrap_or(10)),
-            )
-            .await?;
-        let mut vos = vec![];
-        for x in sys_user_page.records {
-            vos.push(SysUserVO::from(x));
-        }
-        return Ok(Page::<SysUserVO> {
-            records: vos,
-            total: sys_user_page.total,
-            pages: sys_user_page.pages,
-            page_no: sys_user_page.page_no,
-            page_size: sys_user_page.page_size,
-            search_count: sys_user_page.search_count,
-        });
+        let sys_user_page: Page<SysUser> = SysUser::select_page(pool!(),
+                                                                &PageRequest::from(arg),
+                                                                arg.name.as_deref().unwrap_or_default(),
+                                                                arg.account.as_deref().unwrap_or_default()).await?;
+        let mut page = Page::<SysUserVO>::from(sys_user_page);
+        return Ok(page);
     }
 
     ///用户详情
     pub async fn detail(&self, arg: &IdDTO) -> Result<SysUserVO> {
-        let user_id = arg.id.clone().unwrap_or_default();
+        let user_id = arg.id.as_deref().unwrap_or_default();
         let user = self
             .find(&user_id)
             .await?
@@ -70,14 +51,12 @@ impl SysUserService {
 
     ///后台用户根据id查找
     pub async fn find(&self, id: &str) -> Result<Option<SysUser>> {
-        let wrapper = CONTEXT.rbatis.new_wrapper().eq(SysUser::id(), id);
-        return Ok(CONTEXT.rbatis.fetch_by_wrapper(wrapper).await?);
+        Ok(SysUser::select_by_column(pool!(),SysUser::id(),id).await?.into_iter().next())
     }
 
     ///根据账户名查找
     pub async fn find_by_account(&self, account: &str) -> Result<Option<SysUser>> {
-        let wrapper = CONTEXT.rbatis.new_wrapper().eq(SysUser::account(), account);
-        return Ok(CONTEXT.rbatis.fetch_by_wrapper(wrapper).await?);
+        Ok(SysUser::select_by_column(pool!(),SysUser::account(),account).await?.into_iter().next())
     }
 
     ///添加后台账号
@@ -98,7 +77,7 @@ impl SysUserService {
                 arg.account.as_ref().unwrap()
             )));
         }
-        let mut password = arg.password.clone().unwrap_or_default();
+        let mut password = arg.password.as_deref().unwrap_or_default().to_string();
         if password.is_empty() {
             //默认密码
             password = "123456".to_string();
@@ -112,7 +91,7 @@ impl SysUserService {
             login_check: arg.login_check.clone(),
             state: 0.into(),
             del: 0.into(),
-            create_date: DateTimeNative::now().into(),
+            create_date: FastDateTime::now().set_micro(0).into(),
         };
         if let Some(_) = &arg.role_id{
             CONTEXT
@@ -124,16 +103,13 @@ impl SysUserService {
                 })
                 .await?;
         }
-        return Ok(CONTEXT.rbatis.save(&user, &[]).await?.rows_affected);
+        Ok(SysUser::insert(pool!(),&user).await?.rows_affected)
     }
 
     ///登陆后台
     pub async fn sign_in(&self, arg: &SignInDTO) -> Result<SignInVO> {
         self.is_need_wait_login_ex().await?;
-        let user: Option<SysUser> = CONTEXT
-            .rbatis
-            .fetch_by_wrapper(CONTEXT.rbatis.new_wrapper().eq(SysUser::account(), &arg.account))
-            .await?;
+        let user: Option<SysUser> = SysUser::select_by_column(pool!(),SysUser::account(),&arg.account).await?.into_iter().next();
         let user = user.ok_or_else(|| Error::from(format!("账号:{} 不存在!", arg.account)))?;
         if user.state.eq(&Some(0)) {
             return Err(Error::from("账户被禁用!"));
@@ -240,10 +216,7 @@ impl SysUserService {
     }
 
     pub async fn get_user_info_by_token(&self, token: &JWTToken) -> Result<SignInVO> {
-        let user: Option<SysUser> = CONTEXT
-            .rbatis
-            .fetch_by_wrapper(CONTEXT.rbatis.new_wrapper().eq(SysUser::id(), &token.id))
-            .await?;
+        let user = SysUser::select_by_column(pool!(),SysUser::id(),&token.id).await?.into_iter().next();
         let user = user.ok_or_else(|| Error::from(format!("账号:{} 不存在!", token.account)))?;
         return self.get_user_info(&user).await;
     }
@@ -266,11 +239,11 @@ impl SysUserService {
         let all_res = CONTEXT.sys_res_service.finds_all_map().await?;
         sign_vo.permissions = self.loop_load_level_permission(&user_id, &all_res).await?;
         let jwt_token = JWTToken {
-            id: user.id.clone().unwrap_or_default(),
+            id: user.id.as_deref().unwrap_or_default().to_string(),
             account: user.account.unwrap_or_default(),
             permissions: sign_vo.permissions.clone(),
             role_ids: vec![],
-            exp: DateTimeNative::now().timestamp_millis() as usize,
+            exp: FastDateTime::now().set_micro(0).unix_timestamp_millis() as usize,
         };
         sign_vo.access_token = jwt_token.create_token(&CONTEXT.config.jwt_secret)?;
         sign_vo.role = CONTEXT
@@ -314,19 +287,16 @@ impl SysUserService {
                 })
                 .await?;
         }
-        Ok(CONTEXT.rbatis.update_by_column("id", &mut user).await?)
+        Ok(SysUser::update_by_column(pool!(),&user,SysUser::id()).await?.rows_affected)
     }
 
     pub async fn remove(&self, id: &str) -> Result<u64> {
         if id.is_empty() {
             return Err(Error::from("id 不能为空！"));
         }
-        let r = CONTEXT
-            .rbatis
-            .remove_by_column::<SysUser, _>(SysUser::id(), &id)
-            .await;
+        let r= SysUser::delete_by_column(pool!(),SysUser::id(),id).await;
         CONTEXT.sys_user_role_service.remove_by_user_id(id).await?;
-        return Ok(r?);
+        return Ok(r?.rows_affected);
     }
 
     ///递归查找层级结构权限

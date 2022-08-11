@@ -1,15 +1,15 @@
-use crate::domain::domain::SysRole;
+use rbdc::datetime::FastDateTime;
+use crate::domain::table::SysRole;
 use crate::domain::vo::SysResVO;
 
-#[crud_table(table_name: "sys_role"| table_columns: "id,name,parent_id,create_date,del")]
-#[derive(Debug, Clone)]
+#[derive(Clone, Debug, serde::Serialize,serde::Deserialize)]
 pub struct SysRoleVO {
     pub id: Option<String>,
     pub name: Option<String>,
     //父id(可空)
     pub parent_id: Option<String>,
     pub del: Option<i32>,
-    pub create_date: Option<rbatis::DateTimeNative>,
+    pub create_date: Option<FastDateTime>,
     pub resources: Vec<SysResVO>,
     pub childs: Option<Vec<SysRoleVO>>,
     pub resource_ids: Vec<String>,
