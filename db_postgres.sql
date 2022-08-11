@@ -145,7 +145,7 @@ ALTER TABLE "public"."sys_user_role" OWNER TO "postgres";
 -- Records of sys_user_role
 -- ----------------------------
 BEGIN;
-INSERT INTO "public"."sys_user_role" VALUES ('1', '2d4886bd-ad2a-4644-86b9-460afad05cbf', '1', '2020-07-28 08:34:40');
+INSERT INTO "public"."sys_user_role" VALUES ('1', '205667537625681919', '1', '2020-07-28 08:34:40');
 COMMIT;
 
 -- ----------------------------
