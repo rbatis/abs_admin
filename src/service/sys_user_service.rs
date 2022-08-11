@@ -24,33 +24,12 @@ pub struct SysUserService {}
 impl SysUserService {
     /// 后台用户分页
     pub async fn page(&self, arg: &UserPageDTO) -> Result<Page<SysUserVO>> {
-        // let wrapper = CONTEXT
-        //     .rbatis
-        //     .new_wrapper()
-        //     .eq(SysUserVO::del(), 0)
-        //     .do_if(arg.name.is_some(), |w| w.like(SysUserVO::name(), &arg.name))
-        //     .do_if(arg.account.is_some(), |w| w.like(SysUserVO::account(), &arg.account))
-        //     .order_by(false,&[SysUser::create_date()]);
-        // let sys_user_page: Page<SysUser> = CONTEXT
-        //     .rbatis
-        //     .fetch_page_by_wrapper(
-        //         wrapper,
-        //         &PageRequest::new(arg.page_no.unwrap_or(1), arg.page_size.unwrap_or(10)),
-        //     )
-        //     .await?;
-        // let mut vos = vec![];
-        // for x in sys_user_page.records {
-        //     vos.push(SysUserVO::from(x));
-        // }
-        // return Ok(Page::<SysUserVO> {
-        //     records: vos,
-        //     total: sys_user_page.total,
-        //     pages: sys_user_page.pages,
-        //     page_no: sys_user_page.page_no,
-        //     page_size: sys_user_page.page_size,
-        //     search_count: sys_user_page.search_count,
-        // });
-        todo!()
+        let sys_user_page: Page<SysUser> = SysUser::select_page(pool!(),
+                                                                &PageRequest::from(arg),
+                                                                arg.name.as_deref().unwrap_or_default(),
+                                                                arg.account.as_deref().unwrap_or_default()).await?;
+        let mut page = Page::<SysUserVO>::from(sys_user_page);
+        return Ok(page);
     }
 
     ///用户详情
@@ -129,75 +108,71 @@ impl SysUserService {
 
     ///登陆后台
     pub async fn sign_in(&self, arg: &SignInDTO) -> Result<SignInVO> {
-        // self.is_need_wait_login_ex().await?;
-        // let user: Option<SysUser> = CONTEXT
-        //     .rbatis
-        //     .fetch_by_wrapper(CONTEXT.rbatis.new_wrapper().eq(SysUser::account(), &arg.account))
-        //     .await?;
-        // let user = user.ok_or_else(|| Error::from(format!("账号:{} 不存在!", arg.account)))?;
-        // if user.state.eq(&Some(0)) {
-        //     return Err(Error::from("账户被禁用!"));
-        // }
-        // let mut error = None;
-        // match user
-        //     .login_check
-        //     .as_ref()
-        //     .unwrap_or(&LoginCheck::PasswordCheck)
-        // {
-        //     LoginCheck::NoCheck => {
-        //         //无校验登录，适合Debug用
-        //     }
-        //     LoginCheck::PasswordCheck => {
-        //         // check pwd
-        //         if !PasswordEncoder::verify(
-        //             user.password
-        //                 .as_ref()
-        //                 .ok_or_else(|| Error::from("错误的用户数据，密码为空!"))?,
-        //             &arg.password,
-        //         ) {
-        //             error = Some(Error::from("密码不正确!"));
-        //         }
-        //     }
-        //     LoginCheck::PasswordImgCodeCheck => {
-        //         //check img code
-        //         let cache_code = CONTEXT
-        //             .cache_service
-        //             .get_string(&format!("captch:account_{}", &arg.account))
-        //             .await?;
-        //         if cache_code.eq(&arg.vcode) {
-        //             error = Some(Error::from("验证码不正确!"))
-        //         }
-        //         // check pwd
-        //         if !PasswordEncoder::verify(
-        //             user.password
-        //                 .as_ref()
-        //                 .ok_or_else(|| Error::from("错误的用户数据，密码为空!"))?,
-        //             &arg.password,
-        //         ) {
-        //             error = Some(Error::from("密码不正确!"));
-        //         }
-        //     }
-        //     LoginCheck::PhoneCodeCheck => {
-        //         //短信验证码登录
-        //         let sms_code = CONTEXT
-        //             .cache_service
-        //             .get_string(&format!(
-        //                 "{}{}",
-        //                 CONTEXT.config.sms_cache_send_key_prefix, &arg.account
-        //             ))
-        //             .await?;
-        //         if sms_code.eq(&arg.vcode) {
-        //             error = Some(Error::from("验证码不正确!"));
-        //         }
-        //     }
-        // }
-        // if error.is_some() {
-        //     self.add_retry_login_limit_num().await?;
-        //     return Err(error.unwrap());
-        // }
-        // let sign_in_vo = self.get_user_info(&user).await?;
-        // return Ok(sign_in_vo);
-        todo!()
+        self.is_need_wait_login_ex().await?;
+        let user: Option<SysUser> = SysUser::select_by_column(pool!(),SysUser::account(),&arg.account).await?.into_iter().next();
+        let user = user.ok_or_else(|| Error::from(format!("账号:{} 不存在!", arg.account)))?;
+        if user.state.eq(&Some(0)) {
+            return Err(Error::from("账户被禁用!"));
+        }
+        let mut error = None;
+        match user
+            .login_check
+            .as_ref()
+            .unwrap_or(&LoginCheck::PasswordCheck)
+        {
+            LoginCheck::NoCheck => {
+                //无校验登录，适合Debug用
+            }
+            LoginCheck::PasswordCheck => {
+                // check pwd
+                if !PasswordEncoder::verify(
+                    user.password
+                        .as_ref()
+                        .ok_or_else(|| Error::from("错误的用户数据，密码为空!"))?,
+                    &arg.password,
+                ) {
+                    error = Some(Error::from("密码不正确!"));
+                }
+            }
+            LoginCheck::PasswordImgCodeCheck => {
+                //check img code
+                let cache_code = CONTEXT
+                    .cache_service
+                    .get_string(&format!("captch:account_{}", &arg.account))
+                    .await?;
+                if cache_code.eq(&arg.vcode) {
+                    error = Some(Error::from("验证码不正确!"))
+                }
+                // check pwd
+                if !PasswordEncoder::verify(
+                    user.password
+                        .as_ref()
+                        .ok_or_else(|| Error::from("错误的用户数据，密码为空!"))?,
+                    &arg.password,
+                ) {
+                    error = Some(Error::from("密码不正确!"));
+                }
+            }
+            LoginCheck::PhoneCodeCheck => {
+                //短信验证码登录
+                let sms_code = CONTEXT
+                    .cache_service
+                    .get_string(&format!(
+                        "{}{}",
+                        CONTEXT.config.sms_cache_send_key_prefix, &arg.account
+                    ))
+                    .await?;
+                if sms_code.eq(&arg.vcode) {
+                    error = Some(Error::from("验证码不正确!"));
+                }
+            }
+        }
+        if error.is_some() {
+            self.add_retry_login_limit_num().await?;
+            return Err(error.unwrap());
+        }
+        let sign_in_vo = self.get_user_info(&user).await?;
+        return Ok(sign_in_vo);
     }
 
     ///是否需要等待
@@ -247,41 +222,40 @@ impl SysUserService {
     }
 
     pub async fn get_user_info(&self, user: &SysUser) -> Result<SignInVO> {
-        // //去除密码，增加安全性
-        // let mut user = user.clone();
-        // user.password = None;
-        // let user_id = user
-        //     .id
-        //     .clone()
-        //     .ok_or_else(|| Error::from("错误的用户数据，id为空!"))?;
-        // let mut sign_vo = SignInVO {
-        //     user: Some(user.clone().into()),
-        //     permissions: vec![],
-        //     access_token: String::new(),
-        //     role: None,
-        // };
-        // //提前查找所有权限，避免在各个函数方法中重复查找
-        // let all_res = CONTEXT.sys_res_service.finds_all_map().await?;
-        // sign_vo.permissions = self.loop_load_level_permission(&user_id, &all_res).await?;
-        // let jwt_token = JWTToken {
-        //     id: user.id.as_deref().unwrap_or_default(),
-        //     account: user.account.unwrap_or_default(),
-        //     permissions: sign_vo.permissions.clone(),
-        //     role_ids: vec![],
-        //     exp: FastDateTime::now().set_micro(0).timestamp_millis() as usize,
-        // };
-        // sign_vo.access_token = jwt_token.create_token(&CONTEXT.config.jwt_secret)?;
-        // sign_vo.role = CONTEXT
-        //     .sys_user_role_service
-        //     .find_user_role(
-        //         &user.id.unwrap_or_else(|| {
-        //             return String::new();
-        //         }),
-        //         &all_res,
-        //     )
-        //     .await?;
-        // return Ok(sign_vo);
-        todo!()
+        //去除密码，增加安全性
+        let mut user = user.clone();
+        user.password = None;
+        let user_id = user
+            .id
+            .clone()
+            .ok_or_else(|| Error::from("错误的用户数据，id为空!"))?;
+        let mut sign_vo = SignInVO {
+            user: Some(user.clone().into()),
+            permissions: vec![],
+            access_token: String::new(),
+            role: None,
+        };
+        //提前查找所有权限，避免在各个函数方法中重复查找
+        let all_res = CONTEXT.sys_res_service.finds_all_map().await?;
+        sign_vo.permissions = self.loop_load_level_permission(&user_id, &all_res).await?;
+        let jwt_token = JWTToken {
+            id: user.id.as_deref().unwrap_or_default().to_string(),
+            account: user.account.unwrap_or_default(),
+            permissions: sign_vo.permissions.clone(),
+            role_ids: vec![],
+            exp: FastDateTime::now().set_micro(0).unix_timestamp_millis() as usize,
+        };
+        sign_vo.access_token = jwt_token.create_token(&CONTEXT.config.jwt_secret)?;
+        sign_vo.role = CONTEXT
+            .sys_user_role_service
+            .find_user_role(
+                &user.id.unwrap_or_else(|| {
+                    return String::new();
+                }),
+                &all_res,
+            )
+            .await?;
+        return Ok(sign_vo);
     }
 
     ///登出后台

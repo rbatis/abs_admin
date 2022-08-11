@@ -102,6 +102,14 @@ impl_field_name_method!(SysUser{id,account,password,name,login_check,state,del,c
 
 crud!(SysUser{});
 
+impl_select_page!(SysUser{select_page(name:&str,account:&str)=>
+    "`where del = 0`
+    if name != '':
+      ` and name like %#{name}%`
+    if account != '':
+      ` and account like %#{account}%`
+    `order_by create_date desc`"});
+
 ///用户角色关系表(关系表不使用逻辑删除)
 
 #[derive(Clone, Debug,serde::Serialize,serde::Deserialize)]
