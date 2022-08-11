@@ -22,7 +22,7 @@ impl_select_page!(SysRes{select_page(dto: &crate::domain::dto::ResPageDTO) =>
     "`where del = 0 `
       if dto.name!=null && dto.name!= '':
          `and name like %#{dto.name}%`
-      ` and parent_id == null`
+      ` and parent_id = null`
       ` order by create_date `"});
 impl_select!(SysRes{select_by_permission_or_name(permission:&str,name:&str) => "`where permission = #{permission} or name = #{name}`"});
 impl_delete!(SysRes{delete_by_parent_id(parent_id:&str) => "`where parent_id = #{parent_id}`"});
