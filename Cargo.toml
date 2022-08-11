@@ -22,7 +22,7 @@ tokio = { version = "1", features = ["full"] }
 #serde and json
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-serde_yaml = "0.8"
+serde_yaml = "0.9"
 #static
 lazy_static = "1.4.0"
 #log
@@ -32,18 +32,18 @@ fast_log = { version = "1.5", features = [] }
 #web server
 actix-web = {version="4.1", default-features = false, features = ["macros"]}
 #redis
-redis = { version = "0.20", features = ["tokio-comp"] }
+redis = { version = "0.21", features = ["tokio-comp"] }
 #jwt
-jsonwebtoken = "7"
+jsonwebtoken = "8"
 #snowflake
-rustflake = "0.1.0"
-md5 = "0.7.0"
+rustflake = "0.1"
+md5 = "0.7"
 #captcha
-captcha = "0.0.8"
+captcha = "0.0.9"
 #http client,use rust-tls replace to native tls
 reqwest = { version = "0.11", default-features = false, features = ["json", "tokio-rustls"] }
 #image code
-image = "0.23"
+image = "0.24"
 #async trait
 async-trait = "0.1"
 

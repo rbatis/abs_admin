@@ -34,9 +34,7 @@ impl JWTToken {
     /// verify token invalid
     /// secret: your secret string
     pub fn verify(secret: &str, token: &str) -> Result<JWTToken, Error> {
-        let validation = Validation {
-            ..Validation::default()
-        };
+        let validation = Validation::default();
         return match decode::<JWTToken>(
             &token,
             &DecodingKey::from_secret(secret.as_ref()),
