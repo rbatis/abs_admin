@@ -27,21 +27,11 @@ impl SysResService {
         for (k, v) in all_res {
             all_res_vo.insert(k, v);
         }
-        let mut datas = vec![];
-        for x in data.records {
-            let mut vo = SysResVO::from(x);
+        let mut page = Page::<SysResVO>::from(data);
+        for x in page.records {
             vo.set_childs_recursive(&all_res_vo);
-            datas.push(vo);
         }
-        let new_page = Page {
-            records: datas,
-            total: data.total,
-            pages: data.pages,
-            page_no: data.page_no,
-            page_size: data.page_size,
-            search_count: data.search_count,
-        };
-        Ok(new_page)
+        Ok(page)
     }
 
     ///添加资源
