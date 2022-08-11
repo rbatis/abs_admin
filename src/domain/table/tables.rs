@@ -24,7 +24,6 @@ impl_select_page!(SysRes{select_page(dto: &crate::domain::dto::ResPageDTO) =>
          `and name like %#{dto.name}%`
       ` and parent_id == null`
       ` order by create_date `"});
-impl_select!(SysRes{select_by_id(id:&str) => "`where id = #{id}`"});
 impl_select!(SysRes{select_by_permission_or_name(permission:&str,name:&str) => "`where permission = #{permission} or name = #{name}`"});
 impl_delete!(SysRes{delete_by_parent_id(parent_id:&str) => "`where parent_id = #{parent_id}`"});
 impl_select!(SysRes{select_by_ids(ids:&Vec<String>)=>
@@ -137,4 +136,3 @@ impl_select_page!(SysDict{select_page(dto: &crate::domain::dto::DictPageDTO) =>
       if dto.name!=null:
          `and name = #{dto.name}`
       ` order by create_date `"});
-impl_select!(SysDict{select_by_id(id:&str) => "`where id = #{id}`"});

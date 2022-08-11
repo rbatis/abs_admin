@@ -25,7 +25,7 @@ impl SysDictService {
 
     ///添加字典
     pub async fn add(&self, arg: &SysDict) -> Result<u64> {
-        let old = SysDict::select_by_id(pool!(), arg.id.as_deref().unwrap_or_default()).await?;
+        let old = SysDict::select_by_column(pool!(),SysDict::id(), arg.id.as_deref().unwrap_or_default()).await?;
         if old.len() > 0 {
             return Err(Error::from(format!("字典已存在! {:?}", &arg.name)));
         }
