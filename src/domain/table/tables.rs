@@ -28,8 +28,9 @@ impl_select!(SysRes{select_by_permission_or_name(permission:&str,name:&str) => "
 impl_delete!(SysRes{delete_by_parent_id(parent_id:&str) => "`where parent_id = #{parent_id}`"});
 impl_select!(SysRes{select_by_ids(ids:&Vec<String>)=>
     "`where id in (`
-      for _,id in ids:
-        #{id}
+      trim ',':
+       for _,id in ids:
+         #{id},
      `)`"});
 impl_select!(SysRes{select_by_parent_id_null()=>"`where parent_id = null order_by create_date desc`"});
 
@@ -80,8 +81,9 @@ impl_field_name_method!(SysRoleRes{id,role_id,res_id,create_date});
 crud!(SysRoleRes{});
 impl_select!(SysRoleRes{select_by_role_id(role_ids: &[String]) =>
     "`where role_id in (`
-       for _,item in role_ids:
-           `#{item}`
+       trim ',':
+         for _,item in role_ids:
+           `#{item},`
       `)`"});
 
 
