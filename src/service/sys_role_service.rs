@@ -117,10 +117,16 @@ impl SysRoleService {
     }
 
     pub async fn finds(&self, ids: &Vec<String>) -> Result<Vec<SysRole>> {
+        if ids.is_empty(){
+            return Ok(vec![]);
+        }
         Ok( SysRole::select_list_by_ids(pool!(),ids).await? )
     }
 
     pub async fn find_role_res(&self, ids: &Vec<String>) -> Result<Vec<SysRoleRes>> {
+        if ids.is_empty(){
+            return Ok(vec![]);
+        }
         Ok( SysRoleRes::select_by_role_id(pool!(),ids).await? )
     }
 

@@ -14,7 +14,7 @@ pub async fn login(arg: web::Json<SignInDTO>) -> impl Responder {
 /// 用户信息
 pub async fn info(req: HttpRequest) -> impl Responder {
     let token = req.headers().get("access_token");
-    match token {
+    return match token {
         Some(token) => {
             let token = token.to_str().unwrap_or("");
             let token = JWTToken::verify(&CONTEXT.config.jwt_secret, token);
@@ -25,10 +25,10 @@ pub async fn info(req: HttpRequest) -> impl Responder {
                 .sys_user_service
                 .get_user_info_by_token(&token.unwrap())
                 .await;
-            return RespVO::from_result(&user_data).resp_json();
+            RespVO::from_result(&user_data).resp_json()
         }
         _ => {
-            return RespVO::<String>::from_error_info("access_token is empty!", "").resp_json();
+            RespVO::<String>::from_error_info("access_token is empty!", "").resp_json()
         }
     }
 }

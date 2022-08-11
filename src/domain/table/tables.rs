@@ -79,9 +79,10 @@ impl_field_name_method!(SysRoleRes{id,role_id,res_id,create_date});
 
 crud!(SysRoleRes{});
 impl_select!(SysRoleRes{select_by_role_id(role_ids: &[String]) =>
-    "`where role_id in
+    "`where role_id in (`
        for _,item in role_ids:
-           #{item}`"});
+           `#{item}`
+      `)`"});
 
 
 ///后台用户表

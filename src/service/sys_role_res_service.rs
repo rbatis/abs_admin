@@ -57,7 +57,13 @@ impl SysRoleResService {
         arg: &Vec<SysRoleVO>,
     ) -> Result<HashMap<String, HashSet<SysRoleRes>>> {
         let role_ids = self.loop_find_role_ids(arg);
-        let role_res_vec=SysRoleRes::select_by_role_id(pool!(),&role_ids).await?;
+        let role_res_vec= {
+            if role_ids.is_empty(){
+                vec![]
+            }else{
+                SysRoleRes::select_by_role_id(pool!(),&role_ids).await?
+            }
+        };
         let mut role_res_map: HashMap<String, HashSet<SysRoleRes>> = HashMap::with_capacity(role_res_vec.capacity());
         for role_res in role_res_vec {
             let role_id = role_res.role_id.as_deref().unwrap_or_default();
