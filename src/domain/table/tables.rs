@@ -57,6 +57,13 @@ impl_select!(SysRole{select_list_by_ids(ids:&[String])=>
          #{item},
      )"});
 
+impl_select_page!(SysRole{select_page_by_name(name:&str)=>
+    "`where del = 0`
+    if name != '':
+      ` and name like %#{name}%`
+    ` and parent_id = null order_by create_date desc`"});
+
+
 ///角色资源关系表(关系表不使用逻辑删除)
 
 #[derive(Clone, Debug, Eq, PartialEq, Hash,serde::Serialize,serde::Deserialize)]
@@ -106,6 +113,10 @@ pub struct SysUserRole {
     pub create_date: Option<FastDateTime>,
 }
 impl_field_name_method!(SysUserRole{id,user_id,role_id,create_date});
+
+crud!(SysUserRole{});
+impl_select!(SysUserRole{select_list_by_user_id(user_id:&str)=>"`where user_id = #{user_id}`"});
+
 ///字典表
 
 #[derive(Clone, Debug,serde::Serialize,serde::Deserialize)]
