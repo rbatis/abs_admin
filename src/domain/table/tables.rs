@@ -109,7 +109,7 @@ impl_select_page!(SysUser{select_page(name:&str,account:&str)=>
       ` and name like %#{name}%`
     if account != '':
       ` and account like %#{account}%`
-    `order_by create_date desc`"});
+    ` order_by create_date desc`"});
 
 ///用户角色关系表(关系表不使用逻辑删除)
 
@@ -128,8 +128,9 @@ crud!(SysUserRole{});
 impl_select!(SysUserRole{select_list_by_user_id(user_id:&str)=>"`where user_id = #{user_id}`"});
 impl_select!(SysUserRole{select_list_in_user_id(user_ids:&[String])=>
     "`where user_id in (`
-    for _,v in user_ids:
-        `#{v}`
+     trim ',':
+      for _,v in user_ids:
+        `#{v},`
     `)`"});
 
 ///字典表
