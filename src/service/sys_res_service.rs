@@ -28,7 +28,7 @@ impl SysResService {
             all_res_vo.insert(k, v);
         }
         let mut page = Page::<SysResVO>::from(data);
-        for x in page.records {
+        for mut vo in &mut page.records {
             vo.set_childs_recursive(&all_res_vo);
         }
         Ok(page)
