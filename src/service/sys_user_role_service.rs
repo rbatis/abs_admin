@@ -87,7 +87,7 @@ impl SysUserRoleService {
         if user_id.is_empty() {
             return Ok(None);
         }
-        let user_roles = SysUserRole::select_list_by_user_id(pool!(),user_id).await?;
+        let user_roles = SysUserRole::select_by_column(pool!(),SysUserRole::user_id(),user_id).await?;
         let role_ids = &rbatis::make_table_field_vec!(&user_roles, role_id);
         let roles = CONTEXT.sys_role_service.finds(role_ids).await?;
         let role_res_vec = CONTEXT

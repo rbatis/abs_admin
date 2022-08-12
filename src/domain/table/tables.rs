@@ -21,11 +21,10 @@ crud!(SysRes{});
 impl_select_page!(SysRes{select_page(dto: &crate::domain::dto::ResPageDTO) =>
     "`where del = 0 `
       if dto.name!=null && dto.name!= '':
-         `and name like %#{dto.name}%`
+         `and name like #{'%'+dto.name+'%'}`
       ` and parent_id IS NULL`
       ` order by create_date `"});
 impl_select!(SysRes{select_by_permission_or_name(permission:&str,name:&str) => "`where permission = #{permission} or name = #{name}`"});
-impl_delete!(SysRes{delete_by_parent_id(parent_id:&str) => "`where parent_id = #{parent_id}`"});
 impl_select!(SysRes{select_by_ids(ids:&Vec<String>)=>
     "`where id in (`
       trim ',': for _,id in ids:
@@ -58,7 +57,7 @@ impl_select!(SysRole{select_list_by_ids(ids:&[String])=>
 impl_select_page!(SysRole{select_page_by_name(name:&str)=>
     "`where del = 0`
     if name != '':
-      ` and name like %#{name}%`
+      ` and name like #{'%'+name+'%'}`
     ` and parent_id IS NULL `
     if !sql.contains('count'):
      `order by create_date desc`"});
@@ -107,9 +106,9 @@ crud!(SysUser{});
 impl_select_page!(SysUser{select_page(name:&str,account:&str)=>
     "`where del = 0`
     if name != '':
-      ` and name like %#{name}%`
+      ` and name like #{'%'+name+'%'}`
     if account != '':
-      ` and account like %#{account}%`
+      ` and account like #{'%'+account+'%'}`
     if !sql.contains('count'):
      ` order by create_date desc`"});
 
@@ -127,7 +126,6 @@ pub struct SysUserRole {
 impl_field_name_method!(SysUserRole{id,user_id,role_id,create_date});
 
 crud!(SysUserRole{});
-impl_select!(SysUserRole{select_list_by_user_id(user_id:&str)=>"`where user_id = #{user_id}`"});
 impl_select!(SysUserRole{select_list_in_user_id(user_ids:&[String])=>
     "`where user_id in (`
      trim ',': for _,v in user_ids:
