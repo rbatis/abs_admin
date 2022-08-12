@@ -21,7 +21,7 @@ crud!(SysRes{});
 impl_select_page!(SysRes{select_page(dto: &crate::domain::dto::ResPageDTO) =>
     "`where del = 0 `
       if dto.name!=null && dto.name!= '':
-         `and name like #{'%'+dto.name+'%'}`
+         ` and name like #{'%'+dto.name+'%'}`
       ` and parent_id IS NULL`
       ` order by create_date `"});
 impl_select!(SysRes{select_by_permission_or_name(permission:&str,name:&str) => "`where permission = #{permission} or name = #{name}`"});
@@ -148,8 +148,8 @@ crud!(SysDict{});
 impl_select_page!(SysDict{select_page(dto: &crate::domain::dto::DictPageDTO) =>
     "`where id!=''`
       if dto.code!=null:
-         `and code = #{dto.code}`
+         ` and code = #{dto.code}`
       if dto.name!=null:
-         `and name = #{dto.name}`
+         ` and name = #{dto.name}`
       if !sql.contains('count'):
          ` order by create_date `"});
