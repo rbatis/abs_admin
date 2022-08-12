@@ -28,8 +28,7 @@ impl_select!(SysRes{select_by_permission_or_name(permission:&str,name:&str) => "
 impl_delete!(SysRes{delete_by_parent_id(parent_id:&str) => "`where parent_id = #{parent_id}`"});
 impl_select!(SysRes{select_by_ids(ids:&Vec<String>)=>
     "`where id in (`
-      trim ',':
-       for _,id in ids:
+      trim ',': for _,id in ids:
          #{id},
      `)`"});
 impl_select!(SysRes{select_by_parent_id_null()=>"`where parent_id IS NULL order by create_date desc`"});
@@ -52,8 +51,7 @@ crud!(SysRole{});
 
 impl_select!(SysRole{select_list_by_ids(ids:&[String])=>
     "`where id in (`
-     trim ',':
-       for _,item in ids:
+     trim ',': for _,item in ids:
          #{item},
      )"});
 
@@ -83,8 +81,7 @@ impl_field_name_method!(SysRoleRes{id,role_id,res_id,create_date});
 crud!(SysRoleRes{});
 impl_select!(SysRoleRes{select_by_role_id(role_ids: &[String]) =>
     "`where role_id in (`
-       trim ',':
-         for _,item in role_ids:
+       trim ',': for _,item in role_ids:
            `#{item},`
       `)`"});
 
@@ -133,8 +130,7 @@ crud!(SysUserRole{});
 impl_select!(SysUserRole{select_list_by_user_id(user_id:&str)=>"`where user_id = #{user_id}`"});
 impl_select!(SysUserRole{select_list_in_user_id(user_ids:&[String])=>
     "`where user_id in (`
-     trim ',':
-      for _,v in user_ids:
+     trim ',': for _,v in user_ids:
         `#{v},`
     `)`"});
 
