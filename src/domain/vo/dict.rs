@@ -1,7 +1,7 @@
 use crate::domain::table::SysDict;
 use rbdc::types::datetime::FastDateTime;
 ///权限资源表
-#[derive(Clone, Debug, serde::Serialize,serde::Deserialize)]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SysDictVO {
     pub id: Option<String>,
     pub name: Option<String>,
@@ -21,6 +21,5 @@ impl From<SysDict> for SysDictVO {
         }
     }
 }
-
 
 impl SysDictVO {}

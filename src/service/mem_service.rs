@@ -1,8 +1,8 @@
-use std::collections::hash_map::RandomState;
-use std::collections::HashMap;
 use crate::error::{Error, Result};
 use crate::service::ICacheService;
 use async_trait::async_trait;
+use std::collections::hash_map::RandomState;
+use std::collections::HashMap;
 use std::ops::Sub;
 use std::sync::{Mutex, PoisonError};
 use std::time::{Duration, Instant};
@@ -17,7 +17,7 @@ impl MemService {
         if let Ok(mut map_lock_guard) = self.cache.lock() {
             let mut need_removed = vec![];
             for (k, v) in map_lock_guard.iter() {
-                if let Some((i,d)) = v.1{
+                if let Some((i, d)) = v.1 {
                     if i.elapsed() >= d {
                         //out of time
                         need_removed.push(k.to_string());

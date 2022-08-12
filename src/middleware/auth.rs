@@ -1,4 +1,4 @@
-use crate::domain::vo::{JWTToken};
+use crate::domain::vo::JWTToken;
 use crate::service::CONTEXT;
 pub struct Auth;
 

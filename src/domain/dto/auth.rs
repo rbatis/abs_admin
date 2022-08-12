@@ -1,4 +1,3 @@
-
 /// 授权
 #[derive(serde::Serialize, serde::Deserialize, Clone, Debug)]
 pub struct SysAuthDTO {

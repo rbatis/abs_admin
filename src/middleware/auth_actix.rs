@@ -1,23 +1,26 @@
+use crate::domain::vo::RespVO;
+use crate::middleware::auth::{check_auth, checked_token, is_white_list_api};
+use crate::service::CONTEXT;
+use actix_web::body::BoxBody;
+use actix_web::dev::Response;
+use actix_web::error::ErrorUnauthorized;
+use actix_web::{
+    dev::{self, Service, ServiceRequest, ServiceResponse, Transform},
+    web::BytesMut,
+    Error, HttpMessage, HttpResponse,
+};
+use futures_util::{future::LocalBoxFuture, stream::StreamExt};
 use std::{
     future::{ready, Ready},
     rc::Rc,
 };
-use actix_web::{dev::{self, Service, ServiceRequest, ServiceResponse, Transform}, web::BytesMut, Error, HttpMessage, HttpResponse};
-use actix_web::body::BoxBody;
-use actix_web::dev::Response;
-use actix_web::error::ErrorUnauthorized;
-use futures_util::{future::LocalBoxFuture, stream::StreamExt};
-use crate::domain::vo::RespVO;
-use crate::middleware::auth::{check_auth, checked_token, is_white_list_api};
-use crate::service::CONTEXT;
 
 pub struct Auth;
 
 impl<S: 'static> Transform<S, ServiceRequest> for Auth
-    where
-        S: Service<ServiceRequest, Response=ServiceResponse<BoxBody>, Error=Error>,
-        S::Future: 'static,
-
+where
+    S: Service<ServiceRequest, Response = ServiceResponse<BoxBody>, Error = Error>,
+    S::Future: 'static,
 {
     type Response = ServiceResponse<BoxBody>;
     type Error = Error;
@@ -38,9 +41,9 @@ pub struct AuthMiddleware<S> {
 }
 
 impl<S> Service<ServiceRequest> for AuthMiddleware<S>
-    where
-        S: Service<ServiceRequest, Response=ServiceResponse<BoxBody>, Error=Error> + 'static,
-        S::Future: 'static,
+where
+    S: Service<ServiceRequest, Response = ServiceResponse<BoxBody>, Error = Error> + 'static,
+    S::Future: 'static,
 {
     type Response = ServiceResponse<BoxBody>;
     type Error = Error;
@@ -51,7 +54,11 @@ impl<S> Service<ServiceRequest> for AuthMiddleware<S>
     fn call(&self, mut req: ServiceRequest) -> Self::Future {
         let svc = self.service.clone();
 
-        let token = req.headers().get("access_token").map(|v| v.to_str().unwrap_or_default().to_string()).unwrap_or_default();
+        let token = req
+            .headers()
+            .get("access_token")
+            .map(|v| v.to_str().unwrap_or_default().to_string())
+            .unwrap_or_default();
         let path = req.path().to_string();
         // let fut = srv.call(req);
 
@@ -76,7 +83,7 @@ impl<S> Service<ServiceRequest> for AuthMiddleware<S>
                                         msg: Some(format!("无权限访问:{}", e.to_string())),
                                         data: None,
                                     };
-                                    let resp= HttpResponse::Ok();
+                                    let resp = HttpResponse::Ok();
                                     return Ok(req.into_response(resp));
                                 }
                             }

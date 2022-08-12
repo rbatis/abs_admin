@@ -11,15 +11,15 @@ pub struct DictPageDTO {
     pub state: Option<i32>,
 }
 
-impl From<DictPageDTO> for PageRequest{
+impl From<DictPageDTO> for PageRequest {
     fn from(arg: DictPageDTO) -> Self {
-        PageRequest::new(arg.page_no.unwrap_or(1),arg.page_size.unwrap_or(10))
+        PageRequest::new(arg.page_no.unwrap_or(1), arg.page_size.unwrap_or(10))
     }
 }
 
-impl From<&DictPageDTO> for PageRequest{
+impl From<&DictPageDTO> for PageRequest {
     fn from(arg: &DictPageDTO) -> Self {
-        PageRequest::new(arg.page_no.unwrap_or(1),arg.page_size.unwrap_or(10))
+        PageRequest::new(arg.page_no.unwrap_or(1), arg.page_size.unwrap_or(10))
     }
 }
 

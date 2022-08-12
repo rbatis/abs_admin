@@ -1,10 +1,10 @@
 use std::time::Duration;
 
-use log::error;
-use redis::aio::Connection;
 use crate::error::{Error, Result};
 use crate::service::ICacheService;
 use async_trait::async_trait;
+use log::error;
+use redis::aio::Connection;
 use redis::RedisResult;
 ///Redis缓存服务
 pub struct RedisService {
@@ -13,7 +13,7 @@ pub struct RedisService {
 
 impl RedisService {
     pub fn new(url: &str) -> Self {
-        println!("[abs_admin] conncect redis ({})...",url);
+        println!("[abs_admin] conncect redis ({})...", url);
         let client = redis::Client::open(url).unwrap();
         println!("[abs_admin] conncect redis success!");
         Self { client }
@@ -41,17 +41,13 @@ impl ICacheService for RedisService {
         let result: RedisResult<Option<String>> =
             redis::cmd("GET").arg(&[k]).query_async(&mut conn).await;
         return match result {
-            Ok(v) => {
-                Ok(v.unwrap_or_default())
-            }
-            Err(e) => {
-                Err(Error::from(format!(
-                    "RedisService get_string({}) fail:{}",
-                    k,
-                    e.to_string()
-                )))
-            }
-        }
+            Ok(v) => Ok(v.unwrap_or_default()),
+            Err(e) => Err(Error::from(format!(
+                "RedisService get_string({}) fail:{}",
+                k,
+                e.to_string()
+            ))),
+        };
     }
 
     ///set_string 自动过期
@@ -77,7 +73,7 @@ impl ICacheService for RedisService {
                     e.to_string()
                 ))),
             }
-        }
+        };
     }
 
     ///set_string 自动过期

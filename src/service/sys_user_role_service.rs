@@ -1,16 +1,16 @@
 use std::collections::BTreeMap;
 
-use crate::domain::table::{SysUserRole};
 use crate::domain::dto::{UserPageDTO, UserRoleAddDTO, UserRolePageDTO};
+use crate::domain::table::SysUserRole;
 use crate::domain::vo::user::SysUserVO;
 use crate::domain::vo::{SysResVO, SysRoleVO};
 use crate::error::Error;
 use crate::error::Result;
+use crate::pool;
 use crate::service::CONTEXT;
-use rbdc::types::datetime::FastDateTime;
 use rbatis::plugin::object_id::ObjectId;
 use rbatis::sql::Page;
-use crate::pool;
+use rbdc::types::datetime::FastDateTime;
 
 use crate::util::options::OptionStringRefUnwrapOrDefault;
 
@@ -66,16 +66,24 @@ impl SysUserRoleService {
         }
         self.remove_by_user_id(arg.user_id.as_deref().unwrap_or_default())
             .await?;
-        Ok(SysUserRole::insert(pool!(),&role).await?.rows_affected)
+        Ok(SysUserRole::insert(pool!(), &role).await?.rows_affected)
     }
 
     ///角色删除
     pub async fn remove_by_role_id(&self, role_id: &str) -> Result<u64> {
-        Ok(SysUserRole::delete_by_column(pool!(),SysUserRole::role_id(),role_id).await?.rows_affected)
+        Ok(
+            SysUserRole::delete_by_column(pool!(), SysUserRole::role_id(), role_id)
+                .await?
+                .rows_affected,
+        )
     }
 
     pub async fn remove_by_user_id(&self, user_id: &str) -> Result<u64> {
-        Ok(SysUserRole::delete_by_column(pool!(),SysUserRole::user_id(),user_id).await?.rows_affected)
+        Ok(
+            SysUserRole::delete_by_column(pool!(), SysUserRole::user_id(), user_id)
+                .await?
+                .rows_affected,
+        )
     }
 
     ///找出角色
@@ -87,7 +95,8 @@ impl SysUserRoleService {
         if user_id.is_empty() {
             return Ok(None);
         }
-        let user_roles = SysUserRole::select_by_column(pool!(),SysUserRole::user_id(),user_id).await?;
+        let user_roles =
+            SysUserRole::select_by_column(pool!(), SysUserRole::user_id(), user_id).await?;
         let role_ids = &rbatis::make_table_field_vec!(&user_roles, role_id);
         let roles = CONTEXT.sys_role_service.finds(role_ids).await?;
         let role_res_vec = CONTEXT
@@ -105,7 +114,7 @@ impl SysUserRoleService {
                     }
                 }
             }
-            let mut vo=SysRoleVO::from(role);
+            let mut vo = SysRoleVO::from(role);
             vo.resource_ids = CONTEXT.sys_res_service.make_res_ids(&resources);
             vo.resources = resources;
             role_vos.push(vo);

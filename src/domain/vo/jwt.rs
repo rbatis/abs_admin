@@ -4,7 +4,7 @@ use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation}
 use serde::{Deserialize, Serialize};
 
 /// JWT 鉴权 Token结构
-#[derive(Debug, Serialize, Deserialize, Clone,Eq, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, Clone, Eq, PartialEq)]
 pub struct JWTToken {
     //账号id
     pub id: String,
@@ -52,10 +52,10 @@ impl JWTToken {
 
 #[cfg(test)]
 mod test {
+    use crate::domain::vo::JWTToken;
+    use rbdc::types::datetime::FastDateTime;
     use std::thread::sleep;
     use std::time::Duration;
-    use rbdc::types::datetime::FastDateTime;
-    use crate::domain::vo::JWTToken;
 
     #[test]
     fn test_jwt() {

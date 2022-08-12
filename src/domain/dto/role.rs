@@ -9,9 +9,9 @@ pub struct RolePageDTO {
     pub name: Option<String>,
 }
 
-impl From<&RolePageDTO> for PageRequest{
+impl From<&RolePageDTO> for PageRequest {
     fn from(arg: &RolePageDTO) -> Self {
-        PageRequest::new(arg.page_no.unwrap_or(1),arg.page_size.unwrap_or(10))
+        PageRequest::new(arg.page_no.unwrap_or(1), arg.page_size.unwrap_or(10))
     }
 }
 
@@ -80,9 +80,8 @@ pub struct SysRoleResPageDTO {
     pub name: Option<String>,
 }
 
-impl From<&SysRoleResPageDTO> for PageRequest{
+impl From<&SysRoleResPageDTO> for PageRequest {
     fn from(arg: &SysRoleResPageDTO) -> Self {
-        PageRequest::new(arg.page_no.unwrap_or(1),arg.page_size.unwrap_or(10))
+        PageRequest::new(arg.page_no.unwrap_or(1), arg.page_size.unwrap_or(10))
     }
 }
-

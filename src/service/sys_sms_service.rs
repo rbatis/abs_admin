@@ -40,9 +40,7 @@ impl SysSmsService {
                 let sms_code_cached = v.args.get("sms_code");
                 Ok(sms_code_cached.eq(&Some(&sms_code.to_string())))
             }
-            _ => {
-                Err(Error::from("请发送验证码!"))
-            }
-        }
+            _ => Err(Error::from("请发送验证码!")),
+        };
     }
 }

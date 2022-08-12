@@ -3,7 +3,7 @@ use rbatis::rbatis::Rbatis;
 
 pub mod mapper;
 ///实例化 rbatis orm 连接池
-pub  fn init_rbatis(config: &ApplicationConfig) -> Rbatis {
+pub fn init_rbatis(config: &ApplicationConfig) -> Rbatis {
     let mut rbatis = Rbatis::new();
     if config.debug.eq(&false) && rbatis.is_debug_mode() {
         panic!(

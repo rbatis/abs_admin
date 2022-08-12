@@ -1,6 +1,6 @@
+use crate::domain::vo::user::SysUserVO;
 use crate::domain::vo::SysRoleVO;
 use serde::{Deserialize, Serialize};
-use crate::domain::vo::user::SysUserVO;
 
 ///登录数据
 #[derive(Debug, Serialize, Deserialize, Clone)]

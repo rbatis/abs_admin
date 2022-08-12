@@ -1,16 +1,15 @@
-use crate::error::Result;
-use rbdc::types::datetime::FastDateTime;
-use crate::domain::table::{SysRole, SysRoleRes, SysUserRole};
 use crate::domain::dto::{RoleAddDTO, RoleEditDTO, RolePageDTO};
+use crate::domain::table::{SysRole, SysRoleRes, SysUserRole};
 use crate::domain::vo::{SysResVO, SysRoleVO};
+use crate::error::Result;
 use crate::service::CONTEXT;
 use crate::util::string::IsEmptyString;
+use rbdc::types::datetime::FastDateTime;
 
-use std::collections::{BTreeMap, HashMap};
+use crate::pool;
 use rbatis::plugin::object_id::ObjectId;
 use rbatis::sql::{Page, PageRequest};
-use crate::pool;
-
+use std::collections::{BTreeMap, HashMap};
 
 const RES_KEY: &'static str = "sys_role:all";
 
@@ -20,7 +19,12 @@ pub struct SysRoleService {}
 impl SysRoleService {
     ///角色分页
     pub async fn page(&self, arg: &RolePageDTO) -> Result<Page<SysRoleVO>> {
-        let data = SysRole::select_page_by_name(pool!(),&PageRequest::from(arg),arg.name.as_deref().unwrap_or_default()).await?;
+        let data = SysRole::select_page_by_name(
+            pool!(),
+            &PageRequest::from(arg),
+            arg.name.as_deref().unwrap_or_default(),
+        )
+        .await?;
         let all_role = self.finds_all_map().await?;
         let mut page = Page::<SysRoleVO>::from(data);
         for mut vo in &mut page.records {
@@ -88,7 +92,7 @@ impl SysRoleService {
             create_date: FastDateTime::now().set_micro(0).into(),
         };
         let result = (
-            SysRole::insert(pool!(),&role).await?.rows_affected,
+            SysRole::insert(pool!(), &role).await?.rows_affected,
             role.id.clone().unwrap(),
         );
         self.update_cache().await?;
@@ -104,30 +108,30 @@ impl SysRoleService {
             del: None,
             create_date: None,
         };
-        let result = SysRole::update_by_column(pool!(),&role,SysRole::id()).await;
+        let result = SysRole::update_by_column(pool!(), &role, SysRole::id()).await;
         self.update_cache().await?;
         Ok(result?.rows_affected)
     }
 
     ///角色删除
     pub async fn remove(&self, id: &str) -> Result<u64> {
-        let result = SysRole::delete_by_column(  pool!(), SysRole::id(), id).await;
+        let result = SysRole::delete_by_column(pool!(), SysRole::id(), id).await;
         self.update_cache().await?;
         Ok(result?.rows_affected)
     }
 
     pub async fn finds(&self, ids: &Vec<String>) -> Result<Vec<SysRole>> {
-        if ids.is_empty(){
+        if ids.is_empty() {
             return Ok(vec![]);
         }
-        Ok( SysRole::select_list_by_ids(pool!(),ids).await? )
+        Ok(SysRole::select_list_by_ids(pool!(), ids).await?)
     }
 
     pub async fn find_role_res(&self, ids: &Vec<String>) -> Result<Vec<SysRoleRes>> {
-        if ids.is_empty(){
+        if ids.is_empty() {
             return Ok(vec![]);
         }
-        Ok( SysRoleRes::select_by_role_id(pool!(),ids).await? )
+        Ok(SysRoleRes::select_by_role_id(pool!(), ids).await?)
     }
 
     pub async fn find_user_permission(
@@ -135,7 +139,8 @@ impl SysRoleService {
         user_id: &str,
         all_res: &BTreeMap<String, SysResVO>,
     ) -> Result<Vec<String>> {
-        let user_roles = SysUserRole::select_by_column(pool!(),SysUserRole::user_id(),user_id).await?;
+        let user_roles =
+            SysUserRole::select_by_column(pool!(), SysUserRole::user_id(), user_id).await?;
         let role_res = self
             .find_role_res(&rbatis::make_table_field_vec!(&user_roles, role_id))
             .await?;

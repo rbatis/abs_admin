@@ -6,6 +6,8 @@ mod cache_service;
 mod mem_service;
 /// redis服务
 mod redis_service;
+/// 系统授权服务
+mod sys_auth_service;
 /// 系统配置服务
 mod sys_config_service;
 /// 系统字典服务
@@ -22,15 +24,14 @@ mod sys_sms_service;
 mod sys_user_role_service;
 /// 系统用户服务
 mod sys_user_service;
-/// 系统授权服务
-mod sys_auth_service;
 
-use rbatis::rbatis::Rbatis;
-use rbdc_mysql::driver::MysqlDriver;
 pub use crate::config::config::ApplicationConfig;
 pub use cache_service::*;
 pub use mem_service::*;
+use rbatis::rbatis::Rbatis;
+use rbdc_mysql::driver::MysqlDriver;
 pub use redis_service::*;
+pub use sys_auth_service::*;
 pub use sys_config_service::*;
 pub use sys_dict_service::*;
 pub use sys_res_service::*;
@@ -39,7 +40,6 @@ pub use sys_role_service::*;
 pub use sys_sms_service::*;
 pub use sys_user_role_service::*;
 pub use sys_user_service::*;
-pub use sys_auth_service::*;
 
 pub struct ServiceContext {
     pub config: ApplicationConfig,
@@ -57,16 +57,19 @@ pub struct ServiceContext {
 impl ServiceContext {
     pub async fn link_db(&self) {
         //连接数据库
-        println!("[abs_admin] rbatis connect database ({})...", self.config.database_url);
+        println!(
+            "[abs_admin] rbatis connect database ({})...",
+            self.config.database_url
+        );
         self.rbatis
-            .link(MysqlDriver{},&self.config.database_url)
+            .link(MysqlDriver {}, &self.config.database_url)
             .await
             .expect("[abs_admin] rbatis connect database fail!");
         println!("[abs_admin] rbatis connect database success!");
         log::info!(
-        " - Local:   http://{}",
-        self.config.server_url.replace("0.0.0.0", "127.0.0.1")
-    );
+            " - Local:   http://{}",
+            self.config.server_url.replace("0.0.0.0", "127.0.0.1")
+        );
     }
 }
 
@@ -95,6 +98,6 @@ lazy_static! {
 #[macro_export]
 macro_rules! pool {
     () => {
-       &mut CONTEXT.rbatis.clone()
+        &mut CONTEXT.rbatis.clone()
     };
 }

@@ -1,7 +1,7 @@
 use rbatis::sql::{IPage, IPageRequest, Page, PageRequest};
 
-use crate::domain::table::SysDict;
 use crate::domain::dto::{DictEditDTO, DictPageDTO};
+use crate::domain::table::SysDict;
 use crate::domain::vo::SysDictVO;
 use crate::error::Error;
 use crate::error::Result;
@@ -25,7 +25,12 @@ impl SysDictService {
 
     ///添加字典
     pub async fn add(&self, arg: &SysDict) -> Result<u64> {
-        let old = SysDict::select_by_column(pool!(),SysDict::id(), arg.id.as_deref().unwrap_or_default()).await?;
+        let old = SysDict::select_by_column(
+            pool!(),
+            SysDict::id(),
+            arg.id.as_deref().unwrap_or_default(),
+        )
+        .await?;
         if old.len() > 0 {
             return Err(Error::from(format!("字典已存在! {:?}", &arg.name)));
         }
@@ -52,7 +57,7 @@ impl SysDictService {
 
     ///删除字典
     pub async fn remove(&self, id: &str) -> Result<u64> {
-        let r=SysDict::delete_by_column(pool!(),"id",id).await?;
+        let r = SysDict::delete_by_column(pool!(), "id", id).await?;
         if r.rows_affected > 0 {
             self.update_cache().await?;
         }

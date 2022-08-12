@@ -9,9 +9,9 @@ pub struct ResPageDTO {
     pub name: Option<String>,
 }
 
-impl From<&ResPageDTO> for PageRequest{
+impl From<&ResPageDTO> for PageRequest {
     fn from(arg: &ResPageDTO) -> Self {
-        PageRequest::new(arg.page_no.unwrap_or(1),arg.page_size.unwrap_or(10))
+        PageRequest::new(arg.page_no.unwrap_or(1), arg.page_size.unwrap_or(10))
     }
 }
 

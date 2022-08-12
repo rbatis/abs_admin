@@ -13,7 +13,7 @@ pub use sign_in::*;
 
 use crate::error::Error;
 use crate::service::CONTEXT;
-use actix_web::{HttpResponse};
+use actix_web::HttpResponse;
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 

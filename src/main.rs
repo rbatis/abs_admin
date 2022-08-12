@@ -1,10 +1,13 @@
-use abs_admin::controller::{img_controller, sys_auth_controller, sys_dict_controller, sys_res_controller, sys_role_controller, sys_user_controller};
-use abs_admin::service::CONTEXT;
-use actix_web::{web, App, HttpResponse, HttpServer, Responder};
-use actix_web::error::ErrorUnauthorized;
+use abs_admin::controller::{
+    img_controller, sys_auth_controller, sys_dict_controller, sys_res_controller,
+    sys_role_controller, sys_user_controller,
+};
 use abs_admin::domain::vo::RespVO;
 use abs_admin::middleware::auth::{check_auth, checked_token, is_white_list_api};
-use actix_web::dev::{Service};
+use abs_admin::service::CONTEXT;
+use actix_web::dev::Service;
+use actix_web::error::ErrorUnauthorized;
+use actix_web::{web, App, HttpResponse, HttpServer, Responder};
 
 async fn index() -> impl Responder {
     HttpResponse::Ok()
@@ -24,12 +27,16 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
         App::new()
             .wrap_fn(|req, srv| {
-                let token = req.headers().get("access_token").map(|v|v.to_str().unwrap_or_default().to_string()).unwrap_or_default();
+                let token = req
+                    .headers()
+                    .get("access_token")
+                    .map(|v| v.to_str().unwrap_or_default().to_string())
+                    .unwrap_or_default();
                 let path = req.path().to_string();
                 let fut = srv.call(req);
                 Box::pin(async move {
                     //debug mode not enable auth
-                    if !CONTEXT.config.debug{
+                    if !CONTEXT.config.debug {
                         if !is_white_list_api(&path) {
                             //非白名单检查token是否有效
                             match checked_token(&token, &path).await {
@@ -43,7 +50,9 @@ async fn main() -> std::io::Result<()> {
                                                 msg: Some(format!("无权限访问:{}", e.to_string())),
                                                 data: None,
                                             };
-                                            return Err(ErrorUnauthorized(serde_json::json!(&resp).to_string()));
+                                            return Err(ErrorUnauthorized(
+                                                serde_json::json!(&resp).to_string(),
+                                            ));
                                         }
                                     }
                                 }
@@ -54,7 +63,9 @@ async fn main() -> std::io::Result<()> {
                                         msg: Some(format!("Unauthorized for:{}", e.to_string())),
                                         data: None,
                                     };
-                                    return Err(ErrorUnauthorized(serde_json::json!(&resp).to_string()));
+                                    return Err(ErrorUnauthorized(
+                                        serde_json::json!(&resp).to_string(),
+                                    ));
                                 }
                             }
                         }
@@ -154,11 +165,12 @@ async fn main() -> std::io::Result<()> {
                 "/admin/sys_dict_page",
                 web::post().to(sys_dict_controller::page),
             )
-            .route("/admin/auth/check",
-                   web::post().to(sys_auth_controller::check),
+            .route(
+                "/admin/auth/check",
+                web::post().to(sys_auth_controller::check),
             )
     })
-        .bind(&CONTEXT.config.server_url)?
-        .run()
-        .await
+    .bind(&CONTEXT.config.server_url)?
+    .run()
+    .await
 }

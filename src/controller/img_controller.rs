@@ -1,11 +1,11 @@
 use crate::domain::dto::CatpchaDTO;
 use crate::domain::vo::RespVO;
+use crate::error::Error;
 use crate::service::CONTEXT;
+use crate::util::string::IsEmptyString;
 use actix_web::{web, HttpResponse, Responder};
 use captcha::filters::{Dots, Noise, Wave};
 use captcha::Captcha;
-use crate::util::string::IsEmptyString;
-use crate::error::Error;
 
 ///图形验证码接口(注意，debug模式无论缓存是否连接成功都返回图片，release模式则校验缓存(例如redis)是否存储成功)
 /// 请求方式 GET
@@ -27,7 +27,11 @@ pub async fn captcha(arg: web::Query<CatpchaDTO>) -> impl Responder {
     let png = captcha.as_png().unwrap();
     let captcha_str = captcha.chars_as_string().to_lowercase();
     if CONTEXT.config.debug {
-        log::info!("account:{},captcha:{}",arg.account.as_ref().unwrap(),&captcha_str);
+        log::info!(
+            "account:{},captcha:{}",
+            arg.account.as_ref().unwrap(),
+            &captcha_str
+        );
     }
     if arg.account.is_some() {
         let result = CONTEXT
@@ -49,5 +53,6 @@ pub async fn captcha(arg: web::Query<CatpchaDTO>) -> impl Responder {
         .insert_header(("Access-Control-Allow-Origin", "*"))
         .insert_header(("Cache-Control", "no-cache"))
         .content_type("image/png")
-        .body(png).into()
+        .body(png)
+        .into()
 }

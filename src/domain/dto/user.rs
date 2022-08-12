@@ -1,5 +1,5 @@
-use rbatis::sql::PageRequest;
 use crate::domain::table::LoginCheck;
+use rbatis::sql::PageRequest;
 use serde::{Deserialize, Serialize};
 
 /// 用户
@@ -33,9 +33,9 @@ pub struct UserPageDTO {
     pub name: Option<String>,
 }
 
-impl From<&UserPageDTO> for PageRequest{
+impl From<&UserPageDTO> for PageRequest {
     fn from(arg: &UserPageDTO) -> Self {
-        PageRequest::new(arg.page_no.unwrap_or(1),arg.page_size.unwrap_or(10))
+        PageRequest::new(arg.page_no.unwrap_or(1), arg.page_size.unwrap_or(10))
     }
 }
 
@@ -78,8 +78,8 @@ pub struct UserRolePageDTO {
     pub resp_set_role: Option<bool>,
 }
 
-impl From<&UserRolePageDTO> for PageRequest{
+impl From<&UserRolePageDTO> for PageRequest {
     fn from(arg: &UserRolePageDTO) -> Self {
-        PageRequest::new(arg.page_no.unwrap_or(1),arg.page_size.unwrap_or(10))
+        PageRequest::new(arg.page_no.unwrap_or(1), arg.page_size.unwrap_or(10))
     }
 }

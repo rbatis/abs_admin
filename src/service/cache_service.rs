@@ -1,10 +1,10 @@
+use crate::config::config::ApplicationConfig;
 use crate::error::Result;
 use crate::service::{MemService, RedisService};
 use async_trait::async_trait;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 use std::time::Duration;
-use crate::config::config::ApplicationConfig;
 
 #[async_trait]
 pub trait ICacheService: Sync + Send {
@@ -22,22 +22,25 @@ pub struct CacheService {
 }
 
 impl CacheService {
-    pub fn new(cfg:&ApplicationConfig) -> crate::error::Result<Self> {
+    pub fn new(cfg: &ApplicationConfig) -> crate::error::Result<Self> {
         match cfg.cache_type.as_str() {
             "mem" => {
                 println!("[abs_admin] cache_type: mem");
-                Ok(Self{
-                    inner:Box::new(MemService::default())
+                Ok(Self {
+                    inner: Box::new(MemService::default()),
                 })
             }
             "redis" => {
                 println!("[abs_admin] cache_type: redis");
-                Ok(Self{
-                    inner:Box::new(RedisService::new(&cfg.redis_url))
+                Ok(Self {
+                    inner: Box::new(RedisService::new(&cfg.redis_url)),
                 })
             }
             e => {
-                panic!("[abs_admin] unknown of cache_type: \"{}\",current support 'mem' or 'redis'", e);
+                panic!(
+                    "[abs_admin] unknown of cache_type: \"{}\",current support 'mem' or 'redis'",
+                    e
+                );
             }
         }
     }

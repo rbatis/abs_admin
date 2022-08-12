@@ -1,6 +1,6 @@
-use rbdc::datetime::FastDateTime;
 use crate::domain::table::{LoginCheck, SysUser};
 use crate::domain::vo::SysRoleVO;
+use rbdc::datetime::FastDateTime;
 use serde::{Deserialize, Serialize};
 
 ///后台用户
@@ -18,7 +18,16 @@ pub struct SysUserVO {
     pub role: Option<SysRoleVO>,
 }
 
-impl_field_name_method!(SysUserVO{id,account,password,name,login_check,state,del,create_date});
+impl_field_name_method!(SysUserVO {
+    id,
+    account,
+    password,
+    name,
+    login_check,
+    state,
+    del,
+    create_date
+});
 
 impl From<SysUser> for SysUserVO {
     fn from(arg: SysUser) -> Self {

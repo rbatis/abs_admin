@@ -1,18 +1,18 @@
 use crate::error::Error;
 use crate::error::Result;
 use crate::service::CONTEXT;
-use rbdc::types::datetime::FastDateTime;
 use rbatis::sql::page::{Page, PageRequest};
+use rbdc::types::datetime::FastDateTime;
 
-use crate::domain::table::{LoginCheck, SysUser};
 use crate::domain::dto::{IdDTO, SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO, UserRoleAddDTO};
+use crate::domain::table::{LoginCheck, SysUser};
 use crate::domain::vo::user::SysUserVO;
 use crate::domain::vo::{JWTToken, SignInVO, SysResVO};
+use crate::pool;
 use crate::util::password_encoder::PasswordEncoder;
 use rbatis::plugin::object_id::ObjectId;
 use std::collections::BTreeMap;
 use std::time::Duration;
-use crate::pool;
 
 use crate::util::options::OptionStringRefUnwrapOrDefault;
 
@@ -24,10 +24,13 @@ pub struct SysUserService {}
 impl SysUserService {
     /// 后台用户分页
     pub async fn page(&self, arg: &UserPageDTO) -> Result<Page<SysUserVO>> {
-        let sys_user_page: Page<SysUser> = SysUser::select_page(pool!(),
-                                                                &PageRequest::from(arg),
-                                                                arg.name.as_deref().unwrap_or_default(),
-                                                                arg.account.as_deref().unwrap_or_default()).await?;
+        let sys_user_page: Page<SysUser> = SysUser::select_page(
+            pool!(),
+            &PageRequest::from(arg),
+            arg.name.as_deref().unwrap_or_default(),
+            arg.account.as_deref().unwrap_or_default(),
+        )
+        .await?;
         let mut page = Page::<SysUserVO>::from(sys_user_page);
         return Ok(page);
     }
@@ -51,12 +54,20 @@ impl SysUserService {
 
     ///后台用户根据id查找
     pub async fn find(&self, id: &str) -> Result<Option<SysUser>> {
-        Ok(SysUser::select_by_column(pool!(),SysUser::id(),id).await?.into_iter().next())
+        Ok(SysUser::select_by_column(pool!(), SysUser::id(), id)
+            .await?
+            .into_iter()
+            .next())
     }
 
     ///根据账户名查找
     pub async fn find_by_account(&self, account: &str) -> Result<Option<SysUser>> {
-        Ok(SysUser::select_by_column(pool!(),SysUser::account(),account).await?.into_iter().next())
+        Ok(
+            SysUser::select_by_column(pool!(), SysUser::account(), account)
+                .await?
+                .into_iter()
+                .next(),
+        )
     }
 
     ///添加后台账号
@@ -93,7 +104,7 @@ impl SysUserService {
             del: 0.into(),
             create_date: FastDateTime::now().set_micro(0).into(),
         };
-        if let Some(_) = &arg.role_id{
+        if let Some(_) = &arg.role_id {
             CONTEXT
                 .sys_user_role_service
                 .add(&UserRoleAddDTO {
@@ -103,13 +114,17 @@ impl SysUserService {
                 })
                 .await?;
         }
-        Ok(SysUser::insert(pool!(),&user).await?.rows_affected)
+        Ok(SysUser::insert(pool!(), &user).await?.rows_affected)
     }
 
     ///登陆后台
     pub async fn sign_in(&self, arg: &SignInDTO) -> Result<SignInVO> {
         self.is_need_wait_login_ex().await?;
-        let user: Option<SysUser> = SysUser::select_by_column(pool!(),SysUser::account(),&arg.account).await?.into_iter().next();
+        let user: Option<SysUser> =
+            SysUser::select_by_column(pool!(), SysUser::account(), &arg.account)
+                .await?
+                .into_iter()
+                .next();
         let user = user.ok_or_else(|| Error::from(format!("账号:{} 不存在!", arg.account)))?;
         if user.state.eq(&Some(0)) {
             return Err(Error::from("账户被禁用!"));
@@ -216,7 +231,10 @@ impl SysUserService {
     }
 
     pub async fn get_user_info_by_token(&self, token: &JWTToken) -> Result<SignInVO> {
-        let user = SysUser::select_by_column(pool!(),SysUser::id(),&token.id).await?.into_iter().next();
+        let user = SysUser::select_by_column(pool!(), SysUser::id(), &token.id)
+            .await?
+            .into_iter()
+            .next();
         let user = user.ok_or_else(|| Error::from(format!("账号:{} 不存在!", token.account)))?;
         return self.get_user_info(&user).await;
     }
@@ -287,14 +305,16 @@ impl SysUserService {
                 })
                 .await?;
         }
-        Ok(SysUser::update_by_column(pool!(),&user,SysUser::id()).await?.rows_affected)
+        Ok(SysUser::update_by_column(pool!(), &user, SysUser::id())
+            .await?
+            .rows_affected)
     }
 
     pub async fn remove(&self, id: &str) -> Result<u64> {
         if id.is_empty() {
             return Err(Error::from("id 不能为空！"));
         }
-        let r= SysUser::delete_by_column(pool!(),SysUser::id(),id).await;
+        let r = SysUser::delete_by_column(pool!(), SysUser::id(), id).await;
         CONTEXT.sys_user_role_service.remove_by_user_id(id).await?;
         return Ok(r?.rows_affected);
     }

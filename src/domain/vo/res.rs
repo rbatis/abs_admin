@@ -1,8 +1,8 @@
 use crate::domain::table::SysRes;
-use std::collections::HashMap;
 use rbdc::types::datetime::FastDateTime;
+use std::collections::HashMap;
 ///权限资源表
-#[derive(Clone, Debug, serde::Serialize,serde::Deserialize)]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SysResVO {
     pub id: Option<String>,
     //父id(可空)
