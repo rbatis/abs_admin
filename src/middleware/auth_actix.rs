@@ -18,9 +18,9 @@ use actix_http::body::BoxBody;
 pub struct Auth;
 
 impl<S: 'static> Transform<S, ServiceRequest> for Auth
-where
-    S: Service<ServiceRequest, Response = ServiceResponse<BoxBody>, Error = Error>,
-    S::Future: 'static,
+    where
+        S: Service<ServiceRequest, Response=ServiceResponse<BoxBody>, Error=Error>,
+        S::Future: 'static,
 {
     type Response = ServiceResponse<BoxBody>;
     type Error = Error;
@@ -41,15 +41,23 @@ pub struct AuthMiddleware<S> {
 }
 
 impl<S> Service<ServiceRequest> for AuthMiddleware<S>
-where
-    S: Service<ServiceRequest, Response = ServiceResponse<BoxBody>, Error = Error> + 'static,
-    S::Future: 'static,
+    where
+        S: Service<ServiceRequest, Response=ServiceResponse<BoxBody>, Error=Error> + 'static,
+        S::Future: 'static,
 {
     type Response = ServiceResponse<BoxBody>;
     type Error = Error;
     type Future = LocalBoxFuture<'static, Result<Self::Response, Self::Error>>;
 
-    dev::forward_ready!(service);
+    #[inline]
+    fn poll_ready(
+        &self,
+        cx: &mut ::core::task::Context<'_>,
+    ) -> ::core::task::Poll<Result<(), Self::Error>> {
+        self.service
+            .poll_ready(cx)
+            .map_err(Into::into)
+    }
 
     fn call(&self, mut req: ServiceRequest) -> Self::Future {
         let svc = self.service.clone();
