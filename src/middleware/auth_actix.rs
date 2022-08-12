@@ -71,11 +71,6 @@ impl<S> Service<ServiceRequest> for AuthMiddleware<S>
         // let fut = srv.call(req);
 
         Box::pin(async move {
-            let mut body = BytesMut::new();
-            let mut stream = req.take_payload();
-            while let Some(chunk) = stream.next().await {
-                body.extend_from_slice(&chunk?);
-            }
             //debug mode not enable auth
             if !CONTEXT.config.debug {
                 if !is_white_list_api(&path) {
@@ -91,8 +86,7 @@ impl<S> Service<ServiceRequest> for AuthMiddleware<S>
                                         msg: Some(format!("无权限访问:{}", e.to_string())),
                                         data: None,
                                     };
-                                    let resp = HttpResponse::Ok();
-                                    return Ok(req.into_response(resp));
+                                    return Ok(req.into_response(resp.resp_json()));
                                 }
                             }
                         }
