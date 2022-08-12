@@ -32,7 +32,10 @@ impl SysDictService {
         )
         .await?;
         if old.len() > 0 {
-            return Err(Error::from(format!("字典已存在! code={}", arg.code.as_deref().unwrap_or_default())));
+            return Err(Error::from(format!(
+                "字典已存在! code={}",
+                arg.code.as_deref().unwrap_or_default()
+            )));
         }
         let result = Ok(SysDict::insert(pool!(), &arg).await?.rows_affected);
         self.update_cache().await?;

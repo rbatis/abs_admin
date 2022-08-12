@@ -1,6 +1,7 @@
 use crate::domain::vo::RespVO;
 use crate::middleware::auth::{check_auth, checked_token, is_white_list_api};
 use crate::service::CONTEXT;
+use actix_http::body::BoxBody;
 use actix_web::dev::Response;
 use actix_web::error::ErrorUnauthorized;
 use actix_web::{
@@ -13,14 +14,13 @@ use std::{
     future::{ready, Ready},
     rc::Rc,
 };
-use actix_http::body::BoxBody;
 
 pub struct Auth;
 
 impl<S: 'static> Transform<S, ServiceRequest> for Auth
-    where
-        S: Service<ServiceRequest, Response=ServiceResponse<BoxBody>, Error=Error>,
-        S::Future: 'static,
+where
+    S: Service<ServiceRequest, Response = ServiceResponse<BoxBody>, Error = Error>,
+    S::Future: 'static,
 {
     type Response = ServiceResponse<BoxBody>;
     type Error = Error;
@@ -41,9 +41,9 @@ pub struct AuthMiddleware<S> {
 }
 
 impl<S> Service<ServiceRequest> for AuthMiddleware<S>
-    where
-        S: Service<ServiceRequest, Response=ServiceResponse<BoxBody>, Error=Error> + 'static,
-        S::Future: 'static,
+where
+    S: Service<ServiceRequest, Response = ServiceResponse<BoxBody>, Error = Error> + 'static,
+    S::Future: 'static,
 {
     type Response = ServiceResponse<BoxBody>;
     type Error = Error;
@@ -54,9 +54,7 @@ impl<S> Service<ServiceRequest> for AuthMiddleware<S>
         &self,
         cx: &mut ::core::task::Context<'_>,
     ) -> ::core::task::Poll<Result<(), Self::Error>> {
-        self.service
-            .poll_ready(cx)
-            .map_err(Into::into)
+        self.service.poll_ready(cx).map_err(Into::into)
     }
 
     fn call(&self, mut req: ServiceRequest) -> Self::Future {

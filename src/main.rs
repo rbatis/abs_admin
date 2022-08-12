@@ -2,9 +2,9 @@ use abs_admin::controller::{
     img_controller, sys_auth_controller, sys_dict_controller, sys_res_controller,
     sys_role_controller, sys_user_controller,
 };
+use abs_admin::middleware::auth_actix::Auth;
 use abs_admin::service::CONTEXT;
 use actix_web::{web, App, HttpResponse, HttpServer, Responder};
-use abs_admin::middleware::auth_actix::Auth;
 
 async fn index() -> impl Responder {
     HttpResponse::Ok()
@@ -23,7 +23,7 @@ async fn main() -> std::io::Result<()> {
     //路由
     HttpServer::new(|| {
         App::new()
-            .wrap(Auth{})
+            .wrap(Auth {})
             .route("/", web::get().to(index))
             .route(
                 "/admin/sys_login",
