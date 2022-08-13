@@ -32,7 +32,7 @@ impl_select_page!(SysRes{select_page(dto: &crate::domain::dto::ResPageDTO) =>
          ` and name like #{'%'+dto.name+'%'}`
       ` and parent_id IS NULL`
       if !sql.contains('count'):
-        ` order by create_date `"});
+        ` order by create_date desc`"});
 impl_select!(SysRes{select_by_permission_or_name(permission:&str,name:&str) => "`where permission = #{permission} or name = #{name}`"});
 impl_select!(SysRes{select_by_ids(ids:&Vec<String>)=>
     "`where id in (`
