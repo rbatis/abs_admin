@@ -39,7 +39,7 @@ impl SysResService {
             arg.permission.as_deref().unwrap_or_default(),
             arg.name.as_deref().unwrap_or_default(),
         )
-        .await?;
+            .await?;
         if old.len() > 0 {
             return Err(Error::from(format!(
                 "权限已存在! 权限:{:?}",
@@ -69,14 +69,16 @@ impl SysResService {
 
     ///删除资源
     pub async fn remove(&self, id: &str) -> Result<u64> {
-        //TODO copy date to trash
+        let trash = SysRes::select_by_column(pool!(), "id", id).await?;
         let num = SysRes::delete_by_column(pool!(), "id", id)
             .await?
             .rows_affected;
+        CONTEXT.sys_trash_service.add(&trash).await?;
+
+        let trash = SysRes::select_by_column(pool!(), SysRes::parent_id(), id).await?;
         //删除父级为id的记录
-        SysRes::delete_by_column(pool!(), SysRes::parent_id(), id)
-            .await?
-            .rows_affected;
+        SysRes::delete_by_column(pool!(), SysRes::parent_id(), id).await?;
+        CONTEXT.sys_trash_service.add(&trash).await?;
         // //删除关联数据
         CONTEXT.sys_role_res_service.remove_by_res_id(id).await;
         self.update_cache().await?;

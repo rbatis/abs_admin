@@ -24,6 +24,8 @@ mod sys_sms_service;
 mod sys_user_role_service;
 /// 系统用户服务
 mod sys_user_service;
+/// 垃圾桶服务
+mod sys_trash_service;
 
 pub use crate::config::config::ApplicationConfig;
 pub use cache_service::*;
@@ -40,6 +42,7 @@ pub use sys_role_service::*;
 pub use sys_sms_service::*;
 pub use sys_user_role_service::*;
 pub use sys_user_service::*;
+pub use sys_trash_service::*;
 
 pub struct ServiceContext {
     pub config: ApplicationConfig,
@@ -52,6 +55,7 @@ pub struct ServiceContext {
     pub sys_user_role_service: SysUserRoleService,
     pub sys_dict_service: SysDictService,
     pub sys_auth_service: SysAuthService,
+    pub sys_trash_service:SysTrashService,
 }
 
 impl ServiceContext {
@@ -86,6 +90,7 @@ impl Default for ServiceContext {
             sys_user_role_service: SysUserRoleService {},
             sys_dict_service: SysDictService {},
             sys_auth_service: SysAuthService {},
+            sys_trash_service: SysTrashService {},
             config,
         }
     }
@@ -98,6 +103,6 @@ lazy_static! {
 #[macro_export]
 macro_rules! pool {
     () => {
-        &mut CONTEXT.rbatis.clone()
+        &mut $crate::service::CONTEXT.rbatis.clone()
     };
 }

@@ -115,10 +115,11 @@ impl SysRoleService {
 
     ///角色删除
     pub async fn remove(&self, id: &str) -> Result<u64> {
-        //TODO copy date to trash
-        let result = SysRole::delete_by_column(pool!(), SysRole::id(), id).await;
+        let trash = SysRole::select_by_column(pool!(), SysRole::id(), id).await?;
+        let result = SysRole::delete_by_column(pool!(), SysRole::id(), id).await?;
+        CONTEXT.sys_trash_service.add(&trash).await?;
         self.update_cache().await?;
-        Ok(result?.rows_affected)
+        Ok(result.rows_affected)
     }
 
     pub async fn finds(&self, ids: &Vec<String>) -> Result<Vec<SysRole>> {

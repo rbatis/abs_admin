@@ -314,10 +314,11 @@ impl SysUserService {
         if id.is_empty() {
             return Err(Error::from("id 不能为空！"));
         }
-        //TODO copy date to trash
-        let r = SysUser::delete_by_column(pool!(), SysUser::id(), id).await;
+        let trash = SysUser::select_by_column(pool!(), SysUser::id(), id).await?;
+        let r = SysUser::delete_by_column(pool!(), SysUser::id(), id).await?;
+        CONTEXT.sys_trash_service.add(&trash).await;
         CONTEXT.sys_user_role_service.remove_by_user_id(id).await?;
-        return Ok(r?.rows_affected);
+        return Ok(r.rows_affected);
     }
 
     ///递归查找层级结构权限
