@@ -37,7 +37,6 @@ async fn main() -> std::io::Result<()> {
                 "/admin/sys_user_detail",
                 web::post().to(sys_user_controller::detail),
             )
-            //TODO .route("/sys_log_out", web::post().to(user_controller::log_out))
             .route(
                 "/admin/sys_res_update",
                 web::post().to(sys_res_controller::update),
