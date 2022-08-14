@@ -60,6 +60,7 @@ impl SysDictService {
 
     ///删除字典
     pub async fn remove(&self, id: &str) -> Result<u64> {
+        //TODO copy date to trash
         let r = SysDict::delete_by_column(pool!(), "id", id).await?;
         if r.rows_affected > 0 {
             self.update_cache().await?;

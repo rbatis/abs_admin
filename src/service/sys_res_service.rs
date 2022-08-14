@@ -69,6 +69,7 @@ impl SysResService {
 
     ///删除资源
     pub async fn remove(&self, id: &str) -> Result<u64> {
+        //TODO copy date to trash
         let num = SysRes::delete_by_column(pool!(), "id", id)
             .await?
             .rows_affected;

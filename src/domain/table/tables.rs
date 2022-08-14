@@ -190,3 +190,15 @@ impl_select_page!(SysDict{select_page(dto: &crate::domain::dto::DictPageDTO) =>
          ` and name = #{dto.name}`
       if !sql.contains('count'):
          ` order by create_date `"});
+
+
+
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+pub struct SysTrash {
+    pub id: Option<String>,
+    pub table: Option<String>,
+    pub data: Option<String>,
+    pub create_date: Option<FastDateTime>,
+}
+
+crud!(SysTrash{});

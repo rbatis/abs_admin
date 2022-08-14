@@ -184,3 +184,12 @@ CREATE TABLE `sys_dict` (
                                  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
+create table sys_trash
+(
+    id          varchar(255) not null,
+    table       varchar(255) not null,
+    data        text         null,
+    create_date datetime     null
+);
+

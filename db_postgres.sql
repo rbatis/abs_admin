@@ -141,6 +141,17 @@ CREATE TABLE "public"."sys_user_role" (
 ;
 ALTER TABLE "public"."sys_user_role" OWNER TO "postgres";
 
+
+create table sys_trash
+(
+    id          varchar(256) not null,
+    table       varchar(256) not null,
+    data        text         null,
+    create_date timestamp(6) null
+);
+
+
+
 -- ----------------------------
 -- Records of sys_user_role
 -- ----------------------------
