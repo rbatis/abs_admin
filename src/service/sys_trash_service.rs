@@ -27,6 +27,6 @@ impl SysTrashService {
                 create_date: Some(FastDateTime::now()),
             });
         }
-        Ok(SysTrash::insert_batch(pool!(), &trashs).await?.rows_affected)
+        Ok(SysTrash::insert_batch(pool!(), &trashs,20).await?.rows_affected)
     }
 }

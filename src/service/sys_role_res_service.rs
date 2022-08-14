@@ -149,7 +149,7 @@ impl SysRoleResService {
                 create_date: FastDateTime::now().set_micro(0).into(),
             });
         }
-        Ok(SysRoleRes::insert_batch(pool!(), &sys_role_res)
+        Ok(SysRoleRes::insert_batch(pool!(), &sys_role_res,20)
             .await?
             .rows_affected)
     }
