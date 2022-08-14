@@ -145,7 +145,7 @@ ALTER TABLE "public"."sys_user_role" OWNER TO "postgres";
 create table sys_trash
 (
     id          varchar(256) not null,
-    table       varchar(256) not null,
+    table_name       varchar(256) not null,
     data        text         null,
     create_date timestamp(6) null
 );

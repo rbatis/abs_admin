@@ -65,7 +65,7 @@ impl SysDictService {
         if r.rows_affected > 0 {
             self.update_cache().await?;
             //copy data to trash
-            CONTEXT.sys_trash_service.add(&targets).await?;
+            CONTEXT.sys_trash_service.add("sys_dict", &targets).await?;
         }
         Ok(r.rows_affected)
     }

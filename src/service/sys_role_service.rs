@@ -117,7 +117,7 @@ impl SysRoleService {
     pub async fn remove(&self, id: &str) -> Result<u64> {
         let trash = SysRole::select_by_column(pool!(), SysRole::id(), id).await?;
         let result = SysRole::delete_by_column(pool!(), SysRole::id(), id).await?;
-        CONTEXT.sys_trash_service.add(&trash).await?;
+        CONTEXT.sys_trash_service.add("sys_role", &trash).await?;
         self.update_cache().await?;
         Ok(result.rows_affected)
     }

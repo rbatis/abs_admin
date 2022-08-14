@@ -316,7 +316,7 @@ impl SysUserService {
         }
         let trash = SysUser::select_by_column(pool!(), SysUser::id(), id).await?;
         let r = SysUser::delete_by_column(pool!(), SysUser::id(), id).await?;
-        CONTEXT.sys_trash_service.add(&trash).await;
+        CONTEXT.sys_trash_service.add("sys_user", &trash).await;
         CONTEXT.sys_user_role_service.remove_by_user_id(id).await?;
         return Ok(r.rows_affected);
     }

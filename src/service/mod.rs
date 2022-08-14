@@ -20,12 +20,12 @@ mod sys_role_res_service;
 mod sys_role_service;
 /// 系统短信消息服务
 mod sys_sms_service;
+/// 垃圾桶服务
+mod sys_trash_service;
 /// 系统用户/角色服务
 mod sys_user_role_service;
 /// 系统用户服务
 mod sys_user_service;
-/// 垃圾桶服务
-mod sys_trash_service;
 
 pub use crate::config::config::ApplicationConfig;
 pub use cache_service::*;
@@ -40,9 +40,9 @@ pub use sys_res_service::*;
 pub use sys_role_res_service::*;
 pub use sys_role_service::*;
 pub use sys_sms_service::*;
+pub use sys_trash_service::*;
 pub use sys_user_role_service::*;
 pub use sys_user_service::*;
-pub use sys_trash_service::*;
 
 pub struct ServiceContext {
     pub config: ApplicationConfig,
@@ -55,7 +55,7 @@ pub struct ServiceContext {
     pub sys_user_role_service: SysUserRoleService,
     pub sys_dict_service: SysDictService,
     pub sys_auth_service: SysAuthService,
-    pub sys_trash_service:SysTrashService,
+    pub sys_trash_service: SysTrashService,
 }
 
 impl ServiceContext {

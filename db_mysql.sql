@@ -188,7 +188,7 @@ CREATE TABLE `sys_dict` (
 create table sys_trash
 (
     id          varchar(255) not null,
-    table       varchar(255) not null,
+    table_name       varchar(255) not null,
     data        text         null,
     create_date datetime     null
 );
