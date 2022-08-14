@@ -47,7 +47,7 @@ impl Default for ApplicationConfig {
             println!("[abs_admin] load config:{:?}", result);
             println!("[abs_admin] ///////////////////// Start On Debug Mode ////////////////////////////");
         } else {
-            println!("[abs_admin] release_mode is enable!")
+            println!("[abs_admin] ///////////////////// Start On Release Mode ////////////////////////////");
         }
         result
     }
