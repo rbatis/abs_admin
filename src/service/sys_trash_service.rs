@@ -18,12 +18,15 @@ impl SysTrashService {
             return Ok(0);
         }
         //copy data to trash
-        let trash = SysTrash {
-            id: Some(ObjectId::new().to_string().into()),
-            table_name: Some(table_name.to_string()),
-            data: Some(serde_json::to_string(&args).unwrap_or_default()),
-            create_date: Some(FastDateTime::now()),
-        };
-        Ok(SysTrash::insert(pool!(), &trash).await?.rows_affected)
+        let mut trashs = Vec::with_capacity(args.len());
+        for x in args {
+            trashs.push(SysTrash {
+                id: Some(ObjectId::new().to_string().into()),
+                table_name: Some(table_name.to_string()),
+                data: Some(serde_json::to_string(x).unwrap_or_default()),
+                create_date: Some(FastDateTime::now()),
+            });
+        }
+        Ok(SysTrash::insert_batch(pool!(), &trashs).await?.rows_affected)
     }
 }
