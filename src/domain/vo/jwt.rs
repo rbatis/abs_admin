@@ -53,7 +53,7 @@ impl JWTToken {
 #[cfg(test)]
 mod test {
     use crate::domain::vo::JWTToken;
-    use rbdc::types::datetime::FastDateTime;
+    use rbatis::rbdc::types::datetime::FastDateTime;
     use std::thread::sleep;
     use std::time::Duration;
 

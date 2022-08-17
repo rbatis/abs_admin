@@ -14,7 +14,6 @@ gzip=["fast_log/gzip"]
 [dependencies]
 rbs = { version = "0.1"}
 rbatis = { version = "4"}
-rbdc = { version ="0.1"}
 rbdc-mysql = { version ="0.1"}
 
 #rbatis orm dep must use async-std(Because actix-web relies on tokio0.2)

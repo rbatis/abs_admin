@@ -1,6 +1,6 @@
 use actix_web::{web, Responder};
 use rbatis::plugin::object_id::ObjectId;
-use rbdc::types::datetime::FastDateTime;
+use rbatis::rbdc::types::datetime::FastDateTime;
 
 use crate::domain::dto::{EmptyDTO, IdDTO, ResAddDTO, ResEditDTO, ResPageDTO};
 use crate::domain::table::SysRes;

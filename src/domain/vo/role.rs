@@ -1,6 +1,6 @@
 use crate::domain::table::SysRole;
 use crate::domain::vo::SysResVO;
-use rbdc::datetime::FastDateTime;
+use rbatis::rbdc::datetime::FastDateTime;
 
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SysRoleVO {

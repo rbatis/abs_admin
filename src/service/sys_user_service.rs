@@ -2,7 +2,7 @@ use crate::error::Error;
 use crate::error::Result;
 use crate::service::CONTEXT;
 use rbatis::sql::page::{Page, PageRequest};
-use rbdc::types::datetime::FastDateTime;
+use rbatis::rbdc::types::datetime::FastDateTime;
 
 use crate::domain::dto::{IdDTO, SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO, UserRoleAddDTO};
 use crate::domain::table::{LoginCheck, SysUser};

@@ -4,7 +4,7 @@ use crate::domain::vo::{SysResVO, SysRoleVO};
 use crate::error::Result;
 use crate::service::CONTEXT;
 use crate::util::string::IsEmptyString;
-use rbdc::types::datetime::FastDateTime;
+use rbatis::rbdc::types::datetime::FastDateTime;
 
 use crate::pool;
 use rbatis::plugin::object_id::ObjectId;

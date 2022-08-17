@@ -3,7 +3,7 @@ use crate::domain::table::SysDict;
 use crate::domain::vo::RespVO;
 use crate::service::CONTEXT;
 use actix_web::{web, Responder};
-use rbdc::datetime::FastDateTime;
+use rbatis::rbdc::datetime::FastDateTime;
 
 /// 字典分页(json请求)
 pub async fn page(page: web::Json<DictPageDTO>) -> impl Responder {

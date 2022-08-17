@@ -1,6 +1,6 @@
 use crate::domain::table::{LoginCheck, SysUser};
 use crate::domain::vo::SysRoleVO;
-use rbdc::datetime::FastDateTime;
+use rbatis::rbdc::datetime::FastDateTime;
 use serde::{Deserialize, Serialize};
 
 ///后台用户

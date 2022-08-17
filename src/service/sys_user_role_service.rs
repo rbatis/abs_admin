@@ -10,7 +10,7 @@ use crate::pool;
 use crate::service::CONTEXT;
 use rbatis::plugin::object_id::ObjectId;
 use rbatis::sql::Page;
-use rbdc::types::datetime::FastDateTime;
+use rbatis::rbdc::types::datetime::FastDateTime;
 
 use crate::util::options::OptionStringRefUnwrapOrDefault;
 
