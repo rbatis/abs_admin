@@ -1,7 +1,7 @@
 use crate::config::config::ApplicationConfig;
 use rbatis::rbatis::Rbatis;
-
 pub mod mapper;
+
 ///实例化 rbatis orm 连接池
 pub fn init_rbatis(config: &ApplicationConfig) -> Rbatis {
     let mut rbatis = Rbatis::new();
