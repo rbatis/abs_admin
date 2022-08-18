@@ -81,9 +81,6 @@ where
     }
 
     pub fn resp_json(&self) -> HttpResponse {
-        if CONTEXT.config.debug {
-            println!("[abs_admin][debug] resp:{}", self.to_string());
-        }
         return HttpResponse::Ok()
             .insert_header(("Access-Control-Allow-Origin", "*"))
             .insert_header(("Cache-Control", "no-cache"))
