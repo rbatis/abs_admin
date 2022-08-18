@@ -75,9 +75,9 @@ impl SysResService {
             .rows_affected;
         CONTEXT.sys_trash_service.add("sys_res", &trash).await?;
 
-        let trash = SysRes::select_by_column(pool!(), SysRes::parent_id(), id).await?;
+        let trash = SysRes::select_by_column(pool!(), rbatis::field_name!(SysRes.parent_id), id).await?;
         //删除父级为id的记录
-        SysRes::delete_by_column(pool!(), SysRes::parent_id(), id).await?;
+        SysRes::delete_by_column(pool!(), field_name!(SysRes.parent_id), id).await?;
         CONTEXT.sys_trash_service.add("sys_res", &trash).await?;
         // //删除关联数据
         CONTEXT.sys_role_res_service.remove_by_res_id(id).await;

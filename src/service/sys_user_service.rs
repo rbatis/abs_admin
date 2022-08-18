@@ -54,7 +54,7 @@ impl SysUserService {
 
     ///后台用户根据id查找
     pub async fn find(&self, id: &str) -> Result<Option<SysUser>> {
-        Ok(SysUser::select_by_column(pool!(), SysUser::id(), id)
+        Ok(SysUser::select_by_column(pool!(), field_name!(SysUser.id), id)
             .await?
             .into_iter()
             .next())
@@ -63,7 +63,7 @@ impl SysUserService {
     ///根据账户名查找
     pub async fn find_by_account(&self, account: &str) -> Result<Option<SysUser>> {
         Ok(
-            SysUser::select_by_column(pool!(), SysUser::account(), account)
+            SysUser::select_by_column(pool!(), field_name!(SysUser.account), account)
                 .await?
                 .into_iter()
                 .next(),
@@ -121,7 +121,7 @@ impl SysUserService {
     pub async fn sign_in(&self, arg: &SignInDTO) -> Result<SignInVO> {
         self.is_need_wait_login_ex().await?;
         let user: Option<SysUser> =
-            SysUser::select_by_column(pool!(), SysUser::account(), &arg.account)
+            SysUser::select_by_column(pool!(), field_name!(SysUser.account), &arg.account)
                 .await?
                 .into_iter()
                 .next();
@@ -231,7 +231,7 @@ impl SysUserService {
     }
 
     pub async fn get_user_info_by_token(&self, token: &JWTToken) -> Result<SignInVO> {
-        let user = SysUser::select_by_column(pool!(), SysUser::id(), &token.id)
+        let user = SysUser::select_by_column(pool!(), field_name!(SysUser.id), &token.id)
             .await?
             .into_iter()
             .next();
@@ -305,7 +305,7 @@ impl SysUserService {
                 })
                 .await?;
         }
-        Ok(SysUser::update_by_column(pool!(), &user, SysUser::id())
+        Ok(SysUser::update_by_column(pool!(), &user, field_name!(SysUser.id))
             .await?
             .rows_affected)
     }
@@ -314,8 +314,8 @@ impl SysUserService {
         if id.is_empty() {
             return Err(Error::from("id 不能为空！"));
         }
-        let trash = SysUser::select_by_column(pool!(), SysUser::id(), id).await?;
-        let r = SysUser::delete_by_column(pool!(), SysUser::id(), id).await?;
+        let trash = SysUser::select_by_column(pool!(), field_name!(SysUser.id), id).await?;
+        let r = SysUser::delete_by_column(pool!(), field_name!(SysUser.id), id).await?;
         CONTEXT.sys_trash_service.add("sys_user", &trash).await;
         CONTEXT.sys_user_role_service.remove_by_user_id(id).await?;
         return Ok(r.rows_affected);

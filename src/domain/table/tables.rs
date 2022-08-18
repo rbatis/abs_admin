@@ -15,16 +15,6 @@ pub struct SysRes {
     pub create_date: Option<FastDateTime>,
 }
 
-impl_field_name_method!(SysRes {
-    id,
-    parent_id,
-    name,
-    permission,
-    path,
-    del,
-    create_date
-});
-
 crud!(SysRes {});
 impl_select_page!(SysRes{select_page(dto: &crate::domain::dto::ResPageDTO) =>
     "`where del = 0 `
@@ -51,14 +41,6 @@ pub struct SysRole {
     pub del: Option<i32>,
     pub create_date: Option<FastDateTime>,
 }
-
-impl_field_name_method!(SysRole {
-    id,
-    parent_id,
-    name,
-    del,
-    create_date
-});
 
 crud!(SysRole {});
 
@@ -88,13 +70,6 @@ pub struct SysRoleRes {
     pub create_date: Option<FastDateTime>,
 }
 
-impl_field_name_method!(SysRoleRes {
-    id,
-    role_id,
-    res_id,
-    create_date
-});
-
 crud!(SysRoleRes {});
 impl_select!(SysRoleRes{select_by_role_id(role_ids: &[String]) =>
     "`where role_id in (`
@@ -115,17 +90,6 @@ pub struct SysUser {
     pub del: Option<i32>,
     pub create_date: Option<FastDateTime>,
 }
-
-impl_field_name_method!(SysUser {
-    id,
-    account,
-    password,
-    name,
-    login_check,
-    state,
-    del,
-    create_date
-});
 
 crud!(SysUser {});
 
@@ -149,12 +113,6 @@ pub struct SysUserRole {
     pub role_id: Option<String>,
     pub create_date: Option<FastDateTime>,
 }
-impl_field_name_method!(SysUserRole {
-    id,
-    user_id,
-    role_id,
-    create_date
-});
 
 crud!(SysUserRole {});
 impl_select!(SysUserRole{select_list_in_user_id(user_ids:&[String])=>
@@ -173,13 +131,6 @@ pub struct SysDict {
     pub state: Option<i32>,
     pub create_date: Option<FastDateTime>,
 }
-impl_field_name_method!(SysDict {
-    id,
-    name,
-    code,
-    state,
-    create_date
-});
 
 crud!(SysDict {});
 impl_select_page!(SysDict{select_page(dto: &crate::domain::dto::DictPageDTO) =>
