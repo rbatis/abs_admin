@@ -27,7 +27,6 @@ pub struct SysRole {
 }
 
 ///角色资源关系表(关系表不使用逻辑删除)
-
 #[derive(Clone, Debug, Eq, PartialEq, Hash, serde::Serialize, serde::Deserialize)]
 pub struct SysRoleRes {
     pub id: Option<String>,
@@ -39,7 +38,6 @@ pub struct SysRoleRes {
 }
 
 ///后台用户表
-
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SysUser {
     pub id: Option<String>,
@@ -52,9 +50,7 @@ pub struct SysUser {
     pub create_date: Option<FastDateTime>,
 }
 
-
 ///用户角色关系表(关系表不使用逻辑删除)
-
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SysUserRole {
     pub id: Option<String>,
@@ -65,9 +61,7 @@ pub struct SysUserRole {
     pub create_date: Option<FastDateTime>,
 }
 
-
 ///字典表
-
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SysDict {
     pub id: Option<String>,
@@ -84,4 +78,3 @@ pub struct SysTrash {
     pub data: Option<String>,
     pub create_date: Option<FastDateTime>,
 }
-

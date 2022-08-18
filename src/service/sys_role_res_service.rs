@@ -10,8 +10,8 @@ use crate::error::Result;
 use crate::pool;
 use crate::service::CONTEXT;
 use rbatis::plugin::object_id::ObjectId;
-use rbatis::sql::Page;
 use rbatis::rbdc::types::datetime::FastDateTime;
+use rbatis::sql::Page;
 
 use crate::util::options::OptionStringRefUnwrapOrDefault;
 
@@ -149,7 +149,7 @@ impl SysRoleResService {
                 create_date: FastDateTime::now().set_micro(0).into(),
             });
         }
-        Ok(SysRoleRes::insert_batch(pool!(), &sys_role_res,20)
+        Ok(SysRoleRes::insert_batch(pool!(), &sys_role_res, 20)
             .await?
             .rows_affected)
     }

@@ -1,8 +1,8 @@
 use crate::error::Error;
 use crate::error::Result;
 use crate::service::CONTEXT;
-use rbatis::sql::page::{Page, PageRequest};
 use rbatis::rbdc::types::datetime::FastDateTime;
+use rbatis::sql::page::{Page, PageRequest};
 
 use crate::domain::dto::{IdDTO, SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO, UserRoleAddDTO};
 use crate::domain::table::{LoginCheck, SysUser};
@@ -54,10 +54,12 @@ impl SysUserService {
 
     ///后台用户根据id查找
     pub async fn find(&self, id: &str) -> Result<Option<SysUser>> {
-        Ok(SysUser::select_by_column(pool!(), field_name!(SysUser.id), id)
-            .await?
-            .into_iter()
-            .next())
+        Ok(
+            SysUser::select_by_column(pool!(), field_name!(SysUser.id), id)
+                .await?
+                .into_iter()
+                .next(),
+        )
     }
 
     ///根据账户名查找
@@ -305,9 +307,11 @@ impl SysUserService {
                 })
                 .await?;
         }
-        Ok(SysUser::update_by_column(pool!(), &user, field_name!(SysUser.id))
-            .await?
-            .rows_affected)
+        Ok(
+            SysUser::update_by_column(pool!(), &user, field_name!(SysUser.id))
+                .await?
+                .rows_affected,
+        )
     }
 
     pub async fn remove(&self, id: &str) -> Result<u64> {

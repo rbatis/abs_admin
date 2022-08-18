@@ -142,7 +142,8 @@ impl SysRoleService {
         all_res: &BTreeMap<String, SysResVO>,
     ) -> Result<Vec<String>> {
         let user_roles =
-            SysUserRole::select_by_column(pool!(), field_name!(SysUserRole.user_id), user_id).await?;
+            SysUserRole::select_by_column(pool!(), field_name!(SysUserRole.user_id), user_id)
+                .await?;
         let role_res = self
             .find_role_res(&rbatis::make_table_field_vec!(&user_roles, role_id))
             .await?;
