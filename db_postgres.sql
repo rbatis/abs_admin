@@ -41,15 +41,15 @@ COMMENT ON COLUMN "public"."sys_res"."create_date" IS '创建时间';
 -- Records of sys_res
 -- ----------------------------
 BEGIN;
-INSERT INTO "public"."sys_res" VALUES ('1', NULL, 'qx', '/', '/', 0, '2020-02-09 00:00:00');
-INSERT INTO "public"."sys_res" VALUES ('2', NULL, 'qx', 'dashboard', 'dashboard', 0, '2020-02-09 00:00:00');
-INSERT INTO "public"."sys_res" VALUES ('3', NULL, 'qx', 'form', 'form', 0, '2020-02-09 00:00:00');
-INSERT INTO "public"."sys_res" VALUES ('4', NULL, 'qx', 'table', 'table', 0, '2020-02-09 00:00:00');
-INSERT INTO "public"."sys_res" VALUES ('5', NULL, 'qx', 'profile', 'profile', 0, '2020-02-09 00:00:00');
-INSERT INTO "public"."sys_res" VALUES ('6', NULL, 'qx', 'result', 'result', 0, '2020-02-09 00:00:00');
-INSERT INTO "public"."sys_res" VALUES ('7', NULL, 'qx', 'exception', 'exception', 0, '2020-02-09 00:00:00');
-INSERT INTO "public"."sys_res" VALUES ('8', NULL, 'qx', 'user', 'user', 0, '2020-02-09 00:00:00');
-INSERT INTO "public"."sys_res" VALUES ('9', NULL, 'qx', 'setting', 'setting', 0, '2020-02-09 00:00:00');
+INSERT INTO "public"."sys_res" VALUES ('1', NULL, '/', '/', '/', 0, '2020-02-09 00:00:00');
+INSERT INTO "public"."sys_res" VALUES ('2', NULL, 'dashboard', 'dashboard', 'dashboard', 0, '2020-02-09 00:00:00');
+INSERT INTO "public"."sys_res" VALUES ('3', NULL, 'form', 'form', 'form', 0, '2020-02-09 00:00:00');
+INSERT INTO "public"."sys_res" VALUES ('4', NULL, 'table', 'table', 'table', 0, '2020-02-09 00:00:00');
+INSERT INTO "public"."sys_res" VALUES ('5', NULL, 'profile', 'profile', 'profile', 0, '2020-02-09 00:00:00');
+INSERT INTO "public"."sys_res" VALUES ('6', NULL, 'result', 'result', 'result', 0, '2020-02-09 00:00:00');
+INSERT INTO "public"."sys_res" VALUES ('7', NULL, 'exception', 'exception', 'exception', 0, '2020-02-09 00:00:00');
+INSERT INTO "public"."sys_res" VALUES ('8', NULL, 'user', 'user', 'user', 0, '2020-02-09 00:00:00');
+INSERT INTO "public"."sys_res" VALUES ('9', NULL, 'setting', 'setting', 'setting', 0, '2020-02-09 00:00:00');
 INSERT INTO "public"."sys_res" VALUES ('206267260095041511', NULL, '超级管理员权限', '/', '', 0, '2020-08-13 11:43:26');
 COMMIT;
 

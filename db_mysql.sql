@@ -57,7 +57,7 @@ CREATE TABLE `sys_res` (
 
 LOCK TABLES `sys_res` WRITE;
 /*!40000 ALTER TABLE `sys_res` DISABLE KEYS */;
-INSERT INTO `sys_res` VALUES ('1',NULL,'qx','/','/',0,'2020-02-09 00:00:00'),('2',NULL,'qx','dashboard','dashboard',0,'2020-02-09 00:00:00'),('206267260095041511',NULL,'首页','/','',0,'2020-08-13 11:43:26'),('3',NULL,'qx','form','form',0,'2020-02-09 00:00:00'),('4',NULL,'qx','table','table',0,'2020-02-09 00:00:00'),('5',NULL,'qx','profile','profile',0,'2020-02-09 00:00:00'),('6',NULL,'qx','result','result',0,'2020-02-09 00:00:00'),('7',NULL,'qx','exception','exception',0,'2020-02-09 00:00:00'),('8',NULL,'qx','user','user',0,'2020-02-09 00:00:00'),('9',NULL,'qx','setting','setting',0,'2020-02-09 00:00:00');
+INSERT INTO `sys_res` VALUES ('1',NULL,'/','/','/',0,'2020-02-09 00:00:00'),('2',NULL,'dashboard','dashboard','dashboard',0,'2020-02-09 00:00:00'),('206267260095041511',NULL,'首页','/','',0,'2020-08-13 11:43:26'),('3',NULL,'form','form','form',0,'2020-02-09 00:00:00'),('4',NULL,'table','table','table',0,'2020-02-09 00:00:00'),('5',NULL,'profile','profile','profile',0,'2020-02-09 00:00:00'),('6',NULL,'result','result','result',0,'2020-02-09 00:00:00'),('7',NULL,'exception','exception','exception',0,'2020-02-09 00:00:00'),('8',NULL,'user','user','user',0,'2020-02-09 00:00:00'),('9',NULL,'setting','setting','setting',0,'2020-02-09 00:00:00');
 /*!40000 ALTER TABLE `sys_res` ENABLE KEYS */;
 UNLOCK TABLES;
 
