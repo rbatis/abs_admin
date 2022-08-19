@@ -18,17 +18,6 @@ pub struct SysUserVO {
     pub role: Option<SysRoleVO>,
 }
 
-impl_field_name_method!(SysUserVO {
-    id,
-    account,
-    password,
-    name,
-    login_check,
-    state,
-    del,
-    create_date
-});
-
 impl From<SysUser> for SysUserVO {
     fn from(arg: SysUser) -> Self {
         Self {
