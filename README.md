@@ -60,7 +60,7 @@ The separation - both before and after the end, based on [Vue - JS] + [Vue - Ant
 
 docker run -it -d --name redis -p 6379:6379 redis
 
-Docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 --name mysql -e TZ=Asia/Shanghai mysql:5.7
+docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 --name mysql -e TZ=Asia/Shanghai mysql:5.7
 
 ` ` `
 
