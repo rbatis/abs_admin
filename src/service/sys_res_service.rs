@@ -8,8 +8,6 @@ use crate::error::Error;
 use crate::error::Result;
 use crate::pool;
 use crate::service::CONTEXT;
-use crate::util::string::IsEmptyString;
-
 const RES_KEY: &'static str = "sys_res:all";
 
 /// 资源服务
@@ -26,7 +24,7 @@ impl SysResService {
             all_res_vo.insert(k, v);
         }
         let mut page = Page::<SysResVO>::from(data);
-        for mut vo in &mut page.records {
+        for vo in &mut page.records {
             vo.set_childs_recursive(&all_res_vo);
         }
         Ok(page)
@@ -53,7 +51,7 @@ impl SysResService {
 
     ///修改资源
     pub async fn edit(&self, arg: &ResEditDTO) -> Result<u64> {
-        let mut data = SysRes {
+        let data = SysRes {
             id: arg.id.clone(),
             parent_id: arg.parent_id.clone(),
             name: arg.name.clone(),

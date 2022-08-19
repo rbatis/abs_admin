@@ -1,6 +1,5 @@
 use serde::{Deserializer, Serializer};
 use std::fmt::{Display, Formatter};
-use std::str::FromStr;
 
 #[derive(Clone, Debug)]
 pub enum LoginCheck {

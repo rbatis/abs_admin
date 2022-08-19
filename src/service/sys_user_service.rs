@@ -31,7 +31,7 @@ impl SysUserService {
             arg.account.as_deref().unwrap_or_default(),
         )
         .await?;
-        let mut page = Page::<SysUserVO>::from(sys_user_page);
+        let page = Page::<SysUserVO>::from(sys_user_page);
         return Ok(page);
     }
 
@@ -287,7 +287,7 @@ impl SysUserService {
         if arg.password.is_some() {
             pwd = Some(PasswordEncoder::encode(arg.password.as_ref().unwrap()));
         }
-        let mut user = SysUser {
+        let user = SysUser {
             id: arg.id.clone(),
             account: None,
             password: pwd,

@@ -1,4 +1,4 @@
-use rbatis::sql::{IPage, IPageRequest, Page, PageRequest};
+use rbatis::sql::{Page, PageRequest};
 
 use crate::domain::dto::{DictEditDTO, DictPageDTO};
 use crate::domain::table::SysDict;
@@ -7,7 +7,6 @@ use crate::error::Error;
 use crate::error::Result;
 use crate::pool;
 use crate::service::CONTEXT;
-use crate::util::string::IsEmptyString;
 
 const DICT_KEY: &'static str = "sys_dict:all";
 
@@ -19,7 +18,7 @@ impl SysDictService {
     pub async fn page(&self, arg: &DictPageDTO) -> Result<Page<SysDictVO>> {
         let page_req = PageRequest::new(arg.page_no.unwrap_or(1), arg.page_size.unwrap_or(10));
         let data = SysDict::select_page(pool!(), &PageRequest::from(arg), arg).await?;
-        let mut page = Page::<SysDictVO>::from(data);
+        let page = Page::<SysDictVO>::from(data);
         Ok(page)
     }
 
@@ -44,7 +43,7 @@ impl SysDictService {
 
     ///修改字典
     pub async fn edit(&self, arg: &DictEditDTO) -> Result<u64> {
-        let mut data = SysDict {
+        let data = SysDict {
             id: arg.id.clone(),
             name: arg.name.clone(),
             code: arg.code.clone(),

@@ -3,7 +3,6 @@ use crate::domain::table::{SysRole, SysRoleRes, SysUserRole};
 use crate::domain::vo::{SysResVO, SysRoleVO};
 use crate::error::Result;
 use crate::service::CONTEXT;
-use crate::util::string::IsEmptyString;
 use rbatis::rbdc::types::datetime::FastDateTime;
 
 use crate::pool;
@@ -101,7 +100,7 @@ impl SysRoleService {
 
     ///角色修改
     pub async fn edit(&self, arg: &RoleEditDTO) -> Result<u64> {
-        let mut role = SysRole {
+        let role = SysRole {
             id: arg.id.clone(),
             name: arg.name.clone(),
             parent_id: arg.parent_id.clone(),
