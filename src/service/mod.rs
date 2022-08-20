@@ -62,14 +62,14 @@ impl ServiceContext {
     pub async fn link_db(&self) {
         //连接数据库
         println!(
-            "[abs_admin] rbatis connect database ({})...",
+            "[abs_admin] rbatis pool init ({})...",
             self.config.database_url
         );
         self.rbatis
             .link(MysqlDriver {}, &self.config.database_url)
             .await
-            .expect("[abs_admin] rbatis connect database fail!");
-        println!("[abs_admin] rbatis connect database success! pool state = {:?}", self.rbatis.get_pool().expect("pool not init!").inner.state().await);
+            .expect("[abs_admin] rbatis pool init fail!");
+        println!("[abs_admin] rbatis pool init success! pool state = {:?}", self.rbatis.get_pool().expect("pool not init!").inner.state().await);
         log::info!(
             " - Local:   http://{}",
             self.config.server_url.replace("0.0.0.0", "127.0.0.1")
