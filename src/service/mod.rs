@@ -81,7 +81,7 @@ impl Default for ServiceContext {
     fn default() -> Self {
         let config = ApplicationConfig::default();
         ServiceContext {
-            rbatis: crate::dao::init_rbatis(&config),
+            rbatis: crate::domain::init_rbatis(&config),
             cache_service: CacheService::new(&config).unwrap(),
             sys_res_service: SysResService {},
             sys_user_service: SysUserService {},

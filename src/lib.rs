@@ -13,8 +13,6 @@ pub mod util;
 pub mod config;
 ///接口模块
 pub mod controller;
-///数据库模块
-pub mod dao;
 ///领域模型模块
 pub mod domain;
 ///错误结构体
