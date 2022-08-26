@@ -59,7 +59,8 @@ pub struct ServiceContext {
 }
 
 impl ServiceContext {
-    pub async fn link_db(&self) {
+    /// init database pool
+    pub async fn init_pool(&self) {
         //连接数据库
         println!(
             "[abs_admin] rbatis pool init ({})...",

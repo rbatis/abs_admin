@@ -19,7 +19,7 @@ async fn main() -> std::io::Result<()> {
     //日志追加器
     abs_admin::config::log::init_log();
     //连接数据库
-    CONTEXT.link_db().await;
+    CONTEXT.init_pool().await;
     //路由
     HttpServer::new(|| {
         App::new()
