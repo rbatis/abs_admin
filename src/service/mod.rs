@@ -45,6 +45,16 @@ pub use sys_trash_service::*;
 pub use sys_user_role_service::*;
 pub use sys_user_service::*;
 
+/// CONTEXT is all of the service struct
+pub static CONTEXT: Lazy<ServiceContext> = Lazy::new(||{ServiceContext::default()});
+
+#[macro_export]
+macro_rules! pool {
+    () => {
+        &mut $crate::service::CONTEXT.rbatis.clone()
+    };
+}
+
 pub struct ServiceContext {
     pub config: ApplicationConfig,
     pub rbatis: Rbatis,
@@ -96,13 +106,4 @@ impl Default for ServiceContext {
             config,
         }
     }
-}
-
-pub static CONTEXT: Lazy<ServiceContext> = Lazy::new(||{ServiceContext::default()});
-
-#[macro_export]
-macro_rules! pool {
-    () => {
-        &mut $crate::service::CONTEXT.rbatis.clone()
-    };
 }
