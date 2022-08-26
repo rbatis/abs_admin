@@ -69,7 +69,7 @@ impl ServiceContext {
             .link(MysqlDriver {}, &self.config.database_url)
             .await
             .expect("[abs_admin] rbatis pool init fail!");
-        println!("[abs_admin] rbatis pool init success! pool state = {:?}", self.rbatis.get_pool().expect("pool not init!").inner.state().await);
+        println!("[abs_admin] rbatis pool init success! pool state = {:?}", self.rbatis.get_pool().expect("pool not init!").inner.status());
         log::info!(
             " - Local:   http://{}",
             self.config.server_url.replace("0.0.0.0", "127.0.0.1")
