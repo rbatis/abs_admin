@@ -1,20 +1,19 @@
 use crate::config::config::ApplicationConfig;
 use crate::error::Result;
 use crate::service::{MemService, RedisService};
-use async_trait::async_trait;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 use std::time::Duration;
+use futures_util::future::BoxFuture;
 
-#[async_trait]
 pub trait ICacheService: Sync + Send {
-    async fn set_string(&self, k: &str, v: &str) -> Result<String>;
+    fn set_string(&self, k: &str, v: &str) -> BoxFuture<Result<String>>;
 
-    async fn get_string(&self, k: &str) -> Result<String>;
+    fn get_string(&self, k: &str) -> BoxFuture<Result<String>>;
 
-    async fn set_string_ex(&self, k: &str, v: &str, ex: Option<Duration>) -> Result<String>;
+    fn set_string_ex(&self, k: &str, v: &str, ex: Option<Duration>) -> BoxFuture<Result<String>>;
 
-    async fn ttl(&self, k: &str) -> Result<i64>;
+    fn ttl(&self, k: &str) -> BoxFuture<Result<i64>>;
 }
 
 pub struct CacheService {
@@ -54,8 +53,8 @@ impl CacheService {
     }
 
     pub async fn set_json<T>(&self, k: &str, v: &T) -> Result<String>
-    where
-        T: Serialize + Sync,
+        where
+            T: Serialize + Sync,
     {
         let data = serde_json::to_string(v);
         if data.is_err() {
@@ -69,8 +68,8 @@ impl CacheService {
     }
 
     pub async fn get_json<T>(&self, k: &str) -> Result<T>
-    where
-        T: DeserializeOwned + Sync,
+        where
+            T: DeserializeOwned + Sync,
     {
         let mut r = self.get_string(k).await?;
         if r.is_empty() {
