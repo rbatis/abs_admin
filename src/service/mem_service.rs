@@ -43,9 +43,9 @@ impl ICacheService for MemService {
         self.recycling();
         let k = k.to_string();
         let v = v.to_string();
+        let mut guard = self.cache.lock();
+        guard.insert(k.to_string(), (v.clone(), None));
         Box::pin(async move {
-            let mut guard = self.cache.lock();
-            guard.insert(k.to_string(), (v.to_string(), None));
             return Ok(v.to_string());
         })
     }
@@ -53,17 +53,13 @@ impl ICacheService for MemService {
     fn get_string(&self, k: &str) -> BoxFuture<Result<String>> {
         self.recycling();
         let k = k.to_string();
+        let guard = self.cache.lock();
+        let mut v = String::new();
+        if let Some(r) = guard.get(&k) {
+            v = r.0.to_string();
+        }
         Box::pin(async move {
-            let guard = self.cache.lock();
-            let v = guard.get(&k);
-            match v {
-                Some((v, _)) => {
-                    return Ok(v.to_string());
-                }
-                _ => {
-                    return Ok("".to_string());
-                }
-            }
+            Ok(v)
         })
     }
 
@@ -71,17 +67,17 @@ impl ICacheService for MemService {
         self.recycling();
         let k = k.to_string();
         let v = v.to_string();
+        let mut locked = self.cache.lock();
+        let mut e = Option::None;
+        if let Some(ex) = t {
+            e = Some((Instant::now(), ex));
+        }
+        let inserted = locked.insert(k, (v.clone(), e));
         Box::pin(async move {
-            let mut locked = self.cache.lock();
-            let mut e = Option::None;
-            if let Some(ex) = t {
-                e = Some((Instant::now(), ex));
-            }
-            let inserted = locked.insert(k, (v.clone(), e));
             if inserted.is_some() {
                 return Ok(v.to_string());
             }
-            return Result::Err(crate::error::Error::E(format!(
+            return Err(crate::error::Error::E(format!(
                 "[abs_admin][mem_service]insert fail!"
             )));
         })
@@ -89,24 +85,25 @@ impl ICacheService for MemService {
 
     fn ttl(&self, k: &str) -> BoxFuture<Result<i64>> {
         self.recycling();
-        let k = k.to_string();
-        Box::pin(async move {
-            let locked = self.cache.lock();
-            let v = locked.get(&k).cloned();
-            drop(locked);
-            return match v {
-                None => Ok(-2),
-                Some((r, o)) => match o {
-                    None => Ok(-1),
-                    Some((i, d)) => {
-                        let use_time = i.elapsed();
-                        if d > use_time {
-                            return Ok(d.sub(use_time).as_secs() as i64);
-                        }
-                        Ok(0)
+        let locked = self.cache.lock();
+        let v = locked.get(k).cloned();
+        drop(locked);
+        let v = match v {
+            None => -2,
+            Some((r, o)) => match o {
+                None => -1,
+                Some((i, d)) => {
+                    let use_time = i.elapsed();
+                    if d > use_time {
+                        d.sub(use_time).as_secs() as i64
+                    } else {
+                        0
                     }
-                },
-            };
+                }
+            },
+        };
+        Box::pin(async move {
+            Ok(v)
         })
     }
 }
