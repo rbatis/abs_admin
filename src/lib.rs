@@ -2,8 +2,6 @@
 #![allow(unused_must_use)]
 
 #[macro_use]
-extern crate lazy_static;
-#[macro_use]
 extern crate rbatis;
 
 ///工具类

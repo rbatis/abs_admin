@@ -27,6 +27,7 @@ mod sys_user_role_service;
 /// 系统用户服务
 mod sys_user_service;
 
+use once_cell::sync::Lazy;
 pub use crate::config::config::ApplicationConfig;
 pub use cache_service::*;
 pub use mem_service::*;
@@ -97,9 +98,7 @@ impl Default for ServiceContext {
     }
 }
 
-lazy_static! {
-    pub static ref CONTEXT: ServiceContext = ServiceContext::default();
-}
+pub static CONTEXT: Lazy<ServiceContext> = Lazy::new(||{ServiceContext::default()});
 
 #[macro_export]
 macro_rules! pool {
