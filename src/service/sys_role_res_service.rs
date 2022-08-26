@@ -68,13 +68,18 @@ impl SysRoleResService {
             HashMap::with_capacity(role_res_vec.capacity());
         for role_res in role_res_vec {
             let role_id = role_res.role_id.as_deref().unwrap_or_default();
-            if role_res_map.get(role_id).is_none() {
-                let datas = HashSet::new();
-                role_res_map.insert(role_id.to_string(), datas);
-            }
-            let sets = role_res_map.get_mut(role_id).unwrap();
             //去重添加
-            sets.insert(role_res);
+            match role_res_map.get_mut(role_id){
+                None => {
+                    let role_id = role_id.to_string();
+                    let mut sets = HashSet::new();
+                    sets.insert(role_res);
+                    role_res_map.insert(role_id, sets);
+                }
+                Some(sets) => {
+                    sets.insert(role_res);
+                }
+            }
         }
         return Ok(role_res_map);
     }
