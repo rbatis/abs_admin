@@ -1,10 +1,10 @@
 use crate::config::config::ApplicationConfig;
 use crate::error::Result;
 use crate::service::{MemService, RedisService};
+use futures_util::future::BoxFuture;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 use std::time::Duration;
-use futures_util::future::BoxFuture;
 
 pub trait ICacheService: Sync + Send {
     fn set_string(&self, k: &str, v: &str) -> BoxFuture<Result<String>>;
@@ -53,8 +53,8 @@ impl CacheService {
     }
 
     pub async fn set_json<T>(&self, k: &str, v: &T) -> Result<String>
-        where
-            T: Serialize + Sync,
+    where
+        T: Serialize + Sync,
     {
         let data = serde_json::to_string(v);
         if data.is_err() {
@@ -68,8 +68,8 @@ impl CacheService {
     }
 
     pub async fn get_json<T>(&self, k: &str) -> Result<T>
-        where
-            T: DeserializeOwned + Sync,
+    where
+        T: DeserializeOwned + Sync,
     {
         let mut r = self.get_string(k).await?;
         if r.is_empty() {

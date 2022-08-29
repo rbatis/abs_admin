@@ -69,7 +69,7 @@ impl SysRoleResService {
         for role_res in role_res_vec {
             let role_id = role_res.role_id.as_deref().unwrap_or_default();
             //去重添加
-            match role_res_map.get_mut(role_id){
+            match role_res_map.get_mut(role_id) {
                 None => {
                     let role_id = role_id.to_string();
                     let mut sets = HashSet::new();

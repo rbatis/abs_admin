@@ -34,14 +34,14 @@ impl ICacheService for RedisService {
     fn set_string(&self, k: &str, v: &str) -> BoxFuture<Result<String>> {
         let k = k.to_string();
         let v = v.to_string();
-        Box::pin(async move{
+        Box::pin(async move {
             return self.set_string_ex(&k, &v, None).await;
         })
     }
 
     fn get_string(&self, k: &str) -> BoxFuture<Result<String>> {
         let k = k.to_string();
-        Box::pin(async move{
+        Box::pin(async move {
             let mut conn = self.get_conn().await?;
             let result: RedisResult<Option<String>> =
                 redis::cmd("GET").arg(&[&k]).query_async(&mut conn).await;
@@ -60,7 +60,7 @@ impl ICacheService for RedisService {
     fn set_string_ex(&self, k: &str, v: &str, ex: Option<Duration>) -> BoxFuture<Result<String>> {
         let k = k.to_string();
         let v = v.to_string();
-        Box::pin(async move{
+        Box::pin(async move {
             let mut conn = self.get_conn().await?;
             return if ex.is_none() {
                 match redis::cmd("SET").arg(&[k, v]).query_async(&mut conn).await {

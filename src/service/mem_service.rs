@@ -1,11 +1,11 @@
 use crate::error::Result;
 use crate::service::ICacheService;
+use futures_util::future::BoxFuture;
+use parking_lot::Mutex;
 use std::collections::hash_map::RandomState;
 use std::collections::HashMap;
 use std::ops::Sub;
 use std::time::{Duration, Instant};
-use futures_util::future::BoxFuture;
-use parking_lot::Mutex;
 
 ///内存缓存服务
 pub struct MemService {
@@ -58,9 +58,7 @@ impl ICacheService for MemService {
         if let Some(r) = guard.get(&k) {
             v = r.0.to_string();
         }
-        Box::pin(async move {
-            Ok(v)
-        })
+        Box::pin(async move { Ok(v) })
     }
 
     fn set_string_ex(&self, k: &str, v: &str, t: Option<Duration>) -> BoxFuture<Result<String>> {
@@ -102,8 +100,6 @@ impl ICacheService for MemService {
                 }
             },
         };
-        Box::pin(async move {
-            Ok(v)
-        })
+        Box::pin(async move { Ok(v) })
     }
 }
