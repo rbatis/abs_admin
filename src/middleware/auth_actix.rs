@@ -5,7 +5,7 @@ use actix_http::body::BoxBody;
 use actix_web::error::ErrorUnauthorized;
 use actix_web::{
     dev::{Service, ServiceRequest, ServiceResponse, Transform},
-    Error
+    Error,
 };
 use futures_util::future::LocalBoxFuture;
 use std::{
