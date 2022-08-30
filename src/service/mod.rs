@@ -79,7 +79,6 @@ impl ServiceContext {
         );
         self.rbatis
             .init(MysqlDriver {}, &self.config.database_url)
-            .await
             .expect("[abs_admin] rbatis pool init fail!");
         println!("[abs_admin] rbatis pool init success! pool state = {:?}", self.rbatis.get_pool().expect("pool not init!").status());
         log::info!(
