@@ -1,7 +1,7 @@
 use serde::{Deserializer, Serializer};
-use std::fmt::{Display, Formatter};
+use std::fmt::{Debug, Display, Formatter};
 
-#[derive(Clone, Debug)]
+#[derive(Clone)]
 pub enum LoginCheck {
     NoCheck,
     PasswordCheck,
@@ -9,21 +9,61 @@ pub enum LoginCheck {
     PhoneCodeCheck,
 }
 
+impl From<LoginCheck> for &str {
+    fn from(arg: LoginCheck) -> Self {
+        match arg {
+            LoginCheck::NoCheck => {
+                ""
+            }
+            LoginCheck::PasswordCheck => {
+                "PasswordCheck"
+            }
+            LoginCheck::PasswordImgCodeCheck => {
+                "PasswordImgCodeCheck"
+            }
+            LoginCheck::PhoneCodeCheck => {
+                "PhoneCodeCheck"
+            }
+        }
+    }
+}
+
+impl From<&LoginCheck> for &str {
+    fn from(arg: &LoginCheck) -> Self {
+        <&str>::from(arg.clone())
+    }
+}
+
+impl From<&str> for LoginCheck {
+    fn from(arg: &str) -> Self {
+        match arg {
+            "" => LoginCheck::NoCheck,
+            "NoCheck" => LoginCheck::NoCheck,
+            "PasswordCheck" => LoginCheck::PasswordCheck,
+            "PasswordImgCodeCheck" => LoginCheck::PasswordImgCodeCheck,
+            "PhoneCodeCheck" => LoginCheck::PhoneCodeCheck,
+            _ => LoginCheck::NoCheck,
+        }
+    }
+}
+
+
+impl Debug for LoginCheck {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        f.write_str(<&str>::from(self))
+    }
+}
+
 impl Display for LoginCheck {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        match self {
-            LoginCheck::NoCheck => f.write_str(""),
-            LoginCheck::PasswordCheck => f.write_str("PasswordCheck"),
-            LoginCheck::PasswordImgCodeCheck => f.write_str("PasswordImgCodeCheck"),
-            LoginCheck::PhoneCodeCheck => f.write_str("PhoneCodeCheck"),
-        }
+        f.write_str(<&str>::from(self))
     }
 }
 
 impl serde::Serialize for LoginCheck {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
+        where
+            S: Serializer,
     {
         self.to_string().serialize(serializer)
     }
@@ -31,17 +71,10 @@ impl serde::Serialize for LoginCheck {
 
 impl<'de> serde::Deserialize<'de> for LoginCheck {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: Deserializer<'de>,
+        where
+            D: Deserializer<'de>,
     {
         let v = String::deserialize(deserializer)?;
-        Ok(match v.as_str() {
-            "" => LoginCheck::NoCheck,
-            "NoCheck" => LoginCheck::NoCheck,
-            "PasswordCheck" => LoginCheck::PasswordCheck,
-            "PasswordImgCodeCheck" => LoginCheck::PasswordImgCodeCheck,
-            "PhoneCodeCheck" => LoginCheck::PhoneCodeCheck,
-            _ => LoginCheck::NoCheck,
-        })
+        Ok(LoginCheck::from(v.as_str()))
     }
 }
