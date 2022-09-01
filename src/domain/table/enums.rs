@@ -28,12 +28,6 @@ impl From<LoginCheck> for &str {
     }
 }
 
-impl From<&LoginCheck> for &str {
-    fn from(arg: &LoginCheck) -> Self {
-        <&str>::from(arg.clone())
-    }
-}
-
 impl From<&str> for LoginCheck {
     fn from(arg: &str) -> Self {
         match arg {
@@ -47,16 +41,15 @@ impl From<&str> for LoginCheck {
     }
 }
 
-
 impl Debug for LoginCheck {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        f.write_str(<&str>::from(self))
+        f.write_str(<&str>::from(self.clone()))
     }
 }
 
 impl Display for LoginCheck {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        f.write_str(<&str>::from(self))
+        f.write_str(<&str>::from(self.clone()))
     }
 }
 
