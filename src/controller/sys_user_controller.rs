@@ -33,7 +33,7 @@ pub async fn info(req: HttpRequest) -> impl Responder {
 
 /// 用户添加
 pub async fn add(arg: web::Json<UserAddDTO>) -> impl Responder {
-    let vo = CONTEXT.sys_user_service.add(&arg.0).await;
+    let vo = CONTEXT.sys_user_service.add(arg.0).await;
     return RespVO::from_result(&vo).resp_json();
 }
 
@@ -51,7 +51,7 @@ pub async fn detail(arg: web::Json<IdDTO>) -> impl Responder {
 
 ///用户修改
 pub async fn update(arg: web::Json<UserEditDTO>) -> impl Responder {
-    let vo = CONTEXT.sys_user_service.edit(&arg.0).await;
+    let vo = CONTEXT.sys_user_service.edit(arg.0).await;
     return RespVO::from_result(&vo).resp_json();
 }
 

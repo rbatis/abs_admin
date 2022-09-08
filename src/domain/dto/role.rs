@@ -1,5 +1,8 @@
+use rbatis::object_id::ObjectId;
+use rbatis::rbdc::datetime::FastDateTime;
 use rbatis::sql::PageRequest;
 use serde::{Deserialize, Serialize};
+use crate::domain::table::SysRole;
 
 /// 角色分页
 #[derive(Serialize, Deserialize, Clone, Debug)]
@@ -23,6 +26,18 @@ pub struct RoleAddDTO {
     pub parent_id: Option<String>,
 }
 
+impl From<RoleAddDTO> for SysRole{
+    fn from(arg: RoleAddDTO) -> Self {
+        SysRole {
+            id: ObjectId::new().to_string().into(),
+            name: arg.name,
+            parent_id: arg.parent_id,
+            del: 0.into(),
+            create_date: FastDateTime::now().set_micro(0).into(),
+        }
+    }
+}
+
 /// 角色修改
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct RoleEditDTO {
@@ -30,6 +45,18 @@ pub struct RoleEditDTO {
     pub name: Option<String>,
     pub parent_id: Option<String>,
     pub resource_ids: Vec<String>,
+}
+
+impl From<RoleEditDTO> for SysRole{
+    fn from(arg: RoleEditDTO) -> Self {
+        SysRole {
+            id: arg.id,
+            name: arg.name,
+            parent_id: arg.parent_id,
+            del: None,
+            create_date: None,
+        }
+    }
 }
 
 /// 角色资源添加

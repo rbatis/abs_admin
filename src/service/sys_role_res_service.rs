@@ -123,7 +123,7 @@ impl SysRoleResService {
     pub async fn add(&self, arg: &SysRoleResAddDTO) -> Result<u64> {
         let (_, role_id) = CONTEXT
             .sys_role_service
-            .add(&RoleAddDTO::from(arg.clone()))
+            .add(RoleAddDTO::from(arg.clone()))
             .await?;
         return self
             .save_resources(&role_id, arg.resource_ids.clone())
@@ -137,7 +137,7 @@ impl SysRoleResService {
             .ok_or_else(|| Error::from("角色id不能为空！"))?;
         CONTEXT
             .sys_role_service
-            .edit(&RoleEditDTO::from(arg.clone()))
+            .edit(RoleEditDTO::from(arg.clone()))
             .await?;
         return self.save_resources(role_id, arg.resource_ids.clone()).await;
     }

@@ -43,13 +43,7 @@ impl SysDictService {
 
     ///修改字典
     pub async fn edit(&self, arg: &DictEditDTO) -> Result<u64> {
-        let data = SysDict {
-            id: arg.id.clone(),
-            name: arg.name.clone(),
-            code: arg.code.clone(),
-            state: arg.state.clone(),
-            create_date: None,
-        };
+        let data = SysDict::from(arg);
         let result = SysDict::update_by_column(pool!(), &data, "id").await;
         if result.is_ok() {
             self.update_cache().await?;

@@ -9,7 +9,6 @@ use crate::error::Result;
 use crate::pool;
 use crate::service::CONTEXT;
 use rbatis::plugin::object_id::ObjectId;
-use rbatis::rbdc::types::datetime::FastDateTime;
 use rbatis::sql::Page;
 
 use crate::util::options::OptionStringRefUnwrapOrDefault;
@@ -51,20 +50,16 @@ impl SysUserRoleService {
     }
 
     ///角色添加
-    pub async fn add(&self, arg: &UserRoleAddDTO) -> Result<u64> {
+    pub async fn add(&self, arg: UserRoleAddDTO) -> Result<u64> {
         if arg.user_id.is_none() || arg.role_id.is_none() {
             return Err(Error::from("添加角色时用户和角色不能为空！"));
         }
-        let mut role = SysUserRole {
-            id: arg.id.clone(),
-            user_id: arg.user_id.clone(),
-            role_id: arg.role_id.clone(),
-            create_date: FastDateTime::now().set_micro(0).into(),
-        };
+        let user_id = arg.user_id.as_deref().unwrap().to_string();
+        let mut role = SysUserRole::from(arg);
         if role.id.is_none() {
             role.id = Some(ObjectId::new().to_string());
         }
-        self.remove_by_user_id(arg.user_id.as_deref().unwrap_or_default())
+        self.remove_by_user_id(user_id.as_str())
             .await?;
         Ok(SysUserRole::insert(pool!(), &role).await?.rows_affected)
     }

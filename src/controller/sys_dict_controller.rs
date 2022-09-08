@@ -3,7 +3,6 @@ use crate::domain::table::SysDict;
 use crate::domain::vo::RespVO;
 use crate::service::CONTEXT;
 use actix_web::{web, Responder};
-use rbatis::rbdc::datetime::FastDateTime;
 
 /// 字典分页(json请求)
 pub async fn page(page: web::Json<DictPageDTO>) -> impl Responder {
@@ -22,13 +21,7 @@ pub async fn add(mut arg: web::Json<DictAddDTO>) -> impl Responder {
     if arg.state.is_none() {
         arg.state = Some(1);
     }
-    let res = SysDict {
-        id: arg.name.clone().into(),
-        name: arg.name.clone(),
-        code: arg.code.clone(),
-        state: arg.state.clone(),
-        create_date: FastDateTime::now().set_micro(0).into(),
-    };
+    let res = SysDict::from(arg.0);
     let data = CONTEXT.sys_dict_service.add(&res).await;
     CONTEXT.sys_dict_service.update_cache().await;
     RespVO::from_result(&data).resp_json()

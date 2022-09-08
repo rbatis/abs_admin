@@ -10,7 +10,6 @@ use crate::domain::vo::user::SysUserVO;
 use crate::domain::vo::{JWTToken, SignInVO, SysResVO};
 use crate::pool;
 use crate::util::password_encoder::PasswordEncoder;
-use rbatis::plugin::object_id::ObjectId;
 use std::collections::BTreeMap;
 use std::time::Duration;
 
@@ -73,7 +72,7 @@ impl SysUserService {
     }
 
     ///添加后台账号
-    pub async fn add(&self, arg: &UserAddDTO) -> Result<u64> {
+    pub async fn add(&self, mut arg: UserAddDTO) -> Result<u64> {
         if arg.account.is_none()
             || arg.account.as_ref().unwrap().is_empty()
             || arg.name.is_none()
@@ -95,24 +94,16 @@ impl SysUserService {
             //默认密码
             password = "123456".to_string();
         }
-        let id = ObjectId::new().to_string();
-        let user = SysUser {
-            id: id.to_string().into(),
-            account: arg.account.clone(),
-            password: PasswordEncoder::encode(&password).into(),
-            name: arg.name.clone(),
-            login_check: arg.login_check.clone(),
-            state: 0.into(),
-            del: 0.into(),
-            create_date: FastDateTime::now().set_micro(0).into(),
-        };
-        if let Some(_) = &arg.role_id {
+        arg.password = Some(password);
+        let role_id=arg.role_id.clone();
+        let user = SysUser::from(arg);
+        if role_id.is_some() {
             CONTEXT
                 .sys_user_role_service
-                .add(&UserRoleAddDTO {
+                .add(UserRoleAddDTO {
                     id: None,
                     user_id: user.id.clone(),
-                    role_id: arg.role_id.clone(),
+                    role_id: role_id,
                 })
                 .await?;
         }
@@ -281,29 +272,24 @@ impl SysUserService {
     ///登出后台
     pub async fn sign_out(&self) {}
 
-    pub async fn edit(&self, arg: &UserEditDTO) -> Result<u64> {
-        let mut pwd = None;
+    pub async fn edit(&self, arg: UserEditDTO) -> Result<u64> {
+        let role_id=arg.role_id.clone();
+        let mut user = SysUser::from(arg);
+        //do not update account
+        user.account = None;
+        let mut password = None;
         //源密码加密后再存储
-        if arg.password.is_some() {
-            pwd = Some(PasswordEncoder::encode(arg.password.as_ref().unwrap()));
+        if user.password.is_some() {
+            password = Some(PasswordEncoder::encode(user.password.as_ref().unwrap()));
         }
-        let user = SysUser {
-            id: arg.id.clone(),
-            account: None,
-            password: pwd,
-            name: arg.name.clone(),
-            login_check: arg.login_check.clone(),
-            state: arg.state.clone(),
-            del: None,
-            create_date: None,
-        };
-        if arg.role_id.is_some() {
+        user.password = password;
+        if role_id.is_some() {
             CONTEXT
                 .sys_user_role_service
-                .add(&UserRoleAddDTO {
+                .add(UserRoleAddDTO {
                     id: None,
                     user_id: user.id.clone(),
-                    role_id: arg.role_id.clone(),
+                    role_id: role_id,
                 })
                 .await?;
         }

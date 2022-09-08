@@ -51,15 +51,7 @@ impl SysResService {
 
     ///修改资源
     pub async fn edit(&self, arg: &ResEditDTO) -> Result<u64> {
-        let data = SysRes {
-            id: arg.id.clone(),
-            parent_id: arg.parent_id.clone(),
-            name: arg.name.clone(),
-            permission: arg.permission.clone(),
-            path: arg.path.clone(),
-            del: None,
-            create_date: None,
-        };
+        let data = SysRes::from(arg);
         let result = SysRes::update_by_column(pool!(), &data, "id").await?;
         self.update_cache().await?;
         return Ok(result.rows_affected);

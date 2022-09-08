@@ -1,7 +1,4 @@
 use actix_web::{web, Responder};
-use rbatis::plugin::object_id::ObjectId;
-use rbatis::rbdc::types::datetime::FastDateTime;
-
 use crate::domain::dto::{EmptyDTO, IdDTO, ResAddDTO, ResEditDTO, ResPageDTO};
 use crate::domain::table::SysRes;
 use crate::domain::vo::RespVO;
@@ -36,15 +33,7 @@ pub async fn add(mut arg: web::Json<ResAddDTO>) -> impl Responder {
     if arg.path.is_none() {
         arg.path = Some("".to_string());
     }
-    let res = SysRes {
-        id: ObjectId::new().to_string().into(),
-        parent_id: arg.parent_id.clone(),
-        name: arg.name.clone(),
-        permission: arg.permission.clone(),
-        path: arg.path.clone(),
-        del: 0.into(),
-        create_date: FastDateTime::now().set_micro(0).into(),
-    };
+    let res = SysRes::from(arg.0);
     let data = CONTEXT.sys_res_service.add(&res).await;
     CONTEXT.sys_res_service.update_cache().await;
     RespVO::from_result(&data).resp_json()

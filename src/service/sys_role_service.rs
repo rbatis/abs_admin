@@ -3,10 +3,7 @@ use crate::domain::table::{SysRole, SysRoleRes, SysUserRole};
 use crate::domain::vo::{SysResVO, SysRoleVO};
 use crate::error::Result;
 use crate::service::CONTEXT;
-use rbatis::rbdc::types::datetime::FastDateTime;
-
 use crate::pool;
-use rbatis::plugin::object_id::ObjectId;
 use rbatis::sql::{Page, PageRequest};
 use std::collections::{BTreeMap, HashMap};
 
@@ -82,14 +79,8 @@ impl SysRoleService {
     }
 
     ///角色添加
-    pub async fn add(&self, arg: &RoleAddDTO) -> Result<(u64, String)> {
-        let role = SysRole {
-            id: ObjectId::new().to_string().into(),
-            name: arg.name.clone(),
-            parent_id: arg.parent_id.clone(),
-            del: 0.into(),
-            create_date: FastDateTime::now().set_micro(0).into(),
-        };
+    pub async fn add(&self, arg: RoleAddDTO) -> Result<(u64, String)> {
+        let role = SysRole::from(arg);
         let result = (
             SysRole::insert(pool!(), &role).await?.rows_affected,
             role.id.clone().unwrap(),
@@ -99,14 +90,8 @@ impl SysRoleService {
     }
 
     ///角色修改
-    pub async fn edit(&self, arg: &RoleEditDTO) -> Result<u64> {
-        let role = SysRole {
-            id: arg.id.clone(),
-            name: arg.name.clone(),
-            parent_id: arg.parent_id.clone(),
-            del: None,
-            create_date: None,
-        };
+    pub async fn edit(&self, arg: RoleEditDTO) -> Result<u64> {
+        let role = SysRole::from(arg);
         let result = SysRole::update_by_column(pool!(), &role, field_name!(SysRole.id)).await;
         self.update_cache().await?;
         Ok(result?.rows_affected)
