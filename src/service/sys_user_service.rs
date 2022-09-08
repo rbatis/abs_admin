@@ -248,7 +248,7 @@ impl SysUserService {
         };
         //提前查找所有权限，避免在各个函数方法中重复查找
         let all_res = CONTEXT.sys_res_service.finds_all_map().await?;
-        sign_vo.permissions = self.loop_load_level_permission(&user_id, &all_res).await?;
+        sign_vo.permissions = self.load_level_permission(&user_id, &all_res).await?;
         let jwt_token = JWTToken {
             id: user.id.as_deref().unwrap_or_default().to_string(),
             account: user.account.unwrap_or_default(),
@@ -311,8 +311,8 @@ impl SysUserService {
         return Ok(r.rows_affected);
     }
 
-    ///递归查找层级结构权限
-    pub async fn loop_load_level_permission(
+    ///查找用户-权限 层级结构权限
+    pub async fn load_level_permission(
         &self,
         user_id: &str,
         all_res: &BTreeMap<String, SysResVO>,

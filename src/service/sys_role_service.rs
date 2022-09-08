@@ -29,6 +29,7 @@ impl SysRoleService {
         Ok(page)
     }
 
+    /// 角色层级数据
     pub async fn finds_layer(&self) -> Result<Vec<SysRoleVO>> {
         let all = self.finds_all_map().await?;
         let mut data = vec![];
@@ -69,6 +70,7 @@ impl SysRoleService {
         return Ok(all);
     }
 
+    /// 所有用户id-用户Map数据
     pub async fn finds_all_map(&self) -> Result<HashMap<String, SysRole>> {
         let all = self.finds_all().await?;
         let mut result = HashMap::with_capacity(all.capacity());
