@@ -27,12 +27,9 @@ pub fn init_log() {
 
 fn choose_packer(packer: &str) -> Box<dyn Packer> {
     match packer {
-        #[cfg(feature = "lz4")]
-        "lz4" => Box::new(fast_log::plugin::packer::LZ4Packer {}),
-        #[cfg(feature = "zip")]
-        "zip" => Box::new(fast_log::plugin::packer::ZipPacker {}),
-        #[cfg(feature = "gzip")]
-        "gzip" => Box::new(fast_log::plugin::packer::GZipPacker {}),
+        // "lz4" => Box::new(fast_log::plugin::packer::LZ4Packer {}),
+        // "zip" => Box::new(fast_log::plugin::packer::ZipPacker {}),
+        // "gzip" => Box::new(fast_log::plugin::packer::GZipPacker {}),
         _ => Box::new(fast_log::plugin::packer::LogPacker {}),
     }
 }

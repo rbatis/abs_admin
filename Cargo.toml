@@ -5,12 +5,6 @@ authors = ["zhuxiujia <zhuxiujia@qq.com>"]
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
-[features]
-lz4=["fast_log/lz4"]
-zip=["fast_log/zip"]
-gzip=["fast_log/gzip"]
-
 [dependencies]
 rbs = { version = "0.1"}
 rbatis = { version = "4"}
@@ -23,7 +17,7 @@ serde_json = "1.0"
 serde_yaml = "0.9"
 #log
 log = "0.4"
-#fast_log enable features = ["lz4", "zip", "gzip"]
+#fast_log enable features = ["lz4", "zip", "gzip"], and edit src/config/log.rs fn choose_packer()
 fast_log = { version = "1.5", features = [] }
 #web server
 actix-web = {version="4", default-features = false, features = ["macros"]}
