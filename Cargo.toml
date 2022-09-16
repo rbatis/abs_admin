@@ -26,8 +26,8 @@ log = "0.4"
 #fast_log enable features = ["lz4", "zip", "gzip"]
 fast_log = { version = "1.5", features = [] }
 #web server
-actix-web = {version="4.1", default-features = false, features = ["macros"]}
-actix-http = "3.2.1"
+actix-web = {version="4", default-features = false, features = ["macros"]}
+actix-http = "3"
 #redis
 redis = { version = "0.21", features = ["tokio-comp"] }
 #jwt
