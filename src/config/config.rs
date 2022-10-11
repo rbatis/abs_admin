@@ -17,6 +17,10 @@ pub struct ApplicationConfig {
     /// "100MB" 日志分割尺寸-单位KB,MB,GB
     pub log_temp_size: String,
     /// 日志打包格式可选“”（空-不压缩）“gzip”（gz压缩包）“zip”（zip压缩包）“lz4”（lz4压缩包（非常快））
+    /// 需要打开以下选项
+    /// toml文件里面，fast_log 添加   fast_log = { version = "1.5",features = ["lz4", "zip", "gzip"]}
+    /// src/config/log.rs    解除   fn choose_packer()下的注释
+    /// application.yml      添加   log_pack_compress: "zip"
     pub log_pack_compress: String,
     ///日志滚动配置   保留全部:All,按时间保留:KeepTime(Duration),按版本保留:KeepNum(i64)
     pub log_rolling_type: String,
