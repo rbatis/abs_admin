@@ -5,7 +5,7 @@ use rbatis::rbdc::datetime::FastDateTime;
 use rbatis::rbdc::Error;
 use serde::Serialize;
 
-/// 一个垃圾桶服务，可以回收数据。找回数据，展示垃圾桶数据
+/// A trash can service that can recycle data. Retrieve the data, display the trash can data
 pub struct SysTrashService {}
 
 impl SysTrashService {

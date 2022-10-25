@@ -6,7 +6,7 @@ use std::collections::HashMap;
 pub struct SysSmsService {}
 
 impl SysSmsService {
-    ///发送验证码
+    ///Send verification code
     pub async fn send_verify_sms(&self, account: &str, sms_code: &str) -> Result<()> {
         let mut templete_arg = HashMap::new();
         //短信类型：验证码
@@ -26,7 +26,7 @@ impl SysSmsService {
         return Ok(());
     }
 
-    ///校验验证码
+    ///Verifying verification code
     pub async fn do_verify_sms(&self, account: &str, sms_code: &str) -> Result<bool> {
         let sms: Option<Sms> = CONTEXT
             .cache_service

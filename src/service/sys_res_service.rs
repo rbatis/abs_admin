@@ -10,11 +10,10 @@ use crate::pool;
 use crate::service::CONTEXT;
 const RES_KEY: &'static str = "sys_res:all";
 
-/// 资源服务
+/// Resource service
 pub struct SysResService {}
 
 impl SysResService {
-    ///资源分页
     pub async fn page(&self, arg: &ResPageDTO) -> Result<Page<SysResVO>> {
         let page_req = PageRequest::new(arg.page_no.unwrap_or(1), arg.page_size.unwrap_or(10));
         let data = SysRes::select_page(pool!(), &PageRequest::from(arg), arg).await?;
@@ -30,7 +29,6 @@ impl SysResService {
         Ok(page)
     }
 
-    ///添加资源
     pub async fn add(&self, arg: &SysRes) -> Result<u64> {
         let old = SysRes::select_by_permission_or_name(
             pool!(),
@@ -49,7 +47,6 @@ impl SysResService {
         return result;
     }
 
-    ///修改资源
     pub async fn edit(&self, arg: &ResEditDTO) -> Result<u64> {
         let data = SysRes::from(arg);
         let result = SysRes::update_by_column(pool!(), &data, "id").await?;
@@ -57,7 +54,6 @@ impl SysResService {
         return Ok(result.rows_affected);
     }
 
-    ///删除资源
     pub async fn remove(&self, id: &str) -> Result<u64> {
         let trash = SysRes::select_by_column(pool!(), "id", id).await?;
         let num = SysRes::delete_by_column(pool!(), "id", id)
@@ -90,7 +86,7 @@ impl SysResService {
         ids
     }
 
-    /// 查找res数组
+    /// Find the res array
     pub async fn finds_all(&self) -> Result<Vec<SysResVO>> {
         let js = CONTEXT
             .cache_service
@@ -115,7 +111,6 @@ impl SysResService {
         return Ok(arr);
     }
 
-    /// 更新所有
     pub async fn update_cache(&self) -> Result<Vec<SysResVO>> {
         let all = SysRes::select_all(pool!()).await?;
         CONTEXT.cache_service.set_json(RES_KEY, &all).await?;
@@ -126,7 +121,6 @@ impl SysResService {
         return Ok(v);
     }
 
-    /// 查找res数组
     pub async fn finds_all_map(&self) -> Result<BTreeMap<String, SysResVO>> {
         let all = self.finds_all().await?;
         let mut result = BTreeMap::new();
@@ -136,13 +130,11 @@ impl SysResService {
         return Ok(result);
     }
 
-    /// 查找res数组
     pub async fn finds(&self, ids: &Vec<String>) -> Result<Vec<SysRes>> {
         let res = SysRes::select_by_ids(pool!(), ids).await?;
         Ok(res)
     }
 
-    /// 查找res数组
     pub fn finds_res(
         &self,
         ids: &Vec<String>,
@@ -160,7 +152,7 @@ impl SysResService {
         res
     }
 
-    ///顶层权限
+    ///The top-level permissions
     pub async fn finds_layer_top(&self) -> Result<Vec<SysResVO>> {
         let list = SysRes::select_by_parent_id_null(pool!()).await?;
         let all = self.finds_all_map().await?;
@@ -168,7 +160,7 @@ impl SysResService {
             .await
     }
 
-    ///带有层级结构的 res数组
+    ///An res array with a hierarchy
     pub async fn finds_layer(
         &self,
         ids: &Vec<String>,
@@ -190,7 +182,7 @@ impl SysResService {
         Ok(tops)
     }
 
-    ///死循环找出父-子 关联关系数组
+    ///Loop to find the parent-child associative relation array
     pub fn loop_find_childs(&self, arg: &mut SysResVO, all_res: &BTreeMap<String, SysResVO>) {
         let mut childs = vec![];
         for (key, x) in all_res {

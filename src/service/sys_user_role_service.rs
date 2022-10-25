@@ -13,11 +13,11 @@ use rbatis::sql::Page;
 
 use crate::util::options::OptionStringRefUnwrapOrDefault;
 
-///用户角色服务
+///User Role Service
 pub struct SysUserRoleService {}
 
 impl SysUserRoleService {
-    ///角色分页
+
     pub async fn page(&self, arg: &UserRolePageDTO) -> Result<Page<SysUserVO>> {
         let mut vo = CONTEXT
             .sys_user_service
@@ -49,7 +49,6 @@ impl SysUserRoleService {
         return Ok(vo);
     }
 
-    ///角色添加
     pub async fn add(&self, arg: UserRoleAddDTO) -> Result<u64> {
         if arg.user_id.is_none() || arg.role_id.is_none() {
             return Err(Error::from("添加角色时用户和角色不能为空！"));
@@ -64,7 +63,6 @@ impl SysUserRoleService {
         Ok(SysUserRole::insert(pool!(), &role).await?.rows_affected)
     }
 
-    ///角色删除
     pub async fn remove_by_role_id(&self, role_id: &str) -> Result<u64> {
         Ok(
             SysUserRole::delete_by_column(pool!(), field_name!(SysUserRole.role_id), role_id)
@@ -81,7 +79,6 @@ impl SysUserRoleService {
         )
     }
 
-    ///找出角色
     pub async fn find_user_role(
         &self,
         user_id: &str,

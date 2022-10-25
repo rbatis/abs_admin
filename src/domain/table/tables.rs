@@ -1,6 +1,6 @@
 use crate::domain::table::LoginCheck;
 use rbatis::rbdc::datetime::FastDateTime;
-///权限资源表
+///Permission Resource Table
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SysRes {
     pub id: Option<String>,
@@ -15,7 +15,7 @@ pub struct SysRes {
     pub create_date: Option<FastDateTime>,
 }
 
-///角色表
+///RoleTable
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SysRole {
     pub id: Option<String>,
@@ -26,7 +26,7 @@ pub struct SysRole {
     pub create_date: Option<FastDateTime>,
 }
 
-///角色资源关系表(关系表不使用逻辑删除)
+///Role resource relational tables (relational tables do not use logical deletion)
 #[derive(Clone, Debug, Eq, PartialEq, Hash, serde::Serialize, serde::Deserialize)]
 pub struct SysRoleRes {
     pub id: Option<String>,
@@ -37,7 +37,7 @@ pub struct SysRoleRes {
     pub create_date: Option<FastDateTime>,
 }
 
-///后台用户表
+///Background user table
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SysUser {
     pub id: Option<String>,
@@ -50,7 +50,7 @@ pub struct SysUser {
     pub create_date: Option<FastDateTime>,
 }
 
-///用户角色关系表(关系表不使用逻辑删除)
+///User role relationship tables (relational tables do not use logical deletion)
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SysUserRole {
     pub id: Option<String>,
@@ -61,7 +61,7 @@ pub struct SysUserRole {
     pub create_date: Option<FastDateTime>,
 }
 
-///字典表
+///dictionary table
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SysDict {
     pub id: Option<String>,

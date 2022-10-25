@@ -9,11 +9,10 @@ use std::collections::{BTreeMap, HashMap};
 
 const RES_KEY: &'static str = "sys_role:all";
 
-///角色服务
+///Role of service
 pub struct SysRoleService {}
 
 impl SysRoleService {
-    ///角色分页
     pub async fn page(&self, arg: &RolePageDTO) -> Result<Page<SysRoleVO>> {
         let data = SysRole::select_page_by_name(
             pool!(),
@@ -29,7 +28,7 @@ impl SysRoleService {
         Ok(page)
     }
 
-    /// 角色层级数据
+    /// Role-level data
     pub async fn finds_layer(&self) -> Result<Vec<SysRoleVO>> {
         let all = self.finds_all_map().await?;
         let mut data = vec![];
@@ -43,7 +42,6 @@ impl SysRoleService {
         return Ok(data);
     }
 
-    /// 查找role数组
     pub async fn finds_all(&self) -> Result<Vec<SysRole>> {
         //查找的全部数据缓存于Redis，同时 remove，edit方法调用时刷新redis缓存
         let js = CONTEXT
@@ -63,14 +61,13 @@ impl SysRoleService {
         return Ok(js?.unwrap_or_default());
     }
 
-    /// 更新所有
     pub async fn update_cache(&self) -> Result<Vec<SysRole>> {
         let all = SysRole::select_all(pool!()).await?;
         CONTEXT.cache_service.set_json(RES_KEY, &all).await?;
         return Ok(all);
     }
 
-    /// 所有用户id-用户Map数据
+    /// All user ids - User Map data
     pub async fn finds_all_map(&self) -> Result<HashMap<String, SysRole>> {
         let all = self.finds_all().await?;
         let mut result = HashMap::with_capacity(all.capacity());
@@ -80,7 +77,6 @@ impl SysRoleService {
         return Ok(result);
     }
 
-    ///角色添加
     pub async fn add(&self, arg: RoleAddDTO) -> Result<(u64, String)> {
         let role = SysRole::from(arg);
         let result = (
@@ -91,7 +87,6 @@ impl SysRoleService {
         Ok(result)
     }
 
-    ///角色修改
     pub async fn edit(&self, arg: RoleEditDTO) -> Result<u64> {
         let role = SysRole::from(arg);
         let result = SysRole::update_by_column(pool!(), &role, field_name!(SysRole.id)).await;
@@ -99,7 +94,6 @@ impl SysRoleService {
         Ok(result?.rows_affected)
     }
 
-    ///角色删除
     pub async fn remove(&self, id: &str) -> Result<u64> {
         let trash = SysRole::select_by_column(pool!(), field_name!(SysRole.id), id).await?;
         let result = SysRole::delete_by_column(pool!(), field_name!(SysRole.id), id).await?;
@@ -141,7 +135,7 @@ impl SysRoleService {
         return Ok(permissions);
     }
 
-    ///死循环找出父-子 关联关系数组
+    ///Loop to find the parent-child associative relation array
     pub fn loop_find_childs(&self, arg: &mut SysRoleVO, all: &HashMap<String, SysRole>) {
         let mut childs = vec![];
         for (key, x) in all {

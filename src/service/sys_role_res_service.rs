@@ -15,11 +15,10 @@ use rbatis::sql::Page;
 
 use crate::util::options::OptionStringRefUnwrapOrDefault;
 
-/// 角色资源服务
+/// Role Resource Service
 pub struct SysRoleResService {}
 
 impl SysRoleResService {
-    ///角色-资源 总体分页
     pub async fn page(&self, arg: &SysRoleResPageDTO) -> Result<Page<SysRoleVO>> {
         let mut role_page = CONTEXT
             .sys_role_service
@@ -84,7 +83,7 @@ impl SysRoleResService {
         return Ok(role_res_map);
     }
 
-    /// 添加资源
+    /// Add the resource
     fn loop_set_res_vec(
         &self,
         arg: Vec<SysRoleVO>,
@@ -119,7 +118,6 @@ impl SysRoleResService {
         return Ok(data);
     }
 
-    ///添加角色资源
     pub async fn add(&self, arg: &SysRoleResAddDTO) -> Result<u64> {
         let (_, role_id) = CONTEXT
             .sys_role_service
@@ -142,7 +140,6 @@ impl SysRoleResService {
         return self.save_resources(role_id, arg.resource_ids.clone()).await;
     }
 
-    ///保存所以资源
     async fn save_resources(&self, role_id: &str, resource_ids: Vec<String>) -> Result<u64> {
         self.remove_by_role_id(role_id).await?;
         let mut sys_role_res = vec![];
@@ -159,7 +156,7 @@ impl SysRoleResService {
             .rows_affected)
     }
 
-    ///角色删除,同时删除用户关系，权限关系
+    ///Roles, user relationships, and rights are deleted
     pub async fn remove_role(&self, role_id: &str) -> Result<u64> {
         //删角色
         let remove_roles = CONTEXT.sys_role_service.remove(role_id).await?;
@@ -176,7 +173,6 @@ impl SysRoleResService {
         return Ok(remove_roles + remove_user_roles + remove_role_res);
     }
 
-    ///删除角色资源
     pub async fn remove(&self, id: &str) -> Result<u64> {
         Ok(SysRoleRes::delete_by_column(pool!(), "id", id)
             .await?
@@ -189,7 +185,6 @@ impl SysRoleResService {
             .rows_affected)
     }
 
-    ///删除角色资源
     pub async fn remove_by_role_id(&self, role_id: &str) -> Result<u64> {
         Ok(SysRoleRes::delete_by_column(pool!(), "role_id", role_id)
             .await?

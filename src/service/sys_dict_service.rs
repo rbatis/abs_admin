@@ -10,11 +10,11 @@ use crate::service::CONTEXT;
 
 const DICT_KEY: &'static str = "sys_dict:all";
 
-/// 字典服务
+/// dictionary service
 pub struct SysDictService {}
 
 impl SysDictService {
-    ///字典分页
+
     pub async fn page(&self, arg: &DictPageDTO) -> Result<Page<SysDictVO>> {
         let page_req = PageRequest::new(arg.page_no.unwrap_or(1), arg.page_size.unwrap_or(10));
         let data = SysDict::select_page(pool!(), &PageRequest::from(arg), arg).await?;
@@ -22,7 +22,7 @@ impl SysDictService {
         Ok(page)
     }
 
-    ///添加字典
+
     pub async fn add(&self, arg: &SysDict) -> Result<u64> {
         let old = SysDict::select_by_column(
             pool!(),
@@ -41,7 +41,7 @@ impl SysDictService {
         return result;
     }
 
-    ///修改字典
+
     pub async fn edit(&self, arg: &DictEditDTO) -> Result<u64> {
         let data = SysDict::from(arg);
         let result = SysDict::update_by_column(pool!(), &data, "id").await;
@@ -51,7 +51,6 @@ impl SysDictService {
         return Ok(result?.rows_affected);
     }
 
-    ///删除字典
     pub async fn remove(&self, id: &str) -> Result<u64> {
         let targets = SysDict::select_by_column(pool!(), "id", id).await?;
         let r = SysDict::delete_by_column(pool!(), "id", id).await?;
@@ -63,7 +62,7 @@ impl SysDictService {
         Ok(r.rows_affected)
     }
 
-    /// 更新所有
+    /// update for all cache
     pub async fn update_cache(&self) -> Result<()> {
         let all = SysDict::select_all(pool!()).await?;
         CONTEXT.cache_service.set_json(DICT_KEY, &all).await?;

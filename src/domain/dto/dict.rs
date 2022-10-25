@@ -3,7 +3,7 @@ use rbatis::sql::PageRequest;
 use serde::{Deserialize, Serialize};
 use crate::domain::table::SysDict;
 
-/// 字典分页DTO
+/// dictionary page DTO
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct DictPageDTO {
     pub page_no: Option<u64>,
@@ -25,7 +25,7 @@ impl From<&DictPageDTO> for PageRequest {
     }
 }
 
-/// 字典分添加DTO
+
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct DictAddDTO {
     pub name: Option<String>,
@@ -45,7 +45,6 @@ impl From<DictAddDTO> for  SysDict{
     }
 }
 
-/// 字典修改
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct DictEditDTO {
     pub id: Option<String>,

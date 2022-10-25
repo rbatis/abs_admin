@@ -1,4 +1,4 @@
-/// 授权
+/// auth dto
 #[derive(serde::Serialize, serde::Deserialize, Clone, Debug)]
 pub struct SysAuthDTO {
     pub access_token: String,

@@ -4,7 +4,6 @@ use rbatis::sql::PageRequest;
 use serde::{Deserialize, Serialize};
 use crate::domain::table::SysRole;
 
-/// 角色分页
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct RolePageDTO {
     pub page_no: Option<u64>,
@@ -18,7 +17,6 @@ impl From<&RolePageDTO> for PageRequest {
     }
 }
 
-/// 角色添加
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct RoleAddDTO {
     pub name: Option<String>,
@@ -38,7 +36,6 @@ impl From<RoleAddDTO> for SysRole{
     }
 }
 
-/// 角色修改
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct RoleEditDTO {
     pub id: Option<String>,
@@ -59,7 +56,6 @@ impl From<RoleEditDTO> for SysRole{
     }
 }
 
-/// 角色资源添加
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct SysRoleResAddDTO {
     pub name: Option<String>,
@@ -78,7 +74,6 @@ impl From<SysRoleResAddDTO> for RoleAddDTO {
     }
 }
 
-/// 角色资源添加
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct SysRoleResUpdateDTO {
     pub id: Option<String>,
@@ -99,7 +94,6 @@ impl From<SysRoleResUpdateDTO> for RoleEditDTO {
     }
 }
 
-/// 角色资源分页
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct SysRoleResPageDTO {
     pub page_no: Option<u64>,

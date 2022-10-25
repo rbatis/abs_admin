@@ -7,9 +7,9 @@ use actix_web::{web, HttpResponse, Responder};
 use captcha::filters::{Dots, Noise, Wave};
 use captcha::Captcha;
 
-///图形验证码接口(注意，debug模式无论缓存是否连接成功都返回图片，release模式则校验缓存(例如redis)是否存储成功)
-/// 请求方式 GET
-/// 例子：
+/// Image Code interface
+/// Http Method GET
+/// example：
 /// http://localhost:8000/admin/captcha?account=18900000000
 ///
 pub async fn captcha(arg: web::Query<CatpchaDTO>) -> impl Responder {

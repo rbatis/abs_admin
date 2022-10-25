@@ -4,7 +4,6 @@ use rbatis::sql::PageRequest;
 use serde::{Deserialize, Serialize};
 use crate::domain::table::SysRes;
 
-/// 资源分页DTO
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct ResPageDTO {
     pub page_no: Option<u64>,
@@ -18,7 +17,6 @@ impl From<&ResPageDTO> for PageRequest {
     }
 }
 
-/// 资源添加DTO
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct ResAddDTO {
     pub parent_id: Option<String>,
@@ -41,7 +39,6 @@ impl From<ResAddDTO> for SysRes{
     }
 }
 
-/// 资源修改
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct ResEditDTO {
     pub id: Option<String>,

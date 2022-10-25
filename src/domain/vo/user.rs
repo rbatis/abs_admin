@@ -3,7 +3,6 @@ use crate::domain::vo::SysRoleVO;
 use rbatis::rbdc::datetime::FastDateTime;
 use serde::{Deserialize, Serialize};
 
-///后台用户
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct SysUserVO {
     pub id: Option<String>,

@@ -7,7 +7,7 @@ use std::collections::HashMap;
 use std::ops::Sub;
 use std::time::{Duration, Instant};
 
-///内存缓存服务
+///Memory Cache Service
 pub struct MemService {
     pub cache: Mutex<HashMap<String, (String, Option<(Instant, Duration)>), RandomState>>,
 }

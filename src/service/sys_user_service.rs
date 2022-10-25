@@ -17,11 +17,10 @@ use crate::util::options::OptionStringRefUnwrapOrDefault;
 
 const REDIS_KEY_RETRY: &'static str = "login:login_retry";
 
-///后台用户服务
+///Background User Service
 pub struct SysUserService {}
 
 impl SysUserService {
-    /// 后台用户分页
     pub async fn page(&self, arg: &UserPageDTO) -> Result<Page<SysUserVO>> {
         let sys_user_page: Page<SysUser> = SysUser::select_page(
             pool!(),
@@ -34,7 +33,7 @@ impl SysUserService {
         return Ok(page);
     }
 
-    ///用户详情
+    ///user details
     pub async fn detail(&self, arg: &IdDTO) -> Result<SysUserVO> {
         let user_id = arg.id.as_deref().unwrap_or_default();
         let user = self
@@ -51,7 +50,6 @@ impl SysUserService {
         return Ok(user_vo);
     }
 
-    ///后台用户根据id查找
     pub async fn find(&self, id: &str) -> Result<Option<SysUser>> {
         Ok(
             SysUser::select_by_column(pool!(), field_name!(SysUser.id), id)
@@ -61,7 +59,6 @@ impl SysUserService {
         )
     }
 
-    ///根据账户名查找
     pub async fn find_by_account(&self, account: &str) -> Result<Option<SysUser>> {
         Ok(
             SysUser::select_by_column(pool!(), field_name!(SysUser.account), account)
@@ -71,7 +68,6 @@ impl SysUserService {
         )
     }
 
-    ///添加后台账号
     pub async fn add(&self, mut arg: UserAddDTO) -> Result<u64> {
         if arg.account.is_none()
             || arg.account.as_ref().unwrap().is_empty()
@@ -110,7 +106,6 @@ impl SysUserService {
         Ok(SysUser::insert(pool!(), &user).await?.rows_affected)
     }
 
-    ///登陆后台
     pub async fn sign_in(&self, arg: &SignInDTO) -> Result<SignInVO> {
         self.is_need_wait_login_ex().await?;
         let user: Option<SysUser> =
@@ -183,7 +178,7 @@ impl SysUserService {
         return Ok(sign_in_vo);
     }
 
-    ///是否需要等待
+    ///is need to wait
     pub async fn is_need_wait_login_ex(&self) -> Result<()> {
         if CONTEXT.config.login_fail_retry > 0 {
             let num: Option<u64> = CONTEXT.cache_service.get_json(REDIS_KEY_RETRY).await?;
@@ -200,7 +195,7 @@ impl SysUserService {
         return Ok(());
     }
 
-    ///增加redis重试记录
+    ///Add redis retry record
     pub async fn add_retry_login_limit_num(&self) -> Result<()> {
         if CONTEXT.config.login_fail_retry > 0 {
             let num: Option<u64> = CONTEXT.cache_service.get_json(REDIS_KEY_RETRY).await?;
@@ -269,7 +264,6 @@ impl SysUserService {
         return Ok(sign_vo);
     }
 
-    ///登出后台
     pub async fn sign_out(&self) {}
 
     pub async fn edit(&self, arg: UserEditDTO) -> Result<u64> {
@@ -311,7 +305,7 @@ impl SysUserService {
         return Ok(r.rows_affected);
     }
 
-    ///查找用户-权限 层级结构权限
+    ///Find user-authority hierarchy permissions
     pub async fn load_level_permission(
         &self,
         user_id: &str,

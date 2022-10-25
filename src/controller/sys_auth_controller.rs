@@ -3,7 +3,7 @@ use crate::domain::vo::RespVO;
 use crate::service::CONTEXT;
 use actix_web::{web, Responder};
 
-///检测token以及path 是否有效且允许访问
+///Check whether the token and path are valid and accessible
 pub async fn check(arg: web::Json<SysAuthDTO>) -> impl Responder {
     let r = CONTEXT.sys_auth_service.check_auth(arg.0).await;
     RespVO::from_result(&r).resp_json()

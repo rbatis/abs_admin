@@ -3,7 +3,7 @@ use jsonwebtoken::errors::ErrorKind;
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
 use serde::{Deserialize, Serialize};
 
-/// JWT 鉴权 Token结构
+/// JWT authentication Token structure
 #[derive(Debug, Serialize, Deserialize, Clone, Eq, PartialEq)]
 pub struct JWTToken {
     //账号id

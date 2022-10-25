@@ -6,7 +6,7 @@ use futures_util::future::BoxFuture;
 use log::error;
 use redis::aio::Connection;
 use redis::RedisResult;
-///Redis缓存服务
+///Redis Cache service
 pub struct RedisService {
     pub client: redis::Client,
 }
@@ -56,7 +56,7 @@ impl ICacheService for RedisService {
         })
     }
 
-    ///set_string 自动过期
+    ///set_string Automatically expire
     fn set_string_ex(&self, k: &str, v: &str, ex: Option<Duration>) -> BoxFuture<Result<String>> {
         let k = k.to_string();
         let v = v.to_string();
@@ -86,7 +86,7 @@ impl ICacheService for RedisService {
         })
     }
 
-    ///set_string 自动过期
+    ///set_string Automatically expire
     fn ttl(&self, k: &str) -> BoxFuture<Result<i64>> {
         let k = k.to_string();
         Box::pin(async move {

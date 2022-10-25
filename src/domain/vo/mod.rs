@@ -19,7 +19,7 @@ use serde::{Deserialize, Serialize};
 pub const CODE_SUCCESS: &str = "SUCCESS";
 pub const CODE_FAIL: &str = "FAIL";
 
-/// http接口返回模型结构，提供基础的 code，msg，data 等json数据结构
+/// The http interface returns the model structure, providing basic json data structures such as code, msg, and data
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct RespVO<T> {
     pub code: Option<String>,

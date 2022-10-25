@@ -5,7 +5,6 @@ use rbatis::sql::PageRequest;
 use serde::{Deserialize, Serialize};
 use crate::util::password_encoder::PasswordEncoder;
 
-/// 用户
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct UserAddDTO {
     pub account: Option<String>,
@@ -30,7 +29,6 @@ impl From<UserAddDTO> for SysUser{
     }
 }
 
-/// 用户修改
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct UserEditDTO {
     pub id: Option<String>,
@@ -57,7 +55,6 @@ impl From<UserEditDTO> for SysUser{
     }
 }
 
-/// 用户分页
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct UserPageDTO {
     pub page_no: Option<u64>,
@@ -83,7 +80,6 @@ impl From<&UserRolePageDTO> for UserPageDTO {
     }
 }
 
-/// 用户角色添加
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct UserRoleAddDTO {
     pub id: Option<String>,
@@ -102,7 +98,6 @@ impl From<UserRoleAddDTO> for SysUserRole{
     }
 }
 
-/// 用户角色分页
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct UserRolePageDTO {
     pub page_no: Option<u64>,
