@@ -1,7 +1,7 @@
+use crate::domain::table::SysDict;
 use rbatis::rbdc::datetime::FastDateTime;
 use rbatis::sql::PageRequest;
 use serde::{Deserialize, Serialize};
-use crate::domain::table::SysDict;
 
 /// dictionary page DTO
 #[derive(Serialize, Deserialize, Clone, Debug)]
@@ -25,7 +25,6 @@ impl From<&DictPageDTO> for PageRequest {
     }
 }
 
-
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct DictAddDTO {
     pub name: Option<String>,
@@ -33,7 +32,7 @@ pub struct DictAddDTO {
     pub state: Option<i32>,
 }
 
-impl From<DictAddDTO> for  SysDict{
+impl From<DictAddDTO> for SysDict {
     fn from(arg: DictAddDTO) -> Self {
         SysDict {
             id: arg.name.clone().into(),
@@ -53,7 +52,7 @@ pub struct DictEditDTO {
     pub state: Option<i32>,
 }
 
-impl From<&DictEditDTO> for SysDict{
+impl From<&DictEditDTO> for SysDict {
     fn from(arg: &DictEditDTO) -> Self {
         SysDict {
             id: arg.id.clone(),
@@ -64,5 +63,3 @@ impl From<&DictEditDTO> for SysDict{
         }
     }
 }
-
-

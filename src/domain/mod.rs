@@ -1,7 +1,7 @@
 use crate::service::ApplicationConfig;
 use rbatis::Rbatis;
-pub mod mapper;
 pub mod dto;
+pub mod mapper;
 pub mod table;
 pub mod vo;
 

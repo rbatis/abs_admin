@@ -17,7 +17,6 @@ use crate::util::options::OptionStringRefUnwrapOrDefault;
 pub struct SysUserRoleService {}
 
 impl SysUserRoleService {
-
     pub async fn page(&self, arg: &UserRolePageDTO) -> Result<Page<SysUserVO>> {
         let mut vo = CONTEXT
             .sys_user_service
@@ -58,8 +57,7 @@ impl SysUserRoleService {
         if role.id.is_none() {
             role.id = Some(ObjectId::new().to_string());
         }
-        self.remove_by_user_id(user_id.as_str())
-            .await?;
+        self.remove_by_user_id(user_id.as_str()).await?;
         Ok(SysUserRole::insert(pool!(), &role).await?.rows_affected)
     }
 

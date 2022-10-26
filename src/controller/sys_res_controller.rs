@@ -1,8 +1,8 @@
-use actix_web::{web, Responder};
 use crate::domain::dto::{EmptyDTO, IdDTO, ResAddDTO, ResEditDTO, ResPageDTO};
 use crate::domain::table::SysRes;
 use crate::domain::vo::RespVO;
 use crate::service::CONTEXT;
+use actix_web::{web, Responder};
 
 pub async fn page(page: web::Json<ResPageDTO>) -> impl Responder {
     let data = CONTEXT.sys_res_service.page(&page.0).await;

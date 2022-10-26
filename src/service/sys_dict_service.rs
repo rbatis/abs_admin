@@ -14,14 +14,12 @@ const DICT_KEY: &'static str = "sys_dict:all";
 pub struct SysDictService {}
 
 impl SysDictService {
-
     pub async fn page(&self, arg: &DictPageDTO) -> Result<Page<SysDictVO>> {
         let page_req = PageRequest::new(arg.page_no.unwrap_or(1), arg.page_size.unwrap_or(10));
         let data = SysDict::select_page(pool!(), &PageRequest::from(arg), arg).await?;
         let page = Page::<SysDictVO>::from(data);
         Ok(page)
     }
-
 
     pub async fn add(&self, arg: &SysDict) -> Result<u64> {
         let old = SysDict::select_by_column(
@@ -40,7 +38,6 @@ impl SysDictService {
         self.update_cache().await?;
         return result;
     }
-
 
     pub async fn edit(&self, arg: &DictEditDTO) -> Result<u64> {
         let data = SysDict::from(arg);

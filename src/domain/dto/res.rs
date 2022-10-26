@@ -1,8 +1,8 @@
+use crate::domain::table::SysRes;
 use rbatis::object_id::ObjectId;
 use rbatis::rbdc::datetime::FastDateTime;
 use rbatis::sql::PageRequest;
 use serde::{Deserialize, Serialize};
-use crate::domain::table::SysRes;
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct ResPageDTO {
@@ -25,7 +25,7 @@ pub struct ResAddDTO {
     pub path: Option<String>,
 }
 
-impl From<ResAddDTO> for SysRes{
+impl From<ResAddDTO> for SysRes {
     fn from(arg: ResAddDTO) -> Self {
         SysRes {
             id: ObjectId::new().to_string().into(),
@@ -48,7 +48,7 @@ pub struct ResEditDTO {
     pub path: Option<String>,
 }
 
-impl From<&ResEditDTO> for SysRes{
+impl From<&ResEditDTO> for SysRes {
     fn from(arg: &ResEditDTO) -> Self {
         SysRes {
             id: arg.id.clone(),

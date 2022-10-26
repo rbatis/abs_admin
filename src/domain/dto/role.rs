@@ -1,8 +1,8 @@
+use crate::domain::table::SysRole;
 use rbatis::object_id::ObjectId;
 use rbatis::rbdc::datetime::FastDateTime;
 use rbatis::sql::PageRequest;
 use serde::{Deserialize, Serialize};
-use crate::domain::table::SysRole;
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct RolePageDTO {
@@ -24,7 +24,7 @@ pub struct RoleAddDTO {
     pub parent_id: Option<String>,
 }
 
-impl From<RoleAddDTO> for SysRole{
+impl From<RoleAddDTO> for SysRole {
     fn from(arg: RoleAddDTO) -> Self {
         SysRole {
             id: ObjectId::new().to_string().into(),
@@ -44,7 +44,7 @@ pub struct RoleEditDTO {
     pub resource_ids: Vec<String>,
 }
 
-impl From<RoleEditDTO> for SysRole{
+impl From<RoleEditDTO> for SysRole {
     fn from(arg: RoleEditDTO) -> Self {
         SysRole {
             id: arg.id,

@@ -91,7 +91,7 @@ impl SysUserService {
             password = "123456".to_string();
         }
         arg.password = Some(password);
-        let role_id=arg.role_id.clone();
+        let role_id = arg.role_id.clone();
         let user = SysUser::from(arg);
         if role_id.is_some() {
             CONTEXT
@@ -267,7 +267,7 @@ impl SysUserService {
     pub async fn sign_out(&self) {}
 
     pub async fn edit(&self, arg: UserEditDTO) -> Result<u64> {
-        let role_id=arg.role_id.clone();
+        let role_id = arg.role_id.clone();
         let mut user = SysUser::from(arg);
         //do not update account
         user.account = None;

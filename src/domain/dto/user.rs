@@ -1,9 +1,9 @@
+use crate::domain::table::{LoginCheck, SysUser, SysUserRole};
+use crate::util::password_encoder::PasswordEncoder;
 use rbatis::object_id::ObjectId;
 use rbatis::rbdc::datetime::FastDateTime;
-use crate::domain::table::{LoginCheck, SysUser, SysUserRole};
 use rbatis::sql::PageRequest;
 use serde::{Deserialize, Serialize};
-use crate::util::password_encoder::PasswordEncoder;
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct UserAddDTO {
@@ -14,7 +14,7 @@ pub struct UserAddDTO {
     pub role_id: Option<String>,
 }
 
-impl From<UserAddDTO> for SysUser{
+impl From<UserAddDTO> for SysUser {
     fn from(arg: UserAddDTO) -> Self {
         SysUser {
             id: ObjectId::new().to_string().into(),
@@ -40,7 +40,7 @@ pub struct UserEditDTO {
     pub role_id: Option<String>,
 }
 
-impl From<UserEditDTO> for SysUser{
+impl From<UserEditDTO> for SysUser {
     fn from(arg: UserEditDTO) -> Self {
         SysUser {
             id: arg.id,
@@ -87,7 +87,7 @@ pub struct UserRoleAddDTO {
     pub role_id: Option<String>,
 }
 
-impl From<UserRoleAddDTO> for SysUserRole{
+impl From<UserRoleAddDTO> for SysUserRole {
     fn from(arg: UserRoleAddDTO) -> Self {
         SysUserRole {
             id: arg.id.clone(),
