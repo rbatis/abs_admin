@@ -106,14 +106,14 @@ impl SysRoleService {
         if ids.is_empty() {
             return Ok(vec![]);
         }
-        Ok(SysRole::select_list_by_ids(pool!(), ids).await?)
+        Ok(SysRole::select_in_column(pool!(), "id",ids).await?)
     }
 
-    pub async fn find_role_res(&self, ids: &Vec<String>) -> Result<Vec<SysRoleRes>> {
-        if ids.is_empty() {
+    pub async fn find_role_res(&self, role_ids: &Vec<String>) -> Result<Vec<SysRoleRes>> {
+        if role_ids.is_empty() {
             return Ok(vec![]);
         }
-        Ok(SysRoleRes::select_by_role_id(pool!(), ids).await?)
+        Ok(SysRoleRes::select_in_column(pool!(), "role_id",role_ids).await?)
     }
 
     pub async fn find_user_permission(
