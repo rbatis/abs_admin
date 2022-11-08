@@ -130,11 +130,6 @@ impl SysResService {
         return Ok(result);
     }
 
-    pub async fn finds(&self, ids: &Vec<String>) -> Result<Vec<SysRes>> {
-        let res = SysRes::select_by_ids(pool!(), ids).await?;
-        Ok(res)
-    }
-
     pub fn finds_res(
         &self,
         ids: &Vec<String>,
