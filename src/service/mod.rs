@@ -36,13 +36,13 @@ pub static CONTEXT: Lazy<ServiceContext> = Lazy::new(|| ServiceContext::default(
 #[macro_export]
 macro_rules! pool {
     () => {
-        &mut $crate::service::CONTEXT.rbatis.clone()
+        &mut $crate::service::CONTEXT.rb.clone()
     };
 }
 
 pub struct ServiceContext {
     pub config: ApplicationConfig,
-    pub rbatis: Rbatis,
+    pub rb: Rbatis,
     pub cache_service: CacheService,
     pub sys_res_service: SysResService,
     pub sys_user_service: SysUserService,
@@ -62,12 +62,12 @@ impl ServiceContext {
             "[abs_admin] rbatis pool init ({})...",
             self.config.database_url
         );
-        self.rbatis
+        self.rb
             .init(MysqlDriver {}, &self.config.database_url)
             .expect("[abs_admin] rbatis pool init fail!");
         log::info!(
             "[abs_admin] rbatis pool init success! pool state = {:?}",
-            self.rbatis.get_pool().expect("pool not init!").status()
+            self.rb.get_pool().expect("pool not init!").status()
         );
         log::info!(
             " - Local:   http://{}",
@@ -80,7 +80,7 @@ impl Default for ServiceContext {
     fn default() -> Self {
         let config = ApplicationConfig::default();
         ServiceContext {
-            rbatis: crate::domain::init_rbatis(&config),
+            rb: crate::domain::init_rbatis(&config),
             cache_service: CacheService::new(&config).unwrap(),
             sys_res_service: SysResService {},
             sys_user_service: SysUserService {},
