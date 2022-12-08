@@ -16,31 +16,54 @@ use actix_web::HttpResponse;
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 
-pub const CODE_SUCCESS: &str = "SUCCESS";
-pub const CODE_FAIL: &str = "FAIL";
+#[derive(Debug, Serialize, Deserialize, Clone)]
+#[repr(usize)]
+pub enum ServiceCode {
+    Success = 0,
+    BusinessError = 1000,
+    AccessTokenIsEmpty = 1001,
+}
+
+impl From<ServiceCode> for String {
+    fn from(code: ServiceCode) -> Self {
+        Self::from(&code)
+    }
+}
+
+impl From<&ServiceCode> for String {
+    fn from(code: &ServiceCode) -> Self {
+        match code {
+            ServiceCode::Success => "SUCCESS".to_string(),
+            ServiceCode::BusinessError => "FAIL".to_string(),
+            ServiceCode::AccessTokenIsEmpty => "access token is empty!".to_string(),
+            #[allow(unreachable_patterns)]
+            _ => "".to_string(),
+        }
+    }
+}
 
 /// The http interface returns the model structure, providing basic json data structures such as code, msg, and data
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct RespVO<T> {
-    pub code: Option<String>,
+    pub code: ServiceCode,
     pub msg: Option<String>,
     pub data: Option<T>,
 }
 
 impl<T> RespVO<T>
-where
-    T: Serialize + DeserializeOwned + Clone,
+    where
+        T: Serialize + DeserializeOwned + Clone,
 {
     pub fn from_result(arg: &Result<T, Error>) -> Self {
         if arg.is_ok() {
             Self {
-                code: Some(CODE_SUCCESS.to_string()),
+                code: ServiceCode::Success,
                 msg: None,
                 data: arg.clone().ok(),
             }
         } else {
             Self {
-                code: Some(CODE_FAIL.to_string()),
+                code: ServiceCode::BusinessError,
                 msg: Some(arg.clone().err().unwrap().to_string()),
                 data: None,
             }
@@ -49,35 +72,37 @@ where
 
     pub fn from(arg: &T) -> Self {
         Self {
-            code: Some(CODE_SUCCESS.to_string()),
+            code: ServiceCode::Success,
             msg: None,
             data: Some(arg.clone()),
         }
     }
 
-    pub fn from_error(code: &str, arg: &Error) -> Self {
-        let mut code_str = code.to_string();
-        if code_str.is_empty() {
-            code_str = CODE_FAIL.to_string();
-        }
+    pub fn from_error(arg: &Error) -> Self {
         Self {
-            code: Some(code_str),
+            code: ServiceCode::BusinessError,
             msg: Some(arg.to_string()),
             data: None,
         }
     }
 
-    pub fn from_error_info(code: &str, info: &str) -> Self {
-        let mut code_str = code.to_string();
-        if code_str.is_empty() {
-            code_str = CODE_FAIL.to_string();
-        }
+    pub fn from_error_info(info: &str) -> Self {
+        RespVO::<T>::from_code_info(ServiceCode::BusinessError, info)
+    }
+
+    pub fn from_code_info(code: ServiceCode, info: &str) -> Self {
+        let info = if info.is_empty() {
+            String::from(&code)
+        } else {
+            info.to_string()
+        };
         Self {
-            code: Some(code_str),
-            msg: Some(info.to_string()),
+            code: code,
+            msg: Some(info),
             data: None,
         }
     }
+
 
     pub fn resp_json(&self) -> HttpResponse {
         return HttpResponse::Ok()
@@ -89,8 +114,8 @@ where
 }
 
 impl<T> ToString for RespVO<T>
-where
-    T: Serialize + DeserializeOwned + Clone,
+    where
+        T: Serialize + DeserializeOwned + Clone,
 {
     fn to_string(&self) -> String {
         serde_json::to_string(self).unwrap()

@@ -1,7 +1,7 @@
 use actix_web::{web, HttpRequest, Responder};
 
 use crate::domain::dto::{IdDTO, SignInDTO, UserAddDTO, UserEditDTO, UserRolePageDTO};
-use crate::domain::vo::{JWTToken, RespVO};
+use crate::domain::vo::{JWTToken, RespVO, ServiceCode};
 use crate::service::CONTEXT;
 
 pub async fn login(arg: web::Json<SignInDTO>) -> impl Responder {
@@ -25,7 +25,7 @@ pub async fn info(req: HttpRequest) -> impl Responder {
                 .await;
             RespVO::from_result(&user_data).resp_json()
         }
-        _ => RespVO::<String>::from_error_info("access_token is empty!", "").resp_json(),
+        _ => RespVO::<String>::from_code_info(ServiceCode::AccessTokenIsEmpty, "").resp_json(),
     };
 }
 

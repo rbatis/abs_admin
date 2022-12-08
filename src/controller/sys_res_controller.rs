@@ -21,10 +21,10 @@ pub async fn layer_top(page: web::Json<EmptyDTO>) -> impl Responder {
 
 pub async fn add(mut arg: web::Json<ResAddDTO>) -> impl Responder {
     if arg.name.is_none() {
-        return RespVO::<u64>::from_error_info("", "资源名字不能为空!").resp_json();
+        return RespVO::<u64>::from_error_info("资源名字不能为空!").resp_json();
     }
     if arg.permission.is_none() {
-        return RespVO::<u64>::from_error_info("", "资源permission不能为空!").resp_json();
+        return RespVO::<u64>::from_error_info("资源permission不能为空!").resp_json();
     }
     if arg.path.is_none() {
         arg.path = Some("".to_string());

@@ -1,4 +1,4 @@
-use crate::domain::vo::RespVO;
+use crate::domain::vo::{RespVO, ServiceCode};
 use crate::middleware::auth::{check_auth, checked_token, is_white_list_api};
 use crate::service::CONTEXT;
 use actix_http::body::BoxBody;
@@ -78,7 +78,7 @@ where
                                 Err(e) => {
                                     //仅提示拦截
                                     let resp: RespVO<String> = RespVO {
-                                        code: Some("-1".to_string()),
+                                        code: ServiceCode::BusinessError,
                                         msg: Some(format!("无权限访问:{}", e.to_string())),
                                         data: None,
                                     };
@@ -89,7 +89,7 @@ where
                         Err(e) => {
                             //401 http状态码会强制前端退出当前登陆状态
                             let resp: RespVO<String> = RespVO {
-                                code: Some("-1".to_string()),
+                                code: ServiceCode::BusinessError,
                                 msg: Some(format!("Unauthorized for:{}", e.to_string())),
                                 data: None,
                             };

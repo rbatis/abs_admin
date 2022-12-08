@@ -14,7 +14,7 @@ use captcha::Captcha;
 ///
 pub async fn captcha(arg: web::Query<CatpchaDTO>) -> impl Responder {
     if arg.account.is_empty() {
-        return RespVO::<()>::from_error("-1", &Error::from("account is empty!")).resp_json();
+        return RespVO::<()>::from_error(&Error::from("account is empty!")).resp_json();
     }
     let mut captcha = Captcha::new();
     captcha
