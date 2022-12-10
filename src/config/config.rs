@@ -13,6 +13,7 @@ pub struct ApplicationConfig {
     pub log_pack_compress: String,
     pub log_rolling_type: String,
     pub log_level: String,
+    pub log_chan_len: Option<usize>,
     pub sms_cache_send_key_prefix: String,
     pub jwt_secret: String,
     pub white_list_api: Vec<String>,

@@ -30,6 +30,8 @@ log_pack_compress: ""
 log_rolling_type: "KeepNum(20)"
 #日志等级: off,info,error,warn,debug,trace
 log_level: "info"
+#日志通道长度，null为无界队列，非null为有界队列（性能好）
+log_chan_len: 100000
 #JwtToken秘钥
 jwt_secret: "abs_admin"
 #短信通道缓存（系统先把数据放入队列sms:send:，第三方短信sdk或程序需要从队列获取并发送，获得回执存入sms:resp:*）,格式为sms:send:手机号和sms:resp:手机号
