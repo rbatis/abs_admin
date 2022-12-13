@@ -24,7 +24,7 @@ impl SysDictService {
     pub async fn add(&self, arg: &SysDict) -> Result<u64> {
         let old = SysDict::select_by_column(
             pool!(),
-            rbatis::field_name!(SysDict.id),
+            "id",
             arg.id.as_deref().unwrap_or_default(),
         )
         .await?;

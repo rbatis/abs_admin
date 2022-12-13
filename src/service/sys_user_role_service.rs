@@ -63,7 +63,7 @@ impl SysUserRoleService {
 
     pub async fn remove_by_role_id(&self, role_id: &str) -> Result<u64> {
         Ok(
-            SysUserRole::delete_by_column(pool!(), field_name!(SysUserRole.role_id), role_id)
+            SysUserRole::delete_by_column(pool!(), "role_id", role_id)
                 .await?
                 .rows_affected,
         )
@@ -71,7 +71,7 @@ impl SysUserRoleService {
 
     pub async fn remove_by_user_id(&self, user_id: &str) -> Result<u64> {
         Ok(
-            SysUserRole::delete_by_column(pool!(), field_name!(SysUserRole.user_id), user_id)
+            SysUserRole::delete_by_column(pool!(), "user_id", user_id)
                 .await?
                 .rows_affected,
         )
@@ -86,7 +86,7 @@ impl SysUserRoleService {
             return Ok(None);
         }
         let user_roles =
-            SysUserRole::select_by_column(pool!(), field_name!(SysUserRole.user_id), user_id)
+            SysUserRole::select_by_column(pool!(), "user_id", user_id)
                 .await?;
         let role_ids = &rbatis::make_table_field_vec!(&user_roles, role_id);
         let roles = CONTEXT.sys_role_service.finds(role_ids).await?;
