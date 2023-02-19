@@ -50,7 +50,7 @@ INSERT INTO "public"."sys_res" VALUES ('6', NULL, 'result', 'result', 'result', 
 INSERT INTO "public"."sys_res" VALUES ('7', NULL, 'exception', 'exception', 'exception', 0, '2020-02-09 00:00:00');
 INSERT INTO "public"."sys_res" VALUES ('8', NULL, 'user', 'user', 'user', 0, '2020-02-09 00:00:00');
 INSERT INTO "public"."sys_res" VALUES ('9', NULL, 'setting', 'setting', 'setting', 0, '2020-02-09 00:00:00');
-INSERT INTO "public"."sys_res" VALUES ('206267260095041511', NULL, '超级管理员权限', '/', '', 0, '2020-08-13 11:43:26');
+INSERT INTO "public"."sys_res" VALUES ('10', NULL, '超级管理员权限', '/', '', 0, '2020-08-13 11:43:26');
 COMMIT;
 
 -- ----------------------------
@@ -93,15 +93,15 @@ ALTER TABLE "public"."sys_role_res" OWNER TO "postgres";
 -- ----------------------------
 BEGIN;
 INSERT INTO "public"."sys_role_res" VALUES ('1', '1', '1', '2020-07-28 08:34:40');
-INSERT INTO "public"."sys_role_res" VALUES ('10', '1', '9', '2020-07-28 08:34:40');
-INSERT INTO "public"."sys_role_res" VALUES ('2', '1', '206267260095041511', '2020-07-28 08:34:40');
-INSERT INTO "public"."sys_role_res" VALUES ('3', '1', '2', '2020-07-28 08:34:40');
-INSERT INTO "public"."sys_role_res" VALUES ('4', '1', '3', '2020-07-28 08:34:40');
-INSERT INTO "public"."sys_role_res" VALUES ('5', '1', '4', '2020-07-28 08:34:40');
-INSERT INTO "public"."sys_role_res" VALUES ('6', '1', '5', '2020-07-28 08:34:40');
-INSERT INTO "public"."sys_role_res" VALUES ('7', '1', '6', '2020-07-28 08:34:40');
-INSERT INTO "public"."sys_role_res" VALUES ('8', '1', '7', '2020-07-28 08:34:40');
-INSERT INTO "public"."sys_role_res" VALUES ('9', '1', '8', '2020-07-28 08:34:40');
+INSERT INTO "public"."sys_role_res" VALUES ('2', '1', '2', '2020-07-28 08:34:40');
+INSERT INTO "public"."sys_role_res" VALUES ('3', '1', '3', '2020-07-28 08:34:40');
+INSERT INTO "public"."sys_role_res" VALUES ('4', '1', '4', '2020-07-28 08:34:40');
+INSERT INTO "public"."sys_role_res" VALUES ('5', '1', '5', '2020-07-28 08:34:40');
+INSERT INTO "public"."sys_role_res" VALUES ('6', '1', '6', '2020-07-28 08:34:40');
+INSERT INTO "public"."sys_role_res" VALUES ('7', '1', '7', '2020-07-28 08:34:40');
+INSERT INTO "public"."sys_role_res" VALUES ('8', '1', '8', '2020-07-28 08:34:40');
+INSERT INTO "public"."sys_role_res" VALUES ('9', '1', '9', '2020-07-28 08:34:40');
+INSERT INTO "public"."sys_role_res" VALUES ('10', '1', '10', '2020-07-28 08:34:40');
 COMMIT;
 
 -- ----------------------------
@@ -125,7 +125,7 @@ ALTER TABLE "public"."sys_user" OWNER TO "postgres";
 -- Records of sys_user
 -- ----------------------------
 BEGIN;
-INSERT INTO "public"."sys_user" VALUES ('205667537625681919', '00000000000', 'e10adc3949ba59abbe56e057f20f883e', '超级管理员', 'PasswordCheck', 0, '2020-07-28 08:34:40', 1);
+INSERT INTO "public"."sys_user" VALUES ('1', '00000000000', 'e10adc3949ba59abbe56e057f20f883e', '超级管理员', 'PasswordCheck', 0, '2020-07-28 08:34:40', 1);
 COMMIT;
 
 -- ----------------------------

@@ -1,6 +1,5 @@
 use rbatis::sql::{Page, PageRequest};
 use std::collections::{BTreeMap, HashMap};
-
 use crate::domain::dto::{ResEditDTO, ResPageDTO};
 use crate::domain::table::SysRes;
 use crate::domain::vo::SysResVO;
@@ -137,10 +136,11 @@ impl SysResService {
     ) -> Vec<SysResVO> {
         let mut res = vec![];
         //filter res id
-        for (k, v) in all_res {
-            for x in ids {
+        for x in ids {
+            for (k, v) in all_res {
                 if k.eq(x) {
                     res.push(v.clone());
+                    break
                 }
             }
         }
