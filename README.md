@@ -60,7 +60,7 @@ The separation - both before and after the end, based on [Vue - JS] + [Vue - Ant
 
 
 
-- 1 (front) read and front-end cloning project at https://github.com/rbatis/abs_admin_vue
+- 1 (front) read and front-end cloning project at https://github.com/rbatis/abs_admin_vue , and install nodejs
 
 
 

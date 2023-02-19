@@ -39,7 +39,7 @@
 
 # （前端 node 服务安装）快速安装教程
 
-- 1.（前端安装）阅读并克隆前端项目 https://github.com/rbatis/abs_admin_vue
+- 1.（前端安装）阅读并克隆前端项目 https://github.com/rbatis/abs_admin_vue, 安装nodejs
 
 - 2.（前端安装）使用`yarn install`安装依赖（或者使用淘宝代理`yarn config set registry http://registry.npm.taobao.org/ `）并使用 `yarn serve`命令启动 web 前端
 
