@@ -32,14 +32,10 @@
 
 # （rust 服务器端安装）快速安装教程
 
-- 1.（rust 服务器端安装）1.docker 命令快速启动 redis 和 mysql(用户名 root 密码 123456)。生产 docker 可以建议部署 http 服务，原则上生产环境不建议用 docker 部署数据库
-
-```cmd
-docker run -it -d --name redis -p 6379:6379 redis
-docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 --name mysql -e TZ=Asia/Shanghai mysql:5.7
-```
-
-- 2.（rust 服务器端安装）使用 Clion Database 窗口 或者 MysqlWorkBench 或 Navicat 等工具 导入 database.sql 脚本到 Mysql 数据库（mysql 用户名密码 root 123456）（redis 无密码）中
+- 1.abs_admin 启动指令 `cargo run`或者`cargo build`编译可执行文件执行
+- 2.(可选)docker 命令快速启动 redis  `docker run -it -d --name redis -p 6379:6379 redis`
+- 3.(可选，默认数据库Sqlite,mysql需要Cargo.toml添加rbdc_mysql依赖，并修改application.yml中的database_url)docker 命令快速启动 mysql(用户名 root 密码 123456)。生产 docker 可以建议部署 http 服务，原则上生产环境不建议用 docker 部署数据库 `docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 --name mysql -e TZ=Asia/Shanghai mysql:5.7`
+- 4.（rust 服务器端安装）使用 Clion Database 窗口 或者 MysqlWorkBench 或 Navicat 等工具 导入 database.sql 脚本到  数据库
 
 # （前端 node 服务安装）快速安装教程
 

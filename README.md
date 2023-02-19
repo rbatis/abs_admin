@@ -48,26 +48,12 @@ The separation - both before and after the end, based on [Vue - JS] + [Vue - Ant
 
 
 
-# (Rust server installation) Quick installation tutorial
+# (Rust Server-Side Installation) Quick Installation Tutorial
 
-
-
-1. Use the docker command to quickly start redis and mysql(user name root password 123456). Production Docker can recommend deploying HTTP service. In principle, production environment does not recommend deploying database with Docker
-
-
-
-```cmd
-
-docker run -it -d --name redis -p 6379:6379 redis
-
-docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 --name mysql -e TZ=Asia/Shanghai mysql:5.7
-
-```
-
-
-
-- 2. (Rust server installation) Use the Clion Database window or MysqlWorkBench or Navicat tools to import the database. SQL script into the Mysql Database (Mysql username and password root) 123456) (Redis has no password)
-
+* 1 Start abs_admin command by using `cargo run` or `cargo build` to compile the executable file and execute it.
+* (Optional) Use the docker command to quickly start redis: `docker run -it -d --name redis -p 6379:6379 redis`
+* (Optional, default database is SQLite, if using MySQL, add rdbc_mysql dependency to Cargo.toml and modify database_url in application.yml) Use the docker command to quickly start MySQL. For production, it is recommended to deploy the HTTP service and not use docker to deploy the database. `docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 --name mysql -e TZ=Asia/Shanghai mysql:5.7`
+* (Rust Server-Side Installation) Use Clion Database Window or tools such as MysqlWorkBench or Navicat to import the database.sql script into the database.
 
 
 # (Front-end Node service installation) Quick installation tutorial
