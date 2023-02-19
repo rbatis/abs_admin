@@ -66,6 +66,7 @@ impl ServiceContext {
         self.rb
             .init(driver, &self.config.database_url)
             .expect("[abs_admin] rbatis pool init fail!");
+        self.rb.acquire().await.expect(&format!("rbatis connect database(driver={},url={}) fail",driver_name,self.config.database_url));
         log::info!(
             "[abs_admin] rbatis pool init success! pool state = {:?}",
             self.rb.get_pool().expect("pool not init!").status()
@@ -74,7 +75,6 @@ impl ServiceContext {
             " - Local:   http://{}",
             self.config.server_url.replace("0.0.0.0", "127.0.0.1")
         );
-        self.rb.acquire().await.expect(&format!("rbatis connect database(driver={},url={}) fail",driver_name,self.config.database_url));
     }
 }
 
