@@ -57,7 +57,7 @@ impl ServiceContext {
     /// init database pool
     pub async fn init_pool(&self) {
         //连接数据库
-        println!(
+        log::info!(
             "[abs_admin] rbatis pool init ({})...",
             self.config.database_url
         );
