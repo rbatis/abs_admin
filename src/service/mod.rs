@@ -74,7 +74,7 @@ impl ServiceContext {
             " - Local:   http://{}",
             self.config.server_url.replace("0.0.0.0", "127.0.0.1")
         );
-        self.rb.acquire().await.expect(&format!("rbatis connect database({},{}) fail",driver_name,self.config.database_url));
+        self.rb.acquire().await.expect(&format!("rbatis connect database(driver={},url={}) fail",driver_name,self.config.database_url));
     }
 }
 
