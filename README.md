@@ -64,7 +64,7 @@ The separation - both before and after the end, based on [Vue - JS] + [Vue - Ant
 
 
 
-- 2. (front-end installation) Use 'NPM install' to install dependencies (or taobao image CNPM) and run the 'yarn serve' command to start the web front-end
+- 2. (front-end installation) Use `yarn install` to install dependencies  and run the `yarn serve` command to start the web front-end
 
 
 

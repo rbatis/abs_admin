@@ -41,7 +41,7 @@
 
 - 1.（前端安装）阅读并克隆前端项目 https://github.com/rbatis/abs_admin_vue
 
-- 2.（前端安装）使用`npm install`安装依赖（或者淘宝镜像 cnpm）并使用 `yarn serve`命令启动 web 前端
+- 2.（前端安装）使用`yarn install`安装依赖（或者使用淘宝代理`yarn config set registry http://registry.npm.taobao.org/ `）并使用 `yarn serve`命令启动 web 前端
 
 - 3.（前端安装）打开浏览器 http://localhost:8001 即可登陆后台
 
