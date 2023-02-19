@@ -17,7 +17,6 @@ pub use cache_service::*;
 pub use mem_service::*;
 use once_cell::sync::Lazy;
 use rbatis::rbatis::Rbatis;
-use rbdc_mysql::driver::MysqlDriver;
 pub use redis_service::*;
 pub use sys_auth_service::*;
 pub use sys_config_service::*;
@@ -62,8 +61,10 @@ impl ServiceContext {
             "[abs_admin] rbatis pool init ({})...",
             self.config.database_url
         );
+        let driver = rbdc_sqlite::driver::SqliteDriver{};
+        let driver_name = format!("{:?}",driver);
         self.rb
-            .init(MysqlDriver {}, &self.config.database_url)
+            .init(driver, &self.config.database_url)
             .expect("[abs_admin] rbatis pool init fail!");
         log::info!(
             "[abs_admin] rbatis pool init success! pool state = {:?}",
@@ -73,6 +74,7 @@ impl ServiceContext {
             " - Local:   http://{}",
             self.config.server_url.replace("0.0.0.0", "127.0.0.1")
         );
+        self.rb.acquire().await.expect(&format!("rbatis connect database({}) fail",driver_name));
     }
 }
 
