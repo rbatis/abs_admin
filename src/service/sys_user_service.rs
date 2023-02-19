@@ -261,6 +261,7 @@ impl SysUserService {
                 &all_res,
             )
             .await?;
+        sign_vo.user.as_mut().unwrap().role = sign_vo.role.clone();
         return Ok(sign_vo);
     }
 
