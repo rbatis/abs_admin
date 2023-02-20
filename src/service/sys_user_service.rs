@@ -236,7 +236,7 @@ impl SysUserService {
             .clone()
             .ok_or_else(|| Error::from("错误的用户数据，id为空!"))?;
         let mut sign_vo = SignInVO {
-            user: user,
+            inner: user,
             permissions: vec![],
             access_token: String::new(),
             role: None,
@@ -245,8 +245,8 @@ impl SysUserService {
         let all_res = CONTEXT.sys_res_service.finds_all_map().await?;
         sign_vo.permissions = self.load_level_permission(&user_id, &all_res).await?;
         let jwt_token = JWTToken {
-            id: sign_vo.user.id.clone().unwrap_or_default(),
-            account: sign_vo.user.account.clone().unwrap_or_default(),
+            id: sign_vo.inner.id.clone().unwrap_or_default(),
+            account: sign_vo.inner.account.clone().unwrap_or_default(),
             permissions: sign_vo.permissions.clone(),
             role_ids: vec![],
             exp: FastDateTime::now().set_micro(0).unix_timestamp_millis() as usize,
@@ -255,7 +255,7 @@ impl SysUserService {
         sign_vo.role = CONTEXT
             .sys_user_role_service
             .find_user_role(
-                &sign_vo.user.id.clone().unwrap_or_default(),
+                &sign_vo.inner.id.clone().unwrap_or_default(),
                 &all_res,
             )
             .await?;
