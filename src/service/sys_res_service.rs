@@ -99,7 +99,7 @@ impl SysResService {
             return Ok(all);
         }
         if CONTEXT.config.debug {
-            log::info!("[abs_admin] get from redis:{}", RES_KEY);
+            log::info!("[abs_admin] get from cache:{}", RES_KEY);
         }
         let mut arr = vec![];
         if let Ok(v) = js {

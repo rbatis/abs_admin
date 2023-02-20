@@ -56,7 +56,7 @@ impl SysRoleService {
             return Ok(all);
         }
         if CONTEXT.config.debug {
-            log::info!("[abs_admin] get from redis:{}", RES_KEY);
+            log::info!("[abs_admin] get from cache:{}", RES_KEY);
         }
         return Ok(js?.unwrap_or_default());
     }
