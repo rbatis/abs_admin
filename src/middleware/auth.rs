@@ -35,8 +35,8 @@ pub async fn check_auth(token: &JWTToken, path: &str) -> Result<(), crate::error
     //权限校验
     for token_permission in &token.permissions {
         for x in &sys_res {
-            match &x.permission {
-                Some(permission) => match &x.path {
+            match &x.inner.permission {
+                Some(permission) => match &x.inner.path {
                     None => {}
                     Some(x_path) => {
                         if permission.eq(token_permission) && path.contains(x_path) {

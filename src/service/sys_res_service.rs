@@ -74,9 +74,9 @@ impl SysResService {
     pub fn make_res_ids(&self, args: &Vec<SysResVO>) -> Vec<String> {
         let mut ids = vec![];
         for x in args {
-            ids.push(x.id.as_deref().unwrap_or_default().to_string());
+            ids.push(x.inner.id.as_deref().unwrap_or_default().to_string());
             if let Some(childs) = &x.childs {
-                let child_ids = rbatis::make_table_field_vec!(childs, id);
+                let child_ids = rbatis::make_table_field_vec!(childs, inner.id);
                 for child_id in child_ids {
                     ids.push(child_id);
                 }
@@ -124,7 +124,7 @@ impl SysResService {
         let all = self.finds_all().await?;
         let mut result = BTreeMap::new();
         for x in all {
-            result.insert(x.id.as_deref().unwrap_or_default().to_string(), x);
+            result.insert(x.inner.id.as_deref().unwrap_or_default().to_string(), x);
         }
         return Ok(result);
     }
@@ -166,7 +166,7 @@ impl SysResService {
         let mut tops = vec![];
         for item in res {
             //parent id null, it is an top resource
-            if item.parent_id.is_none() {
+            if item.inner.parent_id.is_none() {
                 tops.push(item);
             }
         }
@@ -181,7 +181,7 @@ impl SysResService {
     pub fn loop_find_childs(&self, arg: &mut SysResVO, all_res: &BTreeMap<String, SysResVO>) {
         let mut childs = vec![];
         for (key, x) in all_res {
-            if x.parent_id.is_some() && x.parent_id.eq(&arg.id) {
+            if x.inner.parent_id.is_some() && x.inner.parent_id.eq(&arg.inner.id) {
                 let mut item = x.clone();
                 self.loop_find_childs(&mut item, all_res);
                 childs.push(item);

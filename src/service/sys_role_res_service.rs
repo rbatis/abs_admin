@@ -37,7 +37,7 @@ impl SysRoleResService {
     fn loop_find_role_ids(&self, arg: &Vec<SysRoleVO>) -> Vec<String> {
         let mut results = vec![];
         for x in arg {
-            results.push(x.id.as_deref().unwrap_or_default().to_string());
+            results.push(x.inner.id.as_deref().unwrap_or_default().to_string());
             match &x.childs {
                 Some(childs) => {
                     let ids = self.loop_find_role_ids(childs);
@@ -92,7 +92,7 @@ impl SysRoleResService {
     ) -> Result<Vec<SysRoleVO>> {
         let mut data = vec![];
         for mut role in arg {
-            let res_ids = role_res_map.get(role.id.as_ref().unwrap_or_def());
+            let res_ids = role_res_map.get(role.inner.id.as_ref().unwrap_or_def());
             let mut res_vos = vec![];
             if let Some(res_ids) = res_ids {
                 for x in res_ids {
@@ -112,7 +112,7 @@ impl SysRoleResService {
                     all,
                 )?);
             }
-            role.resource_ids = rbatis::make_table_field_vec!(&role.resources, id);
+            role.resource_ids = rbatis::make_table_field_vec!(&role.resources, inner.id);
             data.push(role);
         }
         return Ok(data);
