@@ -1,10 +1,11 @@
-use crate::domain::vo::user::SysUserVO;
 use crate::domain::vo::SysRoleVO;
 use serde::{Deserialize, Serialize};
+use crate::domain::table::SysUser;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct SignInVO {
-    pub user: Option<SysUserVO>,
+    #[serde(flatten)]
+    pub user: SysUser,
     pub permissions: Vec<String>,
     pub access_token: String,
     pub role: Option<SysRoleVO>,
