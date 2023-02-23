@@ -88,7 +88,7 @@ impl ICacheService for MemService {
         drop(locked);
         let v = match v {
             None => -2,
-            Some((r, o)) => match o {
+            Some((_r, o)) => match o {
                 None => -1,
                 Some((i, d)) => {
                     let use_time = i.elapsed();

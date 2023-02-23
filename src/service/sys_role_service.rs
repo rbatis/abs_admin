@@ -32,7 +32,7 @@ impl SysRoleService {
     pub async fn finds_layer(&self) -> Result<Vec<SysRoleVO>> {
         let all = self.finds_all_map().await?;
         let mut data = vec![];
-        for (k, v) in &all {
+        for (_k, v) in &all {
             if v.parent_id.is_none() {
                 let mut top = SysRoleVO::from(v.clone());
                 self.loop_find_childs(&mut top, &all);
@@ -106,14 +106,14 @@ impl SysRoleService {
         if ids.is_empty() {
             return Ok(vec![]);
         }
-        Ok(SysRole::select_in_column(pool!(), "id",ids).await?)
+        Ok(SysRole::select_in_column(pool!(), "id", ids).await?)
     }
 
     pub async fn find_role_res(&self, role_ids: &Vec<String>) -> Result<Vec<SysRoleRes>> {
         if role_ids.is_empty() {
             return Ok(vec![]);
         }
-        Ok(SysRoleRes::select_in_column(pool!(), "role_id",role_ids).await?)
+        Ok(SysRoleRes::select_in_column(pool!(), "role_id", role_ids).await?)
     }
 
     pub async fn find_user_permission(
@@ -121,9 +121,7 @@ impl SysRoleService {
         user_id: &str,
         all_res: &BTreeMap<String, SysResVO>,
     ) -> Result<Vec<String>> {
-        let user_roles =
-            SysUserRole::select_by_column(pool!(), "user_id", user_id)
-                .await?;
+        let user_roles = SysUserRole::select_by_column(pool!(), "user_id", user_id).await?;
         let role_res = self
             .find_role_res(&rbatis::make_table_field_vec!(&user_roles, role_id))
             .await?;
@@ -138,7 +136,7 @@ impl SysRoleService {
     ///Loop to find the parent-child associative relation array
     pub fn loop_find_childs(&self, arg: &mut SysRoleVO, all: &HashMap<String, SysRole>) {
         let mut childs = vec![];
-        for (key, x) in all {
+        for (_key, x) in all {
             if x.parent_id.is_some() && x.parent_id.eq(&arg.inner.id) {
                 let mut item = SysRoleVO::from(x.clone());
                 self.loop_find_childs(&mut item, all);

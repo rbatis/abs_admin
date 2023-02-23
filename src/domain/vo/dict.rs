@@ -8,9 +8,7 @@ pub struct SysDictVO {
 
 impl From<SysDict> for SysDictVO {
     fn from(arg: SysDict) -> Self {
-        Self {
-            inner:arg
-        }
+        Self { inner: arg }
     }
 }
 

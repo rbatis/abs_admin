@@ -13,7 +13,7 @@ pub struct SysRoleVO {
 impl From<SysRole> for SysRoleVO {
     fn from(arg: SysRole) -> Self {
         Self {
-            inner:arg,
+            inner: arg,
             resources: vec![],
             childs: None,
             resource_ids: vec![],
@@ -25,7 +25,7 @@ impl SysRoleVO {
     pub fn from_option(arg: Option<SysRole>) -> Option<SysRoleVO> {
         match arg {
             Some(arg) => Some(SysRoleVO {
-                inner:arg,
+                inner: arg,
                 resources: vec![],
                 childs: None,
                 resource_ids: vec![],

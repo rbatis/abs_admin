@@ -15,19 +15,15 @@ pub struct SysDictService {}
 
 impl SysDictService {
     pub async fn page(&self, arg: &DictPageDTO) -> Result<Page<SysDictVO>> {
-        let page_req = PageRequest::new(arg.page_no.unwrap_or(1), arg.page_size.unwrap_or(10));
+        let _page_req = PageRequest::new(arg.page_no.unwrap_or(1), arg.page_size.unwrap_or(10));
         let data = SysDict::select_page(pool!(), &PageRequest::from(arg), arg).await?;
         let page = Page::<SysDictVO>::from(data);
         Ok(page)
     }
 
     pub async fn add(&self, arg: &SysDict) -> Result<u64> {
-        let old = SysDict::select_by_column(
-            pool!(),
-            "id",
-            arg.id.as_deref().unwrap_or_default(),
-        )
-        .await?;
+        let old =
+            SysDict::select_by_column(pool!(), "id", arg.id.as_deref().unwrap_or_default()).await?;
         if old.len() > 0 {
             return Err(Error::from(format!(
                 "字典已存在! code={}",

@@ -13,7 +13,7 @@ impl SysSmsService {
         templete_arg.insert("sms_type".to_string(), "verify_sms".to_string());
         //验证码值
         templete_arg.insert("sms_code".to_string(), sms_code.to_string());
-        let r = CONTEXT
+        let _r = CONTEXT
             .cache_service
             .set_json(
                 &format!("{},{}", CONTEXT.config.sms_cache_send_key_prefix, account),

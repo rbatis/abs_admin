@@ -1,5 +1,3 @@
-use rbatis::sql::{Page, PageRequest};
-use std::collections::{BTreeMap, HashMap};
 use crate::domain::dto::{ResEditDTO, ResPageDTO};
 use crate::domain::table::SysRes;
 use crate::domain::vo::SysResVO;
@@ -7,6 +5,8 @@ use crate::error::Error;
 use crate::error::Result;
 use crate::pool;
 use crate::service::CONTEXT;
+use rbatis::sql::{Page, PageRequest};
+use std::collections::{BTreeMap, HashMap};
 const RES_KEY: &'static str = "sys_res:all";
 
 /// Resource service
@@ -14,7 +14,7 @@ pub struct SysResService {}
 
 impl SysResService {
     pub async fn page(&self, arg: &ResPageDTO) -> Result<Page<SysResVO>> {
-        let page_req = PageRequest::new(arg.page_no.unwrap_or(1), arg.page_size.unwrap_or(10));
+        let _page_req = PageRequest::new(arg.page_no.unwrap_or(1), arg.page_size.unwrap_or(10));
         let data = SysRes::select_page(pool!(), &PageRequest::from(arg), arg).await?;
         let all_res = self.finds_all_map().await?;
         let mut all_res_vo = HashMap::new();
@@ -60,13 +60,12 @@ impl SysResService {
             .rows_affected;
         CONTEXT.sys_trash_service.add("sys_res", &trash).await?;
 
-        let trash =
-            SysRes::select_by_column(pool!(), "parent_id", id).await?;
+        let trash = SysRes::select_by_column(pool!(), "parent_id", id).await?;
         //删除父级为id的记录
         SysRes::delete_by_column(pool!(), "parent_id", id).await?;
         CONTEXT.sys_trash_service.add("sys_res", &trash).await?;
         // //删除关联数据
-        CONTEXT.sys_role_res_service.remove_by_res_id(id).await;
+        let _ = CONTEXT.sys_role_res_service.remove_by_res_id(id).await;
         self.update_cache().await?;
         return Ok(num);
     }
@@ -140,7 +139,7 @@ impl SysResService {
             for (k, v) in all_res {
                 if k.eq(x) {
                     res.push(v.clone());
-                    break
+                    break;
                 }
             }
         }
@@ -180,7 +179,7 @@ impl SysResService {
     ///Loop to find the parent-child associative relation array
     pub fn loop_find_childs(&self, arg: &mut SysResVO, all_res: &BTreeMap<String, SysResVO>) {
         let mut childs = vec![];
-        for (key, x) in all_res {
+        for (_key, x) in all_res {
             if x.inner.parent_id.is_some() && x.inner.parent_id.eq(&arg.inner.id) {
                 let mut item = x.clone();
                 self.loop_find_childs(&mut item, all_res);

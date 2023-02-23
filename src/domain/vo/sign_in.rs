@@ -1,6 +1,6 @@
+use crate::domain::table::SysUser;
 use crate::domain::vo::SysRoleVO;
 use serde::{Deserialize, Serialize};
-use crate::domain::table::SysUser;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct SignInVO {

@@ -11,7 +11,7 @@ pub struct SysResVO {
 impl From<SysRes> for SysResVO {
     fn from(arg: SysRes) -> Self {
         Self {
-            inner:arg,
+            inner: arg,
             childs: None,
         }
     }
@@ -25,7 +25,7 @@ impl SysResVO {
     pub fn set_childs_recursive(&mut self, all_record: &HashMap<String, Self>) {
         let mut childs: Option<Vec<Self>> = None;
         if self.inner.id.is_some() {
-            for (key, x) in all_record {
+            for (_key, x) in all_record {
                 if x.get_father_id().is_some() && self.inner.id.eq(&x.get_father_id()) {
                     let mut item = x.clone();
                     item.set_childs_recursive(all_record);

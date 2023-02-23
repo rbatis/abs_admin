@@ -60,7 +60,7 @@ impl SysRoleResService {
             if role_ids.is_empty() {
                 vec![]
             } else {
-                SysRoleRes::select_in_column(pool!(),"role_id", &role_ids).await?
+                SysRoleRes::select_in_column(pool!(), "role_id", &role_ids).await?
             }
         };
         let mut role_res_map: HashMap<String, HashSet<SysRoleRes>> =

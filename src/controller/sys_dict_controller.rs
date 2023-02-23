@@ -21,13 +21,13 @@ pub async fn add(mut arg: web::Json<DictAddDTO>) -> impl Responder {
     }
     let res = SysDict::from(arg.0);
     let data = CONTEXT.sys_dict_service.add(&res).await;
-    CONTEXT.sys_dict_service.update_cache().await;
+    let _ = CONTEXT.sys_dict_service.update_cache().await;
     RespVO::from_result(&data).resp_json()
 }
 
 pub async fn update(arg: web::Json<DictEditDTO>) -> impl Responder {
     let data = CONTEXT.sys_dict_service.edit(&arg.0).await;
-    CONTEXT.sys_dict_service.update_cache().await;
+    let _ = CONTEXT.sys_dict_service.update_cache().await;
     RespVO::from_result(&data).resp_json()
 }
 
@@ -36,6 +36,6 @@ pub async fn remove(arg: web::Json<IdDTO>) -> impl Responder {
         .sys_dict_service
         .remove(&arg.0.id.unwrap_or_default())
         .await;
-    CONTEXT.sys_dict_service.update_cache().await;
+    let _ = CONTEXT.sys_dict_service.update_cache().await;
     RespVO::from_result(&data).resp_json()
 }

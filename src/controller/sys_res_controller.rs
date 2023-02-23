@@ -9,12 +9,12 @@ pub async fn page(page: web::Json<ResPageDTO>) -> impl Responder {
     RespVO::from_result(&data).resp_json()
 }
 
-pub async fn all(page: web::Json<EmptyDTO>) -> impl Responder {
+pub async fn all(_page: web::Json<EmptyDTO>) -> impl Responder {
     let data = CONTEXT.sys_res_service.finds_all().await;
     RespVO::from_result(&data).resp_json()
 }
 
-pub async fn layer_top(page: web::Json<EmptyDTO>) -> impl Responder {
+pub async fn layer_top(_page: web::Json<EmptyDTO>) -> impl Responder {
     let data = CONTEXT.sys_res_service.finds_layer_top().await;
     RespVO::from_result(&data).resp_json()
 }
@@ -31,13 +31,13 @@ pub async fn add(mut arg: web::Json<ResAddDTO>) -> impl Responder {
     }
     let res = SysRes::from(arg.0);
     let data = CONTEXT.sys_res_service.add(&res).await;
-    CONTEXT.sys_res_service.update_cache().await;
+    let _ = CONTEXT.sys_res_service.update_cache().await;
     RespVO::from_result(&data).resp_json()
 }
 
 pub async fn update(arg: web::Json<ResEditDTO>) -> impl Responder {
     let data = CONTEXT.sys_res_service.edit(&arg.0).await;
-    CONTEXT.sys_res_service.update_cache().await;
+    let _ = CONTEXT.sys_res_service.update_cache().await;
     RespVO::from_result(&data).resp_json()
 }
 
@@ -46,6 +46,6 @@ pub async fn remove(arg: web::Json<IdDTO>) -> impl Responder {
         .sys_res_service
         .remove(&arg.0.id.unwrap_or_default())
         .await;
-    CONTEXT.sys_res_service.update_cache().await;
+    let _ = CONTEXT.sys_res_service.update_cache().await;
     RespVO::from_result(&data).resp_json()
 }

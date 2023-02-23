@@ -51,21 +51,17 @@ impl SysUserService {
     }
 
     pub async fn find(&self, id: &str) -> Result<Option<SysUser>> {
-        Ok(
-            SysUser::select_by_column(pool!(), "id", id)
-                .await?
-                .into_iter()
-                .next(),
-        )
+        Ok(SysUser::select_by_column(pool!(), "id", id)
+            .await?
+            .into_iter()
+            .next())
     }
 
     pub async fn find_by_account(&self, account: &str) -> Result<Option<SysUser>> {
-        Ok(
-            SysUser::select_by_column(pool!(), "account", account)
-                .await?
-                .into_iter()
-                .next(),
-        )
+        Ok(SysUser::select_by_column(pool!(), "account", account)
+            .await?
+            .into_iter()
+            .next())
     }
 
     pub async fn add(&self, mut arg: UserAddDTO) -> Result<u64> {
@@ -108,11 +104,10 @@ impl SysUserService {
 
     pub async fn sign_in(&self, arg: &SignInDTO) -> Result<SignInVO> {
         self.is_need_wait_login_ex().await?;
-        let user: Option<SysUser> =
-            SysUser::select_by_column(pool!(), "account", &arg.account)
-                .await?
-                .into_iter()
-                .next();
+        let user: Option<SysUser> = SysUser::select_by_column(pool!(), "account", &arg.account)
+            .await?
+            .into_iter()
+            .next();
         let user = user.ok_or_else(|| Error::from(format!("账号:{} 不存在!", arg.account)))?;
         if user.state.eq(&Some(0)) {
             return Err(Error::from("账户被禁用!"));
@@ -254,10 +249,7 @@ impl SysUserService {
         sign_vo.access_token = jwt_token.create_token(&CONTEXT.config.jwt_secret)?;
         sign_vo.role = CONTEXT
             .sys_user_role_service
-            .find_user_role(
-                &sign_vo.inner.id.clone().unwrap_or_default(),
-                &all_res,
-            )
+            .find_user_role(&sign_vo.inner.id.clone().unwrap_or_default(), &all_res)
             .await?;
         return Ok(sign_vo);
     }
@@ -285,11 +277,9 @@ impl SysUserService {
                 })
                 .await?;
         }
-        Ok(
-            SysUser::update_by_column(pool!(), &user, "id")
-                .await?
-                .rows_affected,
-        )
+        Ok(SysUser::update_by_column(pool!(), &user, "id")
+            .await?
+            .rows_affected)
     }
 
     pub async fn remove(&self, id: &str) -> Result<u64> {
@@ -298,7 +288,7 @@ impl SysUserService {
         }
         let trash = SysUser::select_by_column(pool!(), "id", id).await?;
         let r = SysUser::delete_by_column(pool!(), "id", id).await?;
-        CONTEXT.sys_trash_service.add("sys_user", &trash).await;
+        let _ = CONTEXT.sys_trash_service.add("sys_user", &trash).await;
         CONTEXT.sys_user_role_service.remove_by_user_id(id).await?;
         return Ok(r.rows_affected);
     }
