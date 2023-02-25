@@ -61,10 +61,8 @@ impl SysResService {
         CONTEXT.sys_trash_service.add("sys_res", &trash).await?;
 
         let trash = SysRes::select_by_column(pool!(), "parent_id", id).await?;
-        //删除父级为id的记录
         SysRes::delete_by_column(pool!(), "parent_id", id).await?;
         CONTEXT.sys_trash_service.add("sys_res", &trash).await?;
-        // //删除关联数据
         let _ = CONTEXT.sys_role_res_service.remove_by_res_id(id).await;
         self.update_cache().await?;
         return Ok(num);

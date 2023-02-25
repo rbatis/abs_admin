@@ -105,7 +105,7 @@ pub struct UserRolePageDTO {
     pub account: Option<String>,
     pub name: Option<String>,
 
-    //默认添加role
+    //enable set role
     pub resp_set_role: Option<bool>,
 }
 

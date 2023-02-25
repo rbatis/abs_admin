@@ -43,7 +43,6 @@ impl SysRoleService {
     }
 
     pub async fn finds_all(&self) -> Result<Vec<SysRole>> {
-        //查找的全部数据缓存于Redis，同时 remove，edit方法调用时刷新redis缓存
         let js = CONTEXT
             .cache_service
             .get_json::<Option<Vec<SysRole>>>(RES_KEY)

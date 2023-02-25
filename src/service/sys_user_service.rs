@@ -83,7 +83,7 @@ impl SysUserService {
         }
         let mut password = arg.password.as_deref().unwrap_or_default().to_string();
         if password.is_empty() {
-            //默认密码
+            //default password
             password = "123456".to_string();
         }
         arg.password = Some(password);
@@ -119,7 +119,7 @@ impl SysUserService {
             .unwrap_or(&LoginCheck::PasswordCheck)
         {
             LoginCheck::NoCheck => {
-                //无校验登录，适合Debug用
+                //no check
             }
             LoginCheck::PasswordCheck => {
                 // check pwd
@@ -152,7 +152,6 @@ impl SysUserService {
                 }
             }
             LoginCheck::PhoneCodeCheck => {
-                //短信验证码登录
                 let sms_code = CONTEXT
                     .cache_service
                     .get_string(&format!(
@@ -223,7 +222,6 @@ impl SysUserService {
     }
 
     pub async fn get_user_info(&self, user: &SysUser) -> Result<SignInVO> {
-        //去除密码，增加安全性
         let mut user = user.clone();
         user.password = None;
         let user_id = user
@@ -236,7 +234,7 @@ impl SysUserService {
             access_token: String::new(),
             role: None,
         };
-        //提前查找所有权限，避免在各个函数方法中重复查找
+
         let all_res = CONTEXT.sys_res_service.finds_all_map().await?;
         sign_vo.permissions = self.load_level_permission(&user_id, &all_res).await?;
         let jwt_token = JWTToken {
@@ -262,7 +260,6 @@ impl SysUserService {
         //do not update account
         user.account = None;
         let mut password = None;
-        //源密码加密后再存储
         if user.password.is_some() {
             password = Some(PasswordEncoder::encode(user.password.as_ref().unwrap()));
         }

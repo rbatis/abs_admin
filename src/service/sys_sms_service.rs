@@ -9,9 +9,7 @@ impl SysSmsService {
     ///Send verification code
     pub async fn send_verify_sms(&self, account: &str, sms_code: &str) -> Result<()> {
         let mut templete_arg = HashMap::new();
-        //短信类型：验证码
         templete_arg.insert("sms_type".to_string(), "verify_sms".to_string());
-        //验证码值
         templete_arg.insert("sms_code".to_string(), sms_code.to_string());
         let _r = CONTEXT
             .cache_service

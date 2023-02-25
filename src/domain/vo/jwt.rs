@@ -6,15 +6,10 @@ use serde::{Deserialize, Serialize};
 /// JWT authentication Token structure
 #[derive(Debug, Serialize, Deserialize, Clone, Eq, PartialEq)]
 pub struct JWTToken {
-    //账号id
     pub id: String,
-    //账号
     pub account: String,
-    //权限集合
     pub permissions: Vec<String>,
-    //角色id集合
     pub role_ids: Vec<String>,
-    //过期时间
     pub exp: usize,
 }
 

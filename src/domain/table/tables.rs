@@ -4,12 +4,12 @@ use rbatis::rbdc::datetime::FastDateTime;
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SysRes {
     pub id: Option<String>,
-    //父id(可空)
+    //father id(can empty)
     pub parent_id: Option<String>,
     pub name: Option<String>,
-    //权限
+    //permission
     pub permission: Option<String>,
-    //前端-菜单路径
+    //menu path
     pub path: Option<String>,
     pub del: Option<i32>,
     pub create_date: Option<FastDateTime>,
@@ -20,7 +20,7 @@ pub struct SysRes {
 pub struct SysRole {
     pub id: Option<String>,
     pub name: Option<String>,
-    //父id(可空)
+    //father id(can empty)
     pub parent_id: Option<String>,
     pub del: Option<i32>,
     pub create_date: Option<FastDateTime>,
@@ -30,9 +30,7 @@ pub struct SysRole {
 #[derive(Clone, Debug, Eq, PartialEq, Hash, serde::Serialize, serde::Deserialize)]
 pub struct SysRoleRes {
     pub id: Option<String>,
-    //角色id
     pub role_id: Option<String>,
-    //资源id
     pub res_id: Option<String>,
     pub create_date: Option<FastDateTime>,
 }
@@ -54,9 +52,7 @@ pub struct SysUser {
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SysUserRole {
     pub id: Option<String>,
-    //用户id
     pub user_id: Option<String>,
-    //角色id
     pub role_id: Option<String>,
     pub create_date: Option<FastDateTime>,
 }

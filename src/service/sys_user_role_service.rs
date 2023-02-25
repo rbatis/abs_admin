@@ -37,7 +37,6 @@ impl SysUserRoleService {
                     if let Some(role_id) = &user_role.role_id {
                         let role = roles_map.get(role_id).cloned();
                         x.role = SysRoleVO::from_option(role);
-                        //查找子集角色
                         if let Some(role_vo) = &mut x.role {
                             CONTEXT
                                 .sys_role_service

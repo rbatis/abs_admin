@@ -32,7 +32,6 @@ pub async fn checked_token(token: &str, _path: &str) -> Result<JWTToken, crate::
 ///Permission to check
 pub async fn check_auth(token: &JWTToken, path: &str) -> Result<(), crate::error::Error> {
     let sys_res = CONTEXT.sys_res_service.finds_all().await?;
-    //权限校验
     for token_permission in &token.permissions {
         for x in &sys_res {
             match &x.inner.permission {

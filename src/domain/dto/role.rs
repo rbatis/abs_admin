@@ -20,7 +20,7 @@ impl From<&RolePageDTO> for PageRequest {
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct RoleAddDTO {
     pub name: Option<String>,
-    //父id(可空)
+    //father id(can empty)
     pub parent_id: Option<String>,
 }
 
@@ -59,9 +59,9 @@ impl From<RoleEditDTO> for SysRole {
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct SysRoleResAddDTO {
     pub name: Option<String>,
-    //父id(可空)
+    //father id(可空)
     pub parent_id: Option<String>,
-    //资源id集合
+    //resource id vec
     pub resource_ids: Vec<String>,
 }
 
@@ -79,7 +79,7 @@ pub struct SysRoleResUpdateDTO {
     pub id: Option<String>,
     pub name: Option<String>,
     pub parent_id: Option<String>,
-    //资源id集合
+    //resource id vec
     pub resource_ids: Vec<String>,
 }
 

@@ -70,24 +70,20 @@ where
             //debug mode not enable auth
             if !CONTEXT.config.debug {
                 if !is_white_list_api(&path) {
-                    //非白名单检查token是否有效
                     match checked_token(&token, &path).await {
-                        Ok(data) => {
-                            match check_auth(&data, &path).await {
-                                Ok(_) => {}
-                                Err(e) => {
-                                    //仅提示拦截
-                                    let resp: RespVO<String> = RespVO {
-                                        code: Some("-1".to_string()),
-                                        msg: Some(format!("无权限访问:{}", e.to_string())),
-                                        data: None,
-                                    };
-                                    return Ok(req.into_response(resp.resp_json()));
-                                }
+                        Ok(data) => match check_auth(&data, &path).await {
+                            Ok(_) => {}
+                            Err(e) => {
+                                let resp: RespVO<String> = RespVO {
+                                    code: Some("-1".to_string()),
+                                    msg: Some(format!("无权限访问:{}", e.to_string())),
+                                    data: None,
+                                };
+                                return Ok(req.into_response(resp.resp_json()));
                             }
-                        }
+                        },
                         Err(e) => {
-                            //401 http状态码会强制前端退出当前登陆状态
+                            //401 http code will exit login
                             let resp: RespVO<String> = RespVO {
                                 code: Some("-1".to_string()),
                                 msg: Some(format!("Unauthorized for:{}", e.to_string())),

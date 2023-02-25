@@ -16,11 +16,11 @@ async fn index() -> impl Responder {
 /// use tokio,because Rbatis specifies the runtime-tokio
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
-    //日志追加器
+    //log
     abs_admin::config::log::init_log();
-    //连接数据库
+    //database
     CONTEXT.init_pool().await;
-    //路由
+    //router
     HttpServer::new(|| {
         App::new()
             .wrap(Auth {})

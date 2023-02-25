@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 pub struct SignInDTO {
     pub account: String,
     pub password: String,
-    //验证码，可用是短信验证码，图片验证码,二维码验证码...
+    //check code...
     pub vcode: String,
 }
 

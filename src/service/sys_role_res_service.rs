@@ -67,7 +67,7 @@ impl SysRoleResService {
             HashMap::with_capacity(role_res_vec.capacity());
         for role_res in role_res_vec {
             let role_id = role_res.role_id.as_deref().unwrap_or_default();
-            //去重添加
+            //remove repeat
             match role_res_map.get_mut(role_id) {
                 None => {
                     let role_id = role_id.to_string();
@@ -158,14 +158,11 @@ impl SysRoleResService {
 
     ///Roles, user relationships, and rights are deleted
     pub async fn remove_role(&self, role_id: &str) -> Result<u64> {
-        //删角色
         let remove_roles = CONTEXT.sys_role_service.remove(role_id).await?;
-        //删除用户-角色
         let remove_user_roles = CONTEXT
             .sys_user_role_service
             .remove_by_role_id(role_id)
             .await?;
-        //删除角色-资源
         let remove_role_res = CONTEXT
             .sys_role_res_service
             .remove_by_role_id(role_id)
