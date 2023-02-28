@@ -25,7 +25,7 @@ impl SysUserRoleService {
         if arg.resp_set_role.unwrap_or(true) {
             let all_role = CONTEXT.sys_role_service.finds_all_map().await?;
             let user_ids = rbatis::make_table_field_vec!(&vo.records, inner.id);
-            let user_roles = SysUserRole::select_in_column(pool!(), "id", &user_ids).await?;
+            let user_roles = SysUserRole::select_in_column(pool!(), "user_id", &user_ids).await?;
             let user_role_map = rbatis::make_table_field_map!(&user_roles, user_id);
             let role_ids = rbatis::make_table_field_vec!(&user_roles, role_id);
             let roles = CONTEXT.sys_role_service.finds(&role_ids).await?;
