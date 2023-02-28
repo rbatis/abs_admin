@@ -12,6 +12,7 @@ pub struct UserAddDTO {
     pub name: Option<String>,
     pub login_check: Option<LoginCheck>,
     pub role_id: Option<String>,
+    pub state: Option<i32>,
 }
 
 impl From<UserAddDTO> for SysUser {
@@ -22,7 +23,7 @@ impl From<UserAddDTO> for SysUser {
             password: PasswordEncoder::encode(&arg.password.unwrap_or_default()).into(),
             name: arg.name.clone(),
             login_check: arg.login_check.clone(),
-            state: 0.into(),
+            state: Some(arg.state.unwrap_or(1)),
             del: 0.into(),
             create_date: FastDateTime::now().set_micro(0).into(),
         }
