@@ -1,5 +1,5 @@
 use crate::domain::table::LoginCheck;
-use rbatis::rbdc::datetime::FastDateTime;
+use rbatis::rbdc::datetime::DateTime;
 ///Permission Resource Table
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SysRes {
@@ -12,7 +12,7 @@ pub struct SysRes {
     //menu path
     pub path: Option<String>,
     pub del: Option<i32>,
-    pub create_date: Option<FastDateTime>,
+    pub create_date: Option<DateTime>,
 }
 
 ///RoleTable
@@ -23,7 +23,7 @@ pub struct SysRole {
     //father id(can empty)
     pub parent_id: Option<String>,
     pub del: Option<i32>,
-    pub create_date: Option<FastDateTime>,
+    pub create_date: Option<DateTime>,
 }
 
 ///Role resource relational tables (relational tables do not use logical deletion)
@@ -32,7 +32,7 @@ pub struct SysRoleRes {
     pub id: Option<String>,
     pub role_id: Option<String>,
     pub res_id: Option<String>,
-    pub create_date: Option<FastDateTime>,
+    pub create_date: Option<DateTime>,
 }
 
 ///Background user table
@@ -45,7 +45,7 @@ pub struct SysUser {
     pub login_check: Option<LoginCheck>,
     pub state: Option<i32>,
     pub del: Option<i32>,
-    pub create_date: Option<FastDateTime>,
+    pub create_date: Option<DateTime>,
 }
 
 ///User role relationship tables (relational tables do not use logical deletion)
@@ -54,7 +54,7 @@ pub struct SysUserRole {
     pub id: Option<String>,
     pub user_id: Option<String>,
     pub role_id: Option<String>,
-    pub create_date: Option<FastDateTime>,
+    pub create_date: Option<DateTime>,
 }
 
 ///dictionary table
@@ -64,7 +64,7 @@ pub struct SysDict {
     pub name: Option<String>,
     pub code: Option<String>,
     pub state: Option<i32>,
-    pub create_date: Option<FastDateTime>,
+    pub create_date: Option<DateTime>,
 }
 
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
@@ -72,5 +72,5 @@ pub struct SysTrash {
     pub id: Option<String>,
     pub table_name: Option<String>,
     pub data: Option<String>,
-    pub create_date: Option<FastDateTime>,
+    pub create_date: Option<DateTime>,
 }

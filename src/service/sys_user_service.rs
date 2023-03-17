@@ -1,7 +1,7 @@
 use crate::error::Error;
 use crate::error::Result;
 use crate::service::CONTEXT;
-use rbatis::rbdc::types::datetime::FastDateTime;
+use rbatis::rbdc::types::datetime::DateTime;
 use rbatis::sql::page::{Page, PageRequest};
 
 use crate::domain::dto::{IdDTO, SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO, UserRoleAddDTO};
@@ -242,7 +242,7 @@ impl SysUserService {
             account: sign_vo.inner.account.clone().unwrap_or_default(),
             permissions: sign_vo.permissions.clone(),
             role_ids: vec![],
-            exp: FastDateTime::now().set_micro(0).unix_timestamp_millis() as usize,
+            exp: DateTime::now().set_micro(0).unix_timestamp_millis() as usize,
         };
         sign_vo.access_token = jwt_token.create_token(&CONTEXT.config.jwt_secret)?;
         sign_vo.role = CONTEXT

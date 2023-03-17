@@ -1,6 +1,6 @@
 use crate::domain::table::SysRole;
 use rbatis::object_id::ObjectId;
-use rbatis::rbdc::datetime::FastDateTime;
+use rbatis::rbdc::datetime::DateTime;
 use rbatis::sql::PageRequest;
 use serde::{Deserialize, Serialize};
 
@@ -31,7 +31,7 @@ impl From<RoleAddDTO> for SysRole {
             name: arg.name,
             parent_id: arg.parent_id,
             del: 0.into(),
-            create_date: FastDateTime::now().set_micro(0).into(),
+            create_date: DateTime::now().set_micro(0).into(),
         }
     }
 }

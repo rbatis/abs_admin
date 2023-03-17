@@ -1,7 +1,7 @@
 use crate::domain::table::{LoginCheck, SysUser, SysUserRole};
 use crate::util::password_encoder::PasswordEncoder;
 use rbatis::object_id::ObjectId;
-use rbatis::rbdc::datetime::FastDateTime;
+use rbatis::rbdc::datetime::DateTime;
 use rbatis::sql::PageRequest;
 use serde::{Deserialize, Serialize};
 
@@ -25,7 +25,7 @@ impl From<UserAddDTO> for SysUser {
             login_check: arg.login_check.clone(),
             state: Some(arg.state.unwrap_or(1)),
             del: 0.into(),
-            create_date: FastDateTime::now().set_micro(0).into(),
+            create_date: DateTime::now().set_micro(0).into(),
         }
     }
 }
@@ -94,7 +94,7 @@ impl From<UserRoleAddDTO> for SysUserRole {
             id: arg.id.clone(),
             user_id: arg.user_id.clone(),
             role_id: arg.role_id.clone(),
-            create_date: FastDateTime::now().set_micro(0).into(),
+            create_date: DateTime::now().set_micro(0).into(),
         }
     }
 }

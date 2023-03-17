@@ -48,7 +48,7 @@ impl JWTToken {
 #[cfg(test)]
 mod test {
     use crate::domain::vo::JWTToken;
-    use rbatis::rbdc::types::datetime::FastDateTime;
+    use rbatis::rbdc::types::datetime::DateTime;
     use std::thread::sleep;
     use std::time::Duration;
 
@@ -59,7 +59,7 @@ mod test {
             account: "189".to_string(),
             permissions: vec![],
             role_ids: vec![],
-            exp: FastDateTime::now().set_micro(0).unix_timestamp_millis() as usize,
+            exp: DateTime::now().set_micro(0).unix_timestamp_millis() as usize,
         };
         sleep(Duration::from_secs(5));
         let token = j.create_token("ssss").unwrap();

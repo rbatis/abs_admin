@@ -15,7 +15,7 @@ pub fn init_log() {
             str_to_temp_size(&CONTEXT.config.log_temp_size),
             str_to_rolling(&CONTEXT.config.log_rolling_type),
             choose_packer(&CONTEXT.config.log_pack_compress),
-        ));
+        ).unwrap());
     if CONTEXT.config.debug {
         cfg = cfg.console();
     }

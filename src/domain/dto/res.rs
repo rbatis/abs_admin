@@ -1,6 +1,6 @@
 use crate::domain::table::SysRes;
 use rbatis::object_id::ObjectId;
-use rbatis::rbdc::datetime::FastDateTime;
+use rbatis::rbdc::datetime::DateTime;
 use rbatis::sql::PageRequest;
 use serde::{Deserialize, Serialize};
 
@@ -34,7 +34,7 @@ impl From<ResAddDTO> for SysRes {
             permission: arg.permission.clone(),
             path: arg.path.clone(),
             del: 0.into(),
-            create_date: FastDateTime::now().set_micro(0).into(),
+            create_date: DateTime::now().set_micro(0).into(),
         }
     }
 }

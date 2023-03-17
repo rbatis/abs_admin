@@ -10,7 +10,7 @@ use crate::error::Result;
 use crate::pool;
 use crate::service::CONTEXT;
 use rbatis::plugin::object_id::ObjectId;
-use rbatis::rbdc::types::datetime::FastDateTime;
+use rbatis::rbdc::types::datetime::DateTime;
 use rbatis::sql::Page;
 
 use crate::util::options::OptionStringRefUnwrapOrDefault;
@@ -148,7 +148,7 @@ impl SysRoleResService {
                 id: ObjectId::new().to_string().into(),
                 role_id: role_id.to_string().into(),
                 res_id: resource_id.clone().into(),
-                create_date: FastDateTime::now().set_micro(0).into(),
+                create_date: DateTime::now().set_micro(0).into(),
             });
         }
         Ok(SysRoleRes::insert_batch(pool!(), &sys_role_res, 20)
