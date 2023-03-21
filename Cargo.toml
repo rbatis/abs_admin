@@ -6,9 +6,9 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
-rbs = { version = "4.2"}
-rbatis = { version = "4.2",features = []}
-rbdc-sqlite = { version ="4.2"}
+rbs = { version = "4.3" }
+rbatis = { version = "4.3", features = [] }
+rbdc-sqlite = { version = "4.3" }
 #rbatis orm dep must use async-std(Because actix-web relies on tokio0.2)
 tokio = { version = "1", features = ["full"] }
 #serde and json
@@ -20,7 +20,7 @@ log = "0.4"
 #fast_log enable features = ["lz4", "zip", "gzip"], and edit src/config/log.rs fn choose_packer(),edit application.yml add log_pack_compress: "zip"
 fast_log = { version = "1.5", features = [] }
 #web server
-actix-web = {version="4", default-features = false, features = ["macros"]}
+actix-web = { version = "4", default-features = false, features = ["macros"] }
 actix-http = "3"
 #redis
 redis = { version = "0.22.3", features = ["tokio-comp"] }
