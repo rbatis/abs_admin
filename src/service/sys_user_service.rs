@@ -260,8 +260,8 @@ impl SysUserService {
         //do not update account
         user.account = None;
         let mut password = None;
-        if user.password.is_some() {
-            password = Some(PasswordEncoder::encode(user.password.as_ref().unwrap()));
+        if let Some(pass) = user.password.as_ref(){
+            password = Some(PasswordEncoder::encode(pass));
         }
         user.password = password;
         if role_id.is_some() {

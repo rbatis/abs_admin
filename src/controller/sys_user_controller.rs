@@ -2,6 +2,7 @@ use actix_web::{web, HttpRequest, Responder};
 
 use crate::domain::dto::{IdDTO, SignInDTO, UserAddDTO, UserEditDTO, UserRolePageDTO};
 use crate::domain::vo::{JWTToken, RespVO};
+use crate::error::Error;
 use crate::service::CONTEXT;
 
 pub async fn login(arg: web::Json<SignInDTO>) -> impl Responder {
@@ -45,6 +46,11 @@ pub async fn detail(arg: web::Json<IdDTO>) -> impl Responder {
 }
 
 pub async fn update(arg: web::Json<UserEditDTO>) -> impl Responder {
+    if let (Some(account), Some(state)) = (arg.0.account.as_ref(), arg.0.state.as_ref()) {
+        if account == "00000000000" && *state == 0 {
+            return RespVO::<u64>::from_result(&Err(Error::from("不能禁用超级管理员"))).resp_json();
+        }
+    }
     let vo = CONTEXT.sys_user_service.edit(arg.0).await;
     return RespVO::from_result(&vo).resp_json();
 }
