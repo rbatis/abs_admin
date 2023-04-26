@@ -265,8 +265,8 @@ impl SysUserService {
         //do not update account
         arg.account = None;
         let mut password = None;
-        if let Some(pass) = arg.password.as_ref() {
-            if pass != user.password.as_ref().unwrap() {
+        if arg.password != user.password {
+            if let Some(pass) = arg.password.as_ref() {
                 password = Some(PasswordEncoder::encode(pass));
             }
         }
