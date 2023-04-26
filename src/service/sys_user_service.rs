@@ -28,7 +28,7 @@ impl SysUserService {
             arg.name.as_deref().unwrap_or_default(),
             arg.account.as_deref().unwrap_or_default(),
         )
-        .await?;
+            .await?;
         let page = Page::<SysUserVO>::from(sys_user_page);
         return Ok(page);
     }
@@ -256,25 +256,32 @@ impl SysUserService {
 
     pub async fn edit(&self, arg: UserEditDTO) -> Result<u64> {
         let role_id = arg.role_id.clone();
-        let mut user = SysUser::from(arg);
+        let mut arg = SysUser::from(arg);
+        //old user
+        let user = SysUser::select_by_column(pool!(), "id", arg.id.as_ref()).await?
+            .into_iter().next().ok_or_else(|| {
+            Error::from("找不到用户")
+        })?;
         //do not update account
-        user.account = None;
+        arg.account = None;
         let mut password = None;
-        if let Some(pass) = user.password.as_ref(){
-            password = Some(PasswordEncoder::encode(pass));
+        if let Some(pass) = arg.password.as_ref() {
+            if pass != user.password.as_ref().unwrap() {
+                password = Some(PasswordEncoder::encode(pass));
+            }
         }
-        user.password = password;
+        arg.password = password;
         if role_id.is_some() {
             CONTEXT
                 .sys_user_role_service
                 .add(UserRoleAddDTO {
                     id: None,
-                    user_id: user.id.clone(),
+                    user_id: arg.id.clone(),
                     role_id: role_id,
                 })
                 .await?;
         }
-        Ok(SysUser::update_by_column(pool!(), &user, "id")
+        Ok(SysUser::update_by_column(pool!(), &arg, "id")
             .await?
             .rows_affected)
     }
