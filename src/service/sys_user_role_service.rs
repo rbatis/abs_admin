@@ -30,7 +30,7 @@ impl SysUserRoleService {
             let role_ids = rbatis::make_table_field_vec!(&user_roles, role_id);
             let roles = CONTEXT.sys_role_service.finds(&role_ids).await?;
             let roles_map = rbatis::make_table_field_map!(&roles, id);
-            for mut x in &mut vo.records {
+            for x in &mut vo.records {
                 if let Some(user_role) =
                     user_role_map.get(x.inner.id.as_deref().unwrap_or_default())
                 {
