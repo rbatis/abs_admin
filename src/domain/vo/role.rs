@@ -1,11 +1,11 @@
 use crate::domain::table::SysRole;
-use crate::domain::vo::SysResVO;
+use crate::domain::vo::SysPermissionVO;
 
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SysRoleVO {
     #[serde(flatten)]
     pub inner: SysRole,
-    pub resources: Vec<SysResVO>,
+    pub resources: Vec<SysPermissionVO>,
     pub childs: Option<Vec<SysRoleVO>>,
     pub resource_ids: Vec<String>,
 }

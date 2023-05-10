@@ -3,8 +3,8 @@ use std::collections::{BTreeMap, HashMap, HashSet};
 use crate::domain::dto::{
     RoleAddDTO, RoleEditDTO, RolePageDTO, SysRoleResAddDTO, SysRoleResPageDTO, SysRoleResUpdateDTO,
 };
-use crate::domain::table::SysRoleRes;
-use crate::domain::vo::{SysResVO, SysRoleVO};
+use crate::domain::table::SysRolePermission;
+use crate::domain::vo::{SysPermissionVO, SysRoleVO};
 use crate::error::Error;
 use crate::error::Result;
 use crate::pool;
@@ -28,7 +28,7 @@ impl SysRoleResService {
                 name: arg.name.clone(),
             })
             .await?;
-        let all = CONTEXT.sys_res_service.finds_all_map().await?;
+        let all = CONTEXT.sys_permission_service.finds_all_map().await?;
         let role_res_map = self.find_role_res_map(&role_page.records).await?;
         role_page.records = self.loop_set_res_vec(role_page.records, &role_res_map, &all)?;
         return Result::Ok(role_page);
@@ -54,16 +54,16 @@ impl SysRoleResService {
     async fn find_role_res_map(
         &self,
         arg: &Vec<SysRoleVO>,
-    ) -> Result<HashMap<String, HashSet<SysRoleRes>>> {
+    ) -> Result<HashMap<String, HashSet<SysRolePermission>>> {
         let role_ids = self.loop_find_role_ids(arg);
         let role_res_vec = {
             if role_ids.is_empty() {
                 vec![]
             } else {
-                SysRoleRes::select_in_column(pool!(), "role_id", &role_ids).await?
+                SysRolePermission::select_in_column(pool!(), "role_id", &role_ids).await?
             }
         };
-        let mut role_res_map: HashMap<String, HashSet<SysRoleRes>> =
+        let mut role_res_map: HashMap<String, HashSet<SysRolePermission>> =
             HashMap::with_capacity(role_res_vec.capacity());
         for role_res in role_res_vec {
             let role_id = role_res.role_id.as_deref().unwrap_or_default();
@@ -87,16 +87,16 @@ impl SysRoleResService {
     fn loop_set_res_vec(
         &self,
         arg: Vec<SysRoleVO>,
-        role_res_map: &HashMap<String, HashSet<SysRoleRes>>,
-        all: &BTreeMap<String, SysResVO>,
+        role_res_map: &HashMap<String, HashSet<SysRolePermission>>,
+        all: &BTreeMap<String, SysPermissionVO>,
     ) -> Result<Vec<SysRoleVO>> {
         let mut data = vec![];
         for mut role in arg {
-            let res_ids = role_res_map.get(role.inner.id.as_ref().unwrap_or_def());
+            let permission_ids = role_res_map.get(role.inner.id.as_ref().unwrap_or_def());
             let mut res_vos = vec![];
-            if let Some(res_ids) = res_ids {
-                for x in res_ids {
-                    match all.get(x.res_id.as_ref().unwrap_or_def()) {
+            if let Some(permission_ids) = permission_ids {
+                for x in permission_ids {
+                    match all.get(x.permission_id.as_ref().unwrap_or_def()) {
                         Some(res) => {
                             res_vos.push(res.clone());
                         }
@@ -142,16 +142,16 @@ impl SysRoleResService {
 
     async fn save_resources(&self, role_id: &str, resource_ids: Vec<String>) -> Result<u64> {
         self.remove_by_role_id(role_id).await?;
-        let mut sys_role_res = vec![];
+        let mut sys_role_permission = vec![];
         for resource_id in resource_ids {
-            sys_role_res.push(SysRoleRes {
+            sys_role_permission.push(SysRolePermission {
                 id: ObjectId::new().to_string().into(),
                 role_id: role_id.to_string().into(),
-                res_id: resource_id.clone().into(),
+                permission_id: resource_id.clone().into(),
                 create_date: DateTime::now().set_micro(0).into(),
             });
         }
-        Ok(SysRoleRes::insert_batch(pool!(), &sys_role_res, 20)
+        Ok(SysRolePermission::insert_batch(pool!(), &sys_role_permission, 20)
             .await?
             .rows_affected)
     }
@@ -164,26 +164,26 @@ impl SysRoleResService {
             .remove_by_role_id(role_id)
             .await?;
         let remove_role_res = CONTEXT
-            .sys_role_res_service
+            .sys_role_permission_service
             .remove_by_role_id(role_id)
             .await?;
         return Ok(remove_roles + remove_user_roles + remove_role_res);
     }
 
     pub async fn remove(&self, id: &str) -> Result<u64> {
-        Ok(SysRoleRes::delete_by_column(pool!(), "id", id)
+        Ok(SysRolePermission::delete_by_column(pool!(), "id", id)
             .await?
             .rows_affected)
     }
 
-    pub async fn remove_by_res_id(&self, res_id: &str) -> Result<u64> {
-        Ok(SysRoleRes::delete_by_column(pool!(), "res_id", res_id)
+    pub async fn remove_by_permission_id(&self, permission_id: &str) -> Result<u64> {
+        Ok(SysRolePermission::delete_by_column(pool!(), "permission_id", permission_id)
             .await?
             .rows_affected)
     }
 
     pub async fn remove_by_role_id(&self, role_id: &str) -> Result<u64> {
-        Ok(SysRoleRes::delete_by_column(pool!(), "role_id", role_id)
+        Ok(SysRolePermission::delete_by_column(pool!(), "role_id", role_id)
             .await?
             .rows_affected)
     }

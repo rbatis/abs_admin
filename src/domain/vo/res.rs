@@ -1,15 +1,15 @@
-use crate::domain::table::SysRes;
+use crate::domain::table::SysPermission;
 use std::collections::HashMap;
 
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
-pub struct SysResVO {
+pub struct SysPermissionVO {
     #[serde(flatten)]
-    pub inner: SysRes,
-    pub childs: Option<Vec<SysResVO>>,
+    pub inner: SysPermission,
+    pub childs: Option<Vec<SysPermissionVO>>,
 }
 
-impl From<SysRes> for SysResVO {
-    fn from(arg: SysRes) -> Self {
+impl From<SysPermission> for SysPermissionVO {
+    fn from(arg: SysPermission) -> Self {
         Self {
             inner: arg,
             childs: None,
@@ -17,7 +17,7 @@ impl From<SysRes> for SysResVO {
     }
 }
 
-impl SysResVO {
+impl SysPermissionVO {
     pub fn get_father_id(&self) -> &Option<String> {
         &self.inner.parent_id
     }

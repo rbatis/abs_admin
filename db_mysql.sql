@@ -1,8 +1,8 @@
 
-DROP TABLE IF EXISTS `sys_res`;
+DROP TABLE IF EXISTS `sys_permission`;
 SET
 character_set_client = utf8mb4 ;
-CREATE TABLE `sys_res`
+CREATE TABLE `sys_permission`
 (
     `id`          varchar(45) CHARACTER SET utf8 NOT NULL,
     `parent_id`   varchar(45) CHARACTER SET utf8 DEFAULT NULL,
@@ -15,8 +15,8 @@ CREATE TABLE `sys_res`
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 LOCK
-TABLES `sys_res` WRITE;
-INSERT INTO `sys_res`
+TABLES `sys_permission` WRITE;
+INSERT INTO `sys_permission`
 VALUES ('1', NULL, '/', '/', '/', 0, '2020-02-09 00:00:00'),
        ('2', NULL, 'dashboard', 'dashboard', 'dashboard', 0, '2020-02-09 00:00:00'),
        ('3', NULL, '首页', '/', '', 0, '2020-08-13 11:43:26'),
@@ -52,21 +52,21 @@ UNLOCK
 TABLES;
 
 
-DROP TABLE IF EXISTS `sys_role_res`;
+DROP TABLE IF EXISTS `sys_role_permission`;
 SET
 character_set_client = utf8mb4 ;
-CREATE TABLE `sys_role_res`
+CREATE TABLE `sys_role_permission`
 (
     `id`          varchar(45) CHARACTER SET utf8 NOT NULL,
     `role_id`     varchar(45) CHARACTER SET utf8 NOT NULL,
-    `res_id`      varchar(45) CHARACTER SET utf8 NOT NULL,
+    `permission_id`      varchar(45) CHARACTER SET utf8 NOT NULL,
     `create_date` datetime                       NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 LOCK
-TABLES `sys_role_res` WRITE;
-INSERT INTO `sys_role_res`
+TABLES `sys_role_permission` WRITE;
+INSERT INTO `sys_role_permission`
 VALUES ('1', '1', '1', '2020-07-28 08:34:40'),
        ('2', '1', '2', '2020-07-28 08:34:40'),
        ('3', '1', '3', '2020-07-28 08:34:40'),

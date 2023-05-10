@@ -19,7 +19,7 @@
 						}
 					}
 				},
-				"url": "http://localhost:8000/admin/sys_res_page"
+				"url": "http://localhost:8000/admin/sys_permission_page"
 			},
 			"response": []
 		},
@@ -55,7 +55,7 @@
 						}
 					}
 				},
-				"url": "http://localhost:8000/admin/sys_res_add"
+				"url": "http://localhost:8000/admin/sys_permission_add"
 			},
 			"response": []
 		},

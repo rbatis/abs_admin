@@ -1,5 +1,5 @@
 use abs_admin::controller::{
-    img_controller, sys_auth_controller, sys_dict_controller, sys_res_controller,
+    img_controller, sys_auth_controller, sys_dict_controller, sys_permission_controller,
     sys_role_controller, sys_user_controller,
 };
 use abs_admin::middleware::auth_actix::Auth;
@@ -38,28 +38,28 @@ async fn main() -> std::io::Result<()> {
                 web::post().to(sys_user_controller::detail),
             )
             .route(
-                "/admin/sys_res_update",
-                web::post().to(sys_res_controller::update),
+                "/admin/sys_permission_update",
+                web::post().to(sys_permission_controller::update),
             )
             .route(
-                "/admin/sys_res_remove",
-                web::post().to(sys_res_controller::remove),
+                "/admin/sys_permission_remove",
+                web::post().to(sys_permission_controller::remove),
             )
             .route(
-                "/admin/sys_res_add",
-                web::post().to(sys_res_controller::add),
+                "/admin/sys_permission_add",
+                web::post().to(sys_permission_controller::add),
             )
             .route(
-                "/admin/sys_res_page",
-                web::post().to(sys_res_controller::page),
+                "/admin/sys_permission_page",
+                web::post().to(sys_permission_controller::page),
             )
             .route(
-                "/admin/sys_res_all",
-                web::post().to(sys_res_controller::all),
+                "/admin/sys_permission_all",
+                web::post().to(sys_permission_controller::all),
             )
             .route(
-                "/admin/sys_res_layer_top",
-                web::post().to(sys_res_controller::layer_top),
+                "/admin/sys_permission_layer_top",
+                web::post().to(sys_permission_controller::layer_top),
             )
             .route(
                 "/admin/sys_user_add",

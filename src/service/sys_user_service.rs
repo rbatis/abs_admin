@@ -7,7 +7,7 @@ use rbatis::sql::page::{Page, PageRequest};
 use crate::domain::dto::{IdDTO, SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO, UserRoleAddDTO};
 use crate::domain::table::{LoginCheck, SysUser};
 use crate::domain::vo::user::SysUserVO;
-use crate::domain::vo::{JWTToken, SignInVO, SysResVO};
+use crate::domain::vo::{JWTToken, SignInVO, SysPermissionVO};
 use crate::pool;
 use crate::util::password_encoder::PasswordEncoder;
 use std::collections::BTreeMap;
@@ -41,7 +41,7 @@ impl SysUserService {
             .await?
             .ok_or_else(|| Error::from(format!("用户:{:?} 不存在！", user_id)))?;
         let mut user_vo = SysUserVO::from(user);
-        let all_res = CONTEXT.sys_res_service.finds_all_map().await?;
+        let all_res = CONTEXT.sys_permission_service.finds_all_map().await?;
         let role = CONTEXT
             .sys_user_role_service
             .find_user_role(&user_id, &all_res)
@@ -235,7 +235,7 @@ impl SysUserService {
             role: None,
         };
 
-        let all_res = CONTEXT.sys_res_service.finds_all_map().await?;
+        let all_res = CONTEXT.sys_permission_service.finds_all_map().await?;
         sign_vo.permissions = self.load_level_permission(&user_id, &all_res).await?;
         let jwt_token = JWTToken {
             id: sign_vo.inner.id.clone().unwrap_or_default(),
@@ -301,7 +301,7 @@ impl SysUserService {
     pub async fn load_level_permission(
         &self,
         user_id: &str,
-        all_res: &BTreeMap<String, SysResVO>,
+        all_res: &BTreeMap<String, SysPermissionVO>,
     ) -> Result<Vec<String>> {
         return CONTEXT
             .sys_role_service

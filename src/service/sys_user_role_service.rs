@@ -3,7 +3,7 @@ use std::collections::BTreeMap;
 use crate::domain::dto::{UserPageDTO, UserRoleAddDTO, UserRolePageDTO};
 use crate::domain::table::SysUserRole;
 use crate::domain::vo::user::SysUserVO;
-use crate::domain::vo::{SysResVO, SysRoleVO};
+use crate::domain::vo::{SysPermissionVO, SysRoleVO};
 use crate::error::Error;
 use crate::error::Result;
 use crate::pool;
@@ -77,7 +77,7 @@ impl SysUserRoleService {
     pub async fn find_user_role(
         &self,
         user_id: &str,
-        all_res: &BTreeMap<String, SysResVO>,
+        all_res: &BTreeMap<String, SysPermissionVO>,
     ) -> Result<Option<SysRoleVO>> {
         if user_id.is_empty() {
             return Ok(None);
@@ -95,13 +95,13 @@ impl SysUserRoleService {
             let mut resources = vec![];
             for role_res in &role_res_vec {
                 if role.id.is_some() && role.id.eq(&role_res.role_id) {
-                    if let Some(res) = all_res.get(role_res.res_id.as_ref().unwrap_or_def()) {
+                    if let Some(res) = all_res.get(role_res.permission_id.as_ref().unwrap_or_def()) {
                         resources.push(res.clone());
                     }
                 }
             }
             let mut vo = SysRoleVO::from(role);
-            vo.resource_ids = CONTEXT.sys_res_service.make_res_ids(&resources);
+            vo.resource_ids = CONTEXT.sys_permission_service.make_permission_ids(&resources);
             vo.resources = resources;
             role_vos.push(vo);
         }

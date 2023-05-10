@@ -1,4 +1,4 @@
-use crate::domain::table::SysRes;
+use crate::domain::table::SysPermission;
 use rbatis::object_id::ObjectId;
 use rbatis::rbdc::datetime::DateTime;
 use rbatis::sql::PageRequest;
@@ -25,9 +25,9 @@ pub struct ResAddDTO {
     pub path: Option<String>,
 }
 
-impl From<ResAddDTO> for SysRes {
+impl From<ResAddDTO> for SysPermission {
     fn from(arg: ResAddDTO) -> Self {
-        SysRes {
+        SysPermission {
             id: ObjectId::new().to_string().into(),
             parent_id: arg.parent_id.clone(),
             name: arg.name.clone(),
@@ -48,9 +48,9 @@ pub struct ResEditDTO {
     pub path: Option<String>,
 }
 
-impl From<&ResEditDTO> for SysRes {
+impl From<&ResEditDTO> for SysPermission {
     fn from(arg: &ResEditDTO) -> Self {
-        SysRes {
+        SysPermission {
             id: arg.id.clone(),
             parent_id: arg.parent_id.clone(),
             name: arg.name.clone(),

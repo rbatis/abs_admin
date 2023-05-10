@@ -21,10 +21,10 @@ BEGIN;
 COMMIT;
 
 -- ----------------------------
--- Table structure for sys_res
+-- Table structure for sys_permission
 -- ----------------------------
-DROP TABLE IF EXISTS "public"."sys_res";
-CREATE TABLE "public"."sys_res" (
+DROP TABLE IF EXISTS "public"."sys_permission";
+CREATE TABLE "public"."sys_permission" (
   "id" varchar(256) COLLATE "pg_catalog"."default" NOT NULL,
   "parent_id" varchar(256) COLLATE "pg_catalog"."default" DEFAULT NULL::character varying,
   "name" varchar(256) COLLATE "pg_catalog"."default" DEFAULT NULL::character varying,
@@ -34,23 +34,23 @@ CREATE TABLE "public"."sys_res" (
   "create_date" timestamp(6) NOT NULL
 )
 ;
-ALTER TABLE "public"."sys_res" OWNER TO "postgres";
-COMMENT ON COLUMN "public"."sys_res"."create_date" IS '创建时间';
+ALTER TABLE "public"."sys_permission" OWNER TO "postgres";
+COMMENT ON COLUMN "public"."sys_permission"."create_date" IS '创建时间';
 
 -- ----------------------------
--- Records of sys_res
+-- Records of sys_permission
 -- ----------------------------
 BEGIN;
-INSERT INTO "public"."sys_res" VALUES ('1', NULL, '/', '/', '/', 0, '2020-02-09 00:00:00');
-INSERT INTO "public"."sys_res" VALUES ('2', NULL, 'dashboard', 'dashboard', 'dashboard', 0, '2020-02-09 00:00:00');
-INSERT INTO "public"."sys_res" VALUES ('3', NULL, 'form', 'form', 'form', 0, '2020-02-09 00:00:00');
-INSERT INTO "public"."sys_res" VALUES ('4', NULL, 'table', 'table', 'table', 0, '2020-02-09 00:00:00');
-INSERT INTO "public"."sys_res" VALUES ('5', NULL, 'profile', 'profile', 'profile', 0, '2020-02-09 00:00:00');
-INSERT INTO "public"."sys_res" VALUES ('6', NULL, 'result', 'result', 'result', 0, '2020-02-09 00:00:00');
-INSERT INTO "public"."sys_res" VALUES ('7', NULL, 'exception', 'exception', 'exception', 0, '2020-02-09 00:00:00');
-INSERT INTO "public"."sys_res" VALUES ('8', NULL, 'user', 'user', 'user', 0, '2020-02-09 00:00:00');
-INSERT INTO "public"."sys_res" VALUES ('9', NULL, 'setting', 'setting', 'setting', 0, '2020-02-09 00:00:00');
-INSERT INTO "public"."sys_res" VALUES ('10', NULL, '超级管理员权限', '/', '', 0, '2020-08-13 11:43:26');
+INSERT INTO "public"."sys_permission" VALUES ('1', NULL, '/', '/', '/', 0, '2020-02-09 00:00:00');
+INSERT INTO "public"."sys_permission" VALUES ('2', NULL, 'dashboard', 'dashboard', 'dashboard', 0, '2020-02-09 00:00:00');
+INSERT INTO "public"."sys_permission" VALUES ('3', NULL, 'form', 'form', 'form', 0, '2020-02-09 00:00:00');
+INSERT INTO "public"."sys_permission" VALUES ('4', NULL, 'table', 'table', 'table', 0, '2020-02-09 00:00:00');
+INSERT INTO "public"."sys_permission" VALUES ('5', NULL, 'profile', 'profile', 'profile', 0, '2020-02-09 00:00:00');
+INSERT INTO "public"."sys_permission" VALUES ('6', NULL, 'result', 'result', 'result', 0, '2020-02-09 00:00:00');
+INSERT INTO "public"."sys_permission" VALUES ('7', NULL, 'exception', 'exception', 'exception', 0, '2020-02-09 00:00:00');
+INSERT INTO "public"."sys_permission" VALUES ('8', NULL, 'user', 'user', 'user', 0, '2020-02-09 00:00:00');
+INSERT INTO "public"."sys_permission" VALUES ('9', NULL, 'setting', 'setting', 'setting', 0, '2020-02-09 00:00:00');
+INSERT INTO "public"."sys_permission" VALUES ('10', NULL, '超级管理员权限', '/', '', 0, '2020-08-13 11:43:26');
 COMMIT;
 
 -- ----------------------------
@@ -76,32 +76,32 @@ INSERT INTO "public"."sys_role" VALUES ('1', 'super', 0, '2020-07-28 08:34:40', 
 COMMIT;
 
 -- ----------------------------
--- Table structure for sys_role_res
+-- Table structure for sys_role_permission
 -- ----------------------------
-DROP TABLE IF EXISTS "public"."sys_role_res";
-CREATE TABLE "public"."sys_role_res" (
+DROP TABLE IF EXISTS "public"."sys_role_permission";
+CREATE TABLE "public"."sys_role_permission" (
   "id" varchar(256) COLLATE "pg_catalog"."default" NOT NULL,
   "role_id" varchar(256) COLLATE "pg_catalog"."default" NOT NULL,
-  "res_id" varchar(256) COLLATE "pg_catalog"."default" NOT NULL,
+  "permission_id" varchar(256) COLLATE "pg_catalog"."default" NOT NULL,
   "create_date" timestamp(6) NOT NULL
 )
 ;
-ALTER TABLE "public"."sys_role_res" OWNER TO "postgres";
+ALTER TABLE "public"."sys_role_permission" OWNER TO "postgres";
 
 -- ----------------------------
--- Records of sys_role_res
+-- Records of sys_role_permission
 -- ----------------------------
 BEGIN;
-INSERT INTO "public"."sys_role_res" VALUES ('1', '1', '1', '2020-07-28 08:34:40');
-INSERT INTO "public"."sys_role_res" VALUES ('2', '1', '2', '2020-07-28 08:34:40');
-INSERT INTO "public"."sys_role_res" VALUES ('3', '1', '3', '2020-07-28 08:34:40');
-INSERT INTO "public"."sys_role_res" VALUES ('4', '1', '4', '2020-07-28 08:34:40');
-INSERT INTO "public"."sys_role_res" VALUES ('5', '1', '5', '2020-07-28 08:34:40');
-INSERT INTO "public"."sys_role_res" VALUES ('6', '1', '6', '2020-07-28 08:34:40');
-INSERT INTO "public"."sys_role_res" VALUES ('7', '1', '7', '2020-07-28 08:34:40');
-INSERT INTO "public"."sys_role_res" VALUES ('8', '1', '8', '2020-07-28 08:34:40');
-INSERT INTO "public"."sys_role_res" VALUES ('9', '1', '9', '2020-07-28 08:34:40');
-INSERT INTO "public"."sys_role_res" VALUES ('10', '1', '10', '2020-07-28 08:34:40');
+INSERT INTO "public"."sys_role_permission" VALUES ('1', '1', '1', '2020-07-28 08:34:40');
+INSERT INTO "public"."sys_role_permission" VALUES ('2', '1', '2', '2020-07-28 08:34:40');
+INSERT INTO "public"."sys_role_permission" VALUES ('3', '1', '3', '2020-07-28 08:34:40');
+INSERT INTO "public"."sys_role_permission" VALUES ('4', '1', '4', '2020-07-28 08:34:40');
+INSERT INTO "public"."sys_role_permission" VALUES ('5', '1', '5', '2020-07-28 08:34:40');
+INSERT INTO "public"."sys_role_permission" VALUES ('6', '1', '6', '2020-07-28 08:34:40');
+INSERT INTO "public"."sys_role_permission" VALUES ('7', '1', '7', '2020-07-28 08:34:40');
+INSERT INTO "public"."sys_role_permission" VALUES ('8', '1', '8', '2020-07-28 08:34:40');
+INSERT INTO "public"."sys_role_permission" VALUES ('9', '1', '9', '2020-07-28 08:34:40');
+INSERT INTO "public"."sys_role_permission" VALUES ('10', '1', '10', '2020-07-28 08:34:40');
 COMMIT;
 
 -- ----------------------------
@@ -165,9 +165,9 @@ COMMIT;
 ALTER TABLE "public"."sys_dict" ADD CONSTRAINT "sys_dict_pkey" PRIMARY KEY ("id");
 
 -- ----------------------------
--- Primary Key structure for table sys_res
+-- Primary Key structure for table sys_permission
 -- ----------------------------
-ALTER TABLE "public"."sys_res" ADD CONSTRAINT "sys_res_pkey" PRIMARY KEY ("id");
+ALTER TABLE "public"."sys_permission" ADD CONSTRAINT "sys_permission_pkey" PRIMARY KEY ("id");
 
 -- ----------------------------
 -- Primary Key structure for table sys_role
@@ -175,9 +175,9 @@ ALTER TABLE "public"."sys_res" ADD CONSTRAINT "sys_res_pkey" PRIMARY KEY ("id");
 ALTER TABLE "public"."sys_role" ADD CONSTRAINT "sys_role_pkey" PRIMARY KEY ("id");
 
 -- ----------------------------
--- Primary Key structure for table sys_role_res
+-- Primary Key structure for table sys_role_permission
 -- ----------------------------
-ALTER TABLE "public"."sys_role_res" ADD CONSTRAINT "sys_role_res_pkey" PRIMARY KEY ("id");
+ALTER TABLE "public"."sys_role_permission" ADD CONSTRAINT "sys_role_permission_pkey" PRIMARY KEY ("id");
 
 -- ----------------------------
 -- Primary Key structure for table sys_user

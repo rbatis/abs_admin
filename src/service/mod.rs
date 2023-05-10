@@ -4,8 +4,8 @@ mod redis_service;
 mod sys_auth_service;
 mod sys_config_service;
 mod sys_dict_service;
-mod sys_res_service;
-mod sys_role_res_service;
+mod sys_permission_service;
+mod sys_role_permission_service;
 mod sys_role_service;
 mod sys_sms_service;
 mod sys_trash_service;
@@ -21,8 +21,8 @@ pub use redis_service::*;
 pub use sys_auth_service::*;
 pub use sys_config_service::*;
 pub use sys_dict_service::*;
-pub use sys_res_service::*;
-pub use sys_role_res_service::*;
+pub use sys_permission_service::*;
+pub use sys_role_permission_service::*;
 pub use sys_role_service::*;
 pub use sys_sms_service::*;
 pub use sys_trash_service::*;
@@ -43,10 +43,10 @@ pub struct ServiceContext {
     pub config: ApplicationConfig,
     pub rb: Rbatis,
     pub cache_service: CacheService,
-    pub sys_res_service: SysResService,
+    pub sys_permission_service: SysPermissionService,
     pub sys_user_service: SysUserService,
     pub sys_role_service: SysRoleService,
-    pub sys_role_res_service: SysRoleResService,
+    pub sys_role_permission_service: SysRoleResService,
     pub sys_user_role_service: SysUserRoleService,
     pub sys_dict_service: SysDictService,
     pub sys_auth_service: SysAuthService,
@@ -86,10 +86,10 @@ impl Default for ServiceContext {
         ServiceContext {
             rb: crate::domain::init_rbatis(&config),
             cache_service: CacheService::new(&config).unwrap(),
-            sys_res_service: SysResService {},
+            sys_permission_service: SysPermissionService {},
             sys_user_service: SysUserService {},
             sys_role_service: SysRoleService {},
-            sys_role_res_service: SysRoleResService {},
+            sys_role_permission_service: SysRoleResService {},
             sys_user_role_service: SysUserRoleService {},
             sys_dict_service: SysDictService {},
             sys_auth_service: SysAuthService {},

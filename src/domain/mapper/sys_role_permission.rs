@@ -1,2 +1,2 @@
 use crate::domain::table::*;
-crud!(SysRoleRes {});
+crud!(SysRolePermission {});

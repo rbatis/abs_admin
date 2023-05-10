@@ -1,6 +1,6 @@
-DROP TABLE IF EXISTS `sys_res`;
+DROP TABLE IF EXISTS `sys_permission`;
 
-CREATE TABLE `sys_res`
+CREATE TABLE `sys_permission`
 (
     `id`          TEXT NOT NULL PRIMARY KEY,
     `parent_id`   TEXT DEFAULT NULL,
@@ -11,7 +11,7 @@ CREATE TABLE `sys_res`
     `create_date` DATETIME NOT NULL
 );
 
-INSERT INTO `sys_res`
+INSERT INTO `sys_permission`
 VALUES ('1', NULL, '/', '/', '/', 0, '2020-02-09 00:00:00'),
        ('2', NULL, 'dashboard', 'dashboard', 'dashboard', 0, '2020-02-09 00:00:00'),
        ('3', NULL, '首页', '/', '', 0, '2020-08-13 11:43:26'),
@@ -38,17 +38,17 @@ INSERT INTO `sys_role`
 VALUES ('1', 'super', 0, '2020-07-28 08:34:40', NULL);
 
 
-DROP TABLE IF EXISTS `sys_role_res`;
+DROP TABLE IF EXISTS `sys_role_permission`;
 
-CREATE TABLE `sys_role_res`
+CREATE TABLE `sys_role_permission`
 (
     `id`          TEXT PRIMARY KEY,
     `role_id`     TEXT NOT NULL,
-    `res_id`      TEXT NOT NULL,
+    `permission_id`      TEXT NOT NULL,
     `create_date` TEXT NOT NULL
 );
 
-INSERT INTO `sys_role_res`
+INSERT INTO `sys_role_permission`
 VALUES ('1', '1', '1', '2020-07-28 08:34:40'),
        ('2', '1', '2', '2020-07-28 08:34:40'),
        ('3', '1', '3', '2020-07-28 08:34:40'),

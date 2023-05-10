@@ -2,7 +2,7 @@ use crate::domain::table::LoginCheck;
 use rbatis::rbdc::datetime::DateTime;
 ///Permission Resource Table
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
-pub struct SysRes {
+pub struct SysPermission {
     pub id: Option<String>,
     //father id(can empty)
     pub parent_id: Option<String>,
@@ -26,12 +26,12 @@ pub struct SysRole {
     pub create_date: Option<DateTime>,
 }
 
-///Role resource relational tables (relational tables do not use logical deletion)
+///Role Permission relational tables (relational tables do not use logical deletion)
 #[derive(Clone, Debug, Eq, PartialEq, Hash, serde::Serialize, serde::Deserialize)]
-pub struct SysRoleRes {
+pub struct SysRolePermission {
     pub id: Option<String>,
     pub role_id: Option<String>,
-    pub res_id: Option<String>,
+    pub permission_id: Option<String>,
     pub create_date: Option<DateTime>,
 }
 
