@@ -8,7 +8,7 @@
 - [fast_log](https://github.com/rbatis/fast_log) 超快速异步日志框架，支持 zip 压缩，切割
 - [actix-web](https://actix.rs/) 常年屠榜 web 框架压测网站的框架
 - 前后端分离,基于 [Vue-JS](https://cn.vuejs.org/) +[Vue-AntDesign](https://www.antdv.com/docs/vue/introduce-cn/) + [Vue-AntDesign-Pro](https://pro.antdv.com/)
-- RBAC 权限控制,自带 JwtToken 鉴权登陆，图形验证码登陆，二维码扫码登陆,基础权限管理
+- RBAC(5表模式) 权限控制,自带 JwtToken 鉴权登陆，图形验证码登陆，二维码扫码登陆,基础权限管理
 
 # 进度、功能模块（包含(包含 web 前端和 rust 后端)）
 
