@@ -16,7 +16,7 @@ pub use crate::config::config::ApplicationConfig;
 pub use cache_service::*;
 pub use mem_service::*;
 use once_cell::sync::Lazy;
-use rbatis::rbatis::Rbatis;
+use rbatis::rbatis::RBatis;
 pub use redis_service::*;
 pub use sys_auth_service::*;
 pub use sys_config_service::*;
@@ -41,7 +41,7 @@ macro_rules! pool {
 
 pub struct ServiceContext {
     pub config: ApplicationConfig,
-    pub rb: Rbatis,
+    pub rb: RBatis,
     pub cache_service: CacheService,
     pub sys_permission_service: SysPermissionService,
     pub sys_user_service: SysUserService,
