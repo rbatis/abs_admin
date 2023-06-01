@@ -18,15 +18,15 @@ impl From<&ResPageDTO> for PageRequest {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
-pub struct ResAddDTO {
+pub struct PermissionAddDTO {
     pub parent_id: Option<String>,
     pub name: Option<String>,
     pub permission: Option<String>,
     pub path: Option<String>,
 }
 
-impl From<ResAddDTO> for SysPermission {
-    fn from(arg: ResAddDTO) -> Self {
+impl From<PermissionAddDTO> for SysPermission {
+    fn from(arg: PermissionAddDTO) -> Self {
         SysPermission {
             id: ObjectId::new().to_string().into(),
             parent_id: arg.parent_id.clone(),

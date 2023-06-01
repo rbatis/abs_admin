@@ -26,7 +26,7 @@ pub async fn info(req: HttpRequest) -> impl Responder {
                 .await;
             RespVO::from_result(&user_data).resp_json()
         }
-        _ => RespVO::<String>::from_error_info("access_token is empty!", "").resp_json(),
+        _ => RespVO::<String>::from_error_info("access_token empty", "access_token 不能为空").resp_json(),
     };
 }
 

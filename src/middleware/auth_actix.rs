@@ -74,21 +74,13 @@ where
                         Ok(data) => match check_auth(&data, &path).await {
                             Ok(_) => {}
                             Err(e) => {
-                                let resp: RespVO<String> = RespVO {
-                                    code: Some("-1".to_string()),
-                                    msg: Some(format!("无权限访问:{}", e.to_string())),
-                                    data: None,
-                                };
+                                let resp: RespVO<String> = RespVO::from_error_info("-1", &format!("无权限访问:{}", e.to_string()));
                                 return Ok(req.into_response(resp.resp_json()));
                             }
                         },
                         Err(e) => {
                             //401 http code will exit login
-                            let resp: RespVO<String> = RespVO {
-                                code: Some("-1".to_string()),
-                                msg: Some(format!("Unauthorized for:{}", e.to_string())),
-                                data: None,
-                            };
+                            let resp: RespVO<String> = RespVO::from_error_info("-1",&format!("Unauthorized for:{}", e.to_string()));
                             return Err(ErrorUnauthorized(serde_json::json!(&resp).to_string()));
                         }
                     }

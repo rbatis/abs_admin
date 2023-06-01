@@ -1,4 +1,4 @@
-use crate::domain::dto::{EmptyDTO, IdDTO, ResAddDTO, ResEditDTO, ResPageDTO};
+use crate::domain::dto::{EmptyDTO, IdDTO, PermissionAddDTO, ResEditDTO, ResPageDTO};
 use crate::domain::table::SysPermission;
 use crate::domain::vo::RespVO;
 use crate::service::CONTEXT;
@@ -19,12 +19,12 @@ pub async fn layer_top(_page: web::Json<EmptyDTO>) -> impl Responder {
     RespVO::from_result(&data).resp_json()
 }
 
-pub async fn add(mut arg: web::Json<ResAddDTO>) -> impl Responder {
+pub async fn add(mut arg: web::Json<PermissionAddDTO>) -> impl Responder {
     if arg.name.is_none() {
-        return RespVO::<u64>::from_error_info("", "资源名字不能为空!").resp_json();
+        return RespVO::<u64>::from_error_info("arg.name empty", "权限名字不能为空").resp_json();
     }
     if arg.permission.is_none() {
-        return RespVO::<u64>::from_error_info("", "资源permission不能为空!").resp_json();
+        return RespVO::<u64>::from_error_info("arg.permission empty", "权限不能为空").resp_json();
     }
     if arg.path.is_none() {
         arg.path = Some("".to_string());
