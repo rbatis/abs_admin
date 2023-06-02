@@ -21,7 +21,7 @@ pub struct CacheService {
 }
 
 impl CacheService {
-    pub fn new(cfg: &ApplicationConfig) -> crate::error::Result<Self> {
+    pub fn new(cfg: &ApplicationConfig) -> Result<Self> {
         match cfg.cache_type.as_str() {
             "mem" => {
                 println!("[abs_admin] cache_type: mem");
