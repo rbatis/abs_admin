@@ -14,7 +14,6 @@ async fn index() -> impl Responder {
         .body("[abs_admin] Hello !")
 }
 
-/// use tokio,because Rbatis specifies the runtime-tokio
 #[ntex::main]
 async fn main() -> std::io::Result<()> {
     //log
