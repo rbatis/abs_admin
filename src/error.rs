@@ -2,7 +2,6 @@
 use std::error::Error as StdError;
 use std::fmt::{self, Debug, Display};
 use std::io;
-
 use serde::de::Visitor;
 use serde::ser::{Serialize, Serializer};
 use serde::{Deserialize, Deserializer};
@@ -66,8 +65,8 @@ impl From<rbatis::Error> for Error {
     }
 }
 
-impl From<actix_web::error::Error> for Error {
-    fn from(arg: actix_web::error::Error) -> Self {
+impl From<ntex::web::error::Error> for Error {
+    fn from(arg: ntex::web::error::Error) -> Self {
         Error::E(arg.to_string())
     }
 }

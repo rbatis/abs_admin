@@ -5,6 +5,7 @@ pub mod role;
 pub mod sign_in;
 pub mod user;
 
+use ntex::web::HttpResponse;
 pub use dict::*;
 pub use jwt::*;
 pub use res::*;
@@ -12,7 +13,6 @@ pub use role::*;
 pub use sign_in::*;
 
 use crate::error::Error;
-use actix_web::HttpResponse;
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 
@@ -81,9 +81,9 @@ where
 
     pub fn resp_json(&self) -> HttpResponse {
         return HttpResponse::Ok()
-            .insert_header(("Access-Control-Allow-Origin", "*"))
-            .insert_header(("Cache-Control", "no-cache"))
-            .insert_header(("Content-Type", "text/json;charset=UTF-8"))
+            .header("Access-Control-Allow-Origin", "*")
+            .header("Cache-Control", "no-cache")
+            .header("Content-Type", "text/json;charset=UTF-8")
             .body(self.to_string());
     }
 }

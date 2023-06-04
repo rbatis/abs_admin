@@ -20,8 +20,7 @@ log = "0.4"
 #fast_log enable features = ["lz4", "zip", "gzip"], and edit src/config/log.rs fn choose_packer(),edit application.yml add log_pack_compress: "zip"
 fast_log = { version = "1.5", features = [] }
 #web server
-actix-web = { version = "4", default-features = false, features = ["macros"] }
-actix-http = "3"
+ntex = { version = "0.6", features = ["tokio","rustls"] }
 #redis
 redis = { version = "0.22.3", features = ["tokio-comp"] }
 #jwt

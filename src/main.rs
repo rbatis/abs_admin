@@ -1,15 +1,16 @@
+use ntex::web;
+use ntex::web::{App, HttpResponse, Responder};
 use abs_admin::controller::{
     img_controller, sys_auth_controller, sys_dict_controller, sys_permission_controller,
     sys_role_controller, sys_user_controller,
 };
 use abs_admin::middleware::auth_actix::Auth;
 use abs_admin::service::CONTEXT;
-use actix_web::{web, App, HttpResponse, HttpServer, Responder};
 
 async fn index() -> impl Responder {
     HttpResponse::Ok()
-        .insert_header(("Access-Control-Allow-Origin", "*"))
-        .insert_header(("Cache-Control", "no-cache"))
+        .header("Access-Control-Allow-Origin", "*")
+        .header("Cache-Control", "no-cache")
         .body("[abs_admin] Hello !")
 }
 
@@ -21,7 +22,7 @@ async fn main() -> std::io::Result<()> {
     //database
     CONTEXT.init_pool().await;
     //router
-    HttpServer::new(|| {
+    web::server(|| {
         App::new()
             .wrap(Auth {})
             .route("/", web::get().to(index))

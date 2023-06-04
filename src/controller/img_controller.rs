@@ -3,16 +3,17 @@ use crate::domain::vo::RespVO;
 use crate::error::Error;
 use crate::service::CONTEXT;
 use crate::util::string::IsEmptyString;
-use actix_web::{web, HttpResponse, Responder};
 use captcha::filters::{Dots, Noise, Wave};
 use captcha::Captcha;
+use ntex::web;
+use ntex::web::{HttpResponse, Responder};
 
 /// Image Code interface
 /// Http Method GET
 /// example：
 /// http://localhost:8000/admin/captcha?account=18900000000
 ///
-pub async fn captcha(arg: web::Query<CatpchaDTO>) -> impl Responder {
+pub async fn captcha(arg: web::types::Json<CatpchaDTO>) -> impl Responder {
     if arg.account.is_empty() {
         return RespVO::<()>::from_error("-1", &Error::from("account is empty!")).resp_json();
     }
@@ -50,8 +51,8 @@ pub async fn captcha(arg: web::Query<CatpchaDTO>) -> impl Responder {
         }
     }
     HttpResponse::Ok()
-        .insert_header(("Access-Control-Allow-Origin", "*"))
-        .insert_header(("Cache-Control", "no-cache"))
+        .header("Access-Control-Allow-Origin", "*")
+        .header("Cache-Control", "no-cache")
         .content_type("image/png")
         .body(png)
         .into()
