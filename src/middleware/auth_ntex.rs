@@ -5,6 +5,7 @@ use std::{rc::Rc};
 use ntex::service::{Middleware, Service};
 use ntex::util::BoxFuture;
 use ntex::web::{Error, ErrorRenderer, WebRequest, WebResponse};
+use ntex::web::error::ErrorUnauthorized;
 
 pub struct Auth;
 
@@ -54,7 +55,7 @@ impl<S, Err> Service<WebRequest<Err>> for AuthMiddleware<S>
                         Err(e) => {
                             //401 http code will exit login
                             let resp: RespVO<String> = RespVO::from_error_info("401",&format!("Unauthorized for:{}", e.to_string()));
-                            return Ok(req.into_response(resp.resp_json()));
+                            return Err(ErrorUnauthorized(serde_json::json!(&resp).to_string()).into());
                         }
                     }
                 }
