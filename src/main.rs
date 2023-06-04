@@ -15,7 +15,7 @@ async fn index() -> impl Responder {
 }
 
 /// use tokio,because Rbatis specifies the runtime-tokio
-#[tokio::main]
+#[ntex::main]
 async fn main() -> std::io::Result<()> {
     //log
     abs_admin::config::log::init_log();
