@@ -9,7 +9,6 @@ edition = "2021"
 rbs = { version = "4.3" }
 rbatis = { version = "4.3", features = [] }
 rbdc-sqlite = { version = "4.3" }
-#rbatis orm dep must use async-std(Because actix-web relies on tokio0.2)
 tokio = { version = "1", features = ["full"] }
 #serde and json
 serde = { version = "1.0", features = ["derive"] }
