@@ -7,5 +7,5 @@ impl_select_page!(SysUser{select_page(name:&str,account:&str)=>
       ` and name like #{'%'+name+'%'}`
     if account != '':
       ` and account like #{'%'+account+'%'}`
-    if !sql.contains('count'):
+    if !sql.contains('count(1)'):
      ` order by create_date desc`"});
