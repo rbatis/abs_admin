@@ -10,7 +10,7 @@ DDD domain driver,Mysql,Redis, general middleware and database, general enterpri
 
 - [fast_log] (https://github.com/rbatis/fast_log) super quick asynchronous logging framework, support for zip, cutting
 
-- [ntex](https://crates.io/crates/ntex) web framework
+- [actix-web](https://actix.rs/) Perennial butcher list Web frame pressure test site frame
 
 The separation - both before and after the end, based on [Vue - JS] + [Vue - AntDesign] (https://cn.vuejs.org/) (https://www.antdv.com/docs/vue/introduce-cn/) + [Vue-AntDesign-Pro](https://pro.antdv.com/)
 

@@ -1,27 +1,27 @@
-use ntex::web;
-use ntex::web::{App, HttpResponse, Responder};
 use abs_admin::controller::{
     img_controller, sys_auth_controller, sys_dict_controller, sys_permission_controller,
     sys_role_controller, sys_user_controller,
 };
-use abs_admin::middleware::auth_ntex::Auth;
+use abs_admin::middleware::auth_actix::Auth;
 use abs_admin::service::CONTEXT;
+use actix_web::{web, App, HttpResponse, HttpServer, Responder};
 
 async fn index() -> impl Responder {
     HttpResponse::Ok()
-        .header("Access-Control-Allow-Origin", "*")
-        .header("Cache-Control", "no-cache")
+        .insert_header(("Access-Control-Allow-Origin", "*"))
+        .insert_header(("Cache-Control", "no-cache"))
         .body("[abs_admin] Hello !")
 }
 
-#[ntex::main]
+/// use tokio,because Rbatis specifies the runtime-tokio
+#[tokio::main]
 async fn main() -> std::io::Result<()> {
     //log
     abs_admin::config::log::init_log();
     //database
     CONTEXT.init_pool().await;
     //router
-    web::server(|| {
+    HttpServer::new(|| {
         App::new()
             .wrap(Auth {})
             .route("/", web::get().to(index))
