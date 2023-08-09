@@ -1,71 +1,48 @@
 #debug模式，true输出控制台日志，false只输出文件日志.生产环境需要关闭debug，rbatis也需移除"debug_mode"
-#Debug mode, true for outputting console log, false for only outputting file log. Debug mode should be turned off in production, and "debug_mode" should also be removed from rbatis.
 debug: true
 #名称
-#Name
 server_name: "abs_admin"
 #server 地址
-#Server address
 server_url: "0.0.0.0:8000"
 #缓存介质类型,单选("mem","redis")
-#Cache medium type, choose one ("mem", "redis")
 cache_type: "mem"
 #redis地址(cache_type为“redis”时有效)
-#Redis address (valid only when cache_type is "redis")
 redis_url: "redis://127.0.0.1:6379"
 #数据库地址
-#Database address
 database_url: "sqlite://target/sqlite.db"
 #逻辑删除-字段
-#Logical deletion - column
 logic_column: "del"
 #逻辑删除-未删除标志
-#Logical deletion - undeleted flag
 logic_un_deleted: 0
 #逻辑删除-已删除标志
-#Logical deletion - deleted flag
 logic_deleted: 1
 #日志文件存放目录
-#Log file storage directory
 log_dir: "target/logs/"
 #日志分割尺寸-单位KB,MB,GB
-#Log rotation size - unit: KB, MB, GB
 log_temp_size: "100MB"
+#日志类型-可选(大内存机器推荐mmap) mmap,file
+log_type: "file"
 #日志打包格式可选“”（空-保留.log）“gzip”（gz压缩包）“zip”（zip压缩包）“lz4”（lz4压缩包（非常快））
 #需要打开以下选项
 #toml文件里面，fast_log 添加   fast_log = { version = "1.5",features = ["lz4", "zip", "gzip"]}
 #src/config/log.rs    解除   fn choose_packer()下的注释
 #application.yml      添加   log_pack_compress: "zip"
-#--------------------------------------------------------------------------------
-#Log packing format options: "" (empty - keep .log), "gzip" (gz compressed package), "zip" (zip compressed package), "lz4" (lz4 compressed package (very fast))
-#Need to open the following options:
-#In the toml file, add "fast_log = { version = "1.5",features = ["lz4", "zip", "gzip"]}" to fast_log
-#Uncomment the function choose_packer() in src/config/log.rs
-#Add "log_pack_compress: "zip"" to application.yml
 log_pack_compress: ""
 #日志滚动保留-保留全部: All,按时间保留(秒): KeepTime(i64),按版本保留: KeepNum(i64)
-#Log rolling retention - keep all: All, keep by time (in seconds): KeepTime(i64), keep by version: KeepNum(i64)
 log_rolling_type: "KeepNum(20)"
 #日志等级: off,info,error,warn,debug,trace
-#Log level: off, info, error, warn, debug, trace
 log_level: "info"
 #日志通道长度，null为无界队列，非null为有界队列（性能好）
-#Log channel length, null for unbounded queue, non-null for bounded queue (better performance)
 log_chan_len: 100000
 #JwtToken秘钥
-#JwtToken secret
 jwt_secret: "abs_admin"
 #短信通道缓存（系统先把数据放入队列sms:send:，第三方短信sdk或程序需要从队列获取并发送，获得回执存入sms:resp:*）,格式为sms:send:手机号和sms:resp:手机号
-#SMS channel cache (the system first puts the data into the queue sms:send:, and the third-party SMS SDK or program needs to get and send it from the queue, and store the receipt in sms:resp:*), in the format of sms:send: phone number and sms:resp: phone number
 sms_cache_send_key_prefix: "sms:send:"
 #登陆失败拒绝策略，重试次数限制(0次无限制)
-#Login failure rejection policy, retry limit (0 times for no limit)
 login_fail_retry: 3
 #登陆失败重试次数限制超过后提示的等待时间（秒）
-#Waiting time for login failure retry limit exceeded (in seconds)
 login_fail_retry_wait_sec: 30
 #接口白名单（免登陆直接访问）
-#Interface whitelist (direct access without login)
 white_list_api:
  - "/"
  - "/admin/sys_login"

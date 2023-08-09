@@ -18,7 +18,7 @@ serde_yaml = "0.9"
 #log
 log = "0.4"
 #fast_log enable features = ["lz4", "zip", "gzip"], and edit src/config/log.rs fn choose_packer(),edit application.yml add log_pack_compress: "zip"
-fast_log = { version = "1.5", features = [] }
+fast_log = { version = "1.6", features = ["mmap"] }
 #web server
 actix-web = { version = "4", default-features = false, features = ["macros"] }
 actix-http = "3"
