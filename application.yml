@@ -1,5 +1,5 @@
 #debug模式，true输出控制台日志，false只输出文件日志.生产环境需要关闭debug
-debug: false
+debug: true
 #名称
 server_name: "abs_admin"
 #server 地址
