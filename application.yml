@@ -21,7 +21,7 @@ log_dir: "target/logs/"
 #日志分割尺寸-单位KB,MB,GB
 log_temp_size: "100MB"
 #日志类型-可选(大内存机器推荐mmap) mmap,file
-log_type: "file"
+log_type: "mmap"
 #日志打包格式可选“”（空-保留.log）“gzip”（gz压缩包）“zip”（zip压缩包）“lz4”（lz4压缩包（非常快））
 #需要打开以下选项
 #toml文件里面，fast_log 添加   fast_log = { version = "1.5",features = ["lz4", "zip", "gzip"]}
