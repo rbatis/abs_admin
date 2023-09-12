@@ -33,7 +33,7 @@ pub static CONTEXT: Lazy<ServiceContext> = Lazy::new(|| ServiceContext::default(
 #[macro_export]
 macro_rules! pool {
     () => {
-        &mut $crate::service::CONTEXT.rb.clone()
+        &$crate::service::CONTEXT.rb
     };
 }
 
