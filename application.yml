@@ -16,7 +16,7 @@ logic_column: "del"
 logic_un_deleted: 0
 #逻辑删除-已删除标志
 logic_deleted: 1
-#日志文件存放目录
+#日志文件目录-可以指定具体名称target/logs/abc.log默认target/logs/
 log_dir: "target/logs/"
 #日志分割尺寸-单位KB,MB,GB
 log_temp_size: "100MB"
