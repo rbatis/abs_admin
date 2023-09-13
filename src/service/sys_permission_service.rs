@@ -54,15 +54,10 @@ impl SysPermissionService {
     }
 
     pub async fn remove(&self, id: &str) -> Result<u64> {
-        let trash = SysPermission::select_by_column(pool!(), "id", id).await?;
         let num = SysPermission::delete_by_column(pool!(), "id", id)
             .await?
             .rows_affected;
-        CONTEXT.sys_trash_service.add("sys_permission", &trash).await?;
-
-        let trash = SysPermission::select_by_column(pool!(), "parent_id", id).await?;
         SysPermission::delete_by_column(pool!(), "parent_id", id).await?;
-        CONTEXT.sys_trash_service.add("sys_permission", &trash).await?;
         let _ = CONTEXT.sys_role_permission_service.remove_by_permission_id(id).await;
         self.update_cache().await?;
         return Ok(num);

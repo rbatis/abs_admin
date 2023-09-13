@@ -290,9 +290,7 @@ impl SysUserService {
         if id.is_empty() {
             return Err(Error::from("id 不能为空！"));
         }
-        let trash = SysUser::select_by_column(pool!(), "id", id).await?;
         let r = SysUser::delete_by_column(pool!(), "id", id).await?;
-        let _ = CONTEXT.sys_trash_service.add("sys_user", &trash).await;
         CONTEXT.sys_user_role_service.remove_by_user_id(id).await?;
         return Ok(r.rows_affected);
     }

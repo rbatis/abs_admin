@@ -11,6 +11,7 @@ mod sys_trash_service;
 mod sys_user_role_service;
 mod sys_user_service;
 
+use std::sync::Arc;
 pub use crate::config::config::ApplicationConfig;
 pub use cache_service::*;
 pub use mem_service::*;
@@ -63,6 +64,7 @@ impl ServiceContext {
         self.rb
             .init(driver, &self.config.database_url)
             .expect("[abs_admin] rbatis pool init fail!");
+        self.rb.intercepts.insert(0,Arc::new(SysTrashService{}));
         self.rb.acquire().await.expect(&format!(
             "rbatis connect database(driver={},url={}) fail",
             driver_name, self.config.database_url

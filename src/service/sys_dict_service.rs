@@ -45,12 +45,9 @@ impl SysDictService {
     }
 
     pub async fn remove(&self, id: &str) -> Result<u64> {
-        let targets = SysDict::select_by_column(pool!(), "id", id).await?;
         let r = SysDict::delete_by_column(pool!(), "id", id).await?;
         if r.rows_affected > 0 {
             self.update_cache().await?;
-            //copy data to trash
-            CONTEXT.sys_trash_service.add("sys_dict", &targets).await?;
         }
         Ok(r.rows_affected)
     }
