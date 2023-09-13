@@ -6,8 +6,6 @@ use std::time::Duration;
 use fast_log::plugin::file_mmap::MmapFile;
 
 pub fn init_log() {
-    //create log dir
-    let _ = std::fs::create_dir_all(&CONTEXT.config.log_dir);
     //init fast log
     let mut cfg = Config::new()
         .level(str_to_log_level(&CONTEXT.config.log_level));
