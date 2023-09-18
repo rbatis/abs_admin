@@ -5,6 +5,7 @@ use abs_admin::controller::{
 use abs_admin::middleware::auth_actix::Auth;
 use abs_admin::service::CONTEXT;
 use actix_web::{web, App, HttpResponse, HttpServer, Responder};
+use abs_admin::schedule::recycle_trash::spawn_trash_schedule;
 
 async fn index() -> impl Responder {
     HttpResponse::Ok()
@@ -20,6 +21,8 @@ async fn main() -> std::io::Result<()> {
     abs_admin::config::log::init_log();
     //database
     CONTEXT.init_pool().await;
+    //schedule
+    spawn_trash_schedule().await;
     //router
     HttpServer::new(|| {
         App::new()

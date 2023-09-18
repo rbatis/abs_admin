@@ -21,6 +21,7 @@ pub struct ApplicationConfig {
     pub cache_type: String,
     pub login_fail_retry: u64,
     pub login_fail_retry_wait_sec: u64,
+    pub trash_recycle_days: u64,
 }
 
 impl Default for ApplicationConfig {

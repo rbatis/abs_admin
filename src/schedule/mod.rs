@@ -1,0 +1,1 @@
+pub mod recycle_trash;

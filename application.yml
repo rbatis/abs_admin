@@ -47,5 +47,6 @@ white_list_api:
  - "/"
  - "/admin/sys_login"
  - "/admin/captcha"
-
+#垃圾数据(被删除数据)超时时间被回收
+trash_recycle_days: 90
 

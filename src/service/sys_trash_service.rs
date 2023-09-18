@@ -1,4 +1,5 @@
 use std::fmt::{Debug};
+use std::time::Duration;
 use rbatis::executor::Executor;
 use rbatis::intercept::{Intercept, ResultType};
 use crate::domain::table::SysTrash;
@@ -12,6 +13,7 @@ use serde::Serialize;
 use sqlparser::ast::Statement;
 use sqlparser::parser::Parser;
 use sqlparser::dialect::GenericDialect;
+use crate::service::CONTEXT;
 
 /// A trash can service that can recycle data. Retrieve the data, display the trash can data
 #[derive(Debug)]
@@ -39,6 +41,13 @@ impl SysTrashService {
             .await?
             .rows_affected)
     }
+
+    //recycle Logs older than `trash_recycle_days`
+    pub async fn recycle(&self) -> Result<u64, Error> {
+        let before = DateTime::now().0.sub(Duration::from_secs(CONTEXT.config.trash_recycle_days * 24 * 3600));
+        let r = SysTrash::delete_by_day_befor(pool!(), DateTime(before)).await?;
+        Ok(r.rows_affected)
+    }
 }
 
 /// delete sql => select sql=> insert to Trash => delete sql
@@ -53,6 +62,7 @@ impl Intercept for SysTrashService {
         _result: ResultType<&mut Result<ExecResult, Error>, &mut Result<Vec<Value>, Error>>,
     ) -> Result<bool, Error> {
         if sql.starts_with("delete from ") {
+            println!("sql={}",sql);
             let dialect = GenericDialect {}; // or AnsiDialect
             let v: Vec<Statement> = Parser::parse_sql(&dialect, &sql.clone()).map_err(|e| Error::from(e.to_string()))?;
             if v.len() <= 0 {
@@ -60,7 +70,7 @@ impl Intercept for SysTrashService {
             }
             let table = match v.get(0).unwrap() {
                 Statement::Delete {
-                    tables:_,
+                    tables: _,
                     from,
                     using: _,
                     selection: _,
@@ -78,6 +88,9 @@ impl Intercept for SysTrashService {
             };
             if table.is_empty() {
                 return Err(Error::from(format!("sql={} table_name is empty", sql)));
+            }
+            if table.eq("sys_trash") {
+                return Ok(true);
             }
             let new_sql = sql.clone().replace(&format!("delete from {}", table), &format!("select * from {}", table));
             let data = rb.query(&new_sql, args.clone()).await?;
