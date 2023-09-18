@@ -1,4 +1,4 @@
 use rbatis::rbdc::datetime::DateTime;
 use crate::domain::table::*;
 crud!(SysTrash {});
-impl_delete!(SysTrash{ delete_by_day_befor(before:DateTime) => "` where create_date > #{before}`"});
+impl_delete!(SysTrash{ delete_by_day_before(before:DateTime) => "` where create_date > #{before}`"});
