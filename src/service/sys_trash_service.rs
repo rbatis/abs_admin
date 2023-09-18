@@ -36,11 +36,6 @@ impl SysTrashService {
             return Ok(0);
         }
         let now = DateTime::now();
-        let diff = now.clone().0 - self.recycle_date.lock().0.clone();
-        if diff > Duration::from_secs(24 * 3600) {
-            *self.recycle_date.lock() = now.clone();
-            let _ = self.recycle().await;
-        }
         //copy data to trash
         let mut trashes = Vec::with_capacity(args.len());
         for x in args {
@@ -54,6 +49,11 @@ impl SysTrashService {
         let r = SysTrash::insert_batch(pool!(), &trashes, 20)
             .await?
             .rows_affected;
+        let diff = now.clone().0 - self.recycle_date.lock().0.clone();
+        if diff > Duration::from_secs(24 * 3600) {
+            *self.recycle_date.lock() = now.clone();
+            let _ = self.recycle().await;
+        }
         Ok(r)
     }
 
