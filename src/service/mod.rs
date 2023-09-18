@@ -64,7 +64,7 @@ impl ServiceContext {
         self.rb
             .init(driver, &self.config.database_url)
             .expect("[abs_admin] rbatis pool init fail!");
-        self.rb.intercepts.insert(0,Arc::new(SysTrashService{}));
+        self.rb.intercepts.push(Arc::new(SysTrashService::new()));
         self.rb.acquire().await.expect(&format!(
             "rbatis connect database(driver={},url={}) fail",
             driver_name, self.config.database_url
@@ -93,7 +93,7 @@ impl Default for ServiceContext {
             sys_user_role_service: SysUserRoleService {},
             sys_dict_service: SysDictService {},
             sys_auth_service: SysAuthService {},
-            sys_trash_service: SysTrashService {},
+            sys_trash_service: SysTrashService::new(),
             config,
         }
     }

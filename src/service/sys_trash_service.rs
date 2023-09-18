@@ -1,5 +1,6 @@
 use std::fmt::{Debug};
 use std::time::Duration;
+use parking_lot::Mutex;
 use rbatis::executor::Executor;
 use rbatis::intercept::{Intercept, ResultType};
 use crate::domain::table::SysTrash;
@@ -17,15 +18,28 @@ use crate::service::CONTEXT;
 
 /// A trash can service that can recycle data. Retrieve the data, display the trash can data
 #[derive(Debug)]
-pub struct SysTrashService {}
+pub struct SysTrashService {
+    pub recycle_date: Mutex<DateTime>,
+}
 
 impl SysTrashService {
+    pub fn new() -> Self {
+        Self {
+            recycle_date: Mutex::new(DateTime::now()),
+        }
+    }
     pub async fn add<T>(&self, table_name: &str, args: &[T]) -> Result<u64, Error>
         where
             T: Serialize,
     {
         if args.is_empty() {
             return Ok(0);
+        }
+        let now = DateTime::now();
+        let diff = now.clone().0 - self.recycle_date.lock().0.clone();
+        if diff > Duration::from_secs(24 * 3600) {
+            *self.recycle_date.lock() = now.clone();
+            let _ = self.recycle().await;
         }
         //copy data to trash
         let mut trashes = Vec::with_capacity(args.len());
@@ -34,12 +48,13 @@ impl SysTrashService {
                 id: Some(ObjectId::new().to_string().into()),
                 table_name: Some(table_name.to_string()),
                 data: Some(serde_json::to_string(x).unwrap_or_default()),
-                create_date: Some(DateTime::now()),
+                create_date: Some(now.clone()),
             });
         }
-        Ok(SysTrash::insert_batch(pool!(), &trashes, 20)
+        let r = SysTrash::insert_batch(pool!(), &trashes, 20)
             .await?
-            .rows_affected)
+            .rows_affected;
+        Ok(r)
     }
 
     //recycle Logs older than `trash_recycle_days`
@@ -62,7 +77,6 @@ impl Intercept for SysTrashService {
         _result: ResultType<&mut Result<ExecResult, Error>, &mut Result<Vec<Value>, Error>>,
     ) -> Result<bool, Error> {
         if sql.starts_with("delete from ") {
-            println!("sql={}",sql);
             let dialect = GenericDialect {}; // or AnsiDialect
             let v: Vec<Statement> = Parser::parse_sql(&dialect, &sql.clone()).map_err(|e| Error::from(e.to_string()))?;
             if v.len() <= 0 {
