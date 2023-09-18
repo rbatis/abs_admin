@@ -57,7 +57,7 @@ impl SysTrashService {
         Ok(r)
     }
 
-    //recycle Logs older than `trash_recycle_days`
+    //recycle trash older than `trash_recycle_days`
     pub async fn recycle(&self) -> Result<u64, Error> {
         let before = DateTime::now().0.sub(Duration::from_secs(CONTEXT.config.trash_recycle_days * 24 * 3600));
         let r = SysTrash::delete_by_day_befor(pool!(), DateTime(before)).await?;
