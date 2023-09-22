@@ -47,11 +47,18 @@ impl ApplicationConfig {
     pub fn get_error_info(&self, code: &str) -> String {
         match self.errors.get(code) {
             None => {
-                "".to_string()
+                "cannot get error_info".to_string()
             }
             Some(v) => {
                 v.as_str().to_string()
             }
         }
     }
+}
+
+#[macro_export]
+macro_rules! error_info {
+    ($code: expr) => {
+        $crate::service::CONTEXT.config.get_error_info($code)
+    };
 }

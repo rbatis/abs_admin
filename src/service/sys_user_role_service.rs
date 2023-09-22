@@ -51,7 +51,7 @@ impl SysUserRoleService {
 
     pub async fn add(&self, arg: UserRoleAddDTO) -> Result<u64> {
         if arg.user_id.is_none() || arg.role_id.is_none() {
-            return Err(Error::from("添加角色时用户和角色不能为空！"));
+            return Err(Error::from(CONTEXT.config.get_error_info("role_user_cannot_empty")));
         }
         let user_id = arg.user_id.as_deref().unwrap().to_string();
         let mut role = SysUserRole::from(arg);

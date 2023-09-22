@@ -132,7 +132,7 @@ impl SysRoleResService {
         let role_id = arg
             .id
             .as_ref()
-            .ok_or_else(|| Error::from("角色id不能为空！"))?;
+            .ok_or_else(|| Error::from(CONTEXT.config.get_error_info("role_id_empty")))?;
         CONTEXT
             .sys_role_service
             .edit(RoleEditDTO::from(arg.clone()))

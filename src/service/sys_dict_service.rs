@@ -26,8 +26,8 @@ impl SysDictService {
             SysDict::select_by_column(pool!(), "id", arg.id.as_deref().unwrap_or_default()).await?;
         if old.len() > 0 {
             return Err(Error::from(format!(
-                "字典已存在! code={}",
-                arg.code.as_deref().unwrap_or_default()
+                "{},code={}",
+                CONTEXT.config.get_error_info("dict_exists"),arg.code.as_deref().unwrap_or_default()
             )));
         }
         let result = Ok(SysDict::insert(pool!(), &arg).await?.rows_affected);

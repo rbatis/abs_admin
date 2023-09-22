@@ -8,7 +8,7 @@ use crate::domain::dto::{IdDTO, SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO,
 use crate::domain::table::{LoginCheck, SysUser};
 use crate::domain::vo::user::SysUserVO;
 use crate::domain::vo::{JWTToken, SignInVO, SysPermissionVO};
-use crate::pool;
+use crate::{error_info, pool};
 use crate::util::password_encoder::PasswordEncoder;
 use std::collections::BTreeMap;
 use std::time::Duration;
@@ -39,7 +39,7 @@ impl SysUserService {
         let user = self
             .find(&user_id)
             .await?
-            .ok_or_else(|| Error::from(format!("用户:{:?} 不存在！", user_id)))?;
+            .ok_or_else(|| Error::from(format!("{}={}", error_info!("user_not_exists"), user_id)))?;
         let mut user_vo = SysUserVO::from(user);
         let all_res = CONTEXT.sys_permission_service.finds_all_map().await?;
         let role = CONTEXT
@@ -70,7 +70,7 @@ impl SysUserService {
             || arg.name.is_none()
             || arg.name.as_ref().unwrap().is_empty()
         {
-            return Err(Error::from("用户名和姓名不能为空!"));
+            return Err(Error::from(error_info!("user_and_name_cannot_empty")));
         }
         let old_user = self
             .find_by_account(arg.account.as_ref().unwrap_or_def())
@@ -108,9 +108,9 @@ impl SysUserService {
             .await?
             .into_iter()
             .next();
-        let user = user.ok_or_else(|| Error::from(format!("账号:{} 不存在!", arg.account)))?;
+        let user = user.ok_or_else(|| Error::from(format!("{}={}", error_info!("account_not_exists"), arg.account)))?;
         if user.state.eq(&Some(0)) {
-            return Err(Error::from("账户被禁用!"));
+            return Err(Error::from(error_info!("account_disabled")));
         }
         let mut error = None;
         match user
@@ -126,10 +126,10 @@ impl SysUserService {
                 if !PasswordEncoder::verify(
                     user.password
                         .as_ref()
-                        .ok_or_else(|| Error::from("错误的用户数据，密码为空!"))?,
+                        .ok_or_else(|| Error::from(error_info!("password_empty")))?,
                     &arg.password,
                 ) {
-                    error = Some(Error::from("密码不正确!"));
+                    error = Some(Error::from(error_info!("password_error")));
                 }
             }
             LoginCheck::PasswordImgCodeCheck => {
@@ -139,16 +139,16 @@ impl SysUserService {
                     .get_string(&format!("captch:account_{}", &arg.account))
                     .await?;
                 if cache_code.eq(&arg.vcode) {
-                    error = Some(Error::from("验证码不正确!"))
+                    error = Some(Error::from(error_info!("password_error")))
                 }
                 // check pwd
                 if !PasswordEncoder::verify(
                     user.password
                         .as_ref()
-                        .ok_or_else(|| Error::from("错误的用户数据，密码为空!"))?,
+                        .ok_or_else(|| Error::from(error_info!("password_empty")))?,
                     &arg.password,
                 ) {
-                    error = Some(Error::from("密码不正确!"));
+                    error = Some(Error::from(error_info!("password_error")));
                 }
             }
             LoginCheck::PhoneCodeCheck => {
@@ -160,7 +160,7 @@ impl SysUserService {
                     ))
                     .await?;
                 if sms_code.eq(&arg.vcode) {
-                    error = Some(Error::from("验证码不正确!"));
+                    error = Some(Error::from(error_info!("vcode_error")));
                 }
             }
         }
@@ -179,10 +179,9 @@ impl SysUserService {
             if num.unwrap_or(0) >= CONTEXT.config.login_fail_retry {
                 let wait_sec: i64 = CONTEXT.cache_service.ttl(REDIS_KEY_RETRY).await?;
                 if wait_sec > 0 {
-                    return Err(Error::from(format!(
-                        "操作过于频繁，请等待{}秒后重试!",
-                        wait_sec
-                    )));
+                    let mut e = error_info!("req_frequently");
+                    e = e.replace("{}", &format!("{}", wait_sec));
+                    return Err(Error::from(e));
                 }
             }
         }
@@ -217,7 +216,7 @@ impl SysUserService {
             .await?
             .into_iter()
             .next();
-        let user = user.ok_or_else(|| Error::from(format!("账号:{} 不存在!", token.account)))?;
+        let user = user.ok_or_else(|| Error::from(format!("{}:{}", error_info!("account_not_exists"), token.account)))?;
         return self.get_user_info(&user).await;
     }
 
@@ -227,7 +226,7 @@ impl SysUserService {
         let user_id = user
             .id
             .clone()
-            .ok_or_else(|| Error::from("错误的用户数据，id为空!"))?;
+            .ok_or_else(|| Error::from(error_info!("id_empty")))?;
         let mut sign_vo = SignInVO {
             inner: user,
             permissions: vec![],
@@ -260,7 +259,7 @@ impl SysUserService {
         //old user
         let user = SysUser::select_by_column(pool!(), "id", arg.id.as_ref()).await?
             .into_iter().next().ok_or_else(|| {
-            Error::from("找不到用户")
+            Error::from(error_info!("user_cannot_find"))
         })?;
         //do not update account
         arg.account = None;
@@ -288,7 +287,7 @@ impl SysUserService {
 
     pub async fn remove(&self, id: &str) -> Result<u64> {
         if id.is_empty() {
-            return Err(Error::from("id 不能为空！"));
+            return Err(Error::from(error_info!("id_empty")));
         }
         let r = SysUser::delete_by_column(pool!(), "id", id).await?;
         CONTEXT.sys_user_role_service.remove_by_user_id(id).await?;

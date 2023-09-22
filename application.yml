@@ -51,12 +51,31 @@ white_list_api:
 trash_recycle_days: 90
 
 errors:
+  -1: "错误"
   empty: "缺少参数"
   arg.name_empty: "权限名字不能为空"
   arg.permission_empty: "权限不能为空"
   access_token_empty: "令牌不能为空"
   access_denied: "无权限访问"
-  -1: "错误"
+  account_empty: "账户不能为空"
+  cannot_disable_admin: "不能禁用超级管理员"
+  dict_exists: "字典已存在"
+  permission_exists: "权限已存在"
+  role_id_empty: "角色id不能为空"
+  please_send_code: "请发送验证码"
+  role_user_cannot_empty: "添加角色时用户和角色不能为空"
+  user_not_exists: "用户不存在"
+  user_and_name_cannot_empty: "用户名和姓名不能为空"
+  user_cannot_find: "找不到用户"
+  account_not_exists: "账号不存在"
+  account_disabled: "账户被禁用"
+  password_empty: "密码为空"
+  password_error: "密码不正确"
+  vcode_error: "验证码不正确"
+  req_frequently: "操作过于频繁，请等待{}秒后重试"
+  id_empty: "id不能为空"
+
+
 
 
 

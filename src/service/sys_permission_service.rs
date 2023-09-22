@@ -37,8 +37,8 @@ impl SysPermissionService {
         .await?;
         if old.len() > 0 {
             return Err(Error::from(format!(
-                "权限已存在! 权限:{:?}",
-                rbatis::make_table_field_vec!(old, name)
+                "{}={:?}",
+                CONTEXT.config.get_error_info("permission_exists"),rbatis::make_table_field_vec!(old, name)
             )));
         }
         let result = Ok(SysPermission::insert(pool!(), &arg).await?.rows_affected);
