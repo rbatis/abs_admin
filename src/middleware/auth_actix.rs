@@ -74,7 +74,7 @@ where
                         Ok(data) => match check_auth(&data, &path).await {
                             Ok(_) => {}
                             Err(e) => {
-                                let resp: RespVO<String> = RespVO::from_error_info("-1", &format!("无权限访问:{}", e.to_string()));
+                                let resp: RespVO<String> = RespVO::from_error_info("-1", &e.to_string());
                                 return Ok(req.into_response(resp.resp_json()));
                             }
                         },

@@ -21,10 +21,10 @@ pub async fn layer_top(_page: web::Json<EmptyDTO>) -> impl Responder {
 
 pub async fn add(mut arg: web::Json<PermissionAddDTO>) -> impl Responder {
     if arg.name.is_none() {
-        return RespVO::<u64>::from_error_info("arg.name empty", "权限名字不能为空").resp_json();
+        return RespVO::<u64>::from_error_info("arg.name_empty", &CONTEXT.config.get_error_info("arg.name_empty")).resp_json();
     }
     if arg.permission.is_none() {
-        return RespVO::<u64>::from_error_info("arg.permission empty", "权限不能为空").resp_json();
+        return RespVO::<u64>::from_error_info("arg.permission_empty", &CONTEXT.config.get_error_info("arg.permission_empty")).resp_json();
     }
     if arg.path.is_none() {
         arg.path = Some("".to_string());

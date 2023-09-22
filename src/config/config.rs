@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 /// Config
 #[derive(Debug, PartialEq, serde::Serialize, serde::Deserialize)]
 pub struct ApplicationConfig {
@@ -22,6 +24,7 @@ pub struct ApplicationConfig {
     pub login_fail_retry: u64,
     pub login_fail_retry_wait_sec: u64,
     pub trash_recycle_days: u64,
+    pub errors: HashMap<String, String>,
 }
 
 impl Default for ApplicationConfig {
@@ -37,5 +40,18 @@ impl Default for ApplicationConfig {
             println!("[abs_admin] ///////////////////// Start On Release Mode ////////////////////////////");
         }
         result
+    }
+}
+
+impl ApplicationConfig {
+    pub fn get_error_info(&self, code: &str) -> String {
+        match self.errors.get(code) {
+            None => {
+                "".to_string()
+            }
+            Some(v) => {
+                v.as_str().to_string()
+            }
+        }
     }
 }

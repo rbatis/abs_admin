@@ -50,3 +50,13 @@ white_list_api:
 #垃圾数据超时，单位:天 (被删除数据超时被永久删除)
 trash_recycle_days: 90
 
+errors:
+  empty: "缺少参数"
+  arg.name_empty: "权限名字不能为空"
+  arg.permission_empty: "权限不能为空"
+  access_token_empty: "令牌不能为空"
+  access_denied: "无权限访问"
+  -1: "错误"
+
+
+

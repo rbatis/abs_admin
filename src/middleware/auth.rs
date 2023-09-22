@@ -47,5 +47,5 @@ pub async fn check_auth(token: &JWTToken, path: &str) -> Result<(), crate::error
             }
         }
     }
-    return Err(crate::error::Error::from("无权限访问!"));
+    return Err(crate::error::Error::from(CONTEXT.config.get_error_info("access_denied")));
 }
