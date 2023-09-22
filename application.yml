@@ -13,34 +13,40 @@ log_dir: "target/logs/"
 log_temp_size: "100MB"
 #log type,choose one of  [mmap,file]
 log_type: "mmap"
-#日志打包格式可选“”（空-保留.log）“gzip”（gz压缩包）“zip”（zip压缩包）“lz4”（lz4压缩包（非常快））
-#需要打开以下选项
-#toml文件里面，fast_log 添加   fast_log = { version = "1.5",features = ["lz4", "zip", "gzip"]}
-#src/config/log.rs    解除   fn choose_packer()下的注释
-#application.yml      添加   log_pack_compress: "zip"
+# Optional log packaging formats: "" (keep as .log), "gzip" (GZip compressed), "zip" (ZIP compressed), "lz4" (LZ4 compressed (very fast))
+# The following options need to be enabled:
+# Inside the toml file, add to 'fast_log': fast_log = { version = "1.5", features = ["lz4", "zip", "gzip"]}
+# In src/config/log.rs, uncomment the section under fn choose_packer()
+# In application.yml, add: log_pack_compress: "zip"
 log_pack_compress: ""
-#日志滚动保留-保留全部: All,按时间保留(秒): KeepTime(i64),按版本保留: KeepNum(i64)
+# Log rolling retention options:
+# Retain all logs: All
+# Retain logs by time (in seconds): KeepTime(i64)
+# Retain logs by version: KeepNum(i64)
 log_rolling_type: "KeepNum(20)"
-#日志等级: off,info,error,warn,debug,trace
+#log_level: off,info,error,warn,debug,trace
 log_level: "info"
-#日志通道长度，null为无界队列，非null为有界队列（性能好）
+#Log channel length: null for unbounded queue, non-null for bounded queue (better performance)
 log_chan_len: 100000
-#JwtToken秘钥
+#jwt_secret
 jwt_secret: "abs_admin"
-#短信通道缓存（系统先把数据放入队列sms:send:，第三方短信sdk或程序需要从队列获取并发送，获得回执存入sms:resp:*）,格式为sms:send:手机号和sms:resp:手机号
+# SMS channel caching
+# The system first puts the data into the 'sms:send:' queue
+# Third-party SMS SDK or program needs to retrieve and send from the queue
+# Receipts obtained are stored in 'sms:resp:*' format
 sms_cache_send_key_prefix: "sms:send:"
-#登陆失败拒绝策略，重试次数限制(0次无限制)
+#Login failure rejection policy: Retry count limit (0 for unlimited attempts)
 login_fail_retry: 3
-#登陆失败重试次数限制超过后提示的等待时间（秒）
+#Wait time (in seconds) for login after exceeding the retry count limit for login failures
 login_fail_retry_wait_sec: 30
-#接口白名单（免登陆直接访问）
+#white_list_api
 white_list_api:
  - "/"
  - "/admin/sys_login"
  - "/admin/captcha"
-#垃圾数据超时，单位:天 (被删除数据超时被永久删除)
+## Garbage data timeout, unit: days (data that exceeds the timeout for deletion will be permanently removed)
 trash_recycle_days: 90
-
+# error map <code : error_msg>
 errors:
   -1: "未知错误"
   empty: "缺少参数"
