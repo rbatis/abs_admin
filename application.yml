@@ -51,7 +51,7 @@ white_list_api:
 trash_recycle_days: 90
 
 errors:
-  -1: "错误"
+  -1: "未知错误"
   empty: "缺少参数"
   arg.name_empty: "权限名字不能为空"
   arg.permission_empty: "权限不能为空"
