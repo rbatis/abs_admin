@@ -6,7 +6,7 @@ use crate::domain::vo::user::SysUserVO;
 use crate::domain::vo::{SysPermissionVO, SysRoleVO};
 use crate::error::Error;
 use crate::error::Result;
-use crate::pool;
+use crate::{error_info, pool};
 use crate::service::CONTEXT;
 use rbatis::plugin::object_id::ObjectId;
 use rbatis::sql::Page;
@@ -51,7 +51,7 @@ impl SysUserRoleService {
 
     pub async fn add(&self, arg: UserRoleAddDTO) -> Result<u64> {
         if arg.user_id.is_none() || arg.role_id.is_none() {
-            return Err(Error::from(CONTEXT.config.get_error_info("role_user_cannot_empty")));
+            return Err(Error::from(error_info!("role_user_cannot_empty")));
         }
         let user_id = arg.user_id.as_deref().unwrap().to_string();
         let mut role = SysUserRole::from(arg);

@@ -3,6 +3,7 @@ use crate::domain::table::SysDict;
 use crate::domain::vo::RespVO;
 use crate::service::CONTEXT;
 use actix_web::{web, Responder};
+use crate::error_info;
 
 pub async fn page(page: web::Json<DictPageDTO>) -> impl Responder {
     let data = CONTEXT.sys_dict_service.page(&page.0).await;
@@ -11,10 +12,10 @@ pub async fn page(page: web::Json<DictPageDTO>) -> impl Responder {
 
 pub async fn add(mut arg: web::Json<DictAddDTO>) -> impl Responder {
     if arg.name.is_none() {
-        return RespVO::<u64>::from_error_info("empty", &CONTEXT.config.get_error_info("empty")).resp_json();
+        return RespVO::<u64>::from_error_info("empty", &error_info!("empty")).resp_json();
     }
     if arg.code.is_none() {
-        return RespVO::<u64>::from_error_info("empty", &CONTEXT.config.get_error_info("empty")).resp_json();
+        return RespVO::<u64>::from_error_info("empty", &error_info!("empty")).resp_json();
     }
     if arg.state.is_none() {
         arg.state = Some(1);

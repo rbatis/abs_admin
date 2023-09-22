@@ -7,7 +7,7 @@ use crate::domain::table::SysRolePermission;
 use crate::domain::vo::{SysPermissionVO, SysRoleVO};
 use crate::error::Error;
 use crate::error::Result;
-use crate::pool;
+use crate::{error_info, pool};
 use crate::service::CONTEXT;
 use rbatis::plugin::object_id::ObjectId;
 use rbatis::rbdc::types::datetime::DateTime;
@@ -132,7 +132,7 @@ impl SysRoleResService {
         let role_id = arg
             .id
             .as_ref()
-            .ok_or_else(|| Error::from(CONTEXT.config.get_error_info("role_id_empty")))?;
+            .ok_or_else(|| Error::from(error_info!("role_id_empty")))?;
         CONTEXT
             .sys_role_service
             .edit(RoleEditDTO::from(arg.clone()))

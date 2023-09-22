@@ -6,6 +6,7 @@ use crate::util::string::IsEmptyString;
 use actix_web::{web, HttpResponse, Responder};
 use captcha::filters::{Dots, Noise, Wave};
 use captcha::Captcha;
+use crate::error_info;
 
 /// Image Code interface
 /// Http Method GET
@@ -14,7 +15,7 @@ use captcha::Captcha;
 ///
 pub async fn captcha(arg: web::Query<CatpchaDTO>) -> impl Responder {
     if arg.account.is_empty() {
-        return RespVO::<()>::from_error("account_empty", &Error::from(CONTEXT.config.get_error_info("account_empty"))).resp_json();
+        return RespVO::<()>::from_error("account_empty", &Error::from(error_info!("account_empty"))).resp_json();
     }
     let mut captcha = Captcha::new();
     captcha

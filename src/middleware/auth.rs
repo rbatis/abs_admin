@@ -1,4 +1,5 @@
 use crate::domain::vo::JWTToken;
+use crate::error_info;
 use crate::service::CONTEXT;
 pub struct Auth;
 
@@ -47,5 +48,5 @@ pub async fn check_auth(token: &JWTToken, path: &str) -> Result<(), crate::error
             }
         }
     }
-    return Err(crate::error::Error::from(CONTEXT.config.get_error_info("access_denied")));
+    return Err(crate::error::Error::from(error_info!("access_denied")));
 }

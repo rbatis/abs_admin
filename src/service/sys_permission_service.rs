@@ -3,7 +3,7 @@ use crate::domain::table::SysPermission;
 use crate::domain::vo::SysPermissionVO;
 use crate::error::Error;
 use crate::error::Result;
-use crate::pool;
+use crate::{error_info, pool};
 use crate::service::CONTEXT;
 use rbatis::sql::{Page, PageRequest};
 use std::collections::{BTreeMap, HashMap};
@@ -38,7 +38,7 @@ impl SysPermissionService {
         if old.len() > 0 {
             return Err(Error::from(format!(
                 "{}={:?}",
-                CONTEXT.config.get_error_info("permission_exists"),rbatis::make_table_field_vec!(old, name)
+                error_info!("permission_exists"),rbatis::make_table_field_vec!(old, name)
             )));
         }
         let result = Ok(SysPermission::insert(pool!(), &arg).await?.rows_affected);
