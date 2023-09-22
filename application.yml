@@ -13,6 +13,8 @@ log_dir: "target/logs/"
 log_temp_size: "100MB"
 #log type,choose one of  [mmap,file]
 log_type: "mmap"
+#Log channel length: null for unbounded queue, non-null for bounded queue (better performance)
+log_chan_len: 100000
 # Optional log packaging formats: "" (keep as .log), "gzip" (GZip compressed), "zip" (ZIP compressed), "lz4" (LZ4 compressed (very fast))
 # The following options need to be enabled:
 # Inside the toml file, add to 'fast_log': fast_log = { version = "1.5", features = ["lz4", "zip", "gzip"]}
@@ -26,8 +28,6 @@ log_pack_compress: ""
 log_rolling_type: "KeepNum(20)"
 #log_level: off,info,error,warn,debug,trace
 log_level: "info"
-#Log channel length: null for unbounded queue, non-null for bounded queue (better performance)
-log_chan_len: 100000
 #jwt_secret
 jwt_secret: "abs_admin"
 # SMS channel caching
