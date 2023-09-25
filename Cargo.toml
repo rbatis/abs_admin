@@ -9,6 +9,10 @@ edition = "2021"
 rbs = { version = "4.4" }
 rbatis = { version = "4.4", features = [] }
 rbdc-sqlite = { version = "4.4" }
+#rbdc-mysql = { version = "4.4" }
+#rbdc-pg = { version = "4.4" }
+#rbdc-mssql = { version = "4.4" }
+
 #rbatis orm dep must use async-std(Because actix-web relies on tokio0.2)
 tokio = { version = "1", features = ["full"] }
 #serde and json
