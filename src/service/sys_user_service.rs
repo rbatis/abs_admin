@@ -15,7 +15,7 @@ use std::time::Duration;
 
 use crate::util::options::OptionStringRefUnwrapOrDefault;
 
-const REDIS_KEY_RETRY: &'static str = "login:login_retry";
+const CACHE_KEY_RETRY: &'static str = "login:login_retry";
 
 ///Background User Service
 pub struct SysUserService {}
@@ -175,9 +175,9 @@ impl SysUserService {
     ///is need to wait
     pub async fn is_need_wait_login_ex(&self, account: &str) -> Result<()> {
         if CONTEXT.config.login_fail_retry > 0 {
-            let num: Option<u64> = CONTEXT.cache_service.get_json(&format!("{}{}", REDIS_KEY_RETRY, account)).await?;
+            let num: Option<u64> = CONTEXT.cache_service.get_json(&format!("{}{}", CACHE_KEY_RETRY, account)).await?;
             if num.unwrap_or(0) >= CONTEXT.config.login_fail_retry {
-                let wait_sec: i64 = CONTEXT.cache_service.ttl(&format!("{}{}", REDIS_KEY_RETRY, account)).await?;
+                let wait_sec: i64 = CONTEXT.cache_service.ttl(&format!("{}{}", CACHE_KEY_RETRY, account)).await?;
                 if wait_sec > 0 {
                     let mut e = error_info!("req_frequently");
                     e = e.replace("{}", &format!("{}", wait_sec));
@@ -191,7 +191,7 @@ impl SysUserService {
     ///Add redis retry record
     pub async fn add_retry_login_limit_num(&self, account: &str) -> Result<()> {
         if CONTEXT.config.login_fail_retry > 0 {
-            let num: Option<u64> = CONTEXT.cache_service.get_json(&format!("{}{}", REDIS_KEY_RETRY, account)).await?;
+            let num: Option<u64> = CONTEXT.cache_service.get_json(&format!("{}{}", CACHE_KEY_RETRY, account)).await?;
             let mut num = num.unwrap_or(0);
             if num > CONTEXT.config.login_fail_retry {
                 num = CONTEXT.config.login_fail_retry;
@@ -200,7 +200,7 @@ impl SysUserService {
             CONTEXT
                 .cache_service
                 .set_string_ex(
-                    &format!("{}{}", REDIS_KEY_RETRY, account),
+                    &format!("{}{}", CACHE_KEY_RETRY, account),
                     &num.to_string(),
                     Some(Duration::from_secs(
                         CONTEXT.config.login_fail_retry_wait_sec,
