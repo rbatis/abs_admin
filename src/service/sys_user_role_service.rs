@@ -23,7 +23,7 @@ impl SysUserRoleService {
             .page(&UserPageDTO::from(arg))
             .await?;
         if arg.resp_set_role.unwrap_or(true) {
-            let all_role = CONTEXT.sys_role_service.finds_all_map().await?;
+            let all_roles = CONTEXT.sys_role_service.finds_all_map().await?;
             let user_ids = rbatis::make_table_field_vec!(&vo.records, inner.id);
             let user_roles = SysUserRole::select_in_column(pool!(), "user_id", &user_ids).await?;
             let user_role_map = rbatis::make_table_field_map!(&user_roles, user_id);
@@ -40,7 +40,7 @@ impl SysUserRoleService {
                         if let Some(role_vo) = &mut x.role {
                             CONTEXT
                                 .sys_role_service
-                                .loop_find_childs(role_vo, &all_role);
+                                .loop_find_childs(role_vo, &all_roles);
                         }
                     }
                 }

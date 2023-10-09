@@ -30,12 +30,12 @@ impl SysRoleService {
 
     /// Role-level data
     pub async fn finds_layer(&self) -> Result<Vec<SysRoleVO>> {
-        let all = self.finds_all_map().await?;
+        let all_roles = self.finds_all_map().await?;
         let mut data = vec![];
-        for (_k, v) in &all {
+        for (_k, v) in &all_roles {
             if v.parent_id.is_none() {
                 let mut top = SysRoleVO::from(v.clone());
-                self.loop_find_childs(&mut top, &all);
+                self.loop_find_childs(&mut top, &all_roles);
                 data.push(top);
             }
         }
@@ -131,12 +131,12 @@ impl SysRoleService {
     }
 
     ///Loop to find the parent-child associative relation array
-    pub fn loop_find_childs(&self, arg: &mut SysRoleVO, all: &HashMap<String, SysRole>) {
+    pub fn loop_find_childs(&self, arg: &mut SysRoleVO, roles: &HashMap<String, SysRole>) {
         let mut childs = vec![];
-        for (_key, x) in all {
+        for (_key, x) in roles {
             if x.parent_id.is_some() && x.parent_id.eq(&arg.inner.id) {
                 let mut item = SysRoleVO::from(x.clone());
-                self.loop_find_childs(&mut item, all);
+                self.loop_find_childs(&mut item, roles);
                 childs.push(item);
             }
         }
