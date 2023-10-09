@@ -44,7 +44,14 @@ impl ApplicationConfig {
     pub fn get_error_info(&self, code: &str) -> String {
         match self.errors.get(code) {
             None => {
-                "cannot get error_info".to_string()
+                match self.errors.get("-1"){
+                    None => {
+                        "unknown error".to_string()
+                    }
+                    Some(v) => {
+                        v.to_string()
+                    }
+                }
             }
             Some(v) => {
                 v.as_str().to_string()
