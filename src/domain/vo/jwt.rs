@@ -59,7 +59,7 @@ mod test {
             account: "189".to_string(),
             permissions: vec![],
             role_ids: vec![],
-            exp: DateTime::now().set_micro(0).unix_timestamp_millis() as usize,
+            exp: DateTime::now().unix_timestamp_millis() as usize,
         };
         sleep(Duration::from_secs(5));
         let token = j.create_token("ssss").unwrap();
