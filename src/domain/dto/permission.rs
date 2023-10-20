@@ -34,7 +34,7 @@ impl From<PermissionAddDTO> for SysPermission {
             permission: arg.permission.clone(),
             path: arg.path.clone(),
             del: 0.into(),
-            create_date: DateTime::now().set_micro(0).into(),
+            create_date: DateTime::now().into(),
         }
     }
 }

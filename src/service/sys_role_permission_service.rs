@@ -148,7 +148,7 @@ impl SysRoleResService {
                 id: ObjectId::new().to_string().into(),
                 role_id: role_id.to_string().into(),
                 permission_id: resource_id.clone().into(),
-                create_date: DateTime::now().set_micro(0).into(),
+                create_date: DateTime::now().into(),
             });
         }
         Ok(SysRolePermission::insert_batch(pool!(), &sys_role_permission, 20)
