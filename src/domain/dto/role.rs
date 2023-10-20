@@ -31,7 +31,7 @@ impl From<RoleAddDTO> for SysRole {
             name: arg.name,
             parent_id: arg.parent_id,
             del: 0.into(),
-            create_date: DateTime::now().set_micro(0).into(),
+            create_date: DateTime::now().into(),
         }
     }
 }

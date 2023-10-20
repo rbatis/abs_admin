@@ -227,26 +227,21 @@ impl SysUserService {
             .id
             .clone()
             .ok_or_else(|| Error::from(error_info!("id_empty")))?;
-        let mut sign_vo = SignInVO {
-            inner: user,
-            permissions: vec![],
-            access_token: String::new(),
-            role: None,
-        };
+        let mut sign_vo = SignInVO::from(user);
 
         let all_res = CONTEXT.sys_permission_service.finds_all_map().await?;
         sign_vo.permissions = self.load_level_permission(&user_id, &all_res).await?;
         let jwt_token = JWTToken {
-            id: sign_vo.inner.id.clone().unwrap_or_default(),
-            account: sign_vo.inner.account.clone().unwrap_or_default(),
+            id: sign_vo.id.clone().unwrap_or_default(),
+            account: sign_vo.account.clone().unwrap_or_default(),
             permissions: sign_vo.permissions.clone(),
             role_ids: vec![],
-            exp: DateTime::now().set_micro(0).unix_timestamp_millis() as usize,
+            exp: DateTime::now().unix_timestamp_millis() as usize,
         };
         sign_vo.access_token = jwt_token.create_token(&CONTEXT.config.jwt_secret)?;
         sign_vo.role = CONTEXT
             .sys_user_role_service
-            .find_user_role(&sign_vo.inner.id.clone().unwrap_or_default(), &all_res)
+            .find_user_role(&sign_vo.id.clone().unwrap_or_default(), &all_res)
             .await?;
         return Ok(sign_vo);
     }

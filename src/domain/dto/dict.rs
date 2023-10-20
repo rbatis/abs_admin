@@ -39,7 +39,7 @@ impl From<DictAddDTO> for SysDict {
             name: arg.name.clone(),
             code: arg.code.clone(),
             state: arg.state.clone(),
-            create_date: DateTime::now().set_micro(0).into(),
+            create_date: DateTime::now().into(),
         }
     }
 }

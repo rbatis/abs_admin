@@ -37,7 +37,7 @@ impl SysRoleResService {
     fn loop_find_role_ids(&self, arg: &Vec<SysRoleVO>) -> Vec<String> {
         let mut results = vec![];
         for x in arg {
-            results.push(x.inner.id.as_deref().unwrap_or_default().to_string());
+            results.push(x.id.as_deref().unwrap_or_default().to_string());
             match &x.childs {
                 Some(childs) => {
                     let ids = self.loop_find_role_ids(childs);
@@ -92,7 +92,7 @@ impl SysRoleResService {
     ) -> Result<Vec<SysRoleVO>> {
         let mut data = vec![];
         for mut role in arg {
-            let permission_ids = role_res_map.get(role.inner.id.as_ref().unwrap_or_def());
+            let permission_ids = role_res_map.get(role.id.as_ref().unwrap_or_def());
             let mut res_vos = vec![];
             if let Some(permission_ids) = permission_ids {
                 for x in permission_ids {
@@ -112,7 +112,7 @@ impl SysRoleResService {
                     all,
                 )?);
             }
-            role.resource_ids = rbatis::make_table_field_vec!(&role.resources, inner.id);
+            role.resource_ids = rbatis::make_table_field_vec!(&role.resources, id);
             data.push(role);
         }
         return Ok(data);
@@ -148,7 +148,7 @@ impl SysRoleResService {
                 id: ObjectId::new().to_string().into(),
                 role_id: role_id.to_string().into(),
                 permission_id: resource_id.clone().into(),
-                create_date: DateTime::now().set_micro(0).into(),
+                create_date: DateTime::now().into(),
             });
         }
         Ok(SysRolePermission::insert_batch(pool!(), &sys_role_permission, 20)

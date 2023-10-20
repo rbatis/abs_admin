@@ -3,15 +3,29 @@ use std::collections::HashMap;
 
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SysPermissionVO {
-    #[serde(flatten)]
-    pub inner: SysPermission,
+    pub id: Option<String>,
+    //father id(can empty)
+    pub parent_id: Option<String>,
+    pub name: Option<String>,
+    //permission
+    pub permission: Option<String>,
+    //menu path
+    pub path: Option<String>,
+    pub del: Option<i32>,
+    pub create_date: Option<String>,
     pub childs: Option<Vec<SysPermissionVO>>,
 }
 
 impl From<SysPermission> for SysPermissionVO {
     fn from(arg: SysPermission) -> Self {
         Self {
-            inner: arg,
+            id: arg.id,
+            parent_id: arg.parent_id,
+            name: arg.name,
+            permission: arg.permission,
+            path: arg.path,
+            del: arg.del,
+            create_date: arg.create_date.map(|v| v.display_stand()),
             childs: None,
         }
     }
@@ -19,14 +33,14 @@ impl From<SysPermission> for SysPermissionVO {
 
 impl SysPermissionVO {
     pub fn get_father_id(&self) -> &Option<String> {
-        &self.inner.parent_id
+        &self.parent_id
     }
 
     pub fn set_childs_recursive(&mut self, all_record: &HashMap<String, Self>) {
         let mut childs: Option<Vec<Self>> = None;
-        if self.inner.id.is_some() {
+        if self.id.is_some() {
             for (_key, x) in all_record {
-                if x.get_father_id().is_some() && self.inner.id.eq(&x.get_father_id()) {
+                if x.get_father_id().is_some() && self.id.eq(&x.get_father_id()) {
                     let mut item = x.clone();
                     item.set_childs_recursive(all_record);
                     match &mut childs {

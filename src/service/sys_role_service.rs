@@ -126,7 +126,7 @@ impl SysRoleService {
             .sys_permission_service
             .finds_layer(&rbatis::make_table_field_vec!(&role_res, permission_id), &all_res)
             .await?;
-        let permissions = rbatis::make_table_field_vec!(&res, inner.permission);
+        let permissions = rbatis::make_table_field_vec!(&res, permission);
         return Ok(permissions);
     }
 
@@ -134,7 +134,7 @@ impl SysRoleService {
     pub fn loop_find_childs(&self, arg: &mut SysRoleVO, roles: &HashMap<String, SysRole>) {
         let mut childs = vec![];
         for (_key, x) in roles {
-            if x.parent_id.is_some() && x.parent_id.eq(&arg.inner.id) {
+            if x.parent_id.is_some() && x.parent_id.eq(&arg.id) {
                 let mut item = SysRoleVO::from(x.clone());
                 self.loop_find_childs(&mut item, roles);
                 childs.push(item);

@@ -66,9 +66,9 @@ impl SysPermissionService {
     pub fn make_permission_ids(&self, args: &Vec<SysPermissionVO>) -> Vec<String> {
         let mut ids = vec![];
         for x in args {
-            ids.push(x.inner.id.as_deref().unwrap_or_default().to_string());
+            ids.push(x.id.as_deref().unwrap_or_default().to_string());
             if let Some(childs) = &x.childs {
-                let child_ids = rbatis::make_table_field_vec!(childs, inner.id);
+                let child_ids = rbatis::make_table_field_vec!(childs, id);
                 for child_id in child_ids {
                     ids.push(child_id);
                 }
@@ -116,7 +116,7 @@ impl SysPermissionService {
         let all = self.finds_all().await?;
         let mut result = BTreeMap::new();
         for x in all {
-            result.insert(x.inner.id.as_deref().unwrap_or_default().to_string(), x);
+            result.insert(x.id.as_deref().unwrap_or_default().to_string(), x);
         }
         return Ok(result);
     }
@@ -158,7 +158,7 @@ impl SysPermissionService {
         let mut tops = vec![];
         for item in res {
             //parent id null, it is an top resource
-            if item.inner.parent_id.is_none() {
+            if item.parent_id.is_none() {
                 tops.push(item);
             }
         }
@@ -173,7 +173,7 @@ impl SysPermissionService {
     pub fn loop_find_childs(&self, arg: &mut SysPermissionVO, all_res: &BTreeMap<String, SysPermissionVO>) {
         let mut childs = vec![];
         for (_key, x) in all_res {
-            if x.inner.parent_id.is_some() && x.inner.parent_id.eq(&arg.inner.id) {
+            if x.parent_id.is_some() && x.parent_id.eq(&arg.id) {
                 let mut item = x.clone();
                 self.loop_find_childs(&mut item, all_res);
                 childs.push(item);
