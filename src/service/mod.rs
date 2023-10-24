@@ -54,7 +54,7 @@ pub struct ServiceContext {
 
 impl ServiceContext {
     /// init database pool
-    pub async fn init_pool(&self) {
+    pub async fn init_database(&self) {
         log::info!(
             "[abs_admin] rbatis pool init ({})...",
             self.config.database_url

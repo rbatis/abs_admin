@@ -19,7 +19,7 @@ async fn main() -> std::io::Result<()> {
     //log
     abs_admin::config::log::init_log();
     //database
-    CONTEXT.init_pool().await;
+    CONTEXT.init_database().await;
     //router
     HttpServer::new(|| {
         App::new()
