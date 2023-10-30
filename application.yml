@@ -25,7 +25,7 @@ log_pack_compress: ""
 # Retain all logs: All
 # Retain logs by time (in seconds): KeepTime(i64)
 # Retain logs by version: KeepNum(i64)
-log_rolling_type: "KeepNum(20)"
+log_rolling_type: "KeepNum(60)"
 #log_level: off,info,error,warn,debug,trace
 log_level: "info"
 #jwt_secret
