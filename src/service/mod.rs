@@ -60,7 +60,7 @@ impl ServiceContext {
             self.config.database_url
         );
 
-        let driver = rbdc_sqlite::driver::SqliteDriver {};
+        let driver = rbdc_sqlite::SqliteDriver {};
 
         let driver_name = format!("{:?}", driver);
         self.rb
