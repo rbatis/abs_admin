@@ -167,11 +167,11 @@ pub async fn init_tables(rb: &RBatis) {
             return;
         }
     };
-    init_data(&conn).await;
 }
 
-pub async fn init_data(conn:&dyn Executor){
-    let _ = SysUser::insert(conn, &SysUser {
+pub async fn init_table_data(rb:&RBatis){
+    let conn = rb.acquire().await.expect("init data fail");
+    let _ = SysUser::insert(&conn, &SysUser {
         id: Some("1".to_string()),
         account: Some("00000000000".to_string()),
         password: Some("e10adc3949ba59abbe56e057f20f883e".to_string()),
@@ -182,7 +182,7 @@ pub async fn init_data(conn:&dyn Executor){
         create_date: Some(DateTime::now()),
     }).await;
 
-    let _ = SysRole::insert(conn, &SysRole {
+    let _ = SysRole::insert(&conn, &SysRole {
         id: Some(1.to_string()),
         name: Some("admin".to_string()),
         parent_id: None,
@@ -190,7 +190,7 @@ pub async fn init_data(conn:&dyn Executor){
         create_date: Some(DateTime::now()),
     }).await;
 
-    let _ = SysUserRole::insert(conn, &SysUserRole {
+    let _ = SysUserRole::insert(&conn, &SysUserRole {
         id: Some(1.to_string()),
         user_id: Some(1.to_string()),
         role_id: Some(1.to_string()),
@@ -281,14 +281,14 @@ pub async fn init_data(conn:&dyn Executor){
 
     let mut index = 1;
     for permission in sys_permissions {
-        let _ = SysPermission::insert(conn, &permission).await;
+        let _ = SysPermission::insert(&conn, &permission).await;
         let role_permission = SysRolePermission {
             id: Some(index.to_string()),
             role_id: Some(1.to_string()),
             permission_id: permission.id.clone(),
             create_date: Some(DateTime::now()),
         };
-        let _ = SysRolePermission::insert(conn, &role_permission).await;
+        let _ = SysRolePermission::insert(&conn, &role_permission).await;
         index += 1;
     }
 }
