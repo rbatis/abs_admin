@@ -160,16 +160,16 @@ pub async fn init_tables(rb: &RBatis) {
         create_date: Some(DateTime::now()),
     };
     let _ = sync(&conn, mapper, to_value!(table), "sys_trash").await;
-
-    if let Ok(v) = SysUser::select_by_column(&conn, "id", "1").await {
-        if v.len() > 0 {
-            return;
-        }
-    };
 }
 
 pub async fn init_table_data(rb:&RBatis){
     let conn = rb.acquire().await.expect("init data fail");
+    if let Ok(v) = SysUser::select_by_column(&conn, "id", "1").await {
+        if v.len() > 0 {
+            //if user exists,return
+            return;
+        }
+    };
     let _ = SysUser::insert(&conn, &SysUser {
         id: Some("1".to_string()),
         account: Some("00000000000".to_string()),
