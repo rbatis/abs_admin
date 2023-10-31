@@ -1,4 +1,3 @@
-use rbatis::executor::Executor;
 use rbatis::RBatis;
 use crate::domain::table::LoginCheck;
 use rbatis::rbdc::datetime::DateTime;
