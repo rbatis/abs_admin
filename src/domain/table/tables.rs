@@ -16,7 +16,6 @@ pub struct SysPermission {
     pub permission: Option<String>,
     //menu path
     pub path: Option<String>,
-    pub del: Option<i32>,
     pub create_date: Option<DateTime>,
 }
 
@@ -27,7 +26,6 @@ pub struct SysRole {
     pub name: Option<String>,
     //father id(can empty)
     pub parent_id: Option<String>,
-    pub del: Option<i32>,
     pub create_date: Option<DateTime>,
 }
 
@@ -49,7 +47,6 @@ pub struct SysUser {
     pub name: Option<String>,
     pub login_check: Option<LoginCheck>,
     pub state: Option<i32>,
-    pub del: Option<i32>,
     pub create_date: Option<DateTime>,
 }
 
@@ -108,7 +105,6 @@ pub async fn init_tables(rb: &RBatis) {
         name: Some("".to_string()),
         permission: Some("".to_string()),
         path: Some("".to_string()),
-        del: Some(1),
         create_date: Some(DateTime::now()),
     };
     let _ = sync(&conn, mapper, to_value!(table), "sys_permission").await;
@@ -116,7 +112,6 @@ pub async fn init_tables(rb: &RBatis) {
         id: Some("".to_string()),
         parent_id: Some("".to_string()),
         name: Some("".to_string()),
-        del: Some(1),
         create_date: Some(DateTime::now()),
     };
     let _ = sync(&conn, mapper, to_value!(table), "sys_role").await;
@@ -134,7 +129,6 @@ pub async fn init_tables(rb: &RBatis) {
         name: Some("".to_string()),
         login_check: Some(LoginCheck::NoCheck),
         state: Some(0),
-        del: Some(0),
         create_date: Some(DateTime::now()),
     };
     let _ = sync(&conn, mapper, to_value!(table), "sys_user").await;
@@ -177,7 +171,6 @@ pub async fn init_table_data(rb:&RBatis){
         name: Some("admin".to_string()),
         login_check: Some(PasswordCheck),
         state: Some(1),
-        del: Some(0),
         create_date: Some(DateTime::now()),
     }).await;
 
@@ -185,7 +178,6 @@ pub async fn init_table_data(rb:&RBatis){
         id: Some(1.to_string()),
         name: Some("admin".to_string()),
         parent_id: None,
-        del: Some(0),
         create_date: Some(DateTime::now()),
     }).await;
 
@@ -202,7 +194,6 @@ pub async fn init_table_data(rb:&RBatis){
         name: Some("1".to_string()),
         permission: Some("/".to_string()),
         path: Some("/".to_string()),
-        del: Some(0),
         create_date: Some(DateTime::now()),
     }, SysPermission {
         id: Some(2.to_string()),
@@ -210,7 +201,6 @@ pub async fn init_table_data(rb:&RBatis){
         name: Some("dashboard".to_string()),
         permission: Some("dashboard".to_string()),
         path: Some("dashboard".to_string()),
-        del: Some(0),
         create_date: Some(DateTime::now()),
     }, SysPermission {
         id: Some(3.to_string()),
@@ -218,7 +208,6 @@ pub async fn init_table_data(rb:&RBatis){
         name: Some("首页".to_string()),
         permission: Some("/".to_string()),
         path: Some("".to_string()),
-        del: Some(0),
         create_date: Some(DateTime::now()),
     }, SysPermission {
         id: Some(4.to_string()),
@@ -226,7 +215,6 @@ pub async fn init_table_data(rb:&RBatis){
         name: Some("form".to_string()),
         permission: Some("form".to_string()),
         path: Some("form".to_string()),
-        del: Some(0),
         create_date: Some(DateTime::now()),
     }, SysPermission {
         id: Some(5.to_string()),
@@ -234,7 +222,6 @@ pub async fn init_table_data(rb:&RBatis){
         name: Some("table".to_string()),
         permission: Some("table".to_string()),
         path: Some("table".to_string()),
-        del: Some(0),
         create_date: Some(DateTime::now()),
     }, SysPermission {
         id: Some(6.to_string()),
@@ -242,7 +229,6 @@ pub async fn init_table_data(rb:&RBatis){
         name: Some("profile".to_string()),
         permission: Some("profile".to_string()),
         path: Some("profile".to_string()),
-        del: Some(0),
         create_date: Some(DateTime::now()),
     }, SysPermission {
         id: Some(7.to_string()),
@@ -250,7 +236,6 @@ pub async fn init_table_data(rb:&RBatis){
         name: Some("result".to_string()),
         permission: Some("result".to_string()),
         path: Some("result".to_string()),
-        del: Some(0),
         create_date: Some(DateTime::now()),
     }, SysPermission {
         id: Some(8.to_string()),
@@ -258,7 +243,6 @@ pub async fn init_table_data(rb:&RBatis){
         name: Some("exception".to_string()),
         permission: Some("exception".to_string()),
         path: Some("exception".to_string()),
-        del: Some(0),
         create_date: Some(DateTime::now()),
     }, SysPermission {
         id: Some(9.to_string()),
@@ -266,7 +250,6 @@ pub async fn init_table_data(rb:&RBatis){
         name: Some("user".to_string()),
         permission: Some("user".to_string()),
         path: Some("user".to_string()),
-        del: Some(0),
         create_date: Some(DateTime::now()),
     }, SysPermission {
         id: Some(10.to_string()),
@@ -274,7 +257,6 @@ pub async fn init_table_data(rb:&RBatis){
         name: Some("setting".to_string()),
         permission: Some("setting".to_string()),
         path: Some("setting".to_string()),
-        del: Some(0),
         create_date: Some(DateTime::now()),
     }];
 

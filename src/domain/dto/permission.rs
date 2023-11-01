@@ -33,7 +33,6 @@ impl From<PermissionAddDTO> for SysPermission {
             name: arg.name.clone(),
             permission: arg.permission.clone(),
             path: arg.path.clone(),
-            del: 0.into(),
             create_date: Some(DateTime::now()),
         }
     }
@@ -56,7 +55,6 @@ impl From<&ResEditDTO> for SysPermission {
             name: arg.name.clone(),
             permission: arg.permission.clone(),
             path: arg.path.clone(),
-            del: None,
             create_date: None,
         }
     }

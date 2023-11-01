@@ -11,7 +11,6 @@ pub struct SysPermissionVO {
     pub permission: Option<String>,
     //menu path
     pub path: Option<String>,
-    pub del: Option<i32>,
     pub create_date: Option<String>,
     pub childs: Option<Vec<SysPermissionVO>>,
 }
@@ -24,7 +23,6 @@ impl From<SysPermission> for SysPermissionVO {
             name: arg.name,
             permission: arg.permission,
             path: arg.path,
-            del: arg.del,
             create_date: arg.create_date.map(|v| v.display_stand()),
             childs: None,
         }

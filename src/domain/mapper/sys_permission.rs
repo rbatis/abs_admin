@@ -2,7 +2,7 @@ use crate::domain::table::*;
 //SysPermission
 crud!(SysPermission {});
 impl_select_page!(SysPermission{select_page(dto: &crate::domain::dto::ResPageDTO) =>
-    "`where del = 0 `
+    "`where 0 = 0 `
       if dto.name!=null && dto.name!= '':
          ` and name like #{'%'+dto.name+'%'}`
       ` and parent_id IS NULL`

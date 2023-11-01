@@ -7,7 +7,6 @@ pub struct SysRoleVO {
     pub name: Option<String>,
     //father id(can empty)
     pub parent_id: Option<String>,
-    pub del: Option<i32>,
     pub create_date: Option<String>,
     pub resources: Vec<SysPermissionVO>,
     pub childs: Option<Vec<SysRoleVO>>,
@@ -20,7 +19,6 @@ impl From<SysRole> for SysRoleVO {
             id: arg.id,
             name: arg.name,
             parent_id: arg.parent_id,
-            del: arg.del,
             create_date: arg.create_date.map(|v| v.display_stand()),
             resources: vec![],
             childs: None,
@@ -36,7 +34,6 @@ impl SysRoleVO {
                 id: arg.id,
                 name: arg.name,
                 parent_id: arg.parent_id,
-                del: arg.del,
                 create_date: arg.create_date.map(|v| v.display_stand()),
                 resources: vec![],
                 childs: None,

@@ -30,7 +30,6 @@ impl From<RoleAddDTO> for SysRole {
             id: ObjectId::new().to_string().into(),
             name: arg.name,
             parent_id: arg.parent_id,
-            del: 0.into(),
             create_date: DateTime::now().into(),
         }
     }
@@ -50,7 +49,6 @@ impl From<RoleEditDTO> for SysRole {
             id: arg.id,
             name: arg.name,
             parent_id: arg.parent_id,
-            del: None,
             create_date: None,
         }
     }
