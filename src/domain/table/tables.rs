@@ -1,6 +1,6 @@
 use rbatis::RBatis;
 use crate::domain::table::LoginCheck;
-use rbatis::rbdc::datetime::DateTime;
+use rbatis::rbdc::DateTime;
 use rbatis::table_sync::{ColumMapper, MssqlTableMapper, MysqlTableMapper, PGTableMapper, SqliteTableMapper, sync};
 use rbs::to_value;
 use crate::domain::table::LoginCheck::PasswordCheck;

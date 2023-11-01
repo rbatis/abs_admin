@@ -1,5 +1,5 @@
 use crate::domain::table::SysDict;
-use rbatis::rbdc::datetime::DateTime;
+use rbatis::rbdc::DateTime;
 use rbatis::sql::PageRequest;
 use serde::{Deserialize, Serialize};
 
