@@ -20,7 +20,7 @@
   // The following options need to be enabled:
   // Inside the toml file, add to 'fast_log': fast_log = { version = "1.5", features = ["lz4", "zip", "gzip"]}
   // In src/config/log.rs, uncomment the section under fn choose_packer()
-  // In application.yml, add: log_pack_compress: "zip"
+  // In application.json5, add: log_pack_compress: "zip"
   log_pack_compress: "",
   // Log rolling retention options:
   // Retain all logs: All
