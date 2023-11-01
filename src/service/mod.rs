@@ -86,7 +86,15 @@ impl Default for ServiceContext {
     fn default() -> Self {
         let config = ApplicationConfig::default();
         ServiceContext {
-            rb: crate::domain::init_rbatis(&config),
+            rb: {
+                let rb = RBatis::new();
+                if rb.is_debug_mode() == false && config.debug.eq(&true) {
+                    panic!(
+                        r#"please edit application.json5   “debug: false” "#
+                    );
+                }
+                rb
+            },
             cache_service: CacheService::new(&config).unwrap(),
             sys_permission_service: SysPermissionService {},
             sys_user_service: SysUserService {},
