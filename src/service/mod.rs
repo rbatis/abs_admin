@@ -59,9 +59,7 @@ impl ServiceContext {
             "[abs_admin] rbatis pool init ({})...",
             self.config.database_url
         );
-
-        let driver = rbdc_sqlite::SqliteDriver {};
-
+        let driver = include!("../../target/driver.rs");
         let driver_name = format!("{:?}", driver);
         self.rb
             .init(driver, &self.config.database_url)

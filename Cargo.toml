@@ -44,6 +44,11 @@ futures-util = "0.3.21"
 parking_lot = "0.12.1"
 sqlparser = "0.35.0"
 json5 = "0.4"
+
+[build-dependencies]
+json5 = "0.4"
+serde = { version = "1.0", features = ["derive"] }
+
 [profile.release]
 lto = true
 opt-level = 3

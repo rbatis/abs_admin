@@ -7,6 +7,7 @@ pub struct ApplicationConfig {
     pub server_url: String,
     pub redis_url: String,
     pub database_url: String,
+    pub database_struct: String,
     pub log_dir: String,
     pub log_temp_size: String,
     pub log_pack_compress: String,
