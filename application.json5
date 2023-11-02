@@ -7,6 +7,10 @@
   //cache_type=“redis” enabled
   redis_url: "redis://127.0.0.1:6379",
   //database
+  //"sqlite://target/sqlite.db"
+  //"mysql://root:123456@localhost:3306/test"
+  //"postgres://postgres:123456@localhost:5432/postgres"
+  //mssql://SA:TestPass!123456@localhost:1433/test"
   database_url: "sqlite://target/sqlite.db",
   //log dir, you can use "target/logs/abc.log"  default is "target/logs/"
   log_dir: "target/logs/",
