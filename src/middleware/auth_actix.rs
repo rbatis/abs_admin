@@ -7,6 +7,7 @@ use actix_web::{
     dev::{Service, ServiceRequest, ServiceResponse, Transform},
     Error,
 };
+use actix_web::http::header::{HeaderName, HeaderValue};
 use futures_util::future::LocalBoxFuture;
 use std::{
     future::{ready, Ready},
@@ -65,14 +66,20 @@ where
             .unwrap_or_default();
         let path = req.path().to_string();
         // let fut = srv.call(req);
-
+        let mut refresh_token = token.clone();
         Box::pin(async move {
             //debug mode not enable auth
             if !CONTEXT.config.debug {
                 if !is_white_list_api(&path) {
                     match checked_token(&token, &path).await {
                         Ok(data) => match check_auth(&data, &path).await {
-                            Ok(_) => {}
+                            Ok(_) => {
+                                //Jwt resolution determines whether the expiration time is less than 10 minutes and automatically renews the contract.
+                                let now=rbatis::rbdc::DateTime::now().unix_timestamp() as usize;
+                                if (data.exp-now)<CONTEXT.config.jwt_refresh_token{
+                                    refresh_token = data.refresh(&CONTEXT.config.jwt_secret, CONTEXT.config.jwt_exp).unwrap();
+                                }
+                            }
                             Err(e) => {
                                 let resp: RespVO<String> = RespVO::from_error_info("-1", &e.to_string());
                                 return Ok(req.into_response(resp.resp_json()));
@@ -86,7 +93,8 @@ where
                     }
                 }
             }
-            let res = svc.call(req).await?;
+            let mut res = svc.call(req).await?;
+            res.response_mut().headers_mut().insert(HeaderName::from_static("access_token"), HeaderValue::from_str(refresh_token.as_str()).unwrap());
             Ok(res)
         })
     }

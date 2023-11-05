@@ -236,7 +236,7 @@ impl SysUserService {
             account: sign_vo.account.clone().unwrap_or_default(),
             permissions: sign_vo.permissions.clone(),
             role_ids: vec![],
-            exp: DateTime::now().unix_timestamp_millis() as usize,
+            exp: DateTime::now().unix_timestamp() as usize + CONTEXT.config.jwt_exp,
         };
         sign_vo.access_token = jwt_token.create_token(&CONTEXT.config.jwt_secret)?;
         sign_vo.role = CONTEXT
