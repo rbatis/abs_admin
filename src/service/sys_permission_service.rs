@@ -14,7 +14,6 @@ pub struct SysPermissionService {}
 
 impl SysPermissionService {
     pub async fn page(&self, arg: &ResPageDTO) -> Result<Page<SysPermissionVO>> {
-        let _page_req = PageRequest::new(arg.page_no.unwrap_or(1), arg.page_size.unwrap_or(10));
         let data = SysPermission::select_page(pool!(), &PageRequest::from(arg), arg).await?;
         let all_res = self.finds_all_map().await?;
         let mut all_res_vo = HashMap::new();
