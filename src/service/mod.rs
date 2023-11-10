@@ -70,7 +70,7 @@ impl ServiceContext {
             driver_name, self.config.database_url
         ));
         log::info!(
-            "[abs_admin] rbatis pool init success! pool state = {:?}",
+            "[abs_admin] rbatis pool init success! pool state = {}",
             self.rb.get_pool().expect("pool not init!").state().await
         );
         log::info!(
