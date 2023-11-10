@@ -7,16 +7,16 @@
   //cache_type=“redis” enabled
   redis_url: "redis://127.0.0.1:6379",
   //choose database
-  //"sqlite://target/sqlite.db"
-  //"mysql://root:123456@localhost:3306/test"
-  //"postgres://postgres:123456@localhost:5432/postgres"
-  //"mssql://SA:TestPass!123456@localhost:1433/test"
+  //database_url: "sqlite://target/sqlite.db"
+  //database_url: "mysql://root:123456@localhost:3306/test"
+  //database_url: "postgres://postgres:123456@localhost:5432/postgres"
+  //database_url: "mssql://SA:TestPass!123456@localhost:1433/test"
   database_url: "sqlite://target/sqlite.db",
   //choose driver struct(Cargo.toml must add like 'rbdc-*** = { version = "4.4" }')
-  //"rbdc_sqlite::Driver{}"
-  //"rbdc_mysql::Driver{}"
-  //"rbdc_mssql::Driver{}"
-  //"rbdc_pg::Driver{}"
+  //database_struct: "rbdc_sqlite::Driver{}"
+  //database_struct: "rbdc_mysql::Driver{}"
+  //database_struct: "rbdc_mssql::Driver{}"
+  //database_struct: "rbdc_pg::Driver{}"
   database_struct: "rbdc_sqlite::Driver{}",
   //log dir, you can use "target/logs/abc.log"  default is "target/logs/"
   log_dir: "target/logs/",
