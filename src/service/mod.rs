@@ -59,16 +59,10 @@ impl ServiceContext {
             "[abs_admin] rbatis pool init ({})...",
             self.config.database_url
         );
-        let driver = include!("../../target/driver.rs");
-        let driver_name = format!("{:?}", driver);
         self.rb
-            .init(driver, &self.config.database_url)
+            .link(include!("../../target/driver.rs"), &self.config.database_url).await
             .expect("[abs_admin] rbatis pool init fail!");
         self.rb.intercepts.push(Arc::new(SysTrashService::new()));
-        self.rb.acquire().await.expect(&format!(
-            "rbatis connect database(driver={},url={}) fail",
-            driver_name, self.config.database_url
-        ));
         log::info!(
             "[abs_admin] rbatis pool init success! pool state = {}",
             self.rb.get_pool().expect("pool not init!").state().await
