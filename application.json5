@@ -41,6 +41,10 @@
   log_level: "info",
   //jwt_secret
   jwt_secret: "abs_admin",
+  //jwt to the exp (in seconds)  default 30 minutes
+  jwt_exp : 1800,
+  //Jwt resolution determines whether the expiration time is less than give minutes (default 10 minutes) and automatically renews the contract
+  jwt_refresh_token : 600,
   // SMS channel caching
   // The system first puts the data into the 'sms:send:' queue
   // Third-party SMS SDK or program needs to retrieve and send from the queue

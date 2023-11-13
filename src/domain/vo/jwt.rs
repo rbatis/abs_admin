@@ -29,7 +29,8 @@ impl JWTToken {
     /// verify token invalid
     /// secret: your secret string
     pub fn verify(secret: &str, token: &str) -> Result<JWTToken, Error> {
-        let validation = Validation::default();
+        let mut validation = Validation::default();
+        validation.leeway=0;
         return match decode::<JWTToken>(
             &token,
             &DecodingKey::from_secret(secret.as_ref()),
@@ -39,9 +40,16 @@ impl JWTToken {
             Err(err) => match *err.kind() {
                 ErrorKind::InvalidToken => return Err(Error::from("InvalidToken")), // Example on how to handle a specific error
                 ErrorKind::InvalidIssuer => return Err(Error::from("InvalidIssuer")), // Example on how to handle a specific error
+                ErrorKind::ExpiredSignature => return Err(Error::from("ExpiredSignature")),
                 _ => return Err(Error::from("InvalidToken other errors")),
             },
         };
+    }
+
+    pub fn refresh(&self, secret: &str, jwt_exp: usize) -> Result<String, Error> {
+        let mut jwt = self.clone();
+        jwt.exp = jwt.exp + jwt_exp;
+        jwt.create_token(&secret)
     }
 }
 
@@ -59,7 +67,7 @@ mod test {
             account: "189".to_string(),
             permissions: vec![],
             role_ids: vec![],
-            exp: DateTime::now().unix_timestamp_millis() as usize,
+            exp: DateTime::now().unix_timestamp() as usize,
         };
         sleep(Duration::from_secs(5));
         let token = j.create_token("ssss").unwrap();
