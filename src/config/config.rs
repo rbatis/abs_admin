@@ -31,7 +31,12 @@ impl Default for ApplicationConfig {
     fn default() -> Self {
         let js_data = include_str!("../../application.json5");
         //load config
-        let result: ApplicationConfig = json5::from_str(js_data).expect("load config file fail");
+        let mut result: ApplicationConfig = json5::from_str(js_data).expect("load config file fail");
+        if cfg!(debug_assertions) {
+            result.debug = true;
+        } else {
+            result.debug = false;
+        }
         if result.debug {
             println!("[abs_admin] load config:{:?}", result);
             println!("[abs_admin] ///////////////////// Start On Debug Mode ////////////////////////////");
