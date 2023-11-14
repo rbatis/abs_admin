@@ -22,7 +22,7 @@
   log_dir: "target/logs/",
   //log size-KB,MB,GB
   log_temp_size: "100MB",
-  //log type,choose one of  [mmap,file]
+  //log type,choose one of  ("mmap","file")
   log_type: "mmap",
   //Log channel length: null for unbounded queue, non-null for bounded queue (better performance)
   log_chan_len: 100000,
