@@ -77,7 +77,7 @@ pub struct SysTrash {
 }
 
 
-pub async fn init_tables(rb: &RBatis) {
+pub async fn sync_tables(rb: &RBatis) {
     let mapper = {
         match rb.driver_type().unwrap() {
             "sqlite" => {
@@ -155,7 +155,7 @@ pub async fn init_tables(rb: &RBatis) {
     let _ = RBatis::sync(&conn, mapper, &table, "sys_trash").await;
 }
 
-pub async fn init_table_data(rb:&RBatis){
+pub async fn sync_tables_data(rb:&RBatis){
     let conn = rb.acquire().await.expect("init data fail");
     if let Ok(v) = SysUser::select_by_column(&conn, "id", "1").await {
         if v.len() > 0 {

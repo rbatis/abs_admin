@@ -21,8 +21,8 @@ async fn main() -> std::io::Result<()> {
     abs_admin::config::log::init_log();
     //database
     CONTEXT.init_database().await;
-    table::init_tables(&CONTEXT.rb).await;
-    table::init_table_data(&CONTEXT.rb).await;
+    table::sync_tables(&CONTEXT.rb).await;
+    table::sync_tables_data(&CONTEXT.rb).await;
     //router
     HttpServer::new(|| {
         App::new()
