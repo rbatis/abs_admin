@@ -1,8 +1,7 @@
 use rbatis::RBatis;
 use crate::domain::table::LoginCheck;
 use rbatis::rbdc::DateTime;
-use rbatis::table_sync::{ColumMapper, MssqlTableMapper, MysqlTableMapper, PGTableMapper, SqliteTableMapper, sync};
-use rbs::to_value;
+use rbatis::table_sync::{ColumMapper, MssqlTableMapper, MysqlTableMapper, PGTableMapper, SqliteTableMapper};
 use crate::domain::table::LoginCheck::PasswordCheck;
 
 ///Permission Resource Table
@@ -107,21 +106,21 @@ pub async fn init_tables(rb: &RBatis) {
         path: Some("".to_string()),
         create_date: Some(DateTime::now()),
     };
-    let _ = sync(&conn, mapper, to_value!(table), "sys_permission").await;
+    let _ = RBatis::sync(&conn, mapper, &table, "sys_permission").await;
     let table = SysRole {
         id: Some("".to_string()),
         parent_id: Some("".to_string()),
         name: Some("".to_string()),
         create_date: Some(DateTime::now()),
     };
-    let _ = sync(&conn, mapper, to_value!(table), "sys_role").await;
+    let _ = RBatis::sync(&conn, mapper, &table, "sys_role").await;
     let table = SysRolePermission {
         id: Some("".to_string()),
         role_id: Some("".to_string()),
         permission_id: Some("".to_string()),
         create_date: Some(DateTime::now()),
     };
-    let _ = sync(&conn, mapper, to_value!(table), "sys_role_permission").await;
+    let _ = RBatis::sync(&conn, mapper, &table, "sys_role_permission").await;
     let table = SysUser {
         id: Some("".to_string()),
         account: Some("".to_string()),
@@ -131,14 +130,14 @@ pub async fn init_tables(rb: &RBatis) {
         state: Some(0),
         create_date: Some(DateTime::now()),
     };
-    let _ = sync(&conn, mapper, to_value!(table), "sys_user").await;
+    let _ = RBatis::sync(&conn, mapper, &table, "sys_user").await;
     let table = SysUserRole {
         id: Some("".to_string()),
         user_id: Some("".to_string()),
         role_id: Some("".to_string()),
         create_date: Some(DateTime::now()),
     };
-    let _ = sync(&conn, mapper, to_value!(table), "sys_user_role").await;
+    let _ = RBatis::sync(&conn, mapper, &table, "sys_user_role").await;
     let table = SysDict {
         id: Some("".to_string()),
         name: Some("".to_string()),
@@ -146,14 +145,14 @@ pub async fn init_tables(rb: &RBatis) {
         state: Some(0),
         create_date: Some(DateTime::now()),
     };
-    let _ = sync(&conn, mapper, to_value!(table), "sys_dict").await;
+    let _ = RBatis::sync(&conn, mapper, &table, "sys_dict").await;
     let table = SysTrash {
         id: Some("".to_string()),
         table_name: Some("".to_string()),
         data: Some("".to_string()),
         create_date: Some(DateTime::now()),
     };
-    let _ = sync(&conn, mapper, to_value!(table), "sys_trash").await;
+    let _ = RBatis::sync(&conn, mapper, &table, "sys_trash").await;
 }
 
 pub async fn init_table_data(rb:&RBatis){
