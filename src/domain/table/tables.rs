@@ -1,3 +1,6 @@
+use log::LevelFilter;
+use rbatis::dark_std::defer;
+use rbatis::intercept_log::LogInterceptor;
 use rbatis::RBatis;
 use crate::domain::table::LoginCheck;
 use rbatis::rbdc::DateTime;
@@ -78,6 +81,12 @@ pub struct SysTrash {
 
 
 pub async fn sync_tables(rb: &RBatis) {
+    //disable log
+    let level = rb.get_intercept::<LogInterceptor>().unwrap().get_level_filter().clone();
+    rb.get_intercept::<LogInterceptor>().unwrap().set_level_filter(LevelFilter::Off);
+    defer!(||{
+       rb.get_intercept::<LogInterceptor>().unwrap().set_level_filter(level);
+    });
     let mapper = {
         match rb.driver_type().unwrap() {
             "sqlite" => {
@@ -155,7 +164,7 @@ pub async fn sync_tables(rb: &RBatis) {
     let _ = RBatis::sync(&conn, mapper, &table, "sys_trash").await;
 }
 
-pub async fn sync_tables_data(rb:&RBatis){
+pub async fn sync_tables_data(rb: &RBatis) {
     let conn = rb.acquire().await.expect("init data fail");
     if let Ok(v) = SysUser::select_by_column(&conn, "id", "1").await {
         if v.len() > 0 {
