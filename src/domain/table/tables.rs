@@ -82,10 +82,11 @@ pub struct SysTrash {
 
 pub async fn sync_tables(rb: &RBatis) {
     //disable log
-    let level = rb.get_intercept::<LogInterceptor>().unwrap().get_level_filter().clone();
-    rb.get_intercept::<LogInterceptor>().unwrap().set_level_filter(LevelFilter::Off);
+    let log_intercept = rb.get_intercept::<LogInterceptor>().unwrap();
+    let level = log_intercept.get_level_filter().clone();
+    log_intercept.set_level_filter(LevelFilter::Off);
     defer!(||{
-       rb.get_intercept::<LogInterceptor>().unwrap().set_level_filter(level);
+       log_intercept.set_level_filter(level);
     });
     let mapper = {
         match rb.driver_type().unwrap() {
