@@ -12,6 +12,7 @@ pub struct ApplicationConfig {
     pub database_url: String,
 }
 
+/// write `rbdc_<database>::Driver{}` to file 'target/driver.rs'
 fn main() {
     let js_data = include_str!("application.json5");
     let config: ApplicationConfig = json5::from_str(js_data).expect("load config file fail");
