@@ -1,9 +1,15 @@
 use std::fs::{OpenOptions};
 use std::io::{Read, Write};
 
+//choose driver struct(Cargo.toml must add like 'rbdc-*** = { version = "4.5" }')
+//database_struct: "rbdc_sqlite::Driver{}",
+//database_struct: "rbdc_mysql::Driver{}",
+//database_struct: "rbdc_mssql::Driver{}",
+//database_struct: "rbdc_pg::Driver{}",
+//database_struct: "rbdc_sqlite::Driver{}",
 #[derive(Debug, PartialEq, serde::Serialize, serde::Deserialize)]
 pub struct ApplicationConfig {
-    pub database_struct: String,
+    pub database_url: String,
 }
 
 fn main() {
@@ -12,9 +18,15 @@ fn main() {
     let mut data = String::new();
     let mut f = OpenOptions::new().write(true).create(true).open("target/driver.rs").unwrap();
     _ = f.read_to_string(&mut data);
-    if data.is_empty() || data!=config.database_struct{
-        _ = f.set_len(0);
-        f.write_all(config.database_struct.as_ref()).unwrap();
-        f.flush().unwrap();
+
+    let db_index = config.database_url.find(":").expect("database_url must be '<database>://xxxx'");
+    let mut db_name = &config.database_url[..db_index];
+    if db_name == "postgres" {
+        db_name = "pg";
     }
+    let driver_path = format!("rbdc_{}::Driver{}", db_name, "{}");
+    println!("driver_path={}",driver_path);
+    _ = f.set_len(0);
+    f.write_all(driver_path.as_bytes()).unwrap();
+    f.flush().unwrap();
 }
