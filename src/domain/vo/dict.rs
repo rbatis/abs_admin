@@ -1,4 +1,5 @@
 use crate::domain::table::SysDict;
+use crate::service::CONTEXT;
 
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SysDictVO {
@@ -16,7 +17,7 @@ impl From<SysDict> for SysDictVO {
             name: arg.name,
             code: arg.code,
             state: arg.state,
-            create_date: arg.create_date.map(|v| v.display_stand()),
+            create_date: arg.create_date.map(|v| v.format(&CONTEXT.config.datetime_format)),
         }
     }
 }

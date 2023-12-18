@@ -1,5 +1,6 @@
 use crate::domain::table::SysPermission;
 use std::collections::HashMap;
+use crate::service::CONTEXT;
 
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SysPermissionVO {
@@ -23,7 +24,7 @@ impl From<SysPermission> for SysPermissionVO {
             name: arg.name,
             permission: arg.permission,
             path: arg.path,
-            create_date: arg.create_date.map(|v| v.display_stand()),
+            create_date: arg.create_date.map(|v| v.format(&CONTEXT.config.datetime_format)),
             childs: None,
         }
     }

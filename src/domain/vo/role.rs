@@ -1,5 +1,6 @@
 use crate::domain::table::SysRole;
 use crate::domain::vo::SysPermissionVO;
+use crate::service::CONTEXT;
 
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SysRoleVO {
@@ -19,7 +20,7 @@ impl From<SysRole> for SysRoleVO {
             id: arg.id,
             name: arg.name,
             parent_id: arg.parent_id,
-            create_date: arg.create_date.map(|v| v.display_stand()),
+            create_date: arg.create_date.map(|v| v.format(&CONTEXT.config.datetime_format)),
             resources: vec![],
             childs: None,
             resource_ids: vec![],
@@ -34,7 +35,7 @@ impl SysRoleVO {
                 id: arg.id,
                 name: arg.name,
                 parent_id: arg.parent_id,
-                create_date: arg.create_date.map(|v| v.display_stand()),
+                create_date: arg.create_date.map(|v| v.format(&CONTEXT.config.datetime_format)),
                 resources: vec![],
                 childs: None,
                 resource_ids: vec![],

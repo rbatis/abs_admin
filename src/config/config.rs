@@ -23,6 +23,7 @@ pub struct ApplicationConfig {
     pub login_fail_retry: u64,
     pub login_fail_retry_wait_sec: u64,
     pub trash_recycle_days: u64,
+    pub datetime_format: String,
     pub errors: HashMap<String, String>,
 }
 

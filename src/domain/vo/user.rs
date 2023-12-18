@@ -1,6 +1,7 @@
 use crate::domain::table::{LoginCheck, SysUser};
 use crate::domain::vo::SysRoleVO;
 use serde::{Deserialize, Serialize};
+use crate::service::CONTEXT;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct SysUserVO {
@@ -23,7 +24,7 @@ impl From<SysUser> for SysUserVO {
             name: arg.name,
             login_check: arg.login_check,
             state: arg.state,
-            create_date: arg.create_date.map(|v| v.display_stand()),
+            create_date: arg.create_date.map(|v| v.format(&CONTEXT.config.datetime_format)),
             role: None,
         }
     }

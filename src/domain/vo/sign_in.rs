@@ -1,6 +1,7 @@
 use crate::domain::table::{LoginCheck, SysUser};
 use crate::domain::vo::SysRoleVO;
 use serde::{Deserialize, Serialize};
+use crate::service::CONTEXT;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct SignInVO {
@@ -25,7 +26,7 @@ impl From<SysUser> for SignInVO {
             name: value.name,
             login_check: value.login_check,
             state: value.state,
-            create_date: value.create_date.map(|v| v.display_stand()),
+            create_date: value.create_date.map(|v| v.format(&CONTEXT.config.datetime_format)),
             permissions: vec![],
             access_token: "".to_string(),
             role: None,
