@@ -11,13 +11,13 @@ mod sys_trash_service;
 mod sys_user_role_service;
 mod sys_user_service;
 
-use std::sync::Arc;
 pub use crate::config::config::ApplicationConfig;
 pub use cache_service::*;
 pub use mem_service::*;
 use once_cell::sync::Lazy;
 use rbatis::rbatis::RBatis;
 pub use redis_service::*;
+use std::sync::Arc;
 pub use sys_auth_service::*;
 pub use sys_dict_service::*;
 pub use sys_permission_service::*;
@@ -60,7 +60,11 @@ impl ServiceContext {
             self.config.database_url
         );
         self.rb
-            .link(include!("../../target/driver.rs"), &self.config.database_url).await
+            .link(
+                include!("../../target/driver.rs"),
+                &self.config.database_url,
+            )
+            .await
             .expect("[abs_admin] rbatis pool init fail!");
         self.rb.intercepts.push(Arc::new(SysTrashService::new()));
         log::info!(
@@ -81,9 +85,7 @@ impl Default for ServiceContext {
             rb: {
                 let rb = RBatis::new();
                 if rb.is_debug_mode() == false && config.debug.eq(&true) {
-                    panic!(
-                        r#"please edit application.json5   “debug: false” "#
-                    );
+                    panic!(r#"please edit application.json5   “debug: false” "#);
                 }
                 rb
             },

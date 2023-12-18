@@ -124,7 +124,10 @@ impl SysRoleService {
             .await?;
         let res = CONTEXT
             .sys_permission_service
-            .finds_layer(&rbatis::make_table_field_vec!(&role_res, permission_id), &all_res)
+            .finds_layer(
+                &rbatis::make_table_field_vec!(&role_res, permission_id),
+                &all_res,
+            )
             .await?;
         let permissions = rbatis::make_table_field_vec!(&res, permission);
         return Ok(permissions);

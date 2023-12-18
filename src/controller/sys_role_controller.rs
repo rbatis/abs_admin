@@ -27,6 +27,9 @@ pub async fn update(arg: web::Json<SysRoleResUpdateDTO>) -> impl Responder {
 
 pub async fn remove(arg: web::Json<IdDTO>) -> impl Responder {
     let role_id = arg.0.id.unwrap_or_default();
-    let vo = CONTEXT.sys_role_permission_service.remove_role(&role_id).await;
+    let vo = CONTEXT
+        .sys_role_permission_service
+        .remove_role(&role_id)
+        .await;
     return RespVO::from_result(&vo).resp_json();
 }

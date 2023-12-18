@@ -1,30 +1,35 @@
 use crate::service::CONTEXT;
 use fast_log::config::Config;
 use fast_log::consts::LogSize;
+use fast_log::plugin::file_mmap::MmapFile;
 use fast_log::plugin::file_split::{FileSplitAppender, Packer, RawFile, RollingType};
 use std::time::Duration;
-use fast_log::plugin::file_mmap::MmapFile;
 
 pub fn init_log() {
     //init fast log
-    let mut cfg = Config::new()
-        .level(str_to_log_level(&CONTEXT.config.log_level));
+    let mut cfg = Config::new().level(str_to_log_level(&CONTEXT.config.log_level));
     match CONTEXT.config.log_type.as_str() {
         "mmap" => {
-            cfg = cfg.custom(FileSplitAppender::<MmapFile>::new(
-                &CONTEXT.config.log_dir,
-                str_to_temp_size(&CONTEXT.config.log_temp_size),
-                str_to_rolling(&CONTEXT.config.log_rolling_type),
-                choose_packer(&CONTEXT.config.log_pack_compress),
-            ).unwrap());
+            cfg = cfg.custom(
+                FileSplitAppender::<MmapFile>::new(
+                    &CONTEXT.config.log_dir,
+                    str_to_temp_size(&CONTEXT.config.log_temp_size),
+                    str_to_rolling(&CONTEXT.config.log_rolling_type),
+                    choose_packer(&CONTEXT.config.log_pack_compress),
+                )
+                .unwrap(),
+            );
         }
         _ => {
-            cfg = cfg.custom(FileSplitAppender::<RawFile>::new(
-                &CONTEXT.config.log_dir,
-                str_to_temp_size(&CONTEXT.config.log_temp_size),
-                str_to_rolling(&CONTEXT.config.log_rolling_type),
-                choose_packer(&CONTEXT.config.log_pack_compress),
-            ).unwrap());
+            cfg = cfg.custom(
+                FileSplitAppender::<RawFile>::new(
+                    &CONTEXT.config.log_dir,
+                    str_to_temp_size(&CONTEXT.config.log_temp_size),
+                    str_to_rolling(&CONTEXT.config.log_rolling_type),
+                    choose_packer(&CONTEXT.config.log_pack_compress),
+                )
+                .unwrap(),
+            );
         }
     }
     if CONTEXT.config.debug {

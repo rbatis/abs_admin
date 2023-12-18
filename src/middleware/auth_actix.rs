@@ -3,11 +3,11 @@ use crate::middleware::auth::{check_auth, checked_token, is_white_list_api};
 use crate::service::CONTEXT;
 use actix_http::body::BoxBody;
 use actix_web::error::ErrorUnauthorized;
+use actix_web::http::header::{HeaderName, HeaderValue};
 use actix_web::{
     dev::{Service, ServiceRequest, ServiceResponse, Transform},
     Error,
 };
-use actix_web::http::header::{HeaderName, HeaderValue};
 use futures_util::future::LocalBoxFuture;
 use std::{
     future::{ready, Ready},
@@ -75,26 +75,35 @@ where
                         Ok(data) => match check_auth(&data, &path).await {
                             Ok(_) => {
                                 //Jwt resolution determines whether the expiration time is less than 10 minutes and automatically renews the contract.
-                                let now=rbatis::rbdc::DateTime::now().unix_timestamp() as usize;
-                                if (data.exp-now)<CONTEXT.config.jwt_refresh_token{
-                                    refresh_token = data.refresh(&CONTEXT.config.jwt_secret, CONTEXT.config.jwt_exp).unwrap();
+                                let now = rbatis::rbdc::DateTime::now().unix_timestamp() as usize;
+                                if (data.exp - now) < CONTEXT.config.jwt_refresh_token {
+                                    refresh_token = data
+                                        .refresh(&CONTEXT.config.jwt_secret, CONTEXT.config.jwt_exp)
+                                        .unwrap();
                                 }
                             }
                             Err(e) => {
-                                let resp: RespVO<String> = RespVO::from_error_info("-1", &e.to_string());
+                                let resp: RespVO<String> =
+                                    RespVO::from_error_info("-1", &e.to_string());
                                 return Ok(req.into_response(resp.resp_json()));
                             }
                         },
                         Err(e) => {
                             //401 http code will exit login
-                            let resp: RespVO<String> = RespVO::from_error_info("-1",&format!("Unauthorized for:{}", e.to_string()));
+                            let resp: RespVO<String> = RespVO::from_error_info(
+                                "-1",
+                                &format!("Unauthorized for:{}", e.to_string()),
+                            );
                             return Err(ErrorUnauthorized(serde_json::json!(&resp).to_string()));
                         }
                     }
                 }
             }
             let mut res = svc.call(req).await?;
-            res.response_mut().headers_mut().insert(HeaderName::from_static("access_token"), HeaderValue::from_str(refresh_token.as_str()).unwrap());
+            res.response_mut().headers_mut().insert(
+                HeaderName::from_static("access_token"),
+                HeaderValue::from_str(refresh_token.as_str()).unwrap(),
+            );
             Ok(res)
         })
     }

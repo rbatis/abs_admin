@@ -6,8 +6,8 @@ use crate::domain::vo::user::SysUserVO;
 use crate::domain::vo::{SysPermissionVO, SysRoleVO};
 use crate::error::Error;
 use crate::error::Result;
-use crate::{error_info, pool};
 use crate::service::CONTEXT;
+use crate::{error_info, pool};
 use rbatis::plugin::object_id::ObjectId;
 use rbatis::sql::Page;
 
@@ -31,9 +31,7 @@ impl SysUserRoleService {
             let roles = CONTEXT.sys_role_service.finds(&role_ids).await?;
             let roles_map = rbatis::make_table_field_map!(&roles, id);
             for x in &mut vo.records {
-                if let Some(user_role) =
-                    user_role_map.get(x.id.as_deref().unwrap_or_default())
-                {
+                if let Some(user_role) = user_role_map.get(x.id.as_deref().unwrap_or_default()) {
                     if let Some(role_id) = &user_role.role_id {
                         let role = roles_map.get(role_id).cloned();
                         x.role = SysRoleVO::from_option(role);
@@ -95,13 +93,16 @@ impl SysUserRoleService {
             let mut resources = vec![];
             for role_res in &role_res_vec {
                 if role.id.is_some() && role.id.eq(&role_res.role_id) {
-                    if let Some(res) = all_res.get(role_res.permission_id.as_ref().unwrap_or_def()) {
+                    if let Some(res) = all_res.get(role_res.permission_id.as_ref().unwrap_or_def())
+                    {
                         resources.push(res.clone());
                     }
                 }
             }
             let mut vo = SysRoleVO::from(role);
-            vo.resource_ids = CONTEXT.sys_permission_service.make_permission_ids(&resources);
+            vo.resource_ids = CONTEXT
+                .sys_permission_service
+                .make_permission_ids(&resources);
             vo.resources = resources;
             role_vos.push(vo);
         }

@@ -1,9 +1,9 @@
 use crate::domain::dto::{DictAddDTO, DictEditDTO, DictPageDTO, IdDTO};
 use crate::domain::table::SysDict;
 use crate::domain::vo::RespVO;
+use crate::error_info;
 use crate::service::CONTEXT;
 use actix_web::{web, Responder};
-use crate::error_info;
 
 pub async fn page(page: web::Json<DictPageDTO>) -> impl Responder {
     let data = CONTEXT.sys_dict_service.page(&page.0).await;

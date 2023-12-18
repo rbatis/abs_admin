@@ -30,7 +30,7 @@ impl JWTToken {
     /// secret: your secret string
     pub fn verify(secret: &str, token: &str) -> Result<JWTToken, Error> {
         let mut validation = Validation::default();
-        validation.leeway=0;
+        validation.leeway = 0;
         return match decode::<JWTToken>(
             &token,
             &DecodingKey::from_secret(secret.as_ref()),

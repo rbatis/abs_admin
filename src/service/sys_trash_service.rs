@@ -1,20 +1,20 @@
-use std::fmt::{Debug};
-use std::time::Duration;
+use crate::domain::table::SysTrash;
+use crate::pool;
+use crate::service::CONTEXT;
 use parking_lot::Mutex;
 use rbatis::executor::Executor;
 use rbatis::intercept::{Intercept, ResultType};
-use crate::domain::table::SysTrash;
-use crate::pool;
 use rbatis::object_id::ObjectId;
-use rbatis::rbdc::DateTime;
 use rbatis::rbdc::db::ExecResult;
+use rbatis::rbdc::DateTime;
 use rbatis::rbdc::Error;
 use rbs::Value;
 use serde::Serialize;
 use sqlparser::ast::Statement;
-use sqlparser::parser::Parser;
 use sqlparser::dialect::GenericDialect;
-use crate::service::CONTEXT;
+use sqlparser::parser::Parser;
+use std::fmt::Debug;
+use std::time::Duration;
 
 /// A trash can service that can recycle data. Retrieve the data, display the trash can data
 #[derive(Debug)]
@@ -29,8 +29,8 @@ impl SysTrashService {
         }
     }
     pub async fn add<T>(&self, table_name: &str, args: &[T]) -> Result<u64, Error>
-        where
-            T: Serialize,
+    where
+        T: Serialize,
     {
         if args.is_empty() {
             return Ok(0);
@@ -59,7 +59,9 @@ impl SysTrashService {
 
     //recycle trash older than `trash_recycle_days`
     pub async fn recycle(&self) -> Result<u64, Error> {
-        let before = DateTime::now().0.sub(Duration::from_secs(CONTEXT.config.trash_recycle_days * 24 * 3600));
+        let before = DateTime::now().0.sub(Duration::from_secs(
+            CONTEXT.config.trash_recycle_days * 24 * 3600,
+        ));
         let r = SysTrash::delete_by_day_before(pool!(), DateTime(before)).await?;
         Ok(r.rows_affected)
     }
@@ -78,7 +80,8 @@ impl Intercept for SysTrashService {
     ) -> Result<bool, Error> {
         if sql.starts_with("delete from ") {
             let dialect = GenericDialect {}; // or AnsiDialect
-            let v: Vec<Statement> = Parser::parse_sql(&dialect, &sql.clone()).map_err(|e| Error::from(e.to_string()))?;
+            let v: Vec<Statement> = Parser::parse_sql(&dialect, &sql.clone())
+                .map_err(|e| Error::from(e.to_string()))?;
             if v.len() <= 0 {
                 return Err(Error::from("sql is empty"));
             }
@@ -88,7 +91,8 @@ impl Intercept for SysTrashService {
                     from,
                     using: _,
                     selection: _,
-                    returning: _, } => {
+                    returning: _,
+                } => {
                     let mut data = "".to_string();
                     for x in from {
                         let x_str = &format!("{}", x);
@@ -96,9 +100,7 @@ impl Intercept for SysTrashService {
                     }
                     data
                 }
-                _ => {
-                    "".to_string()
-                }
+                _ => "".to_string(),
             };
             if table.is_empty() {
                 return Err(Error::from(format!("sql={} table_name is empty", sql)));
@@ -106,7 +108,10 @@ impl Intercept for SysTrashService {
             if table.eq("sys_trash") {
                 return Ok(true);
             }
-            let new_sql = sql.clone().replace(&format!("delete from {}", table), &format!("select * from {}", table));
+            let new_sql = sql.clone().replace(
+                &format!("delete from {}", table),
+                &format!("select * from {}", table),
+            );
             let data = rb.query(&new_sql, args.clone()).await?;
             match data {
                 Value::Array(arr) => {

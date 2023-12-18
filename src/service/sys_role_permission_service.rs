@@ -7,8 +7,8 @@ use crate::domain::table::SysRolePermission;
 use crate::domain::vo::{SysPermissionVO, SysRoleVO};
 use crate::error::Error;
 use crate::error::Result;
-use crate::{error_info, pool};
 use crate::service::CONTEXT;
+use crate::{error_info, pool};
 use rbatis::plugin::object_id::ObjectId;
 use rbatis::rbdc::DateTime;
 use rbatis::sql::Page;
@@ -151,9 +151,11 @@ impl SysRoleResService {
                 create_date: DateTime::now().into(),
             });
         }
-        Ok(SysRolePermission::insert_batch(pool!(), &sys_role_permission, 20)
-            .await?
-            .rows_affected)
+        Ok(
+            SysRolePermission::insert_batch(pool!(), &sys_role_permission, 20)
+                .await?
+                .rows_affected,
+        )
     }
 
     ///Roles, user relationships, and rights are deleted
@@ -177,14 +179,18 @@ impl SysRoleResService {
     }
 
     pub async fn remove_by_permission_id(&self, permission_id: &str) -> Result<u64> {
-        Ok(SysRolePermission::delete_by_column(pool!(), "permission_id", permission_id)
-            .await?
-            .rows_affected)
+        Ok(
+            SysRolePermission::delete_by_column(pool!(), "permission_id", permission_id)
+                .await?
+                .rows_affected,
+        )
     }
 
     pub async fn remove_by_role_id(&self, role_id: &str) -> Result<u64> {
-        Ok(SysRolePermission::delete_by_column(pool!(), "role_id", role_id)
-            .await?
-            .rows_affected)
+        Ok(
+            SysRolePermission::delete_by_column(pool!(), "role_id", role_id)
+                .await?
+                .rows_affected,
+        )
     }
 }

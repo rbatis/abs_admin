@@ -27,7 +27,11 @@ pub async fn info(req: HttpRequest) -> impl Responder {
                 .await;
             RespVO::from_result(&user_data).resp_json()
         }
-        _ => RespVO::<String>::from_error_info("access_token_empty", &error_info!("access_token_empty")).resp_json(),
+        _ => RespVO::<String>::from_error_info(
+            "access_token_empty",
+            &error_info!("access_token_empty"),
+        )
+        .resp_json(),
     };
 }
 
@@ -49,7 +53,10 @@ pub async fn detail(arg: web::Json<IdDTO>) -> impl Responder {
 pub async fn update(arg: web::Json<UserEditDTO>) -> impl Responder {
     if let (Some(account), Some(state)) = (arg.0.account.as_ref(), arg.0.state.as_ref()) {
         if account == "00000000000" && *state == 0 {
-            return RespVO::<u64>::from_result(&Err(Error::from(error_info!("cannot_disable_admin")))).resp_json();
+            return RespVO::<u64>::from_result(&Err(Error::from(error_info!(
+                "cannot_disable_admin"
+            ))))
+            .resp_json();
         }
     }
     let vo = CONTEXT.sys_user_service.edit(arg.0).await;

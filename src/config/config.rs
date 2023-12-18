@@ -30,7 +30,8 @@ impl Default for ApplicationConfig {
     fn default() -> Self {
         let js_data = include_str!("../../application.json5");
         //load config
-        let mut result: ApplicationConfig = json5::from_str(js_data).expect("load config file fail");
+        let mut result: ApplicationConfig =
+            json5::from_str(js_data).expect("load config file fail");
         if cfg!(debug_assertions) {
             result.debug = true;
         } else {
@@ -49,19 +50,11 @@ impl Default for ApplicationConfig {
 impl ApplicationConfig {
     pub fn get_error_info(&self, code: &str) -> String {
         match self.errors.get(code) {
-            None => {
-                match self.errors.get("-1"){
-                    None => {
-                        "unknown error".to_string()
-                    }
-                    Some(v) => {
-                        v.to_string()
-                    }
-                }
-            }
-            Some(v) => {
-                v.as_str().to_string()
-            }
+            None => match self.errors.get("-1") {
+                None => "unknown error".to_string(),
+                Some(v) => v.to_string(),
+            },
+            Some(v) => v.as_str().to_string(),
         }
     }
 }

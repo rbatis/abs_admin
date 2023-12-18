@@ -2,10 +2,10 @@ use abs_admin::controller::{
     img_controller, sys_auth_controller, sys_dict_controller, sys_permission_controller,
     sys_role_controller, sys_user_controller,
 };
+use abs_admin::domain::table;
 use abs_admin::middleware::auth_actix::Auth;
 use abs_admin::service::CONTEXT;
 use actix_web::{web, App, HttpResponse, HttpServer, Responder};
-use abs_admin::domain::table;
 
 async fn index() -> impl Responder {
     HttpResponse::Ok()

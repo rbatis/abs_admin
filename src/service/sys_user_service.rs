@@ -8,8 +8,8 @@ use crate::domain::dto::{IdDTO, SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO,
 use crate::domain::table::{LoginCheck, SysUser};
 use crate::domain::vo::user::SysUserVO;
 use crate::domain::vo::{JWTToken, SignInVO, SysPermissionVO};
-use crate::{error_info, pool};
 use crate::util::password_encoder::PasswordEncoder;
+use crate::{error_info, pool};
 use std::collections::BTreeMap;
 use std::time::Duration;
 
@@ -28,7 +28,7 @@ impl SysUserService {
             arg.name.as_deref().unwrap_or_default(),
             arg.account.as_deref().unwrap_or_default(),
         )
-            .await?;
+        .await?;
         let page = Page::<SysUserVO>::from(sys_user_page);
         return Ok(page);
     }
@@ -36,10 +36,9 @@ impl SysUserService {
     ///user details
     pub async fn detail(&self, arg: &IdDTO) -> Result<SysUserVO> {
         let user_id = arg.id.as_deref().unwrap_or_default();
-        let user = self
-            .find(&user_id)
-            .await?
-            .ok_or_else(|| Error::from(format!("{}={}", error_info!("user_not_exists"), user_id)))?;
+        let user = self.find(&user_id).await?.ok_or_else(|| {
+            Error::from(format!("{}={}", error_info!("user_not_exists"), user_id))
+        })?;
         let mut user_vo = SysUserVO::from(user);
         let all_res = CONTEXT.sys_permission_service.finds_all_map().await?;
         let role = CONTEXT
@@ -108,7 +107,13 @@ impl SysUserService {
             .await?
             .into_iter()
             .next();
-        let user = user.ok_or_else(|| Error::from(format!("{}={}", error_info!("account_not_exists"), arg.account)))?;
+        let user = user.ok_or_else(|| {
+            Error::from(format!(
+                "{}={}",
+                error_info!("account_not_exists"),
+                arg.account
+            ))
+        })?;
         if user.state.eq(&Some(0)) {
             return Err(Error::from(error_info!("account_disabled")));
         }
@@ -175,9 +180,15 @@ impl SysUserService {
     ///is need to wait
     pub async fn is_need_wait_login_ex(&self, account: &str) -> Result<()> {
         if CONTEXT.config.login_fail_retry > 0 {
-            let num: Option<u64> = CONTEXT.cache_service.get_json(&format!("{}{}", CACHE_KEY_RETRY, account)).await?;
+            let num: Option<u64> = CONTEXT
+                .cache_service
+                .get_json(&format!("{}{}", CACHE_KEY_RETRY, account))
+                .await?;
             if num.unwrap_or(0) >= CONTEXT.config.login_fail_retry {
-                let wait_sec: i64 = CONTEXT.cache_service.ttl(&format!("{}{}", CACHE_KEY_RETRY, account)).await?;
+                let wait_sec: i64 = CONTEXT
+                    .cache_service
+                    .ttl(&format!("{}{}", CACHE_KEY_RETRY, account))
+                    .await?;
                 if wait_sec > 0 {
                     let mut e = error_info!("req_frequently");
                     e = e.replace("{}", &format!("{}", wait_sec));
@@ -191,7 +202,10 @@ impl SysUserService {
     ///Add redis retry record
     pub async fn add_retry_login_limit_num(&self, account: &str) -> Result<()> {
         if CONTEXT.config.login_fail_retry > 0 {
-            let num: Option<u64> = CONTEXT.cache_service.get_json(&format!("{}{}", CACHE_KEY_RETRY, account)).await?;
+            let num: Option<u64> = CONTEXT
+                .cache_service
+                .get_json(&format!("{}{}", CACHE_KEY_RETRY, account))
+                .await?;
             let mut num = num.unwrap_or(0);
             if num > CONTEXT.config.login_fail_retry {
                 num = CONTEXT.config.login_fail_retry;
@@ -216,7 +230,13 @@ impl SysUserService {
             .await?
             .into_iter()
             .next();
-        let user = user.ok_or_else(|| Error::from(format!("{}:{}", error_info!("account_not_exists"), token.account)))?;
+        let user = user.ok_or_else(|| {
+            Error::from(format!(
+                "{}:{}",
+                error_info!("account_not_exists"),
+                token.account
+            ))
+        })?;
         return self.get_user_info(&user).await;
     }
 
@@ -252,10 +272,11 @@ impl SysUserService {
         let role_id = arg.role_id.clone();
         let mut arg = SysUser::from(arg);
         //old user
-        let user = SysUser::select_by_column(pool!(), "id", arg.id.as_ref()).await?
-            .into_iter().next().ok_or_else(|| {
-            Error::from(error_info!("user_cannot_find"))
-        })?;
+        let user = SysUser::select_by_column(pool!(), "id", arg.id.as_ref())
+            .await?
+            .into_iter()
+            .next()
+            .ok_or_else(|| Error::from(error_info!("user_cannot_find")))?;
         //do not update account
         arg.account = None;
         let mut password = None;

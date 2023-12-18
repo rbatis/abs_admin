@@ -23,7 +23,7 @@ impl From<SysUser> for SysUserVO {
             name: arg.name,
             login_check: arg.login_check,
             state: arg.state,
-            create_date: arg.create_date.map(|v|v.display_stand()),
+            create_date: arg.create_date.map(|v| v.display_stand()),
             role: None,
         }
     }

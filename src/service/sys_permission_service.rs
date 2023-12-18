@@ -3,8 +3,8 @@ use crate::domain::table::SysPermission;
 use crate::domain::vo::SysPermissionVO;
 use crate::error::Error;
 use crate::error::Result;
-use crate::{error_info, pool};
 use crate::service::CONTEXT;
+use crate::{error_info, pool};
 use rbatis::sql::{Page, PageRequest};
 use std::collections::{BTreeMap, HashMap};
 const RES_KEY: &'static str = "sys_permission:all";
@@ -37,7 +37,8 @@ impl SysPermissionService {
         if old.len() > 0 {
             return Err(Error::from(format!(
                 "{}={:?}",
-                error_info!("permission_exists"),rbatis::make_table_field_vec!(old, name)
+                error_info!("permission_exists"),
+                rbatis::make_table_field_vec!(old, name)
             )));
         }
         let result = Ok(SysPermission::insert(pool!(), &arg).await?.rows_affected);
@@ -57,7 +58,10 @@ impl SysPermissionService {
             .await?
             .rows_affected;
         SysPermission::delete_by_column(pool!(), "parent_id", id).await?;
-        let _ = CONTEXT.sys_role_permission_service.remove_by_permission_id(id).await;
+        let _ = CONTEXT
+            .sys_role_permission_service
+            .remove_by_permission_id(id)
+            .await;
         self.update_cache().await?;
         return Ok(num);
     }
@@ -169,7 +173,11 @@ impl SysPermissionService {
     }
 
     ///Loop to find the parent-child associative relation array
-    pub fn loop_find_childs(&self, arg: &mut SysPermissionVO, all_res: &BTreeMap<String, SysPermissionVO>) {
+    pub fn loop_find_childs(
+        &self,
+        arg: &mut SysPermissionVO,
+        all_res: &BTreeMap<String, SysPermissionVO>,
+    ) {
         let mut childs = vec![];
         for (_key, x) in all_res {
             if x.parent_id.is_some() && x.parent_id.eq(&arg.id) {

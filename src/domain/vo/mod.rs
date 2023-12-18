@@ -28,8 +28,8 @@ pub struct RespVO<T> {
 }
 
 impl<T> RespVO<T>
-    where
-        T: Serialize + DeserializeOwned + Clone,
+where
+    T: Serialize + DeserializeOwned + Clone,
 {
     pub fn from_result(arg: &Result<T, Error>) -> Self {
         if arg.is_ok() {
@@ -89,8 +89,8 @@ impl<T> RespVO<T>
 }
 
 impl<T> ToString for RespVO<T>
-    where
-        T: Serialize + DeserializeOwned + Clone,
+where
+    T: Serialize + DeserializeOwned + Clone,
 {
     fn to_string(&self) -> String {
         serde_json::to_string(self).unwrap()
