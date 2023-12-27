@@ -13,7 +13,7 @@
   //db_url: "mssql://SA:TestPass!123456@localhost:1433/test",
   db_url: "sqlite://target/sqlite.db",
   // database pool len
-  db_pool_len: 100,
+  db_pool_len: 32,
   //log dir, you can use "target/logs/abc.log"  default is "target/logs/"
   log_dir: "target/logs/",
   //log size-KB,MB,GB
