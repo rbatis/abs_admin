@@ -52,7 +52,7 @@ The separation - both before and after the end, based on [Vue - JS] + [Vue - Ant
 
 * 1 Start abs_admin command by using `cargo run` or `cargo build` to compile the executable file and execute it.
 * (Optional) Use the docker command to quickly start redis: `docker run -it -d --name redis -p 6379:6379 redis`
-* (Optional, default database is SQLite, if using MySQL, add rdbc_mysql dependency to Cargo.toml and modify database_url in application.json5) Use the docker command to quickly start MySQL. For production, it is recommended to deploy the HTTP service and not use docker to deploy the database. `docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 --name mysql -e TZ=Asia/Shanghai mysql:5.7`
+* (Optional, default database is SQLite, if using MySQL, add rdbc_mysql dependency to Cargo.toml and modify db_url in application.json5) Use the docker command to quickly start MySQL. For production, it is recommended to deploy the HTTP service and not use docker to deploy the database. `docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 --name mysql -e TZ=Asia/Shanghai mysql:5.7`
 * cmd or terminal run command  `cargo run`
 
 # (Front-end Node service installation) Quick installation tutorial

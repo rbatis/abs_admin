@@ -9,7 +9,7 @@ use std::io::{Read, Write};
 //database_struct: "rbdc_sqlite::Driver{}",
 #[derive(Debug, PartialEq, serde::Serialize, serde::Deserialize)]
 pub struct ApplicationConfig {
-    pub database_url: String,
+    pub db_url: String,
 }
 
 /// write `rbdc_<database>::Driver{}` to file 'target/driver.rs'
@@ -25,10 +25,10 @@ fn main() {
     _ = f.read_to_string(&mut data);
 
     let db_index = config
-        .database_url
+        .db_url
         .find(":")
-        .expect("database_url must be '<database>://xxxx'");
-    let mut db_name = &config.database_url[..db_index];
+        .expect("db_url must be '<database>://xxxx'");
+    let mut db_name = &config.db_url[..db_index];
     if db_name == "postgres" {
         db_name = "pg";
     }

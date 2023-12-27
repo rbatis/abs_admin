@@ -7,13 +7,13 @@
   //cache_type=“redis” enabled
   redis_url: "redis://127.0.0.1:6379",
   //choose database (need add `rbdc-<database> = { version = "*" }` of Cargo.toml)
-  //database_url: "sqlite://target/sqlite.db",
-  //database_url: "mysql://root:123456@localhost:3306/test",
-  //database_url: "postgres://postgres:123456@localhost:5432/postgres",
-  //database_url: "mssql://SA:TestPass!123456@localhost:1433/test",
-  database_url: "sqlite://target/sqlite.db",
+  //db_url: "sqlite://target/sqlite.db",
+  //db_url: "mysql://root:123456@localhost:3306/test",
+  //db_url: "postgres://postgres:123456@localhost:5432/postgres",
+  //db_url: "mssql://SA:TestPass!123456@localhost:1433/test",
+  db_url: "sqlite://target/sqlite.db",
   // database pool len
-  database_pool_len: 200,
+  db_pool_len: 200,
   //log dir, you can use "target/logs/abc.log"  default is "target/logs/"
   log_dir: "target/logs/",
   //log size-KB,MB,GB
