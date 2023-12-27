@@ -12,6 +12,8 @@
   //database_url: "postgres://postgres:123456@localhost:5432/postgres",
   //database_url: "mssql://SA:TestPass!123456@localhost:1433/test",
   database_url: "sqlite://target/sqlite.db",
+  // database pool len
+  database_pool_len: 200,
   //log dir, you can use "target/logs/abc.log"  default is "target/logs/"
   log_dir: "target/logs/",
   //log size-KB,MB,GB
