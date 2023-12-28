@@ -87,11 +87,8 @@ impl Intercept for SysTrashService {
             }
             let table = match v.get(0).unwrap() {
                 Statement::Delete {
-                    tables: _,
                     from,
-                    using: _,
-                    selection: _,
-                    returning: _,
+                    ..
                 } => {
                     let mut data = "".to_string();
                     for x in from {
