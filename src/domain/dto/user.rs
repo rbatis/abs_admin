@@ -2,7 +2,7 @@ use crate::domain::table::{LoginCheck, SysUser, SysUserRole};
 use crate::util::password_encoder::PasswordEncoder;
 use rbatis::object_id::ObjectId;
 use rbatis::rbdc::DateTime;
-use rbatis::sql::PageRequest;
+use rbatis::PageRequest;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone, Debug)]

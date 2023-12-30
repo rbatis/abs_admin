@@ -1,6 +1,6 @@
 use crate::domain::table::SysDict;
 use rbatis::rbdc::DateTime;
-use rbatis::sql::PageRequest;
+use rbatis::PageRequest;
 use serde::{Deserialize, Serialize};
 
 /// dictionary page DTO

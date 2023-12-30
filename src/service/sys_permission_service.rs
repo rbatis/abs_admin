@@ -5,7 +5,7 @@ use crate::error::Error;
 use crate::error::Result;
 use crate::service::CONTEXT;
 use crate::{error_info, pool};
-use rbatis::sql::{Page, PageRequest};
+use rbatis::{Page, PageRequest};
 use std::collections::{BTreeMap, HashMap};
 const RES_KEY: &'static str = "sys_permission:all";
 

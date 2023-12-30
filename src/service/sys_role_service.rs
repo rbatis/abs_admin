@@ -4,7 +4,7 @@ use crate::domain::vo::{SysPermissionVO, SysRoleVO};
 use crate::error::Result;
 use crate::pool;
 use crate::service::CONTEXT;
-use rbatis::sql::{Page, PageRequest};
+use rbatis::{Page, PageRequest};
 use std::collections::{BTreeMap, HashMap};
 
 const RES_KEY: &'static str = "sys_role:all";

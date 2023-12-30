@@ -1,4 +1,4 @@
-use rbatis::sql::{Page, PageRequest};
+use rbatis::{Page, PageRequest};
 
 use crate::domain::dto::{DictEditDTO, DictPageDTO};
 use crate::domain::table::SysDict;

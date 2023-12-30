@@ -11,7 +11,7 @@ use crate::service::CONTEXT;
 use crate::{error_info, pool};
 use rbatis::plugin::object_id::ObjectId;
 use rbatis::rbdc::DateTime;
-use rbatis::sql::Page;
+use rbatis::Page;
 
 use crate::util::options::OptionStringRefUnwrapOrDefault;
 
