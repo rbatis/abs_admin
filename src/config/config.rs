@@ -8,6 +8,7 @@ pub struct ApplicationConfig {
     pub redis_url: String,
     pub db_url: String,
     pub db_pool_len: usize,
+    pub db_pool_timeout: usize,
     pub log_dir: String,
     pub log_temp_size: String,
     pub log_pack_compress: String,

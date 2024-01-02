@@ -18,6 +18,7 @@ use once_cell::sync::Lazy;
 use rbatis::rbatis::RBatis;
 pub use redis_service::*;
 use std::sync::Arc;
+use std::time::Duration;
 pub use sys_auth_service::*;
 pub use sys_dict_service::*;
 pub use sys_permission_service::*;
@@ -68,6 +69,7 @@ impl ServiceContext {
             .expect("[abs_admin] rbatis pool init fail!");
         self.rb.intercepts.push(Arc::new(SysTrashService::new()));
         self.rb.get_pool().unwrap().set_max_open_conns(self.config.db_pool_len as u64).await;
+        self.rb.get_pool().unwrap().set_timeout(Some(Duration::from_secs(self.config.db_pool_timeout as u64))).await;
         log::info!(
             "[abs_admin] rbatis pool init success! pool state = {}",
             self.rb.get_pool().expect("pool not init!").state().await
