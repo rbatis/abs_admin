@@ -7,13 +7,6 @@ use abs_admin::middleware::auth_actix::Auth;
 use abs_admin::service::CONTEXT;
 use actix_web::{web, App, HttpResponse, HttpServer, Responder};
 
-async fn index() -> impl Responder {
-    HttpResponse::Ok()
-        .insert_header(("Access-Control-Allow-Origin", "*"))
-        .insert_header(("Cache-Control", "no-cache"))
-        .body("[abs_admin] Hello !")
-}
-
 /// use tokio,because Rbatis specifies the runtime-tokio
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
@@ -27,7 +20,12 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
         App::new()
             .wrap(Auth {})
-            .route("/", web::get().to(index))
+            .route("/", web::get().to(|| async {
+                HttpResponse::Ok()
+                    .insert_header(("Access-Control-Allow-Origin", "*"))
+                    .insert_header(("Cache-Control", "no-cache"))
+                    .body("[abs_admin] Hello !")
+            }))
             .route(
                 "/admin/sys_login",
                 web::post().to(sys_user_controller::login),
@@ -122,7 +120,7 @@ async fn main() -> std::io::Result<()> {
                 web::post().to(sys_auth_controller::check),
             )
     })
-    .bind(&CONTEXT.config.server_url)?
-    .run()
-    .await
+        .bind(&CONTEXT.config.server_url)?
+        .run()
+        .await
 }
