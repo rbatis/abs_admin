@@ -21,7 +21,7 @@
   //log size-KB,MB,GB
   log_temp_size: "100MB",
   //log type,choose one of  ("mmap","file")
-  log_type: "mmap",
+  log_type: "file",
   //Log channel length: null for unbounded queue, non-null for bounded queue (better performance)
   log_chan_len: 100000,
   // Optional log packaging formats: "" (keep as .log), "gzip" (GZip compressed), "zip" (ZIP compressed), "lz4" (LZ4 compressed (very fast))
