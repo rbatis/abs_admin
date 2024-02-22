@@ -13,7 +13,6 @@ use rbatis::plugin::object_id::ObjectId;
 use rbatis::rbdc::DateTime;
 use rbatis::Page;
 
-use crate::util::options::OptionStringRefUnwrapOrDefault;
 
 /// Role Resource Service
 pub struct SysRoleResService {}
@@ -92,11 +91,11 @@ impl SysRoleResService {
     ) -> Result<Vec<SysRoleVO>> {
         let mut data = vec![];
         for mut role in arg {
-            let permission_ids = role_res_map.get(role.id.as_ref().unwrap_or_def());
+            let permission_ids = role_res_map.get(role.id.as_deref().unwrap_or_default());
             let mut res_vos = vec![];
             if let Some(permission_ids) = permission_ids {
                 for x in permission_ids {
-                    match all.get(x.permission_id.as_ref().unwrap_or_def()) {
+                    match all.get(x.permission_id.as_deref().unwrap_or_default()) {
                         Some(res) => {
                             res_vos.push(res.clone());
                         }
