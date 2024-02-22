@@ -13,8 +13,6 @@ use crate::{error_info, pool};
 use std::collections::BTreeMap;
 use std::time::Duration;
 
-use crate::util::options::OptionStringRefUnwrapOrDefault;
-
 const CACHE_KEY_RETRY: &'static str = "login:login_retry";
 
 ///Background User Service
@@ -65,19 +63,19 @@ impl SysUserService {
 
     pub async fn add(&self, mut arg: UserAddDTO) -> Result<u64> {
         if arg.account.is_none()
-            || arg.account.as_ref().unwrap().is_empty()
+            || arg.account.as_deref().unwrap_or_default().is_empty()
             || arg.name.is_none()
-            || arg.name.as_ref().unwrap().is_empty()
+            || arg.name.as_deref().unwrap_or_default().is_empty()
         {
             return Err(Error::from(error_info!("user_and_name_cannot_empty")));
         }
         let old_user = self
-            .find_by_account(arg.account.as_ref().unwrap_or_def())
+            .find_by_account(arg.account.as_deref().unwrap_or_default())
             .await?;
         if old_user.is_some() {
             return Err(Error::from(format!(
                 "用户账户:{}已存在!",
-                arg.account.as_ref().unwrap()
+                arg.account.as_deref().unwrap_or_default()
             )));
         }
         let mut password = arg.password.as_deref().unwrap_or_default().to_string();
