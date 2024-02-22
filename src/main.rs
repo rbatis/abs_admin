@@ -5,7 +5,7 @@ use abs_admin::controller::{
 use abs_admin::domain::table;
 use abs_admin::middleware::auth_actix::Auth;
 use abs_admin::service::CONTEXT;
-use actix_web::{web, App, HttpResponse, HttpServer, Responder};
+use actix_web::{web, App, HttpResponse, HttpServer};
 
 /// use tokio,because Rbatis specifies the runtime-tokio
 #[tokio::main]
