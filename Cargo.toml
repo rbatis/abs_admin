@@ -24,7 +24,6 @@ log = "0.4"
 fast_log = { version = "1.6", features = ["mmap"] }
 #web server
 actix-web = { version = "4.4", default-features = false, features = ["macros"] }
-actix-http = "3.5"
 #redis
 redis = { version = "0.24.0", features = ["tokio-comp"] }
 #jwt
