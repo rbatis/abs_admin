@@ -1,6 +1,5 @@
 use crate::domain::dto::CatpchaDTO;
 use crate::domain::vo::RespVO;
-use crate::error::Error;
 use crate::error_info;
 use crate::service::CONTEXT;
 use crate::util::string::IsEmptyString;
@@ -15,10 +14,7 @@ use captcha::Captcha;
 ///
 pub async fn captcha(arg: web::Query<CatpchaDTO>) -> impl Responder {
     if arg.account.is_empty() {
-        return RespVO::<()>::from_error(
-            "account_empty",
-            &Error::from(error_info!("account_empty")),
-        )
+        return RespVO::<()>::from_error(error_info!("account_empty"))
         .resp_json();
     }
     let mut captcha = Captcha::new();

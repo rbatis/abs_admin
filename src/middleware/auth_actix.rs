@@ -84,16 +84,13 @@ where
                             }
                             Err(e) => {
                                 let resp: RespVO<String> =
-                                    RespVO::from_error_info("-1", &e.to_string());
+                                    RespVO::from_error(e.to_string());
                                 return Ok(req.into_response(resp.resp_json()));
                             }
                         },
                         Err(e) => {
                             //401 http code will exit login
-                            let resp: RespVO<String> = RespVO::from_error_info(
-                                "-1",
-                                &format!("Unauthorized for:{}", e.to_string()),
-                            );
+                            let resp: RespVO<String> = RespVO::from_error(format!("Unauthorized for:{}", e.to_string()));
                             return Err(ErrorUnauthorized(serde_json::json!(&resp).to_string()));
                         }
                     }

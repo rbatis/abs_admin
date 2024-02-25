@@ -22,14 +22,11 @@ pub async fn layer_top(_page: web::Json<EmptyDTO>) -> impl Responder {
 
 pub async fn add(mut arg: web::Json<PermissionAddDTO>) -> impl Responder {
     if arg.name.is_none() {
-        return RespVO::<u64>::from_error_info("arg.name_empty", &error_info!("arg.name_empty"))
+        return RespVO::<u64>::from_error(error_info!("arg.name_empty"))
             .resp_json();
     }
     if arg.permission.is_none() {
-        return RespVO::<u64>::from_error_info(
-            "arg.permission_empty",
-            &error_info!("arg.permission_empty"),
-        )
+        return RespVO::<u64>::from_error(error_info!("arg.permission_empty"))
         .resp_json();
     }
     if arg.path.is_none() {

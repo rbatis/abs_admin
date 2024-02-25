@@ -12,10 +12,10 @@ pub async fn page(page: web::Json<DictPageDTO>) -> impl Responder {
 
 pub async fn add(mut arg: web::Json<DictAddDTO>) -> impl Responder {
     if arg.name.is_none() {
-        return RespVO::<u64>::from_error_info("empty", &error_info!("empty")).resp_json();
+        return RespVO::<u64>::from_error(error_info!("empty")).resp_json();
     }
     if arg.code.is_none() {
-        return RespVO::<u64>::from_error_info("empty", &error_info!("empty")).resp_json();
+        return RespVO::<u64>::from_error( error_info!("empty")).resp_json();
     }
     if arg.state.is_none() {
         arg.state = Some(1);
