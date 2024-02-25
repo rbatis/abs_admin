@@ -7,17 +7,17 @@ use actix_web::{web, Responder};
 
 pub async fn page(page: web::Json<ResPageDTO>) -> impl Responder {
     let data = CONTEXT.sys_permission_service.page(&page.0).await;
-    RespVO::from_result(&data).resp_json()
+    RespVO::from_result(data).resp_json()
 }
 
 pub async fn all(_page: web::Json<EmptyDTO>) -> impl Responder {
     let data = CONTEXT.sys_permission_service.finds_all().await;
-    RespVO::from_result(&data).resp_json()
+    RespVO::from_result(data).resp_json()
 }
 
 pub async fn layer_top(_page: web::Json<EmptyDTO>) -> impl Responder {
     let data = CONTEXT.sys_permission_service.finds_layer_top().await;
-    RespVO::from_result(&data).resp_json()
+    RespVO::from_result(data).resp_json()
 }
 
 pub async fn add(mut arg: web::Json<PermissionAddDTO>) -> impl Responder {
@@ -35,13 +35,13 @@ pub async fn add(mut arg: web::Json<PermissionAddDTO>) -> impl Responder {
     let res = SysPermission::from(arg.0);
     let data = CONTEXT.sys_permission_service.add(&res).await;
     let _ = CONTEXT.sys_permission_service.update_cache().await;
-    RespVO::from_result(&data).resp_json()
+    RespVO::from_result(data).resp_json()
 }
 
 pub async fn update(arg: web::Json<ResEditDTO>) -> impl Responder {
     let data = CONTEXT.sys_permission_service.edit(&arg.0).await;
     let _ = CONTEXT.sys_permission_service.update_cache().await;
-    RespVO::from_result(&data).resp_json()
+    RespVO::from_result(data).resp_json()
 }
 
 pub async fn remove(arg: web::Json<IdDTO>) -> impl Responder {
@@ -50,5 +50,5 @@ pub async fn remove(arg: web::Json<IdDTO>) -> impl Responder {
         .remove(&arg.0.id.unwrap_or_default())
         .await;
     let _ = CONTEXT.sys_permission_service.update_cache().await;
-    RespVO::from_result(&data).resp_json()
+    RespVO::from_result(data).resp_json()
 }

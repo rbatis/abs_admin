@@ -32,20 +32,17 @@ impl<T> RespVO<T>
     where
         T: Serialize + DeserializeOwned + Clone,
 {
-    pub fn from_result(arg: &Result<T, Error>) -> Self {
-        if arg.is_ok() {
-            Self {
-                code: Some(CODE_SUCCESS.to_string()),
-                msg: None,
-                data: arg.clone().ok(),
+    pub fn from_result(arg: Result<T, Error>) -> Self {
+        match arg {
+            Ok(arg) => {
+                Self {
+                    code: Some(CODE_SUCCESS.to_string()),
+                    msg: None,
+                    data: Some(arg),
+                }
             }
-        } else {
-            let error = arg.clone().err().unwrap().to_string();
-            let code = CONTEXT.config.infos.as_ref().unwrap().get(&error).map(|v| v.to_string()).unwrap_or_else(||{CODE_FAIL.to_string()});
-            Self {
-                code: Some(code),
-                msg: Some(arg.clone().err().unwrap().to_string()),
-                data: None,
+            Err(e) => {
+                Self::from_error(e.to_string())
             }
         }
     }
