@@ -141,7 +141,7 @@ impl SysRoleResService {
 
     async fn save_resources(&self, role_id: &str, resource_ids: Vec<String>) -> Result<u64> {
         self.remove_by_role_id(role_id).await?;
-        let mut sys_role_permission = vec![];
+        let mut sys_role_permission = Vec::with_capacity(resource_ids.len());
         for resource_id in resource_ids {
             sys_role_permission.push(SysRolePermission {
                 id: ObjectId::new().to_string().into(),
