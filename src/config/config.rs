@@ -27,6 +27,7 @@ pub struct ApplicationConfig {
     pub trash_recycle_days: u64,
     pub datetime_format: String,
     pub errors: HashMap<String, String>,
+    pub infos: Option<HashMap<String, String>>,
 }
 
 impl Default for ApplicationConfig {
@@ -35,6 +36,10 @@ impl Default for ApplicationConfig {
         //load config
         let mut result: ApplicationConfig =
             json5::from_str(js_data).expect("load config file fail");
+        result.infos = Some(HashMap::new());
+        for (k, v) in &result.errors {
+            result.infos.as_mut().unwrap().insert(v.to_string(), k.to_string());
+        }
         if cfg!(debug_assertions) {
             result.debug = true;
         } else {

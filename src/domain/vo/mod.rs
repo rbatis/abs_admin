@@ -15,6 +15,7 @@ use crate::error::Error;
 use actix_web::HttpResponse;
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
+use crate::service::CONTEXT;
 
 pub const CODE_SUCCESS: &str = "SUCCESS";
 pub const CODE_FAIL: &str = "FAIL";
@@ -28,8 +29,8 @@ pub struct RespVO<T> {
 }
 
 impl<T> RespVO<T>
-where
-    T: Serialize + DeserializeOwned + Clone,
+    where
+        T: Serialize + DeserializeOwned + Clone,
 {
     pub fn from_result(arg: &Result<T, Error>) -> Self {
         if arg.is_ok() {
@@ -39,8 +40,13 @@ where
                 data: arg.clone().ok(),
             }
         } else {
+            let error = arg.clone().err().unwrap().to_string();
+            let mut code = CONTEXT.config.infos.as_ref().unwrap().get(&error).map(|v| v.to_string());
+            if code.is_none() {
+                code = Some(CODE_FAIL.to_string());
+            }
             Self {
-                code: Some(CODE_FAIL.to_string()),
+                code,
                 msg: Some(arg.clone().err().unwrap().to_string()),
                 data: None,
             }
@@ -89,8 +95,8 @@ where
 }
 
 impl<T> ToString for RespVO<T>
-where
-    T: Serialize + DeserializeOwned + Clone,
+    where
+        T: Serialize + DeserializeOwned + Clone,
 {
     fn to_string(&self) -> String {
         serde_json::to_string(self).unwrap()
