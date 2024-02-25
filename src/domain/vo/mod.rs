@@ -32,13 +32,13 @@ impl<T> RespVO<T>
     where
         T: Serialize + DeserializeOwned + Clone,
 {
-    pub fn from_result(arg: Result<T, Error>) -> Self {
-        match arg {
-            Ok(arg) => {
+    pub fn from_result(result: Result<T, Error>) -> Self {
+        match result {
+            Ok(data) => {
                 Self {
                     code: Some(CODE_SUCCESS.to_string()),
                     msg: None,
-                    data: Some(arg),
+                    data: Some(data),
                 }
             }
             Err(e) => {
@@ -47,23 +47,23 @@ impl<T> RespVO<T>
         }
     }
 
-    pub fn from(arg: &T) -> Self {
+    pub fn from(data: T) -> Self {
         Self {
             code: Some(CODE_SUCCESS.to_string()),
             msg: None,
-            data: Some(arg.clone()),
+            data: Some(data),
         }
     }
 
-    pub fn from_error(arg: String) -> Self {
-        let mut error = arg.to_string();
+    pub fn from_error(msg: String) -> Self {
+        let mut error = msg.to_string();
         if error.contains(","){
             error=error[0..error.find(",").unwrap()].to_string();
         }
         let code = CONTEXT.config.error_infos.as_ref().unwrap().get(&error).map(|v| v.to_string()).unwrap_or_else(||{CODE_FAIL.to_string()});
         Self {
             code: Some(code),
-            msg: Some(arg.to_string()),
+            msg: Some(msg.to_string()),
             data: None,
         }
     }
