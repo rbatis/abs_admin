@@ -41,12 +41,9 @@ impl<T> RespVO<T>
             }
         } else {
             let error = arg.clone().err().unwrap().to_string();
-            let mut code = CONTEXT.config.infos.as_ref().unwrap().get(&error).map(|v| v.to_string());
-            if code.is_none() {
-                code = Some(CODE_FAIL.to_string());
-            }
+            let code = CONTEXT.config.infos.as_ref().unwrap().get(&error).map(|v| v.to_string()).unwrap_or_else(||{CODE_FAIL.to_string()});
             Self {
-                code,
+                code: Some(code),
                 msg: Some(arg.clone().err().unwrap().to_string()),
                 data: None,
             }
