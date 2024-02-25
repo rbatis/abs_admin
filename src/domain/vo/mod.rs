@@ -62,7 +62,7 @@ impl<T> RespVO<T>
         let code = CONTEXT.config.error_infos.as_ref().unwrap().get(&error).map(|v| v.to_string()).unwrap_or_else(|| { CODE_FAIL.to_string() });
         Self {
             code: Some(code),
-            msg: Some(error.to_string()),
+            msg: Some(error),
             data: None,
         }
     }
