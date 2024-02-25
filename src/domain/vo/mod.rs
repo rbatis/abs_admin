@@ -56,20 +56,11 @@ impl<T> RespVO<T>
     }
 
     pub fn from_error(arg: String) -> Self {
-        let error = arg.to_string();
-        let mut code = CONTEXT.config.error_infos.as_ref().unwrap().get(&error).map(|v| v.to_string()).unwrap_or_else(||{CODE_FAIL.to_string()});
+        let mut error = arg.to_string();
         if error.contains(","){
-            let e_start_str=&error[0..error.find(",").unwrap()];
-            for (c,v) in &CONTEXT.config.errors {
-                if v.contains(","){
-                    let v_start_str=&v[0..v.find(",").unwrap()];
-                    if e_start_str==v_start_str{
-                        code = c.to_string();
-                        break;
-                    }
-                }
-            }
+            error=error[0..error.find(",").unwrap()].to_string();
         }
+        let code = CONTEXT.config.error_infos.as_ref().unwrap().get(&error).map(|v| v.to_string()).unwrap_or_else(||{CODE_FAIL.to_string()});
         Self {
             code: Some(code),
             msg: Some(arg.to_string()),

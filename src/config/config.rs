@@ -65,8 +65,12 @@ impl ApplicationConfig {
 
     pub fn init_infos(&mut self) {
         self.error_infos = Some(HashMap::new());
-        for (k, v) in &self.errors {
-            self.error_infos.as_mut().unwrap().insert(v.to_string(), k.to_string());
+        for (k, error) in &self.errors {
+            let mut error = error.to_string();
+            if error.contains(",") {
+                error = error[0..error.find(",").unwrap()].to_string();
+            }
+            self.error_infos.as_mut().unwrap().insert(error, k.to_string());
         }
     }
 }
