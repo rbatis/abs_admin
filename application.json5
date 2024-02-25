@@ -81,7 +81,7 @@
     "password_empty": "密码为空",
     "password_error": "密码不正确",
     "vcode_error": "验证码不正确",
-    //if have '{}',you must use ',' to equal code/msg
+    //if have '{}',you must use before '{}' string to equal code/msg
     "req_frequently": "操作过于频繁,请等待{}秒后重试",
     "id_empty": "id不能为空"
   }
