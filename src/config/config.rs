@@ -36,10 +36,7 @@ impl Default for ApplicationConfig {
         //load config
         let mut result: ApplicationConfig =
             json5::from_str(js_data).expect("load config file fail");
-        result.infos = Some(HashMap::new());
-        for (k, v) in &result.errors {
-            result.infos.as_mut().unwrap().insert(v.to_string(), k.to_string());
-        }
+        result.init_infos();
         if cfg!(debug_assertions) {
             result.debug = true;
         } else {
@@ -63,6 +60,13 @@ impl ApplicationConfig {
                 Some(v) => v.to_string(),
             },
             Some(v) => v.as_str().to_string(),
+        }
+    }
+
+    pub fn init_infos(&mut self) {
+        self.infos = Some(HashMap::new());
+        for (k, v) in &self.errors {
+            self.infos.as_mut().unwrap().insert(v.to_string(), k.to_string());
         }
     }
 }
