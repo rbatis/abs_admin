@@ -141,8 +141,8 @@ impl SysUserService {
                     .cache_service
                     .get_string(&format!("captch:account_{}", &arg.account))
                     .await?;
-                if cache_code.eq(&arg.vcode) {
-                    error = Some(Error::from(error_info!("password_error")))
+                if !cache_code.eq(&arg.vcode) {
+                    error = Some(Error::from(error_info!("vcode_error")))
                 }
                 // check pwd
                 if !PasswordEncoder::verify(
@@ -162,7 +162,7 @@ impl SysUserService {
                         CONTEXT.config.sms_cache_send_key_prefix, &arg.account
                     ))
                     .await?;
-                if sms_code.eq(&arg.vcode) {
+                if !sms_code.eq(&arg.vcode) {
                     error = Some(Error::from(error_info!("vcode_error")));
                 }
             }

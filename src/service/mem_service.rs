@@ -66,18 +66,13 @@ impl ICacheService for MemService {
         let k = k.to_string();
         let v = v.to_string();
         let mut locked = self.cache.lock();
-        let mut e = Option::None;
+        let mut e = None;
         if let Some(ex) = t {
             e = Some((Instant::now(), ex));
         }
-        let inserted = locked.insert(k, (v.clone(), e));
+        _ = locked.insert(k.to_string(), (v.clone(), e));
         Box::pin(async move {
-            if inserted.is_some() {
-                return Ok(v.to_string());
-            }
-            return Err(crate::error::Error::E(format!(
-                "[abs_admin][mem_service]insert fail!"
-            )));
+            return Ok(v.to_string());
         })
     }
 
