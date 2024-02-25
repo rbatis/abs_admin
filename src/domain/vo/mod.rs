@@ -56,8 +56,8 @@ impl<T> RespVO<T>
     }
 
     pub fn from_error(mut error: String) -> Self {
-        if error.contains("{}") {
-            error = error[0..error.find("{}").unwrap()].to_string();
+        if error.contains(",") {
+            error = error[0..error.find(",").unwrap()].to_string();
         }
         let code = CONTEXT.config.error_infos.as_ref().unwrap().get(&error).map(|v| v.to_string()).unwrap_or_else(|| { CODE_FAIL.to_string() });
         Self {
