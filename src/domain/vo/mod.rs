@@ -57,7 +57,7 @@ impl<T> RespVO<T>
 
     pub fn from_error(arg: String) -> Self {
         let error = arg.to_string();
-        let code = CONTEXT.config.infos.as_ref().unwrap().get(&error).map(|v| v.to_string()).unwrap_or_else(||{CODE_FAIL.to_string()});
+        let code = CONTEXT.config.error_infos.as_ref().unwrap().get(&error).map(|v| v.to_string()).unwrap_or_else(||{CODE_FAIL.to_string()});
         Self {
             code: Some(code),
             msg: Some(arg.to_string()),
