@@ -15,7 +15,6 @@ pub struct SysDictService {}
 
 impl SysDictService {
     pub async fn page(&self, arg: &DictPageDTO) -> Result<Page<SysDictVO>> {
-        let _page_req = PageRequest::new(arg.page_no.unwrap_or(1), arg.page_size.unwrap_or(10));
         let data = SysDict::select_page(pool!(), &PageRequest::from(arg), arg).await?;
         let page = Page::<SysDictVO>::from(data);
         Ok(page)
