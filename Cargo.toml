@@ -13,8 +13,7 @@ rbdc-sqlite = { version = "4.5" }
 #rbdc-pg = { version = "4.5" }
 #rbdc-mssql = { version = "4.5" }
 
-#rbatis orm dep must use async-std(Because actix-web relies on tokio0.2)
-tokio = { version = "1", features = ["full"] }
+tokio = { version = "1", features = ["macros"] }
 #serde and json
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
@@ -22,8 +21,9 @@ serde_json = "1.0"
 log = "0.4"
 #fast_log enable features = ["lz4", "zip", "gzip"], and edit src/config/log.rs fn choose_packer(),edit application.json5 add log_pack_compress: "zip"
 fast_log = { version = "1.6", features = ["mmap"] }
-#web server
-actix-web = { version = "4.4", default-features = false, features = ["macros"] }
+
+axum = {version = "0.7.4",features = ["macros"]}
+
 #redis
 redis = { version = "0.24.0", features = ["tokio-comp"] }
 #jwt

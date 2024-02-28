@@ -3,19 +3,20 @@ use crate::domain::table::SysDict;
 use crate::domain::vo::RespVO;
 use crate::error_info;
 use crate::service::CONTEXT;
-use actix_web::{web, Responder};
+use axum::Json;
+use axum::response::IntoResponse;
 
-pub async fn page(page: web::Json<DictPageDTO>) -> impl Responder {
+pub async fn page(page: Json<DictPageDTO>) -> impl IntoResponse {
     let data = CONTEXT.sys_dict_service.page(&page.0).await;
-    RespVO::from_result(data).resp_json()
+    RespVO::from_result(data).json()
 }
 
-pub async fn add(mut arg: web::Json<DictAddDTO>) -> impl Responder {
+pub async fn add(mut arg: Json<DictAddDTO>) -> impl IntoResponse {
     if arg.name.is_none() {
-        return RespVO::<u64>::from_error(error_info!("empty")).resp_json();
+        return RespVO::<u64>::from_error(error_info!("empty")).json();
     }
     if arg.code.is_none() {
-        return RespVO::<u64>::from_error( error_info!("empty")).resp_json();
+        return RespVO::<u64>::from_error( error_info!("empty")).json();
     }
     if arg.state.is_none() {
         arg.state = Some(1);
@@ -23,20 +24,20 @@ pub async fn add(mut arg: web::Json<DictAddDTO>) -> impl Responder {
     let res = SysDict::from(arg.0);
     let data = CONTEXT.sys_dict_service.add(&res).await;
     let _ = CONTEXT.sys_dict_service.update_cache().await;
-    RespVO::from_result(data).resp_json()
+    RespVO::from_result(data).json()
 }
 
-pub async fn update(arg: web::Json<DictEditDTO>) -> impl Responder {
+pub async fn update(arg: Json<DictEditDTO>) -> impl IntoResponse {
     let data = CONTEXT.sys_dict_service.edit(&arg.0).await;
     let _ = CONTEXT.sys_dict_service.update_cache().await;
-    RespVO::from_result(data).resp_json()
+    RespVO::from_result(data).json()
 }
 
-pub async fn remove(arg: web::Json<IdDTO>) -> impl Responder {
+pub async fn remove(arg: Json<IdDTO>) -> impl IntoResponse {
     let data = CONTEXT
         .sys_dict_service
         .remove(&arg.0.id.unwrap_or_default())
         .await;
     let _ = CONTEXT.sys_dict_service.update_cache().await;
-    RespVO::from_result(data).resp_json()
+    RespVO::from_result(data).json()
 }

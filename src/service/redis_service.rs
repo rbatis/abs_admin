@@ -7,6 +7,7 @@ use log::error;
 use redis::aio::Connection;
 use redis::RedisResult;
 ///Redis Cache service
+#[derive(Debug)]
 pub struct RedisService {
     pub client: redis::Client,
 }

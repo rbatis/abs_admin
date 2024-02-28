@@ -17,7 +17,7 @@ pub fn is_white_list_api(path: &str) -> bool {
 }
 
 ///Check whether the token is valid and has not expired
-pub async fn checked_token(token: &str, _path: &str) -> Result<JWTToken, crate::error::Error> {
+pub fn checked_token(token: &str) -> Result<JWTToken, crate::error::Error> {
     //check token alive
     let token = JWTToken::verify(&CONTEXT.config.jwt_secret, token);
     match token {

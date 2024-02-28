@@ -1,3 +1,4 @@
+use std::fmt::Debug;
 use crate::config::config::ApplicationConfig;
 use crate::error::Result;
 use crate::service::{MemService, RedisService};
@@ -6,7 +7,7 @@ use serde::de::DeserializeOwned;
 use serde::Serialize;
 use std::time::Duration;
 
-pub trait ICacheService: Sync + Send {
+pub trait ICacheService: Sync + Send+Debug {
     fn set_string(&self, k: &str, v: &str) -> BoxFuture<Result<String>>;
 
     fn get_string(&self, k: &str) -> BoxFuture<Result<String>>;
@@ -21,6 +22,9 @@ pub struct CacheService {
 }
 
 impl CacheService {
+    pub async fn aaa(&self){
+
+    }
     pub fn new(cfg: &ApplicationConfig) -> Result<Self> {
         match cfg.cache_type.as_str() {
             "mem" => {

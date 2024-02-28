@@ -8,6 +8,7 @@ use std::ops::Sub;
 use std::time::{Duration, Instant};
 
 ///Memory Cache Service
+#[derive(Debug)]
 pub struct MemService {
     pub cache: Mutex<HashMap<String, (String, Option<(Instant, Duration)>), RandomState>>,
 }

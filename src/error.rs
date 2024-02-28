@@ -66,12 +66,6 @@ impl From<rbatis::Error> for Error {
     }
 }
 
-impl From<actix_web::error::Error> for Error {
-    fn from(arg: actix_web::error::Error) -> Self {
-        Error::E(arg.to_string())
-    }
-}
-
 impl Clone for Error {
     fn clone(&self) -> Self {
         Error::from(self.to_string())
