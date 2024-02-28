@@ -56,20 +56,24 @@ pub struct ServiceContext {
 impl ServiceContext {
     /// init database pool
     pub async fn init_database(&self) {
-        log::info!(
-            "[abs_admin] rbatis pool init ({})...",
-            self.config.db_url
-        );
+        log::info!("[abs_admin] rbatis pool init ({})...", self.config.db_url);
         self.rb
-            .link(
-                include!("../../target/driver.rs"),
-                &self.config.db_url,
-            )
+            .link(include!("../../target/driver.rs"), &self.config.db_url)
             .await
             .expect("[abs_admin] rbatis pool init fail!");
         self.rb.intercepts.push(Arc::new(SysTrashService::new()));
-        self.rb.get_pool().unwrap().set_max_open_conns(self.config.db_pool_len as u64).await;
-        self.rb.get_pool().unwrap().set_timeout(Some(Duration::from_secs(self.config.db_pool_timeout as u64))).await;
+        self.rb
+            .get_pool()
+            .unwrap()
+            .set_max_open_conns(self.config.db_pool_len as u64)
+            .await;
+        self.rb
+            .get_pool()
+            .unwrap()
+            .set_timeout(Some(Duration::from_secs(
+                self.config.db_pool_timeout as u64,
+            )))
+            .await;
         log::info!(
             "[abs_admin] rbatis pool init success! pool state = {}",
             self.rb.get_pool().expect("pool not init!").state().await

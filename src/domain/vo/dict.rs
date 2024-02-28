@@ -17,7 +17,9 @@ impl From<SysDict> for SysDictVO {
             name: arg.name,
             code: arg.code,
             state: arg.state,
-            create_date: arg.create_date.map(|v| v.format(&CONTEXT.config.datetime_format)),
+            create_date: arg
+                .create_date
+                .map(|v| v.format(&CONTEXT.config.datetime_format)),
         }
     }
 }

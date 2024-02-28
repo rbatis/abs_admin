@@ -91,7 +91,8 @@ impl SysUserRoleService {
             let mut resources = vec![];
             for role_res in &role_res_vec {
                 if role.id.is_some() && role.id.eq(&role_res.role_id) {
-                    if let Some(res) = all_res.get(role_res.permission_id.as_deref().unwrap_or_default())
+                    if let Some(res) =
+                        all_res.get(role_res.permission_id.as_deref().unwrap_or_default())
                     {
                         resources.push(res.clone());
                     }

@@ -3,8 +3,8 @@ use crate::domain::table::SysDict;
 use crate::domain::vo::RespVO;
 use crate::error_info;
 use crate::service::CONTEXT;
-use axum::Json;
 use axum::response::IntoResponse;
+use axum::Json;
 
 pub async fn page(page: Json<DictPageDTO>) -> impl IntoResponse {
     let data = CONTEXT.sys_dict_service.page(&page.0).await;
@@ -16,7 +16,7 @@ pub async fn add(mut arg: Json<DictAddDTO>) -> impl IntoResponse {
         return RespVO::<u64>::from_error(error_info!("empty")).json();
     }
     if arg.code.is_none() {
-        return RespVO::<u64>::from_error( error_info!("empty")).json();
+        return RespVO::<u64>::from_error(error_info!("empty")).json();
     }
     if arg.state.is_none() {
         arg.state = Some(1);

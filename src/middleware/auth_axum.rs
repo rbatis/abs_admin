@@ -1,13 +1,16 @@
-use axum::{extract::Request, http::{StatusCode, HeaderMap}, middleware::{Next}, response::Response, http};
 use crate::domain::vo::JWTToken;
 use crate::error::Error;
 use crate::middleware::auth::{checked_token, is_white_list_api};
 use crate::service::CONTEXT;
+use axum::{
+    extract::Request,
+    http,
+    http::{HeaderMap, StatusCode},
+    middleware::Next,
+    response::Response,
+};
 
-pub async fn auth(
-    mut request: Request,
-    next: Next,
-) -> Result<Response, StatusCode> {
+pub async fn auth(mut request: Request, next: Next) -> Result<Response, StatusCode> {
     let path = request.uri().path().to_string();
     if !CONTEXT.config.debug {
         if !is_white_list_api(&path) {
@@ -16,10 +19,13 @@ pub async fn auth(
                     //Jwt resolution determines whether the expiration time is less than 10 minutes and automatically renews the contract.
                     let now = rbatis::rbdc::DateTime::now().unix_timestamp() as usize;
                     if (token.exp - now) < CONTEXT.config.jwt_refresh_token {
-                        let new_token= token
+                        let new_token = token
                             .refresh(&CONTEXT.config.jwt_secret, CONTEXT.config.jwt_exp)
                             .unwrap();
-                        request.headers_mut().insert("access_token", http::HeaderValue::from_str(&new_token).unwrap());
+                        request.headers_mut().insert(
+                            "access_token",
+                            http::HeaderValue::from_str(&new_token).unwrap(),
+                        );
                     }
                 } else {
                     return Err(StatusCode::UNAUTHORIZED);
@@ -35,15 +41,13 @@ pub async fn auth(
 
 fn token_is_valid(token: &str) -> Option<JWTToken> {
     match checked_token(token) {
-        Ok(data) => {
-           Some(data)
-        }
-        Err(_) => {
-            None
-        }
+        Ok(data) => Some(data),
+        Err(_) => None,
     }
 }
 
 fn get_token(h: &HeaderMap) -> Result<&str, Error> {
-    Ok(h.get("access_token").map(|v| v.to_str().unwrap_or_default()).unwrap_or_default())
+    Ok(h.get("access_token")
+        .map(|v| v.to_str().unwrap_or_default())
+        .unwrap_or_default())
 }

@@ -1,8 +1,8 @@
 use crate::domain::dto::auth::SysAuthDTO;
 use crate::domain::vo::RespVO;
 use crate::service::CONTEXT;
-use axum::Json;
 use axum::response::IntoResponse;
+use axum::Json;
 
 ///Check whether the token and path are valid and accessible
 pub async fn check(arg: Json<SysAuthDTO>) -> impl IntoResponse {

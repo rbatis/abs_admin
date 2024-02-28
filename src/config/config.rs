@@ -70,7 +70,10 @@ impl ApplicationConfig {
             if error.contains(",") {
                 error = error[0..error.find(",").unwrap()].to_string();
             }
-            self.error_infos.as_mut().unwrap().insert(error, k.to_string());
+            self.error_infos
+                .as_mut()
+                .unwrap()
+                .insert(error, k.to_string());
         }
     }
 }

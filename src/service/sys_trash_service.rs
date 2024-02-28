@@ -86,10 +86,7 @@ impl Intercept for SysTrashService {
                 return Err(Error::from("sql is empty"));
             }
             let table = match v.get(0).unwrap() {
-                Statement::Delete {
-                    from,
-                    ..
-                } => {
+                Statement::Delete { from, .. } => {
                     let mut data = "".to_string();
                     for x in from {
                         let x_str = &format!("{}", x);

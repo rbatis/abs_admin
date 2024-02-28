@@ -1,8 +1,8 @@
-use axum::body::Body;
 use crate::domain::dto::CatpchaDTO;
 use crate::error_info;
 use crate::service::CONTEXT;
 use crate::util::string::IsEmptyString;
+use axum::body::Body;
 use axum::extract::Query;
 use axum::response::{IntoResponse, Response};
 use captcha::filters::{Dots, Noise, Wave};
@@ -25,11 +25,7 @@ pub async fn captcha(arg: Query<CatpchaDTO>) -> impl IntoResponse {
     }
     let (png, code) = make();
     if CONTEXT.config.debug {
-        log::info!(
-            "account:{},captcha:{}",
-            arg.account.as_ref().unwrap(),
-            code
-        );
+        log::info!("account:{},captcha:{}", arg.account.as_ref().unwrap(), code);
     }
     if arg.account.is_some() {
         let result = CONTEXT
@@ -75,4 +71,3 @@ fn make() -> (Vec<u8>, String) {
     let captcha_str = captcha.chars_as_string().to_lowercase();
     (png, captcha_str)
 }
-

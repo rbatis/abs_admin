@@ -3,8 +3,8 @@ use crate::domain::table::SysPermission;
 use crate::domain::vo::RespVO;
 use crate::error_info;
 use crate::service::CONTEXT;
-use axum::Json;
 use axum::response::IntoResponse;
+use axum::Json;
 
 pub async fn page(page: Json<ResPageDTO>) -> impl IntoResponse {
     let data = CONTEXT.sys_permission_service.page(&page.0).await;
@@ -23,12 +23,10 @@ pub async fn layer_top(_page: Json<EmptyDTO>) -> impl IntoResponse {
 
 pub async fn add(mut arg: Json<PermissionAddDTO>) -> impl IntoResponse {
     if arg.name.is_none() {
-        return RespVO::<u64>::from_error(error_info!("arg.name_empty"))
-            .json();
+        return RespVO::<u64>::from_error(error_info!("arg.name_empty")).json();
     }
     if arg.permission.is_none() {
-        return RespVO::<u64>::from_error(error_info!("arg.permission_empty"))
-            .json();
+        return RespVO::<u64>::from_error(error_info!("arg.permission_empty")).json();
     }
     if arg.path.is_none() {
         arg.path = Some("".to_string());

@@ -20,7 +20,9 @@ impl From<SysRole> for SysRoleVO {
             id: arg.id,
             name: arg.name,
             parent_id: arg.parent_id,
-            create_date: arg.create_date.map(|v| v.format(&CONTEXT.config.datetime_format)),
+            create_date: arg
+                .create_date
+                .map(|v| v.format(&CONTEXT.config.datetime_format)),
             resources: vec![],
             childs: None,
             resource_ids: vec![],
@@ -35,7 +37,9 @@ impl SysRoleVO {
                 id: arg.id,
                 name: arg.name,
                 parent_id: arg.parent_id,
-                create_date: arg.create_date.map(|v| v.format(&CONTEXT.config.datetime_format)),
+                create_date: arg
+                    .create_date
+                    .map(|v| v.format(&CONTEXT.config.datetime_format)),
                 resources: vec![],
                 childs: None,
                 resource_ids: vec![],
