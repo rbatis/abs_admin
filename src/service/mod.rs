@@ -62,15 +62,12 @@ impl ServiceContext {
             .await
             .expect("[abs_admin] rbatis pool init fail!");
         self.rb.intercepts.push(Arc::new(SysTrashService::new()));
-        self.rb
-            .get_pool()
-            .unwrap()
-            .set_max_open_conns(self.config.db_pool_len as u64)
+        let pool = self.rb.get_pool().unwrap();
+        //max connections
+        pool.set_max_open_conns(self.config.db_pool_len as u64)
             .await;
-        self.rb
-            .get_pool()
-            .unwrap()
-            .set_timeout(Some(Duration::from_secs(
+        //max timeout
+        pool.set_timeout(Some(Duration::from_secs(
                 self.config.db_pool_timeout as u64,
             )))
             .await;
