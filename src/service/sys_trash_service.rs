@@ -10,7 +10,7 @@ use rbatis::rbdc::DateTime;
 use rbatis::rbdc::Error;
 use rbs::Value;
 use serde::Serialize;
-use sqlparser::ast::Statement;
+use sqlparser::ast::{FromTable, Statement};
 use sqlparser::dialect::GenericDialect;
 use sqlparser::parser::Parser;
 use std::fmt::Debug;
@@ -88,9 +88,19 @@ impl Intercept for SysTrashService {
             let table = match v.get(0).unwrap() {
                 Statement::Delete { from, .. } => {
                     let mut data = "".to_string();
-                    for x in from {
-                        let x_str = &format!("{}", x);
-                        data.push_str(x_str.as_str());
+                    match from {
+                        FromTable::WithFromKeyword(v) => {
+                            for x in v {
+                                let x_str = &format!("{}", x);
+                                data.push_str(x_str.as_str());
+                            }
+                        }
+                        FromTable::WithoutKeyword(v) => {
+                            for x in v {
+                                let x_str = &format!("{}", x);
+                                data.push_str(x_str.as_str());
+                            }
+                        }
                     }
                     data
                 }
