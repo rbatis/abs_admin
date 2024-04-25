@@ -141,11 +141,11 @@ impl SysUserService {
                     .cache_service
                     .get_string(&format!("captch:account_{}", &arg.account))
                     .await?;
-                if !cache_code.eq(&arg.vcode) {
+                if arg.vcode == "" || cache_code.ne(&arg.vcode) {
                     error = Some(Error::from(error_info!("vcode_error")))
                 }
                 // check pwd
-                if !PasswordEncoder::verify(
+                if error.is_none() && !PasswordEncoder::verify(
                     user.password
                         .as_ref()
                         .ok_or_else(|| Error::from(error_info!("password_empty")))?,
