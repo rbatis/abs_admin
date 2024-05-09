@@ -77,7 +77,7 @@ impl Intercept for SysTrashService {
         sql: &mut String,
         args: &mut Vec<Value>,
         _result: ResultType<&mut Result<ExecResult, Error>, &mut Result<Vec<Value>, Error>>,
-    ) -> Result<bool, Error> {
+    ) -> Result<Option<bool>, Error> {
         if sql.starts_with("delete from ") {
             let dialect = GenericDialect {}; // or AnsiDialect
             let v: Vec<Statement> = Parser::parse_sql(&dialect, &sql.clone())
@@ -110,7 +110,7 @@ impl Intercept for SysTrashService {
                 return Err(Error::from(format!("sql={} table_name is empty", sql)));
             }
             if table.eq("sys_trash") {
-                return Ok(true);
+                return Ok(Some(true));
             }
             let new_sql = sql.clone().replace(
                 &format!("delete from {}", table),
@@ -126,6 +126,6 @@ impl Intercept for SysTrashService {
                 }
             }
         }
-        Ok(true)
+        Ok(Some(true))
     }
 }

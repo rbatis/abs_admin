@@ -16,7 +16,7 @@ use crate::service::CONTEXT;
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 
-pub const CODE_SUCCESS: &str = "SUCCESS";
+pub const CODE_SUCCESS: &str = "0";
 pub const CODE_FAIL: &str = "-1";
 
 /// The http interface returns the model structure, providing basic json data structures such as code, msg, and data
