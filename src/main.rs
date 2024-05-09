@@ -6,7 +6,9 @@ use abs_admin::domain::table;
 use abs_admin::service::CONTEXT;
 use axum::Router;
 use axum::routing::{get, post};
-
+use tower_http::{
+    services::{ServeDir,ServeFile},
+};
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
     //log
@@ -17,7 +19,8 @@ async fn main() -> std::io::Result<()> {
     table::sync_tables_data(&CONTEXT.rb).await;
     //router
     let app = Router::new()
-        .route("/", get(|| async { "[abs_admin] Hello !" }))
+        .nest_service("/", ServeDir::new("dist")
+            .not_found_service(ServeFile::new("dist/index.html")))
         .route("/admin/sys_login", post(sys_user_controller::login))
         .route("/admin/sys_user_info", post(sys_user_controller::info))
         .route("/admin/sys_user_detail", post(sys_user_controller::detail))
