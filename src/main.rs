@@ -9,6 +9,7 @@ use axum::routing::{get, post};
 use tower_http::{
     services::{ServeDir,ServeFile},
 };
+use tower_http::cors::{Any, CorsLayer};
 use abs_admin::domain::vo::RespVO;
 
 #[tokio::main]
@@ -23,6 +24,7 @@ async fn main() -> std::io::Result<()> {
     let app = Router::new()
         .nest_service("/", ServeDir::new("dist")
             .not_found_service(ServeFile::new("dist/index.html")))
+        .nest_service("/dist/assets/", ServeDir::new("dist/assets/assets")
         .route("/admin/", get(|| async { RespVO::from("hello".to_string()).json() }))
         .route("/admin/sys_login", post(sys_user_controller::login))
         .route("/admin/sys_user_info", post(sys_user_controller::info))
@@ -48,7 +50,13 @@ async fn main() -> std::io::Result<()> {
         .route("/admin/sys_dict_page", post(sys_dict_controller::page))
         .route("/admin/auth/check", post(sys_auth_controller::check))
         .route("/admin/captcha", get(img_controller::captcha))
-        .layer(axum::middleware::from_fn(abs_admin::middleware::auth_axum::auth));
+        .layer(axum::middleware::from_fn(abs_admin::middleware::auth_axum::auth))
+        .layer(
+            CorsLayer::new()
+                .allow_origin(Any)
+                .allow_methods(Any)
+                .allow_headers(Any)
+        );
     let listener = tokio::net::TcpListener::bind(&CONTEXT.config.server_url).await.unwrap();
     axum::serve(listener, app).await
 }

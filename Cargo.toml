@@ -23,7 +23,7 @@ log = "0.4"
 fast_log = { version = "1.6", features = ["mmap"] }
 
 axum = {version = "0.7.4",features = ["macros"]}
-tower-http = {version = "0.5.2",features = ["fs"]}
+tower-http = {version = "0.5.2",features = ["fs","cors"]}
 #redis
 redis = { version = "0.25.2", features = ["tokio-comp"] }
 #jwt
