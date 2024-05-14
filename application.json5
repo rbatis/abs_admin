@@ -57,7 +57,7 @@
   // Garbage data timeout, unit: days (data that exceeds the timeout for deletion will be permanently removed)
   trash_recycle_days: 90,
   /// format datetime.you can choose any ['YYYY-MM-DD hh:mm:ss.000000', 'YYYY-MM-DD hh:mm:ss']
-  datetime_format: "YYYY-MM-DD hh:mm:ss.000000",
+  datetime_format: "YYYY-MM-DD hh:mm:ss",
   // error map <code : error_msg>
   errors: {
     "-1":"未知错误",
