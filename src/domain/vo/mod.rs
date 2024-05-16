@@ -51,9 +51,6 @@ where
     }
 
     pub fn from_error(mut error: String) -> Self {
-        if error.contains(",") {
-            error = error[0..error.find(",").unwrap()].to_string();
-        }
         let code = CONTEXT
             .config
             .error_infos
