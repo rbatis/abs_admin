@@ -50,7 +50,7 @@ where
         }
     }
 
-    pub fn from_error(mut error: String) -> Self {
+    pub fn from_error(error: String) -> Self {
         let code = CONTEXT
             .config
             .error_infos
