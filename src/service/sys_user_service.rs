@@ -141,7 +141,7 @@ impl SysUserService {
                     .cache_service
                     .get_string(&format!("captch:account_{}", &arg.account))
                     .await?;
-                if arg.vcode == "" || cache_code.ne(&arg.vcode) {
+                if arg.vcode == "" || cache_code.to_lowercase().as_str().ne(arg.vcode.to_lowercase().as_str()) {
                     error = Some(Error::from(error_info!("vcode_error")))
                 }
                 // check pwd
