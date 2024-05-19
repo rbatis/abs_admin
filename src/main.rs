@@ -23,6 +23,7 @@ async fn main() -> std::io::Result<()> {
     //router
     let app = Router::new()
         .nest_service("/", ServeDir::new("dist").not_found_service(ServeFile::new("dist/index.html")))
+        .nest_service("/assets/", ServeDir::new("dist/assets"))
         .route("/admin/", get(|| async { RespVO::from("hello".to_string()).json() }))
         .route("/admin/sys_login", post(sys_user_controller::login))
         .route("/admin/sys_user_info", post(sys_user_controller::info))
