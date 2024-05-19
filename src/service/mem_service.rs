@@ -23,8 +23,11 @@ impl MemService {
                 }
             }
         }
-        for x in need_removed {
-            self.cache.remove(&x);
+        if need_removed.len() != 0 {
+            for x in need_removed {
+                self.cache.remove(&x);
+            }
+            self.cache.shrink_to_fit();
         }
     }
 }
