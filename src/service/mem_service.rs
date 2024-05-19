@@ -8,6 +8,7 @@ use rbatis::dark_std::sync::SyncHashMap;
 ///Memory Cache Service
 #[derive(Debug)]
 pub struct MemService {
+    //Map<Key,(Value,Option<Instant, Duration>)>
     pub cache: SyncHashMap<String, (String, Option<(Instant, Duration)>)>,
 }
 
