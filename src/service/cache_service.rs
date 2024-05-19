@@ -1,6 +1,6 @@
 use crate::config::config::ApplicationConfig;
 use crate::error::Result;
-use crate::service::{MemService, RedisService};
+use crate::service::{MemCacheService, RedisCacheService};
 use futures_util::future::BoxFuture;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
@@ -28,13 +28,13 @@ impl CacheService {
             "mem" => {
                 println!("[abs_admin] cache_type: mem");
                 Ok(Self {
-                    inner: Box::new(MemService::default()),
+                    inner: Box::new(MemCacheService::default()),
                 })
             }
             "redis" => {
                 println!("[abs_admin] cache_type: redis");
                 Ok(Self {
-                    inner: Box::new(RedisService::new(&cfg.redis_url)),
+                    inner: Box::new(RedisCacheService::new(&cfg.redis_url)),
                 })
             }
             e => {

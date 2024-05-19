@@ -1,6 +1,6 @@
 mod cache_service;
-mod mem_service;
-mod redis_service;
+mod cache_mem_service;
+mod cache_redis_service;
 mod sys_auth_service;
 mod sys_dict_service;
 mod sys_permission_service;
@@ -13,10 +13,10 @@ mod sys_user_service;
 
 pub use crate::config::config::ApplicationConfig;
 pub use cache_service::*;
-pub use mem_service::*;
+pub use cache_mem_service::*;
 use once_cell::sync::Lazy;
 use rbatis::rbatis::RBatis;
-pub use redis_service::*;
+pub use cache_redis_service::*;
 use std::sync::Arc;
 use std::time::Duration;
 pub use sys_auth_service::*;

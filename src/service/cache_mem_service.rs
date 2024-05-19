@@ -7,12 +7,12 @@ use rbatis::dark_std::sync::SyncHashMap;
 
 ///Memory Cache Service
 #[derive(Debug)]
-pub struct MemService {
+pub struct MemCacheService {
     //Map<Key,(Value,Option<Instant, Duration>)>
     pub cache: SyncHashMap<String, (String, Option<(Instant, Duration)>)>,
 }
 
-impl MemService {
+impl MemCacheService {
     pub fn recycling(&self) {
         let mut need_removed = vec![];
         for (k, v) in self.cache.iter() {
@@ -32,7 +32,7 @@ impl MemService {
     }
 }
 
-impl Default for MemService {
+impl Default for MemCacheService {
     fn default() -> Self {
         Self {
             cache: Default::default(),
@@ -40,7 +40,7 @@ impl Default for MemService {
     }
 }
 
-impl ICacheService for MemService {
+impl ICacheService for MemCacheService {
     fn set_string(&self, k: &str, v: &str) -> BoxFuture<Result<String>> {
         self.recycling();
         let k = k.to_string();

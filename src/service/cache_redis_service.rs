@@ -8,11 +8,11 @@ use redis::aio::{MultiplexedConnection};
 use redis::RedisResult;
 ///Redis Cache service
 #[derive(Debug)]
-pub struct RedisService {
+pub struct RedisCacheService {
     pub client: redis::Client,
 }
 
-impl RedisService {
+impl RedisCacheService {
     pub fn new(url: &str) -> Self {
         println!("[abs_admin] conncect redis ({})...", url);
         let client = redis::Client::open(url).unwrap();
@@ -31,7 +31,7 @@ impl RedisService {
     }
 }
 
-impl ICacheService for RedisService {
+impl ICacheService for RedisCacheService {
     fn set_string(&self, k: &str, v: &str) -> BoxFuture<Result<String>> {
         let k = k.to_string();
         let v = v.to_string();
