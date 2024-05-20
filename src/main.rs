@@ -7,7 +7,7 @@ use abs_admin::service::CONTEXT;
 use axum::Router;
 use axum::routing::{get, post};
 use tower_http::{
-    services::{ServeDir},
+    services::{ServeDir,ServeFile},
 };
 use tower_http::cors::{Any, CorsLayer};
 use abs_admin::domain::vo::RespVO;
@@ -22,7 +22,7 @@ async fn main() -> std::io::Result<()> {
     table::sync_tables_data(&CONTEXT.rb).await;
     //router
     let app = Router::new()
-        .nest_service("/", ServeDir::new("dist/"))
+        .nest_service("/", ServeDir::new("dist/").not_found_service(ServeFile::new("dist/index.html")))
         .route("/admin/", get(|| async { RespVO::from("hello".to_string()).json() }))
         .route("/admin/sys_login", post(sys_user_controller::login))
         .route("/admin/sys_user_info", post(sys_user_controller::info))
