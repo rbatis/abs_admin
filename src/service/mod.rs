@@ -77,7 +77,7 @@ impl ServiceContext {
             self.rb.get_pool().expect("pool not init!").state().await
         );
         log::info!(
-            " - Local:   http://{}",
+            "Serve:   http://{}",
             self.config.server_url.replace("0.0.0.0", "127.0.0.1")
         );
     }
