@@ -32,7 +32,7 @@ impl CacheService {
             "mem" => {
                 println!("[abs_admin] cache_type: mem");
                 Ok(Self {
-                    inner: Box::new(MemCacheService::default()),
+                    inner: Box::<MemCacheService>::default(),
                 })
             }
             "redis" => {

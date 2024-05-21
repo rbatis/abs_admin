@@ -10,7 +10,7 @@ use rbatis::rbdc::DateTime;
 use rbatis::rbdc::Error;
 use rbs::Value;
 use serde::Serialize;
-use sqlparser::ast::{FromTable, Statement};
+use sqlparser::ast::{Delete, FromTable, Statement};
 use sqlparser::dialect::GenericDialect;
 use sqlparser::parser::Parser;
 use std::fmt::Debug;
@@ -20,6 +20,12 @@ use std::time::Duration;
 #[derive(Debug)]
 pub struct SysTrashService {
     pub recycle_date: Mutex<DateTime>,
+}
+
+impl Default for SysTrashService {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl SysTrashService {
@@ -40,7 +46,7 @@ impl SysTrashService {
         let mut trashes = Vec::with_capacity(args.len());
         for x in args {
             trashes.push(SysTrash {
-                id: Some(ObjectId::new().to_string().into()),
+                id: Some(ObjectId::new().to_string()),
                 table_name: Some(table_name.to_string()),
                 data: Some(serde_json::to_string(x).unwrap_or_default()),
                 create_date: Some(now.clone()),
@@ -82,11 +88,11 @@ impl Intercept for SysTrashService {
             let dialect = GenericDialect {}; // or AnsiDialect
             let v: Vec<Statement> = Parser::parse_sql(&dialect, &sql.clone())
                 .map_err(|e| Error::from(e.to_string()))?;
-            if v.len() <= 0 {
+            if v.is_empty() {
                 return Err(Error::from("sql is empty"));
             }
-            let table = match v.get(0).unwrap() {
-                Statement::Delete { from, .. } => {
+            let table = match v.first().unwrap() {
+                Statement::Delete(Delete{ from, .. }) => {
                     let mut data = "".to_string();
                     match from {
                         FromTable::WithFromKeyword(v) => {

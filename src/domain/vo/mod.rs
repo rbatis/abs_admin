@@ -71,11 +71,11 @@ where
     }
 }
 
-impl<T> ToString for RespVO<T>
-where
-    T: Serialize + DeserializeOwned + Clone,
-{
-    fn to_string(&self) -> String {
-        serde_json::to_string(self).unwrap()
-    }
-}
+// impl<T> ToString for RespVO<T>
+// where
+//     T: Serialize + DeserializeOwned + Clone,
+// {
+//     fn to_string(&self) -> String {
+//         serde_json::to_string(self).unwrap()
+//     }
+// }

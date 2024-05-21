@@ -6,7 +6,7 @@ use crate::domain::table::{SysPermission, SysRole, SysRolePermission, SysUser, S
 pub async fn sync_tables_data(rb: &RBatis) {
     let conn = rb.acquire().await.expect("init data fail");
     if let Ok(v) = SysUser::select_by_column(&conn, "id", "1").await {
-        if v.len() > 0 {
+        if !v.is_empty() {
             //if user exists,return
             return;
         }

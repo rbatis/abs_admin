@@ -13,7 +13,7 @@ use crate::{error_info, pool};
 use std::collections::BTreeMap;
 use std::time::Duration;
 
-const CACHE_KEY_RETRY: &'static str = "login:login_retry";
+const CACHE_KEY_RETRY: &str = "login:login_retry";
 
 ///Background User Service
 pub struct SysUserService {}
@@ -28,23 +28,23 @@ impl SysUserService {
         )
         .await?;
         let page = Page::<SysUserVO>::from(sys_user_page);
-        return Ok(page);
+        Ok(page)
     }
 
     ///user details
     pub async fn detail(&self, arg: &IdDTO) -> Result<SysUserVO> {
         let user_id = arg.id.as_deref().unwrap_or_default();
-        let user = self.find(&user_id).await?.ok_or_else(|| {
+        let user = self.find(user_id).await?.ok_or_else(|| {
             Error::from(format!("{}={}", error_info!("user_not_exists"), user_id))
         })?;
         let mut user_vo = SysUserVO::from(user);
         let all_res = CONTEXT.sys_permission_service.finds_all_map().await?;
         let role = CONTEXT
             .sys_user_role_service
-            .find_user_role(&user_id, &all_res)
+            .find_user_role(user_id, &all_res)
             .await?;
         user_vo.role = role;
-        return Ok(user_vo);
+        Ok(user_vo)
     }
 
     pub async fn find(&self, id: &str) -> Result<Option<SysUser>> {
@@ -92,7 +92,7 @@ impl SysUserService {
                 .add(UserRoleAddDTO {
                     id: None,
                     user_id: user.id.clone(),
-                    role_id: role_id,
+                    role_id,
                 })
                 .await?;
         }
@@ -141,7 +141,7 @@ impl SysUserService {
                     .cache_service
                     .get_string(&format!("captch:account_{}", &arg.account))
                     .await?;
-                if arg.vcode == "" || cache_code.to_lowercase().as_str().ne(arg.vcode.to_lowercase().as_str()) {
+                if arg.vcode.is_empty() || cache_code.to_lowercase().as_str().ne(arg.vcode.to_lowercase().as_str()) {
                     error = Some(Error::from(error_info!("vcode_error")))
                 }
                 // check pwd
@@ -172,7 +172,7 @@ impl SysUserService {
             return Err(error.unwrap());
         }
         let sign_in_vo = self.get_user_info(&user).await?;
-        return Ok(sign_in_vo);
+        Ok(sign_in_vo)
     }
 
     ///is need to wait
@@ -194,7 +194,7 @@ impl SysUserService {
                 }
             }
         }
-        return Ok(());
+        Ok(())
     }
 
     ///Add redis retry record
@@ -220,7 +220,7 @@ impl SysUserService {
                 )
                 .await?;
         }
-        return Ok(());
+        Ok(())
     }
 
     pub async fn get_user_info_by_token(&self, token: &JWTToken) -> Result<SignInVO> {
@@ -235,7 +235,7 @@ impl SysUserService {
                 token.account
             ))
         })?;
-        return self.get_user_info(&user).await;
+        self.get_user_info(&user).await
     }
 
     pub async fn get_user_info(&self, user: &SysUser) -> Result<SignInVO> {
@@ -261,7 +261,7 @@ impl SysUserService {
             .sys_user_role_service
             .find_user_role(&sign_vo.id.clone().unwrap_or_default(), &all_res)
             .await?;
-        return Ok(sign_vo);
+        Ok(sign_vo)
     }
 
     pub async fn sign_out(&self) {}
@@ -290,7 +290,7 @@ impl SysUserService {
                 .add(UserRoleAddDTO {
                     id: None,
                     user_id: arg.id.clone(),
-                    role_id: role_id,
+                    role_id,
                 })
                 .await?;
         }
@@ -305,7 +305,7 @@ impl SysUserService {
         }
         let r = SysUser::delete_by_column(pool!(), "id", id).await?;
         CONTEXT.sys_user_role_service.remove_by_user_id(id).await?;
-        return Ok(r.rows_affected);
+        Ok(r.rows_affected)
     }
 
     ///Find user-authority hierarchy permissions
@@ -314,9 +314,9 @@ impl SysUserService {
         user_id: &str,
         all_res: &BTreeMap<String, SysPermissionVO>,
     ) -> Result<Vec<String>> {
-        return CONTEXT
+        CONTEXT
             .sys_role_service
             .find_user_permission(user_id, all_res)
-            .await;
+            .await
     }
 }

@@ -30,7 +30,7 @@ pub use sys_user_role_service::*;
 pub use sys_user_service::*;
 
 /// CONTEXT is all of the service struct
-pub static CONTEXT: Lazy<ServiceContext> = Lazy::new(|| ServiceContext::default());
+pub static CONTEXT: Lazy<ServiceContext> = Lazy::new(ServiceContext::default);
 
 #[macro_export]
 macro_rules! pool {
@@ -59,7 +59,7 @@ impl ServiceContext {
         log::info!("[abs_admin] rbatis pool init ({})...", self.config.db_url);
         //include auto choose driver struct by 'config.db_url'
         self.rb
-            .link(include!("../../target/driver.rs"), &self.config.db_url)
+            .link(include!("../../driver.rs"), &self.config.db_url)
             .await
             .expect("[abs_admin] rbatis pool init fail!");
         self.rb.intercepts.push(Arc::new(SysTrashService::new()));

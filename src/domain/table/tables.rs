@@ -140,7 +140,7 @@ pub struct Sms {
 pub async fn sync_tables(rb: &RBatis) {
     //disable log
     let log_intercept = rb.get_intercept::<LogInterceptor>().unwrap();
-    let level = log_intercept.get_level_filter().clone();
+    let level = log_intercept.get_level_filter();
     log_intercept.set_level_filter(LevelFilter::Off);
     defer!(|| {
         log_intercept.set_level_filter(level);

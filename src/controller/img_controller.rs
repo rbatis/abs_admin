@@ -36,7 +36,7 @@ pub async fn captcha(arg: Query<CatpchaDTO>) -> impl IntoResponse {
             )
             .await;
         println!("{:?}", result);
-        if CONTEXT.config.debug == false {
+        if !CONTEXT.config.debug {
             //release mode, return the error
             if let Err(e) = result {
                 let resp = Response::builder()
@@ -49,13 +49,13 @@ pub async fn captcha(arg: Query<CatpchaDTO>) -> impl IntoResponse {
             }
         }
     }
-    let resp = Response::builder()
+    
+    Response::builder()
         .header("Access-Control-Allow-Origin", "*")
         .header("Cache-Control", "no-cache")
         .header("Content-Type", "image/png")
         .body(Body::from(png))
-        .unwrap();
-    return resp.into();
+        .unwrap()
 }
 
 fn make() -> (Vec<u8>, String) {

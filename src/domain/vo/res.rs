@@ -40,8 +40,8 @@ impl SysPermissionVO {
     pub fn set_childs_recursive(&mut self, all_record: &HashMap<String, Self>) {
         let mut childs: Option<Vec<Self>> = None;
         if self.id.is_some() {
-            for (_key, x) in all_record {
-                if x.get_father_id().is_some() && self.id.eq(&x.get_father_id()) {
+            for x in all_record.values() {
+                if x.get_father_id().is_some() && self.id.eq(x.get_father_id()) {
                     let mut item = x.clone();
                     item.set_childs_recursive(all_record);
                     match &mut childs {
@@ -49,8 +49,7 @@ impl SysPermissionVO {
                             childs.push(item);
                         }
                         None => {
-                            let mut vec = vec![];
-                            vec.push(item);
+                            let vec = vec![item];
                             childs = Some(vec);
                         }
                     }

@@ -1,3 +1,8 @@
+/*
+ * @Date: 2024-05-21 21:36:59
+ * @LastEditTime: 2024-05-21 22:28:23
+ */
+
 use std::fs::OpenOptions;
 use std::io::{Read, Write};
 
@@ -19,14 +24,14 @@ fn main() {
     let mut data = String::new();
     let mut f = OpenOptions::new()
         .write(true)
-        .create(true)
-        .open("target/driver.rs")
+        .create(true).truncate(true)
+        .open("./driver.rs")
         .unwrap();
     _ = f.read_to_string(&mut data);
 
     let db_index = config
         .db_url
-        .find(":")
+        .find(':')
         .expect("db_url must be '<database>://xxxx'");
     let mut db_name = &config.db_url[..db_index];
     if db_name == "postgres" {

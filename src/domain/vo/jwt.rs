@@ -32,7 +32,7 @@ impl JWTToken {
         let mut validation = Validation::default();
         validation.leeway = 0;
         return match decode::<JWTToken>(
-            &token,
+            token,
             &DecodingKey::from_secret(secret.as_ref()),
             &validation,
         ) {
@@ -48,8 +48,8 @@ impl JWTToken {
 
     pub fn refresh(&self, secret: &str, jwt_exp: usize) -> Result<String, Error> {
         let mut jwt = self.clone();
-        jwt.exp = jwt.exp + jwt_exp;
-        jwt.create_token(&secret)
+        jwt.exp += jwt_exp;
+        jwt.create_token(secret)
     }
 }
 

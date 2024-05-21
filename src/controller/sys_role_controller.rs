@@ -8,22 +8,22 @@ use axum::Json;
 
 pub async fn add(arg: Json<SysRoleResAddDTO>) -> impl IntoResponse {
     let vo = CONTEXT.sys_role_permission_service.add(&arg.0).await;
-    return RespVO::from_result(vo).json();
+    RespVO::from_result(vo).json()
 }
 
 pub async fn page(arg: Json<SysRoleResPageDTO>) -> impl IntoResponse {
     let vo = CONTEXT.sys_role_permission_service.page(&arg.0).await;
-    return RespVO::from_result(vo).json();
+    RespVO::from_result(vo).json()
 }
 
 pub async fn layer_top(_arg: Json<EmptyDTO>) -> impl IntoResponse {
     let vo = CONTEXT.sys_role_service.finds_layer().await;
-    return RespVO::from_result(vo).json();
+    RespVO::from_result(vo).json()
 }
 
 pub async fn update(arg: Json<SysRoleResUpdateDTO>) -> impl IntoResponse {
     let vo = CONTEXT.sys_role_permission_service.edit(&arg.0).await;
-    return RespVO::from_result(vo).json();
+    RespVO::from_result(vo).json()
 }
 
 pub async fn remove(arg: Json<IdDTO>) -> impl IntoResponse {
@@ -32,5 +32,5 @@ pub async fn remove(arg: Json<IdDTO>) -> impl IntoResponse {
         .sys_role_permission_service
         .remove_role(&role_id)
         .await;
-    return RespVO::from_result(vo).json();
+    RespVO::from_result(vo).json()
 }

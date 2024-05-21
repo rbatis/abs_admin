@@ -1,3 +1,4 @@
+#![allow(clippy::only_used_in_recursion)]
 use std::collections::{BTreeMap, HashMap, HashSet};
 
 use crate::domain::dto::{
@@ -21,15 +22,15 @@ impl SysRoleResService {
         let mut role_page = CONTEXT
             .sys_role_service
             .page(&RolePageDTO {
-                page_no: arg.page_no.clone(),
-                page_size: arg.page_size.clone(),
+                page_no: arg.page_no,
+                page_size: arg.page_size,
                 name: arg.name.clone(),
             })
             .await?;
         let all = CONTEXT.sys_permission_service.finds_all_map().await?;
         let role_res_map = self.find_role_res_map(&role_page.records).await?;
         role_page.records = self.loop_set_res_vec(role_page.records, &role_res_map, &all)?;
-        return Result::Ok(role_page);
+        Result::Ok(role_page)
     }
 
     fn loop_find_role_ids(&self, arg: &Vec<SysRoleVO>) -> Vec<String> {
@@ -46,7 +47,7 @@ impl SysRoleResService {
                 _ => {}
             }
         }
-        return results;
+        results
     }
 
     async fn find_role_res_map(
@@ -78,7 +79,7 @@ impl SysRoleResService {
                 }
             }
         }
-        return Ok(role_res_map);
+        Ok(role_res_map)
     }
 
     /// Add the resource
@@ -113,7 +114,7 @@ impl SysRoleResService {
             role.resource_ids = rbatis::make_table_field_vec!(&role.resources, id);
             data.push(role);
         }
-        return Ok(data);
+        Ok(data)
     }
 
     pub async fn add(&self, arg: &SysRoleResAddDTO) -> Result<u64> {
@@ -121,9 +122,9 @@ impl SysRoleResService {
             .sys_role_service
             .add(RoleAddDTO::from(arg.clone()))
             .await?;
-        return self
+        self
             .save_resources(&role_id, arg.resource_ids.clone())
-            .await;
+            .await
     }
 
     pub async fn edit(&self, arg: &SysRoleResUpdateDTO) -> Result<u64> {
@@ -135,7 +136,7 @@ impl SysRoleResService {
             .sys_role_service
             .edit(RoleEditDTO::from(arg.clone()))
             .await?;
-        return self.save_resources(role_id, arg.resource_ids.clone()).await;
+        self.save_resources(role_id, arg.resource_ids.clone()).await
     }
 
     async fn save_resources(&self, role_id: &str, resource_ids: Vec<String>) -> Result<u64> {
@@ -167,7 +168,7 @@ impl SysRoleResService {
             .sys_role_permission_service
             .remove_by_role_id(role_id)
             .await?;
-        return Ok(remove_roles + remove_user_roles + remove_role_res);
+        Ok(remove_roles + remove_user_roles + remove_role_res)
     }
 
     pub async fn remove(&self, id: &str) -> Result<u64> {

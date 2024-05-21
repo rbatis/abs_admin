@@ -4,7 +4,7 @@ use crate::error::{Error, Result};
 use crate::service::ICacheService;
 use futures_util::future::BoxFuture;
 use log::error;
-use redis::aio::{MultiplexedConnection};
+use redis::aio::MultiplexedConnection;
 use redis::RedisResult;
 ///Redis Cache service
 #[derive(Debug)]
@@ -27,7 +27,7 @@ impl RedisCacheService {
             error!("{}", err);
             return Err(crate::error::Error::from(err));
         }
-        return Ok(conn.unwrap());
+        Ok(conn.unwrap())
     }
 }
 
@@ -36,7 +36,7 @@ impl ICacheService for RedisCacheService {
         let k = k.to_string();
         let v = v.to_string();
         Box::pin(async move {
-            return self.set_string_ex(&k, &v, None).await;
+            self.set_string_ex(&k, &v, None).await
         })
     }
 
@@ -46,14 +46,14 @@ impl ICacheService for RedisCacheService {
             let mut conn = self.get_conn().await?;
             let result: RedisResult<Option<String>> =
                 redis::cmd("GET").arg(&[&k]).query_async(&mut conn).await;
-            return match result {
+            match result {
                 Ok(v) => Ok(v.unwrap_or_default()),
                 Err(e) => Err(Error::from(format!(
                     "RedisService get_string({}) fail:{}",
                     k,
-                    e.to_string()
+                    e
                 ))),
-            };
+            }
         })
     }
 
@@ -63,12 +63,12 @@ impl ICacheService for RedisCacheService {
         let v = v.to_string();
         Box::pin(async move {
             let mut conn = self.get_conn().await?;
-            return if ex.is_none() {
+            if ex.is_none() {
                 match redis::cmd("SET").arg(&[k, v]).query_async(&mut conn).await {
                     Ok(v) => Ok(v),
                     Err(e) => Err(Error::from(format!(
                         "RedisService set_string_ex fail:{}",
-                        e.to_string()
+                        e
                     ))),
                 }
             } else {
@@ -80,10 +80,10 @@ impl ICacheService for RedisCacheService {
                     Ok(v) => Ok(v),
                     Err(e) => Err(Error::from(format!(
                         "RedisService set_string_ex fail:{}",
-                        e.to_string()
+                        e
                     ))),
                 }
-            };
+            }
         })
     }
 
@@ -92,13 +92,13 @@ impl ICacheService for RedisCacheService {
         let k = k.to_string();
         Box::pin(async move {
             let mut conn = self.get_conn().await?;
-            return match redis::cmd("TTL").arg(&[k]).query_async(&mut conn).await {
+            match redis::cmd("TTL").arg(&[k]).query_async(&mut conn).await {
                 Ok(v) => Ok(v),
                 Err(e) => Err(Error::from(format!(
                     "RedisService ttl fail:{}",
-                    e.to_string()
+                    e
                 ))),
-            };
+            }
         })
     }
 }

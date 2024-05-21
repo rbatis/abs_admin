@@ -22,7 +22,7 @@ impl SysSmsService {
                 },
             )
             .await?;
-        return Ok(());
+        Ok(())
     }
 
     ///Verifying verification code

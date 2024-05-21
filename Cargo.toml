@@ -22,7 +22,7 @@ log = "0.4"
 #fast_log enable features = ["lz4", "zip", "gzip"], and edit src/config/log.rs fn choose_packer(),edit application.json5 add log_pack_compress: "zip"
 fast_log = { version = "1.6", features = ["mmap"] }
 
-axum = {version = "0.7.4",features = ["macros"]}
+axum = {version = "0.7.5",features = ["macros"]}
 tower-http = {version = "0.5.2",features = ["fs","cors"]}
 #redis
 redis = { version = "0.25.2", features = ["tokio-comp"] }
@@ -31,7 +31,7 @@ jsonwebtoken = "9.2"
 md5 = "0.7"
 #captcha
 captcha = "0.0.9"
-#http client,use rust-tls replace to native tls
+#http client,use rust-tls replace to native tlss
 reqwest = { version = "0.12", features = ["json"] }
 #image code
 image = "0.25.0"
@@ -39,7 +39,7 @@ image = "0.25.0"
 once_cell = "1.9"
 futures-util = "0.3.21"
 parking_lot = "0.12.1"
-sqlparser = "0.44.0"
+sqlparser = "0.46.0"
 json5 = "0.4"
 
 [build-dependencies]

@@ -42,7 +42,7 @@ impl SysUserRoleService {
                 }
             }
         }
-        return Ok(vo);
+        Ok(vo)
     }
 
     pub async fn add(&self, arg: UserRoleAddDTO) -> Result<u64> {
@@ -106,9 +106,9 @@ impl SysUserRoleService {
             role_vos.push(vo);
         }
         if role_vos.is_empty() {
-            return Ok(None);
+            Ok(None)
         } else {
-            return Ok(Some(role_vos[0].clone()));
+            Ok(Some(role_vos[0].clone()))
         }
     }
 }

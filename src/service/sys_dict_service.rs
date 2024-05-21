@@ -8,7 +8,7 @@ use crate::error::Result;
 use crate::service::CONTEXT;
 use crate::{error_info, pool};
 
-const DICT_KEY: &'static str = "sys_dict:all";
+const DICT_KEY: &str = "sys_dict:all";
 
 /// dictionary service
 pub struct SysDictService {}
@@ -23,16 +23,16 @@ impl SysDictService {
     pub async fn add(&self, arg: &SysDict) -> Result<u64> {
         let old =
             SysDict::select_by_column(pool!(), "id", arg.id.as_deref().unwrap_or_default()).await?;
-        if old.len() > 0 {
+        if !old.is_empty() {
             return Err(Error::from(format!(
                 "{},code={}",
                 error_info!("dict_exists"),
                 arg.code.as_deref().unwrap_or_default()
             )));
         }
-        let result = Ok(SysDict::insert(pool!(), &arg).await?.rows_affected);
+        let result = Ok(SysDict::insert(pool!(), arg).await?.rows_affected);
         self.update_cache().await?;
-        return result;
+        result
     }
 
     pub async fn edit(&self, arg: &DictEditDTO) -> Result<u64> {
@@ -41,7 +41,7 @@ impl SysDictService {
         if result.is_ok() {
             self.update_cache().await?;
         }
-        return Ok(result?.rows_affected);
+        Ok(result?.rows_affected)
     }
 
     pub async fn remove(&self, id: &str) -> Result<u64> {
@@ -56,6 +56,6 @@ impl SysDictService {
     pub async fn update_cache(&self) -> Result<()> {
         let all = SysDict::select_all(pool!()).await?;
         CONTEXT.cache_service.set_json(DICT_KEY, &all).await?;
-        return Ok(());
+        Ok(())
     }
 }

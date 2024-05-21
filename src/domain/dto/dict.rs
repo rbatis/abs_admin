@@ -35,10 +35,10 @@ pub struct DictAddDTO {
 impl From<DictAddDTO> for SysDict {
     fn from(arg: DictAddDTO) -> Self {
         SysDict {
-            id: arg.name.clone().into(),
+            id: arg.name.clone(),
             name: arg.name.clone(),
             code: arg.code.clone(),
-            state: arg.state.clone(),
+            state: arg.state,
             create_date: DateTime::now().into(),
         }
     }
@@ -58,7 +58,7 @@ impl From<&DictEditDTO> for SysDict {
             id: arg.id.clone(),
             name: arg.name.clone(),
             code: arg.code.clone(),
-            state: arg.state.clone(),
+            state: arg.state,
             create_date: None,
         }
     }

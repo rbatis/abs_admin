@@ -1,3 +1,4 @@
+#![allow(clippy::only_used_in_recursion)]
 use crate::domain::dto::{ResEditDTO, ResPageDTO};
 use crate::domain::table::SysPermission;
 use crate::domain::vo::SysPermissionVO;
@@ -7,7 +8,7 @@ use crate::service::CONTEXT;
 use crate::{error_info, pool};
 use rbatis::{Page, PageRequest};
 use std::collections::{BTreeMap, HashMap};
-const RES_KEY: &'static str = "sys_permission:all";
+const RES_KEY: &str = "sys_permission:all";
 
 /// Resource service
 pub struct SysPermissionService {}
@@ -34,23 +35,23 @@ impl SysPermissionService {
             arg.name.as_deref().unwrap_or_default(),
         )
         .await?;
-        if old.len() > 0 {
+        if !old.is_empty() {
             return Err(Error::from(format!(
                 "{}={:?}",
                 error_info!("permission_exists"),
                 rbatis::make_table_field_vec!(old, name)
             )));
         }
-        let result = Ok(SysPermission::insert(pool!(), &arg).await?.rows_affected);
+        let result = Ok(SysPermission::insert(pool!(), arg).await?.rows_affected);
         self.update_cache().await?;
-        return result;
+        result
     }
 
     pub async fn edit(&self, arg: &ResEditDTO) -> Result<u64> {
         let data = SysPermission::from(arg);
         let result = SysPermission::update_by_column(pool!(), &data, "id").await?;
         self.update_cache().await?;
-        return Ok(result.rows_affected);
+        Ok(result.rows_affected)
     }
 
     pub async fn remove(&self, id: &str) -> Result<u64> {
@@ -63,7 +64,7 @@ impl SysPermissionService {
             .remove_by_permission_id(id)
             .await;
         self.update_cache().await?;
-        return Ok(num);
+        Ok(num)
     }
 
     pub fn make_permission_ids(&self, args: &Vec<SysPermissionVO>) -> Vec<String> {
@@ -102,7 +103,7 @@ impl SysPermissionService {
                 arr.push(x.into());
             }
         }
-        return Ok(arr);
+        Ok(arr)
     }
 
     pub async fn update_cache(&self) -> Result<Vec<SysPermissionVO>> {
@@ -112,7 +113,7 @@ impl SysPermissionService {
         for x in all {
             v.push(x.into());
         }
-        return Ok(v);
+        Ok(v)
     }
 
     pub async fn finds_all_map(&self) -> Result<BTreeMap<String, SysPermissionVO>> {
@@ -121,7 +122,7 @@ impl SysPermissionService {
         for x in all {
             result.insert(x.id.as_deref().unwrap_or_default().to_string(), x);
         }
-        return Ok(result);
+        Ok(result)
     }
 
     pub fn finds_res(
@@ -156,7 +157,7 @@ impl SysPermissionService {
         ids: &Vec<String>,
         all_res: &BTreeMap<String, SysPermissionVO>,
     ) -> Result<Vec<SysPermissionVO>> {
-        let res = self.finds_res(ids, &all_res);
+        let res = self.finds_res(ids, all_res);
         //find tops
         let mut tops = vec![];
         for item in res {
@@ -166,8 +167,8 @@ impl SysPermissionService {
             }
         }
         //find child
-        for mut item in &mut tops {
-            self.loop_find_childs(&mut item, all_res);
+        for item in &mut tops {
+            self.loop_find_childs(item, all_res);
         }
         Ok(tops)
     }
@@ -179,7 +180,7 @@ impl SysPermissionService {
         all_res: &BTreeMap<String, SysPermissionVO>,
     ) {
         let mut childs = vec![];
-        for (_key, x) in all_res {
+        for x in all_res.values() {
             if x.parent_id.is_some() && x.parent_id.eq(&arg.id) {
                 let mut item = x.clone();
                 self.loop_find_childs(&mut item, all_res);

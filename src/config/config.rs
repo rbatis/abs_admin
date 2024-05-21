@@ -38,11 +38,7 @@ impl Default for ApplicationConfig {
         let mut result: ApplicationConfig =
             json5::from_str(js_data).expect("load config file fail");
         result.init_infos();
-        if cfg!(debug_assertions) {
-            result.debug = true;
-        } else {
-            result.debug = false;
-        }
+        result.debug = cfg!(debug_assertions);
         if result.debug {
             println!("[abs_admin] {}", to_value!(&result));
             println!("[abs_admin] ///////////////////// Start On Debug Mode ////////////////////////////");
@@ -68,8 +64,8 @@ impl ApplicationConfig {
         self.error_infos = Some(HashMap::new());
         for (k, error) in &self.errors {
             let mut error = error.to_string();
-            if error.contains(",") {
-                error = error[0..error.find(",").unwrap()].to_string();
+            if error.contains(',') {
+                error = error[0..error.find(',').unwrap()].to_string();
             }
             self.error_infos
                 .as_mut()

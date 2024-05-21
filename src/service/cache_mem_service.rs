@@ -7,6 +7,7 @@ use rbatis::dark_std::sync::SyncHashMap;
 
 ///Memory Cache Service
 #[derive(Debug)]
+#[derive(Default)]
 pub struct MemCacheService {
     //Map<Key,(Value,Option<Instant(remain time), Duration(time to live)>)>
     pub cache: SyncHashMap<String, (String, Option<(Instant, Duration)>)>,
@@ -23,7 +24,7 @@ impl MemCacheService {
                 }
             }
         }
-        if need_removed.len() != 0 {
+        if !need_removed.is_empty() {
             for x in need_removed {
                 self.cache.remove(&x);
             }
@@ -32,13 +33,6 @@ impl MemCacheService {
     }
 }
 
-impl Default for MemCacheService {
-    fn default() -> Self {
-        Self {
-            cache: Default::default(),
-        }
-    }
-}
 
 impl ICacheService for MemCacheService {
     fn set_string(&self, k: &str, v: &str) -> BoxFuture<Result<String>> {
@@ -47,7 +41,7 @@ impl ICacheService for MemCacheService {
         let v = v.to_string();
         self.cache.insert(k.to_string(), (v.clone(), None));
         Box::pin(async move {
-            return Ok(v.to_string());
+            Ok(v.to_string())
         })
     }
 
@@ -71,7 +65,7 @@ impl ICacheService for MemCacheService {
         }
         _ = self.cache.insert(k.to_string(), (v.clone(), e));
         Box::pin(async move {
-            return Ok(v.to_string());
+            Ok(v.to_string())
         })
     }
 

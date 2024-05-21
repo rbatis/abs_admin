@@ -37,18 +37,13 @@ pub fn init_log() {
     }
     cfg = cfg.chan_len(CONTEXT.config.log_chan_len);
     let _ = fast_log::init(cfg);
-    if CONTEXT.config.debug == false {
+    if !CONTEXT.config.debug {
         println!("[abs_admin] release_mode is up! [file_log] open,[console_log] disabled!");
     }
 }
 
-fn choose_packer(packer: &str) -> Box<dyn Packer> {
-    match packer {
-        // "lz4" => Box::new(fast_log::plugin::packer::LZ4Packer {}),
-        // "zip" => Box::new(fast_log::plugin::packer::ZipPacker {}),
-        // "gzip" => Box::new(fast_log::plugin::packer::GZipPacker {}),
-        _ => Box::new(fast_log::plugin::packer::LogPacker {}),
-    }
+fn choose_packer(_packer: &str) -> Box<dyn Packer> {
+    Box::new(fast_log::plugin::packer::LogPacker {})
 }
 
 fn str_to_temp_size(arg: &str) -> LogSize {
@@ -75,12 +70,12 @@ fn str_to_temp_size(arg: &str) -> LogSize {
 fn str_to_rolling(arg: &str) -> RollingType {
     match arg {
         arg if arg.starts_with("KeepNum(") => {
-            let end = arg.find(")").unwrap();
+            let end = arg.find(')').unwrap();
             let num = arg["KeepNum(".len()..end].to_string();
             RollingType::KeepNum(num.parse::<i64>().unwrap())
         }
         arg if arg.starts_with("KeepTime(") => {
-            let end = arg.find(")").unwrap();
+            let end = arg.find(')').unwrap();
             let num = arg["KeepTime(".len()..end].to_string();
             RollingType::KeepTime(Duration::from_secs(num.parse::<u64>().unwrap()))
         }
@@ -89,7 +84,7 @@ fn str_to_rolling(arg: &str) -> RollingType {
 }
 
 fn str_to_log_level(arg: &str) -> log::LevelFilter {
-    return match arg {
+    match arg {
         "off" => log::LevelFilter::Off,
         "warn" => log::LevelFilter::Warn,
         "error" => log::LevelFilter::Error,
@@ -97,5 +92,5 @@ fn str_to_log_level(arg: &str) -> log::LevelFilter {
         "info" => log::LevelFilter::Info,
         "debug" => log::LevelFilter::Debug,
         _ => log::LevelFilter::Info,
-    };
+    }
 }
