@@ -44,7 +44,7 @@ impl Default for ApplicationConfig {
             result.debug = false;
         }
         if result.debug {
-            println!("[abs_admin] load config:{}", to_value!(&result));
+            println!("[abs_admin] {}", to_value!(&result));
             println!("[abs_admin] ///////////////////// Start On Debug Mode ////////////////////////////");
         } else {
             println!("[abs_admin] ///////////////////// Start On Release Mode ////////////////////////////");
