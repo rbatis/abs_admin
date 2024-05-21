@@ -11,7 +11,7 @@ mod sys_trash_service;
 mod sys_user_role_service;
 mod sys_user_service;
 
-pub use crate::config::config::ApplicationConfig;
+pub use crate::config::ApplicationConfig;
 pub use cache_service::*;
 pub use cache_mem_service::*;
 use once_cell::sync::Lazy;

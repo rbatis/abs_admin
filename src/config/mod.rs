@@ -1,3 +1,4 @@
 // #[allow(clippy::module_inception)]
-pub mod config;
+mod app_config;
 pub mod log;
+pub use app_config::*;

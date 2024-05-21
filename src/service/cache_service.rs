@@ -1,4 +1,4 @@
-use crate::config::config::ApplicationConfig;
+use crate::config::ApplicationConfig;
 use crate::error::Result;
 use crate::service::{MemCacheService, RedisCacheService};
 use futures_util::future::BoxFuture;
