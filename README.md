@@ -1,4 +1,4 @@
-![demo2](demo1.png)
+![demo2](demo1.jpg)
 
 [Chinese](README_CH.md)
 

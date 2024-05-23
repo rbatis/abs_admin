@@ -1,4 +1,4 @@
-![demo2](demo1.png)
+![demo2](demo1.jpg)
 
 # Rust 企业级一站式后台解决方案
 
