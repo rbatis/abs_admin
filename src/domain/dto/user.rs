@@ -20,7 +20,7 @@ impl From<UserAddDTO> for SysUser {
         SysUser {
             id: ObjectId::new().to_string().into(),
             account: arg.account.clone(),
-            password: PasswordEncoder::encode(&arg.password.unwrap_or_default()).into(),
+            password: PasswordEncoder::hash_password(arg.password.unwrap_or_default()).into(),
             name: arg.name.clone(),
             login_check: arg.login_check.clone(),
             state: Some(arg.state.unwrap_or(1)),

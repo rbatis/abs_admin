@@ -16,7 +16,7 @@ pub async fn sync_tables_data(rb: &RBatis) {
         &SysUser {
             id: Some("1".to_string()),
             account: Some("00000000000".to_string()),
-            password: Some("e10adc3949ba59abbe56e057f20f883e".to_string()),
+            password: Some("$2b$12$PGq/bkqZ1o4e6jxd767nGu19YD9kdMEvYWltOljH3ahosPeCe5oGC".to_string()),
             name: Some("admin".to_string()),
             login_check: Some(PasswordCheck),
             state: Some(1),

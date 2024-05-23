@@ -25,7 +25,7 @@ fn main() {
     let mut f = OpenOptions::new()
         .write(true)
         .create(true).truncate(true)
-        .open("./driver.rs")
+        .open("target/driver.rs")
         .unwrap();
     _ = f.read_to_string(&mut data);
 

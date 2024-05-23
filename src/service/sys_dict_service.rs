@@ -10,6 +10,7 @@ use crate::{error_info, pool};
 
 const DICT_KEY: &str = "sys_dict:all";
 
+#[derive(Default)]
 /// dictionary service
 pub struct SysDictService {}
 

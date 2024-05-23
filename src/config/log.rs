@@ -3,11 +3,13 @@ use fast_log::config::Config;
 use fast_log::consts::LogSize;
 use fast_log::plugin::file_mmap::MmapFile;
 use fast_log::plugin::file_split::{FileSplitAppender, Packer, RawFile, RollingType};
+use fast_log::FastLogFormat;
 use std::time::Duration;
 
 pub fn init_log() {
     //init fast log
-    let mut cfg = Config::new().level(str_to_log_level(&CONTEXT.config.log_level));
+    let mut cfg = Config::new().level(str_to_log_level(&CONTEXT.config.log_level))
+        .format(FastLogFormat::new().set_display_line_level(log::LevelFilter::Warn));
     match CONTEXT.config.log_type.as_str() {
         "mmap" => {
             cfg = cfg.custom(

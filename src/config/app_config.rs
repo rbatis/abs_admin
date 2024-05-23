@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use rbs::to_value;
 
 /// Config
-#[derive(Debug, PartialEq, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, PartialEq, serde::Serialize, serde::Deserialize,Default)]
 pub struct ApplicationConfig {
     pub debug: bool,
     pub server_url: String,
@@ -31,12 +31,13 @@ pub struct ApplicationConfig {
     pub error_infos: Option<HashMap<String, String>>,
 }
 
-impl Default for ApplicationConfig {
-    fn default() -> Self {
-        let js_data = include_str!("../../application.json5");
+impl ApplicationConfig {
+    pub fn new() -> Self {
+        // let js_data = include_str!("../../application.json5");
+        let js_data = std::fs::read_to_string("application.json5").unwrap();
         //load config
         let mut result: ApplicationConfig =
-            json5::from_str(js_data).expect("load config file fail");
+            json5::from_str(&js_data).expect("load config file fail");
         result.init_infos();
         result.debug = cfg!(debug_assertions);
         if result.debug {
@@ -47,9 +48,7 @@ impl Default for ApplicationConfig {
         }
         result
     }
-}
 
-impl ApplicationConfig {
     pub fn get_error_info(&self, code: &str) -> String {
         match self.errors.get(code) {
             None => match self.errors.get("-1") {

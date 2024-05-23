@@ -99,3 +99,12 @@ impl CacheService {
         self.inner.ttl(k).await
     }
 }
+
+impl Default for CacheService {
+    fn default() -> Self {
+        Self {
+            inner: Box::<MemCacheService>::default(),
+        }
+    }
+    
+}

@@ -4,6 +4,7 @@ use crate::error_info;
 use crate::service::CONTEXT;
 use std::collections::HashMap;
 
+#[derive(Default)]
 pub struct SysSmsService {}
 
 impl SysSmsService {

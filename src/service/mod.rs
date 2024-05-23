@@ -30,7 +30,7 @@ pub use sys_user_role_service::*;
 pub use sys_user_service::*;
 
 /// CONTEXT is all of the service struct
-pub static CONTEXT: Lazy<ServiceContext> = Lazy::new(ServiceContext::default);
+pub static CONTEXT: Lazy<ServiceContext> = Lazy::new(ServiceContext::new);
 
 #[macro_export]
 macro_rules! pool {
@@ -39,6 +39,7 @@ macro_rules! pool {
     };
 }
 
+#[derive(Default)]
 pub struct ServiceContext {
     pub config: ApplicationConfig,
     pub rb: RBatis,
@@ -51,15 +52,32 @@ pub struct ServiceContext {
     pub sys_dict_service: SysDictService,
     pub sys_auth_service: SysAuthService,
     pub sys_trash_service: SysTrashService,
+    pub sys_sms_service: SysSmsService,
 }
 
 impl ServiceContext {
+    pub fn new() -> Self {
+        let mut config = ApplicationConfig::new();
+        if cfg!(debug_assertions) == false && config.debug.eq(&true) {
+            config.debug = false;
+        }
+        ServiceContext {
+            rb: {
+                RBatis::new()
+            },
+            
+            cache_service: CacheService::new(&config).unwrap(),
+            config,
+          
+            ..Default::default()
+        }
+    }
     /// init database pool
     pub async fn init_database(&self) {
         log::info!("[abs_admin] rbatis pool init ({})...", self.config.db_url);
         //include auto choose driver struct by 'config.db_url'
         self.rb
-            .link(include!("../../driver.rs"), &self.config.db_url)
+            .link(include!("../../target/driver.rs"), &self.config.db_url)
             .await
             .expect("[abs_admin] rbatis pool init fail!");
         self.rb.intercepts.push(Arc::new(SysTrashService::new()));
@@ -80,30 +98,5 @@ impl ServiceContext {
             "Serve:   http://{}",
             self.config.server_url.replace("0.0.0.0", "127.0.0.1")
         );
-    }
-}
-
-impl Default for ServiceContext {
-    fn default() -> Self {
-        let mut config = ApplicationConfig::default();
-        ServiceContext {
-            rb: {
-                let rb = RBatis::new();
-                if cfg!(debug_assertions) == false && config.debug.eq(&true) {
-                    config.debug = false;
-                }
-                rb
-            },
-            cache_service: CacheService::new(&config).unwrap(),
-            sys_permission_service: SysPermissionService {},
-            sys_user_service: SysUserService {},
-            sys_role_service: SysRoleService {},
-            sys_role_permission_service: SysRoleResService {},
-            sys_user_role_service: SysUserRoleService {},
-            sys_dict_service: SysDictService {},
-            sys_auth_service: SysAuthService {},
-            sys_trash_service: SysTrashService::new(),
-            config,
-        }
     }
 }

@@ -2,6 +2,7 @@ use crate::domain::dto::auth::SysAuthDTO;
 use crate::domain::vo::JWTToken;
 use crate::error::Result;
 
+#[derive(Default)]
 pub struct SysAuthService {}
 
 impl SysAuthService {

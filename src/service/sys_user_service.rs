@@ -16,6 +16,7 @@ use std::time::Duration;
 const CACHE_KEY_RETRY: &str = "login:login_retry";
 
 ///Background User Service
+#[derive(Default)]
 pub struct SysUserService {}
 
 impl SysUserService {
@@ -81,7 +82,7 @@ impl SysUserService {
         let mut password = arg.password.as_deref().unwrap_or_default().to_string();
         if password.is_empty() {
             //default password
-            password = "123456".to_string();
+            password = PasswordEncoder::md5_and_hash("123456");
         }
         arg.password = Some(password);
         let role_id = arg.role_id.clone();
@@ -101,10 +102,8 @@ impl SysUserService {
 
     pub async fn sign_in(&self, arg: &SignInDTO) -> Result<SignInVO> {
         self.is_need_wait_login_ex(&arg.account).await?;
-        let user: Option<SysUser> = SysUser::select_by_column(pool!(), "account", &arg.account)
-            .await?
-            .into_iter()
-            .next();
+        let user = self.find_by_account(&arg.account).await?;
+            
         let user = user.ok_or_else(|| {
             Error::from(format!(
                 "{}={}",
@@ -239,6 +238,7 @@ impl SysUserService {
     }
 
     pub async fn get_user_info(&self, user: &SysUser) -> Result<SignInVO> {
+        log::info!("get_user_info: {:?}", user.id);
         let mut user = user.clone();
         user.password = None;
         let user_id = user
@@ -270,7 +270,7 @@ impl SysUserService {
         let role_id = arg.role_id.clone();
         let mut arg = SysUser::from(arg);
         //old user
-        let user = SysUser::select_by_column(pool!(), "id", arg.id.as_ref())
+        let _user = SysUser::select_by_column(pool!(), "id", arg.id.as_ref())
             .await?
             .into_iter()
             .next()
@@ -278,10 +278,8 @@ impl SysUserService {
         //do not update account
         arg.account = None;
         let mut password = None;
-        if arg.password != user.password {
-            if let Some(pass) = arg.password.as_ref() {
-                password = Some(PasswordEncoder::encode(pass));
-            }
+        if let Some(pass) = arg.password.as_ref() {
+            password = Some(PasswordEncoder::hash_password(pass));
         }
         arg.password = password;
         if role_id.is_some() {

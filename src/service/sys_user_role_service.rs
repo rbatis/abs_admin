@@ -11,6 +11,7 @@ use crate::{error_info, pool};
 use rbatis::plugin::object_id::ObjectId;
 use rbatis::Page;
 
+#[derive(Default)]
 ///User Role Service
 pub struct SysUserRoleService {}
 
@@ -75,6 +76,7 @@ impl SysUserRoleService {
         user_id: &str,
         all_res: &BTreeMap<String, SysPermissionVO>,
     ) -> Result<Option<SysRoleVO>> {
+        log::info!("[abs_admin] find_user_role: {}", user_id);
         if user_id.is_empty() {
             return Ok(None);
         }

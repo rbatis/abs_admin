@@ -11,6 +11,7 @@ use std::collections::{BTreeMap, HashMap};
 const RES_KEY: &str = "sys_permission:all";
 
 /// Resource service
+#[derive(Default)]
 pub struct SysPermissionService {}
 
 impl SysPermissionService {
@@ -107,6 +108,7 @@ impl SysPermissionService {
     }
 
     pub async fn update_cache(&self) -> Result<Vec<SysPermissionVO>> {
+        log::info!("[abs_admin] update cache");
         let all = SysPermission::select_all(pool!()).await?;
         CONTEXT.cache_service.set_json(RES_KEY, &all).await?;
         let mut v = vec![];

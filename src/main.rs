@@ -2,13 +2,11 @@ use abs_admin::controller::{
     img_controller, sys_auth_controller, sys_dict_controller, sys_permission_controller,
     sys_role_controller, sys_user_controller,
 };
-use abs_admin::domain::table;
+// use abs_admin::domain::table;
 use abs_admin::service::CONTEXT;
 use axum::Router;
 use axum::routing::{get, post};
-use tower_http::{
-    services::{ServeDir,ServeFile},
-};
+use tower_http::services::{ServeDir,ServeFile};
 use tower_http::cors::{Any, CorsLayer};
 use abs_admin::domain::vo::RespVO;
 
@@ -18,8 +16,9 @@ async fn main() -> std::io::Result<()> {
     abs_admin::config::log::init_log();
     //database
     CONTEXT.init_database().await;
-    table::sync_tables(&CONTEXT.rb).await;
-    table::sync_tables_data(&CONTEXT.rb).await;
+    // 同步表结构
+    // table::sync_tables(&CONTEXT.rb).await;
+    // table::sync_tables_data(&CONTEXT.rb).await;
     //router
     let app = Router::new()
         .nest_service("/", ServeDir::new("dist/").not_found_service(ServeFile::new("dist/index.html")))

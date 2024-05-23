@@ -9,7 +9,7 @@ use crate::error_info;
 use crate::service::CONTEXT;
 
 pub async fn login(arg: Json<SignInDTO>) -> impl IntoResponse {
-    log::info!("login:{:?}", arg.0);
+    log::info!("login: {:?}", arg.0);
     let vo = CONTEXT.sys_user_service.sign_in(&arg.0).await;
     RespVO::from_result(vo).json()
 }

@@ -14,6 +14,7 @@ use rbatis::plugin::object_id::ObjectId;
 use rbatis::rbdc::DateTime;
 use rbatis::Page;
 
+#[derive(Default)]
 /// Role Resource Service
 pub struct SysRoleResService {}
 

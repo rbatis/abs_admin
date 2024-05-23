@@ -10,6 +10,7 @@ use std::collections::{BTreeMap, HashMap};
 
 const RES_KEY: &str = "sys_role:all";
 
+#[derive(Default)]
 ///Role of service
 pub struct SysRoleService {}
 
@@ -62,6 +63,7 @@ impl SysRoleService {
     }
 
     pub async fn update_cache(&self) -> Result<Vec<SysRole>> {
+        log::info!("[abs_admin] update_cache");
         let all = SysRole::select_all(pool!()).await?;
         CONTEXT.cache_service.set_json(RES_KEY, &all).await?;
         Ok(all)
@@ -119,6 +121,7 @@ impl SysRoleService {
         user_id: &str,
         all_res: &BTreeMap<String, SysPermissionVO>,
     ) -> Result<Vec<String>> {
+        log::info!("[abs_admin] find_user_permission: {}", user_id);
         let user_roles = SysUserRole::select_by_column(pool!(), "user_id", user_id).await?;
         let role_res = self
             .find_role_res(&rbatis::make_table_field_vec!(&user_roles, role_id))

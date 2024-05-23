@@ -8,8 +8,8 @@ edition = "2021"
 [dependencies]
 rbs = { version = "4.5" }
 rbatis = { version = "4.5", features = [] }
-rbdc-sqlite = { version = "4.5" }
-#rbdc-mysql = { version = "4.5" }
+# rbdc-sqlite = { version = "4.5" }
+rbdc-mysql = { version = "4.5" }
 #rbdc-pg = { version = "4.5" }
 #rbdc-mssql = { version = "4.5" }
 
@@ -41,6 +41,10 @@ futures-util = "0.3.21"
 parking_lot = "0.12.1"
 sqlparser = "0.46.0"
 json5 = "0.4"
+
+#以下是我加的
+bcrypt = "0.15"
+inventory = "0.3.15"
 
 [build-dependencies]
 json5 = "0.4"

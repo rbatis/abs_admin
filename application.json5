@@ -1,17 +1,17 @@
 {
   debug: true,
   server_name: "abs_admin",
-  server_url: "0.0.0.0:8000",
+  server_url: "127.0.0.1:8000",
   //choose ("mem","redis")
-  cache_type: "mem",
+  cache_type: "redis",
   //cache_type=“redis” enabled
-  redis_url: "redis://127.0.0.1:6379",
+  redis_url: "redis://:789789@172.17.99.45:6379",
   //choose database (need add `rbdc-<database> = { version = "*" }` of Cargo.toml)
   //db_url: "sqlite://target/sqlite.db",
   //db_url: "mysql://root:123456@localhost:3306/test",
   //db_url: "postgres://postgres:123456@localhost:5432/postgres",
   //db_url: "mssql://SA:TestPass!123456@localhost:1433/test",
-  db_url: "sqlite://target/sqlite.db",
+  db_url: "mysql://root:789789@172.17.99.45:3306/abs_admin",
   // database pool len
   db_pool_len: 32,
   //pool get timeout
@@ -21,7 +21,7 @@
   //log size-KB,MB,GB
   log_temp_size: "100MB",
   //log type,choose one of  ("mmap","file")
-  log_type: "file",
+  log_type: "mmap",
   //Log channel length: null for unbounded queue, non-null for bounded queue (better performance)
   log_chan_len: 100000,
   // Optional log packaging formats: "" (keep as .log), "gzip" (GZip compressed), "zip" (ZIP compressed), "lz4" (LZ4 compressed (very fast))
@@ -36,7 +36,7 @@
   // Retain logs by version: KeepNum(i64)
   log_rolling_type: "KeepNum(60)",
   //log_level: off,info,error,warn,debug,trace
-  log_level: "info",
+  log_level: "debug",
   //jwt_secret
   jwt_secret: "abs_admin",
   //jwt to the exp (in seconds)  default 30 minutes
