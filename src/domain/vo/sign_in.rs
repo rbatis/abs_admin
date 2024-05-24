@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 pub struct SignInVO {
     pub id: Option<String>,
     pub account: Option<String>,
-    pub password: Option<String>,
+    // pub password: Option<String>,
     pub name: Option<String>,
     pub login_check: Option<LoginCheck>,
     pub state: Option<i32>,
@@ -22,7 +22,7 @@ impl From<SysUser> for SignInVO {
         Self {
             id: value.id,
             account: value.account,
-            password: value.password,
+            // password: value.password,
             name: value.name,
             login_check: value.login_check,
             state: value.state,

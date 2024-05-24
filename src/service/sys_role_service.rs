@@ -5,6 +5,7 @@ use crate::domain::vo::{SysPermissionVO, SysRoleVO};
 use crate::error::Result;
 use crate::pool;
 use crate::service::CONTEXT;
+use log::info;
 use rbatis::{Page, PageRequest};
 use std::collections::{BTreeMap, HashMap};
 
@@ -49,21 +50,22 @@ impl SysRoleService {
             .cache_service
             .get_json::<Option<Vec<SysRole>>>(RES_KEY)
             .await;
-        if js.is_err()
-            || js.as_ref().unwrap().is_none()
-            || js.as_ref().unwrap().as_ref().unwrap().is_empty()
-        {
+        if js.is_err() || {
+            let js = js.as_ref().unwrap();
+            js.is_none() || js.as_ref().unwrap().is_empty()
+        }{
             let all = self.update_cache().await?;
             return Ok(all);
         }
+        
         if CONTEXT.config.debug {
-            log::info!("[abs_admin] get from cache:{}", RES_KEY);
+            info!("get from cache:{}", RES_KEY);
         }
         Ok(js?.unwrap_or_default())
     }
 
     pub async fn update_cache(&self) -> Result<Vec<SysRole>> {
-        log::info!("[abs_admin] update_cache");
+        info!("update_cache");
         let all = SysRole::select_all(pool!()).await?;
         CONTEXT.cache_service.set_json(RES_KEY, &all).await?;
         Ok(all)
@@ -74,7 +76,7 @@ impl SysRoleService {
         let all = self.finds_all().await?;
         let mut result = HashMap::with_capacity(all.capacity());
         for x in all {
-            result.insert(x.id.as_deref().unwrap_or_default().to_string(), x);
+            result.insert(x.id.clone().unwrap(), x);
         }
         Ok(result)
     }
@@ -121,7 +123,7 @@ impl SysRoleService {
         user_id: &str,
         all_res: &BTreeMap<String, SysPermissionVO>,
     ) -> Result<Vec<String>> {
-        log::info!("[abs_admin] find_user_permission: {}", user_id);
+        info!("find_user_permission: {}", user_id);
         let user_roles = SysUserRole::select_by_column(pool!(), "user_id", user_id).await?;
         let role_res = self
             .find_role_res(&rbatis::make_table_field_vec!(&user_roles, role_id))

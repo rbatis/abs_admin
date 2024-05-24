@@ -8,7 +8,7 @@ use crate::error::Error;
 use crate::error::Result;
 use crate::service::CONTEXT;
 use crate::{error_info, pool};
-use rbatis::plugin::object_id::ObjectId;
+use log::info;
 use rbatis::Page;
 
 #[derive(Default)]
@@ -21,13 +21,27 @@ impl SysUserRoleService {
             .sys_user_service
             .page(&UserPageDTO::from(arg))
             .await?;
+        if vo.records.is_empty() {
+            return Ok(vo);
+        }
         if arg.resp_set_role.unwrap_or(true) {
-            let all_roles = CONTEXT.sys_role_service.finds_all_map().await?;
+            // 作者的想法应该是:分页的用户id,一次查询用户的角色,然后组装用户角色映射,最后组装用户角色的角色映射
+            // 缓存的所有角色
+            // let all_roles = CONTEXT.sys_role_service.finds_all_map().await?;
+            let roles = CONTEXT.sys_role_service.finds_all().await?;
+            let all_roles = rbatis::make_table_field_map!(&roles, id);
+            info!("all_roles: {:?}", all_roles);
             let user_ids = rbatis::make_table_field_vec!(&vo.records, id);
+            // 查询所有用户的角色
             let user_roles = SysUserRole::select_in_column(pool!(), "user_id", &user_ids).await?;
+            info!("user_roles: {:?}", user_roles);
+            // 组装用户角色映射
             let user_role_map = rbatis::make_table_field_map!(&user_roles, user_id);
-            let role_ids = rbatis::make_table_field_vec!(&user_roles, role_id);
-            let roles = CONTEXT.sys_role_service.finds(&role_ids).await?;
+            // let role_ids = rbatis::make_table_field_vec!(&user_roles, role_id);
+            // // 又查询所有角色
+            // let roles = CONTEXT.sys_role_service.finds(&role_ids).await?;
+            // info!("roles: {:?}", roles);
+            // 组装角色映射
             let roles_map = rbatis::make_table_field_map!(&roles, id);
             for x in &mut vo.records {
                 if let Some(user_role) = user_role_map.get(x.id.as_deref().unwrap_or_default()) {
@@ -50,13 +64,22 @@ impl SysUserRoleService {
         if arg.user_id.is_none() || arg.role_id.is_none() {
             return Err(Error::from(error_info!("role_user_cannot_empty")));
         }
-        let user_id = arg.user_id.as_deref().unwrap().to_string();
-        let mut role = SysUserRole::from(arg);
-        if role.id.is_none() {
-            role.id = Some(ObjectId::new().to_string());
+        // let user_id = arg.user_id.clone().unwrap();
+        let role = SysUserRole::from(arg);
+        // if role.id.is_none() {
+            // role.id = Some(ObjectId::new().to_string());
+        // }
+        // 原来是先删除再添加
+        // self.remove_by_user_id(&user_id).await?;
+        let mut rows = SysUserRole::update_by_column(
+            pool!(),
+            &role,
+            "user_id",
+        ).await?.rows_affected;
+        if rows == 0 {
+            rows = SysUserRole::insert(pool!(), &role).await?.rows_affected;
         }
-        self.remove_by_user_id(user_id.as_str()).await?;
-        Ok(SysUserRole::insert(pool!(), &role).await?.rows_affected)
+        Ok(rows)
     }
 
     pub async fn remove_by_role_id(&self, role_id: &str) -> Result<u64> {
@@ -76,7 +99,7 @@ impl SysUserRoleService {
         user_id: &str,
         all_res: &BTreeMap<String, SysPermissionVO>,
     ) -> Result<Option<SysRoleVO>> {
-        log::info!("[abs_admin] find_user_role: {}", user_id);
+        info!("find_user_role: {}", user_id);
         if user_id.is_empty() {
             return Ok(None);
         }

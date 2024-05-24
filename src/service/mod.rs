@@ -74,7 +74,7 @@ impl ServiceContext {
     }
     /// init database pool
     pub async fn init_database(&self) {
-        log::info!("[abs_admin] rbatis pool init ({})...", self.config.db_url);
+        log::info!("[abs_admin] rbatis pool init ({:?})...", self.config.db_url.split('@').nth(1));
         //include auto choose driver struct by 'config.db_url'
         self.rb
             .link(include!("../../target/driver.rs"), &self.config.db_url)

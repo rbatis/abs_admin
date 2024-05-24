@@ -44,7 +44,8 @@ json5 = "0.4"
 
 #以下是我加的
 bcrypt = "0.15"
-inventory = "0.3.15"
+# inventory = "0.3.15"
+fastdate = "0.3"
 
 [build-dependencies]
 json5 = "0.4"

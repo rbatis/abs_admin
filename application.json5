@@ -17,7 +17,7 @@
   //pool get timeout
   db_pool_timeout: 60,
   //log dir, you can use "target/logs/abc.log"  default is "target/logs/"
-  log_dir: "target/logs/",
+  log_dir: "target/logs.nosync/",
   //log size-KB,MB,GB
   log_temp_size: "100MB",
   //log type,choose one of  ("mmap","file")
@@ -36,7 +36,7 @@
   // Retain logs by version: KeepNum(i64)
   log_rolling_type: "KeepNum(60)",
   //log_level: off,info,error,warn,debug,trace
-  log_level: "debug",
+  log_level: "info",
   //jwt_secret
   jwt_secret: "abs_admin",
   //jwt to the exp (in seconds)  default 30 minutes

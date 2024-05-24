@@ -1,6 +1,7 @@
 use crate::error::Error;
 use crate::error::Result;
 use crate::service::CONTEXT;
+use fastdate::DurationFrom;
 use rbatis::page::{Page, PageRequest};
 use rbatis::rbdc::DateTime;
 
@@ -14,6 +15,7 @@ use std::collections::BTreeMap;
 use std::time::Duration;
 
 const CACHE_KEY_RETRY: &str = "login:login_retry";
+const CACHE_KEY_RETRY_TIME: &str = "login:login_retry_time";
 
 ///Background User Service
 #[derive(Default)]
@@ -101,7 +103,7 @@ impl SysUserService {
     }
 
     pub async fn sign_in(&self, arg: &SignInDTO) -> Result<SignInVO> {
-        self.is_need_wait_login_ex(&arg.account).await?;
+        let try_num = self.is_need_wait_login_ex(&arg.account).await?;
         let user = self.find_by_account(&arg.account).await?;
             
         let user = user.ok_or_else(|| {
@@ -170,30 +172,35 @@ impl SysUserService {
             self.add_retry_login_limit_num(&arg.account).await?;
             return Err(error.unwrap());
         }
+        if try_num > 0 {
+            self.remove_retry_login_limit_num(&arg.account).await?;
+        }
         let sign_in_vo = self.get_user_info(&user).await?;
         Ok(sign_in_vo)
     }
 
     ///is need to wait
-    pub async fn is_need_wait_login_ex(&self, account: &str) -> Result<()> {
+    pub async fn is_need_wait_login_ex(&self, account: &str) -> Result<u64> {
         if CONTEXT.config.login_fail_retry > 0 {
             let num: Option<u64> = CONTEXT
                 .cache_service
                 .get_json(&format!("{}{}", CACHE_KEY_RETRY, account))
                 .await?;
-            if num.unwrap_or(0) >= CONTEXT.config.login_fail_retry {
+            let num = num.unwrap_or(0);
+            if num >= CONTEXT.config.login_fail_retry {
                 let wait_sec: i64 = CONTEXT
                     .cache_service
-                    .ttl(&format!("{}{}", CACHE_KEY_RETRY, account))
-                    .await?;
+                    .ttl(&format!("{}{}", CACHE_KEY_RETRY_TIME, account))
+                    .await.unwrap_or_default();
                 if wait_sec > 0 {
                     let mut e = error_info!("req_frequently");
                     e = e.replace("{}", &format!("{}", wait_sec));
                     return Err(Error::from(e));
                 }
             }
+            return Ok(num);
         }
-        Ok(())
+        Ok(0)
     }
 
     ///Add redis retry record
@@ -204,18 +211,46 @@ impl SysUserService {
                 .get_json(&format!("{}{}", CACHE_KEY_RETRY, account))
                 .await?;
             let mut num = num.unwrap_or(0);
-            if num > CONTEXT.config.login_fail_retry {
-                num = CONTEXT.config.login_fail_retry;
-            }
+            // if num > CONTEXT.config.login_fail_retry {
+            //     num = CONTEXT.config.login_fail_retry;
+            // }
             num += 1;
             CONTEXT
                 .cache_service
                 .set_string_ex(
                     &format!("{}{}", CACHE_KEY_RETRY, account),
                     &num.to_string(),
+                    Some(Duration::from_minute(15)),
+                )
+                .await?;
+            CONTEXT
+                .cache_service
+                .set_string_ex(
+                    &format!("{}{}", CACHE_KEY_RETRY_TIME, account),
+                    &num.to_string(),
                     Some(Duration::from_secs(
                         CONTEXT.config.login_fail_retry_wait_sec,
                     )),
+                )
+                .await?;
+        }
+        Ok(())
+    }
+
+    pub async fn remove_retry_login_limit_num(&self, account: &str) -> Result<()> {
+        if CONTEXT.config.login_fail_retry > 0 {
+            // if CONTEXT
+            //     .cache_service
+            //     .get_string(&format!("{}{}", CACHE_KEY_RETRY, account))
+            //     .await.is_err() {
+            //         return Ok(());
+            //     }
+            CONTEXT
+                .cache_service
+                .set_string_ex(
+                    &format!("{}{}", CACHE_KEY_RETRY, account),
+                    &0.to_string(),
+                    Some(Duration::from_secs(1)),
                 )
                 .await?;
         }
@@ -278,8 +313,15 @@ impl SysUserService {
         //do not update account
         arg.account = None;
         let mut password = None;
+
         if let Some(pass) = arg.password.as_ref() {
-            password = Some(PasswordEncoder::hash_password(pass));
+            log::info!("change pass: {}", pass);
+            // TODO: 需要客户端传递md5
+            if pass.len() < 32 {
+                password = Some(PasswordEncoder::md5_and_hash(pass));
+            }else {
+                password = Some(PasswordEncoder::hash_password(pass));
+            }
         }
         arg.password = password;
         if role_id.is_some() {

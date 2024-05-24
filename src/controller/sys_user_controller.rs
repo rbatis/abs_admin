@@ -7,15 +7,17 @@ use crate::domain::vo::{JWTToken, RespVO, SignInVO};
 use crate::error::Error;
 use crate::error_info;
 use crate::service::CONTEXT;
+use log::info;
 
 pub async fn login(arg: Json<SignInDTO>) -> impl IntoResponse {
-    log::info!("login: {:?}", arg.0);
+    info!("user login: {:?}", arg.0);
     let vo = CONTEXT.sys_user_service.sign_in(&arg.0).await;
     RespVO::from_result(vo).json()
 }
 
 pub async fn info(req: Request) -> impl IntoResponse {
     let token = req.headers().get("access_token");
+    info!("user info: {:?}", token);
     return match token {
         Some(token) => {
             let token = token.to_str().unwrap_or("");
@@ -34,21 +36,25 @@ pub async fn info(req: Request) -> impl IntoResponse {
 }
 
 pub async fn add(arg: Json<UserAddDTO>) -> impl IntoResponse {
+    info!("user add: {:?}", arg.0);
     let vo = CONTEXT.sys_user_service.add(arg.0).await;
     RespVO::from_result(vo).json()
 }
 
 pub async fn page(arg: Json<UserRolePageDTO>) -> impl IntoResponse {
+    info!("user page: {:?}", arg.0);
     let vo = CONTEXT.sys_user_role_service.page(&arg.0).await;
     RespVO::from_result(vo).json()
 }
 
 pub async fn detail(arg: Json<IdDTO>) -> impl IntoResponse {
+    info!("user detail: {:?}", arg.0);
     let vo = CONTEXT.sys_user_service.detail(&arg.0).await;
     RespVO::from_result(vo).json()
 }
 
 pub async fn update(arg: Json<UserEditDTO>) -> impl IntoResponse {
+    info!("user update: {:?}", arg.0);
     if let (Some(account), Some(state)) = (arg.0.account.as_ref(), arg.0.state.as_ref()) {
         if account == "00000000000" && *state == 0 {
             return RespVO::<u64>::from_result(Err(Error::from(error_info!(
@@ -62,6 +68,7 @@ pub async fn update(arg: Json<UserEditDTO>) -> impl IntoResponse {
 }
 
 pub async fn remove(arg: Json<IdDTO>) -> impl IntoResponse {
+    info!("user remove: {:?}", arg.0);
     let vo = CONTEXT
         .sys_user_service
         .remove(&arg.0.id.unwrap_or_default())

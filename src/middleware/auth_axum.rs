@@ -11,7 +11,7 @@ use axum::{
 };
 
 pub async fn auth(mut request: Request, next: Next) -> Result<Response, StatusCode> {
-    log::info!("[abs_admin] auth {:?}",request.uri());
+    log::info!("middleware auth {:?}",request.uri());
     let path = request.uri().path().to_string();
     if !CONTEXT.config.debug && !is_white_list_api(&path) {
         if let Ok(token) = get_token(request.headers()) {

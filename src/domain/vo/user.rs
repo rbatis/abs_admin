@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 pub struct SysUserVO {
     pub id: Option<String>,
     pub account: Option<String>,
-    pub password: Option<String>,
+    // pub password: Option<String>,
     pub name: Option<String>,
     pub login_check: Option<LoginCheck>,
     pub state: Option<i32>,
@@ -20,7 +20,7 @@ impl From<SysUser> for SysUserVO {
         Self {
             id: arg.id,
             account: arg.account,
-            password: arg.password,
+            // password: arg.password,
             name: arg.name,
             login_check: arg.login_check,
             state: arg.state,
