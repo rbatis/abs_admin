@@ -4,7 +4,6 @@ use crate::domain::dto::{UserPageDTO, UserRoleAddDTO, UserRolePageDTO};
 use crate::domain::table::SysUserRole;
 use crate::domain::vo::user::SysUserVO;
 use crate::domain::vo::{SysPermissionVO, SysRoleVO};
-use crate::error::Error;
 use crate::error::Result;
 use crate::service::CONTEXT;
 use crate::{error_info, pool};
@@ -25,40 +24,34 @@ impl SysUserRoleService {
             return Ok(vo);
         }
         if arg.resp_set_role.unwrap_or(true) {
-            // 作者的想法应该是:分页的用户id,一次查询用户的角色,然后组装用户角色映射,最后组装用户角色的角色映射
             let all_roles = CONTEXT.sys_role_service.finds_all_map().await?;
-            // let roles = CONTEXT.sys_role_service.finds_all().await?;
-            // let all_roles = rbatis::make_table_field_map!(&roles, id);
-            info!("all_roles: {:?}", all_roles);
             let user_ids = rbatis::make_table_field_vec!(&vo.records, id);
-            // 查询所有用户的角色
+            // 一次查询分页用户的角色
             let user_roles = SysUserRole::select_in_column(pool!(), "user_id", &user_ids).await?;
-            info!("user_roles: {:?}", user_roles);
-            let user_role_map = rbatis::make_table_field_map!(&user_roles, user_id);
-            // let role_ids = rbatis::make_table_field_vec!(&user_roles, role_id);
-            // // 又查询所有角色
-            // let roles = CONTEXT.sys_role_service.finds(&role_ids).await?;
-            // info!("roles: {:?}", roles);
+
             for x in &mut vo.records {
-                if let Some(user_role) = user_role_map.get(x.id.as_deref().unwrap_or_default()) {
-                    if let Some(role_id) = &user_role.role_id {
+                let user_role = user_roles.iter().filter(|u| u.user_id == x.id);
+                user_role.for_each(|u| {
+                    if let Some(role_id) = &u.role_id {
                         let role = all_roles.get(role_id).cloned();
                         x.role = SysRoleVO::from_option(role);
                         if let Some(role_vo) = &mut x.role {
                             CONTEXT
-                                .sys_role_service
-                                .loop_find_childs(role_vo, &all_roles);
+                               .sys_role_service
+                               .loop_find_childs(role_vo, &all_roles);
                         }
                     }
-                }
+                });
+                
             }
+           
         }
         Ok(vo)
     }
 
     pub async fn add(&self, arg: UserRoleAddDTO) -> Result<u64> {
         if arg.user_id.is_none() || arg.role_id.is_none() {
-            return Err(Error::from(error_info!("role_user_cannot_empty")));
+            return Err(error_info!("role_user_cannot_empty"));
         }
         // let user_id = arg.user_id.clone().unwrap();
         let role = SysUserRole::from(arg);

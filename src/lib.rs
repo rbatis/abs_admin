@@ -1,3 +1,4 @@
+#![allow(unused_braces)]
 #[macro_use]
 extern crate rbatis;
 #[macro_use]

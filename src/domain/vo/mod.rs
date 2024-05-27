@@ -5,6 +5,7 @@ pub mod role;
 pub mod sign_in;
 pub mod user;
 
+use axum::response::IntoResponse;
 pub use dict::*;
 pub use jwt::*;
 pub use res::*;
@@ -12,7 +13,6 @@ pub use role::*;
 pub use sign_in::*;
 
 use crate::error::Error;
-use crate::service::CONTEXT;
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 
@@ -38,7 +38,7 @@ where
                 msg: None,
                 data: Some(data),
             },
-            Err(e) => Self::from_error(e.to_string()),
+            Err(e) => Self::from_error(e),
         }
     }
 
@@ -50,20 +50,33 @@ where
         }
     }
 
-    pub fn from_error(error: String) -> Self {
-        let code = CONTEXT
-            .config
-            .error_infos
-            .as_ref()
-            .unwrap()
-            .get(&error)
-            .map(|v| v.to_string())
-            .unwrap_or_else(|| CODE_FAIL.to_string());
-        Self {
-            code: Some(code),
-            msg: Some(error),
-            data: None,
+    pub fn from_error(error: Error) -> Self {
+        match error {
+            Error::E(msg) => Self {
+                code: Some(CODE_FAIL.to_string()),
+                msg: Some(msg),
+                data: None,
+            },
+            Error::CE(code,msg) => Self {
+                code: Some(code.to_string()),
+                msg: Some(msg),
+                data: None,
+            },
         }
+
+        // let code = CONTEXT
+        //     .config
+        //     .error_infos
+        //     .as_ref()
+        //     .unwrap()
+        //     .get(&error)
+        //     .map(|v| v.to_string())
+        //     .unwrap_or_else(|| CODE_FAIL.to_string());
+        // Self {
+        //     code: Some(code),
+        //     msg: Some(error),
+        //     data: None,
+        // }
     }
 
     pub fn json(self) -> axum::Json<RespVO<T>> {
@@ -71,11 +84,11 @@ where
     }
 }
 
-// impl<T> ToString for RespVO<T>
-// where
-//     T: Serialize + DeserializeOwned + Clone,
-// {
-//     fn to_string(&self) -> String {
-//         serde_json::to_string(self).unwrap()
-//     }
-// }
+impl<T> IntoResponse for RespVO<T>
+where
+    T: Serialize,
+{
+    fn into_response(self) -> axum::response::Response {
+        axum::Json(self).into_response()
+    }
+}

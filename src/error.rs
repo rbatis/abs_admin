@@ -15,6 +15,7 @@ pub type Result<T> = std::result::Result<T, Error>;
 pub enum Error {
     /// Default Error
     E(String),
+    CE(String, String),
 }
 
 impl Display for Error {
@@ -23,6 +24,7 @@ impl Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Error::E(error) => write!(f, "{}", error),
+            Error::CE(_,error) => write!(f, "{}", error),
         }
     }
 }
@@ -119,3 +121,4 @@ impl<'de> Deserialize<'de> for Error {
         Ok(Error::from(r))
     }
 }
+

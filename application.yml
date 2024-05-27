@@ -75,7 +75,6 @@ errors:
   "role_user_cannot_empty": "添加角色时用户和角色不能为空",
   "user_not_exists": "用户不存在",
   "user_and_name_cannot_empty": "用户名和姓名不能为空",
-  "user_cannot_find": "找不到用户",
   "account_not_exists": "账号不存在",
   "account_disabled": "账户被禁用",
   "password_empty": "密码为空",

@@ -6,7 +6,6 @@ use crate::domain::dto::{
 };
 use crate::domain::table::SysRolePermission;
 use crate::domain::vo::{SysPermissionVO, SysRoleVO};
-use crate::error::Error;
 use crate::error::Result;
 use crate::service::CONTEXT;
 use crate::{error_info, pool};
@@ -144,7 +143,7 @@ impl SysRoleResService {
         let role_id = arg
             .id
             .as_ref()
-            .ok_or_else(|| Error::from(error_info!("role_id_empty")))?;
+            .ok_or_else(|| (error_info!("role_id_empty")))?;
         CONTEXT
             .sys_role_service
             .edit(RoleEditDTO::from(arg.clone()))

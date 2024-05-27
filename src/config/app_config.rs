@@ -1,6 +1,8 @@
 use std::collections::HashMap;
 use rbs::to_value;
 
+use crate::error::Error;
+
 /// Config
 #[derive(Debug, PartialEq, serde::Serialize, serde::Deserialize,Default)]
 pub struct ApplicationConfig {
@@ -52,11 +54,21 @@ impl ApplicationConfig {
     pub fn get_error_info(&self, code: &str) -> String {
         match self.errors.get(code) {
             None => match self.errors.get("-1") {
-                None => "unknown error".to_string(),
-                Some(v) => v.to_string(),
+                None => "unknown error".to_string() ,
+                Some(v) =>v.to_string(),
             },
-            Some(v) => v.as_str().to_string(),
+            Some(v) =>v.to_string() ,
         }
+    }
+
+    pub fn get_error(&self, code: &str) -> Error {
+        let error_info = self.get_error_info(code);
+        Error::CE(code.to_string(), error_info)
+    }
+
+    pub fn get_error_arg(&self, code: &str, msg: String) -> Error {
+        let error_info = self.get_error_info(code);
+        Error::CE(code.to_string(), error_info.replace("{}", &msg))
     }
 
     pub fn init_infos(&mut self) {
@@ -77,6 +89,9 @@ impl ApplicationConfig {
 #[macro_export]
 macro_rules! error_info {
     ($code: expr) => {
-        $crate::service::CONTEXT.config.get_error_info($code)
+        $crate::service::CONTEXT.config.get_error($code)
+    };
+    ($code: expr, $msg: expr) => {
+        $crate::service::CONTEXT.config.get_error_arg($code, $msg)
     };
 }

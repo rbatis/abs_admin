@@ -1,5 +1,5 @@
 use crate::domain::vo::JWTToken;
-use crate::error_info;
+use crate::error::Error;
 use crate::service::CONTEXT;
 pub struct Auth;
 
@@ -17,7 +17,7 @@ pub fn is_white_list_api(path: &str) -> bool {
 }
 
 ///Check whether the token is valid and has not expired
-pub fn checked_token(token: &str) -> Result<JWTToken, crate::error::Error> {
+pub fn checked_token(token: &str) -> Result<JWTToken, Error> {
     //check token alive
     let token = JWTToken::verify(token);
     match token {
@@ -25,13 +25,13 @@ pub fn checked_token(token: &str) -> Result<JWTToken, crate::error::Error> {
             Ok(token)
         }
         Err(e) => {
-            Err(crate::error::Error::from(e.to_string()))
+            Err(Error::from(e.to_string()))
         }
     }
 }
 
 ///Permission to check
-pub async fn check_auth(token: &JWTToken, path: &str) -> Result<(), crate::error::Error> {
+pub async fn check_auth(token: &JWTToken, path: &str) -> Result<(), Error> {
     let sys_permission = CONTEXT.sys_permission_service.finds_all_cache().await?;
     for token_permission in &token.permissions {
         for x in &sys_permission {
@@ -45,5 +45,5 @@ pub async fn check_auth(token: &JWTToken, path: &str) -> Result<(), crate::error
             }
         }
     }
-    Err(crate::error::Error::from(error_info!("access_denied")))
+    Err(crate::error_info!("access_denied"))
 }

@@ -19,7 +19,7 @@ pub async fn captcha(arg: Query<CatpchaDTO>) -> impl IntoResponse {
             .header("Access-Control-Allow-Origin", "*")
             .header("Cache-Control", "no-cache")
             .header("Content-Type", "json")
-            .body(Body::from(error_info!("account_empty")))
+            .body(Body::from(error_info!("account_empty").to_string()))
             .unwrap();
         return resp;
     }

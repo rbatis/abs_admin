@@ -69,7 +69,7 @@ impl SysUserService {
             || arg.name.is_none()
             || arg.name.as_deref().unwrap_or_default().is_empty()
         {
-            return Err(Error::from(error_info!("user_and_name_cannot_empty")));
+            return Err(error_info!("user_and_name_cannot_empty"));
         }
         let old_user = self
             .find_by_account(arg.account.as_deref().unwrap_or_default())
@@ -106,14 +106,10 @@ impl SysUserService {
         let user = self.find_by_account(&arg.account).await?;
             
         let user = user.ok_or_else(|| {
-            Error::from(format!(
-                "{}={}",
-                error_info!("account_not_exists"),
-                arg.account
-            ))
+            error_info!("account_not_exists")
         })?;
         if user.state.eq(&Some(0)) {
-            return Err(Error::from(error_info!("account_disabled")));
+            return Err(error_info!("account_disabled"));
         }
         let mut error = None;
         match user
@@ -129,10 +125,10 @@ impl SysUserService {
                 if !PasswordEncoder::verify(
                     user.password
                         .as_ref()
-                        .ok_or_else(|| Error::from(error_info!("password_empty")))?,
+                        .ok_or_else(|| (error_info!("password_empty")))?,
                     &arg.password,
                 ) {
-                    error = Some(Error::from(error_info!("password_error")));
+                    error = Some(error_info!("password_error"));
                 }
             }
             LoginCheck::PasswordImgCodeCheck => {
@@ -142,16 +138,16 @@ impl SysUserService {
                     .get_string(&format!("captch:account_{}", &arg.account))
                     .await?;
                 if arg.vcode.is_empty() || cache_code.to_lowercase().as_str().ne(arg.vcode.to_lowercase().as_str()) {
-                    error = Some(Error::from(error_info!("vcode_error")))
+                    error = Some(error_info!("vcode_error"))
                 }
                 // check pwd
                 if error.is_none() && !PasswordEncoder::verify(
                     user.password
                         .as_ref()
-                        .ok_or_else(|| Error::from(error_info!("password_empty")))?,
+                        .ok_or_else(|| (error_info!("password_empty")))?,
                     &arg.password,
                 ) {
-                    error = Some(Error::from(error_info!("password_error")));
+                    error = Some(error_info!("password_error"));
                 }
             }
             LoginCheck::PhoneCodeCheck => {
@@ -163,7 +159,7 @@ impl SysUserService {
                     ))
                     .await?;
                 if !sms_code.eq(&arg.vcode) {
-                    error = Some(Error::from(error_info!("vcode_error")));
+                    error = Some(error_info!("vcode_error"));
                 }
             }
         }
@@ -192,9 +188,9 @@ impl SysUserService {
                     .ttl(&format!("{}{}", CACHE_KEY_RETRY_TIME, account))
                     .await.unwrap_or_default();
                 if wait_sec > 0 {
-                    let mut e = error_info!("req_frequently");
-                    e = e.replace("{}", &format!("{}", wait_sec));
-                    return Err(Error::from(e));
+                    let e = error_info!("req_frequently", format!("{}", wait_sec));
+                    // e = e.replace("{}", &format!("{}", wait_sec));
+                    return Err(e);
                 }
             }
             return Ok(num);
@@ -257,11 +253,7 @@ impl SysUserService {
             .into_iter()
             .next();
         let user = user.ok_or_else(|| {
-            Error::from(format!(
-                "{}:{}",
-                error_info!("account_not_exists"),
-                token.account
-            ))
+            error_info!("account_not_exists")
         })?;
         self.get_user_info(&user).await
     }
@@ -273,7 +265,7 @@ impl SysUserService {
         let user_id = user
             .id
             .clone()
-            .ok_or_else(|| Error::from(error_info!("id_empty")))?;
+            .ok_or_else(|| (error_info!("id_empty")))?;
         let mut sign_vo = SignInVO::from(user);
 
         let all_res = CONTEXT.sys_permission_service.finds_all_map().await?;
@@ -306,7 +298,7 @@ impl SysUserService {
             .await?
             .into_iter()
             .next()
-            .ok_or_else(|| Error::from(error_info!("user_cannot_find")))?;
+            .ok_or_else(|| (error_info!("user_not_exists")))?;
         //do not update account
         arg.account = None;
         let mut password = None;
@@ -338,7 +330,7 @@ impl SysUserService {
 
     pub async fn remove(&self, id: &str) -> Result<u64> {
         if id.is_empty() {
-            return Err(Error::from(error_info!("id_empty")));
+            return Err(error_info!("id_empty"));
         }
         let r = SysUser::delete_by_column(pool!(), "id", id).await?;
         CONTEXT.sys_user_role_service.remove_by_user_id(id).await?;
