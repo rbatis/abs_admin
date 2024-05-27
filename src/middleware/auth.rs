@@ -37,7 +37,6 @@ pub async fn check_auth(token: &JWTToken, path: &str) -> Result<(), Error> {
         for x in &sys_permission {
             if let Some(permission) = &x.permission {
                 if let Some(x_path) = &x.path {
-                    println!("{}:{}", permission, x_path);
                     if permission.eq(token_permission) && path.contains(x_path) {
                         return Ok(());
                     }
