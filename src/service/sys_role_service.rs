@@ -1,13 +1,13 @@
 #![allow(clippy::only_used_in_recursion)]
 use crate::domain::dto::{RoleAddDTO, RoleEditDTO, RolePageDTO};
-use crate::domain::table::{SysRole, SysRolePermission, SysUserRole};
-use crate::domain::vo::{SysPermissionVO, SysRoleVO};
+use crate::domain::table::{SysRole, SysRolePermission};
+use crate::domain::vo::SysRoleVO;
 use crate::error::Result;
 use crate::pool;
 use crate::service::CONTEXT;
 use log::info;
 use rbatis::{Page, PageRequest};
-use std::collections::{BTreeMap, HashMap};
+use std::collections::HashMap;
 
 const RES_KEY: &str = "sys_role:all";
 
@@ -50,10 +50,9 @@ impl SysRoleService {
             .cache_service
             .get_json::<Option<Vec<SysRole>>>(RES_KEY)
             .await;
-        if js.is_err() || {
-            let js = js.as_ref().unwrap();
-            js.is_none() || js.as_ref().unwrap().is_empty()
-        }{
+        let js = js.unwrap_or(None);
+        if js.is_none() || js.as_ref().unwrap().is_empty()
+        {
             let all = self.update_cache().await?;
             return Ok(all);
         }
@@ -61,11 +60,11 @@ impl SysRoleService {
         if CONTEXT.config.debug {
             info!("get from cache:{}", RES_KEY);
         }
-        Ok(js?.unwrap_or_default())
+        Ok(js.unwrap_or_default())
     }
 
     pub async fn update_cache(&self) -> Result<Vec<SysRole>> {
-        info!("update_cache");
+        log::info!("update cache: {}", RES_KEY);
         let all = SysRole::select_all(pool!()).await?;
         CONTEXT.cache_service.set_json(RES_KEY, &all).await?;
         Ok(all)
@@ -108,7 +107,9 @@ impl SysRoleService {
         if ids.is_empty() {
             return Ok(vec![]);
         }
-        Ok(SysRole::select_in_column(pool!(), "id", ids).await?)
+        // Ok(SysRole::select_in_column(pool!(), "id", ids).await?)
+        let all_roles = CONTEXT.sys_role_service.finds_all().await?;
+        Ok(all_roles.iter().filter(|x| x.id.is_some() && ids.contains(x.id.as_ref().unwrap())).cloned().collect())
     }
 
     pub async fn find_role_res(&self, role_ids: &[String]) -> Result<Vec<SysRolePermission>> {
@@ -118,37 +119,18 @@ impl SysRoleService {
         Ok(SysRolePermission::select_in_column(pool!(), "role_id", role_ids).await?)
     }
 
-    pub async fn find_user_permission(
-        &self,
-        user_id: &str,
-        all_res: &BTreeMap<String, SysPermissionVO>,
-    ) -> Result<Vec<String>> {
-        info!("find_user_permission: {}", user_id);
-        let user_roles = SysUserRole::select_by_column(pool!(), "user_id", user_id).await?;
-        let role_res = self
-            .find_role_res(&rbatis::make_table_field_vec!(&user_roles, role_id))
-            .await?;
-        let res = CONTEXT
-            .sys_permission_service
-            .finds_layer(
-                &rbatis::make_table_field_vec!(&role_res, permission_id),
-                all_res,
-            )
-            .await?;
-        let permissions = rbatis::make_table_field_vec!(&res, permission);
-        Ok(permissions)
-    }
-    
     ///Loop to find the parent-child associative relation array
     pub fn loop_find_childs(&self, arg: &mut SysRoleVO, roles: &HashMap<String, SysRole>) {
         let mut childs = vec![];
-        for x in roles.values() {
-            if x.parent_id.is_some() && x.parent_id.eq(&arg.id) {
-                let mut item = SysRoleVO::from(x.clone());
+        roles.iter().for_each(|(_, v)| {
+            if v.parent_id.is_some() && v.parent_id.eq(&arg.id) {
+                let mut item = SysRoleVO::from(v.clone());
                 self.loop_find_childs(&mut item, roles);
                 childs.push(item);
             }
-        }
+
+        });
+       
         if !childs.is_empty() {
             arg.childs = Some(childs);
         }

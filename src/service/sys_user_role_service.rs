@@ -1,4 +1,4 @@
-use std::collections::BTreeMap;
+use std::collections::HashMap;
 
 use crate::domain::dto::{UserPageDTO, UserRoleAddDTO, UserRolePageDTO};
 use crate::domain::table::SysUserRole;
@@ -26,27 +26,23 @@ impl SysUserRoleService {
         }
         if arg.resp_set_role.unwrap_or(true) {
             // 作者的想法应该是:分页的用户id,一次查询用户的角色,然后组装用户角色映射,最后组装用户角色的角色映射
-            // 缓存的所有角色
-            // let all_roles = CONTEXT.sys_role_service.finds_all_map().await?;
-            let roles = CONTEXT.sys_role_service.finds_all().await?;
-            let all_roles = rbatis::make_table_field_map!(&roles, id);
+            let all_roles = CONTEXT.sys_role_service.finds_all_map().await?;
+            // let roles = CONTEXT.sys_role_service.finds_all().await?;
+            // let all_roles = rbatis::make_table_field_map!(&roles, id);
             info!("all_roles: {:?}", all_roles);
             let user_ids = rbatis::make_table_field_vec!(&vo.records, id);
             // 查询所有用户的角色
             let user_roles = SysUserRole::select_in_column(pool!(), "user_id", &user_ids).await?;
             info!("user_roles: {:?}", user_roles);
-            // 组装用户角色映射
             let user_role_map = rbatis::make_table_field_map!(&user_roles, user_id);
             // let role_ids = rbatis::make_table_field_vec!(&user_roles, role_id);
             // // 又查询所有角色
             // let roles = CONTEXT.sys_role_service.finds(&role_ids).await?;
             // info!("roles: {:?}", roles);
-            // 组装角色映射
-            let roles_map = rbatis::make_table_field_map!(&roles, id);
             for x in &mut vo.records {
                 if let Some(user_role) = user_role_map.get(x.id.as_deref().unwrap_or_default()) {
                     if let Some(role_id) = &user_role.role_id {
-                        let role = roles_map.get(role_id).cloned();
+                        let role = all_roles.get(role_id).cloned();
                         x.role = SysRoleVO::from_option(role);
                         if let Some(role_vo) = &mut x.role {
                             CONTEXT
@@ -79,6 +75,7 @@ impl SysUserRoleService {
         if rows == 0 {
             rows = SysUserRole::insert(pool!(), &role).await?.rows_affected;
         }
+        
         Ok(rows)
     }
 
@@ -97,7 +94,7 @@ impl SysUserRoleService {
     pub async fn find_user_role(
         &self,
         user_id: &str,
-        all_res: &BTreeMap<String, SysPermissionVO>,
+        all_res: &HashMap<String, SysPermissionVO>,
     ) -> Result<Option<SysRoleVO>> {
         info!("find_user_role: {}", user_id);
         if user_id.is_empty() {

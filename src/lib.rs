@@ -1,4 +1,3 @@
-#![allow(clippy::single_match)]
 #[macro_use]
 extern crate rbatis;
 #[macro_use]

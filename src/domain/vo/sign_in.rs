@@ -35,3 +35,12 @@ impl From<SysUser> for SignInVO {
         }
     }
 }
+
+impl SignInVO {
+    /// Merge permissions from role to user
+    pub fn merge_permissions(&mut self){
+        let permissions = self.role.iter().flat_map(|r| r.resources.iter()).flat_map(|r| r.permission.clone()).collect();
+        
+        self.permissions = permissions;
+    }
+}

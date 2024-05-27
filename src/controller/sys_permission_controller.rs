@@ -12,7 +12,7 @@ pub async fn page(page: Json<ResPageDTO>) -> impl IntoResponse {
 }
 
 pub async fn all(_page: Json<EmptyDTO>) -> impl IntoResponse {
-    let data = CONTEXT.sys_permission_service.finds_all().await;
+    let data = CONTEXT.sys_permission_service.finds_all_vo().await;
     RespVO::from_result(data).json()
 }
 

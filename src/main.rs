@@ -9,6 +9,11 @@ use axum::routing::{get, post};
 use tower_http::services::{ServeDir,ServeFile};
 use tower_http::cors::{Any, CorsLayer};
 use abs_admin::domain::vo::RespVO;
+use axum_otel_metrics::HttpMetricsLayerBuilder;
+
+#[derive(Clone)]
+pub struct AppState {
+}
 
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
@@ -16,12 +21,24 @@ async fn main() -> std::io::Result<()> {
     abs_admin::config::log::init_log();
     //database
     CONTEXT.init_database().await;
-    // 同步表结构
+    // 同步数据库
     // table::sync_tables(&CONTEXT.rb).await;
     // table::sync_tables_data(&CONTEXT.rb).await;
-    //router
-    let app = Router::new()
-        .nest_service("/", ServeDir::new("dist/").not_found_service(ServeFile::new("dist/index.html")))
+
+    let app = app();
+    let listener = tokio::net::TcpListener::bind(&CONTEXT.config.server_url).await.unwrap();
+    axum::serve(listener, app).await
+}
+
+fn app() -> Router {
+    let state = AppState {
+    };
+    
+    let metrics = HttpMetricsLayerBuilder::new()
+        .build();
+
+    let router = Router::new()
+        .merge(metrics.routes::<AppState>())
         .route("/admin/", get(|| async { RespVO::from("hello".to_string()).json() }))
         .route("/admin/sys_login", post(sys_user_controller::login))
         .route("/admin/sys_user_info", post(sys_user_controller::info))
@@ -48,12 +65,26 @@ async fn main() -> std::io::Result<()> {
         .route("/admin/auth/check", post(sys_auth_controller::check))
         .route("/admin/captcha", get(img_controller::captcha))
         .layer(axum::middleware::from_fn(abs_admin::middleware::auth_axum::auth))
+    
+        // add the metrics middleware
+        .layer(metrics)
+        .with_state(state.clone());
+    // .layer(
+    //     TraceLayer::new_for_http()
+    //         .make_span_with(trace::DefaultMakeSpan::new().level(Level::INFO))
+    //         .on_response(trace::DefaultOnResponse::new().level(Level::INFO)),
+    // )
+
+    //router
+    Router::new()
+        .nest_service("/", ServeDir::new("dist/").not_found_service(ServeFile::new("dist/index.html")))
+        // export metrics at `/metrics` endpoint
+        .merge(router)
         .layer(
             CorsLayer::new()
                 .allow_origin(Any)
                 .allow_methods(Any)
                 .allow_headers(Any)
-        );
-    let listener = tokio::net::TcpListener::bind(&CONTEXT.config.server_url).await.unwrap();
-    axum::serve(listener, app).await
+        )
+        
 }

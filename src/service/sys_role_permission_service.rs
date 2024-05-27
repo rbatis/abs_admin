@@ -1,5 +1,5 @@
 #![allow(clippy::only_used_in_recursion)]
-use std::collections::{BTreeMap, HashMap, HashSet};
+use std::collections::{HashMap, HashSet};
 
 use crate::domain::dto::{
     RoleAddDTO, RoleEditDTO, RolePageDTO, SysRoleResAddDTO, SysRoleResPageDTO, SysRoleResUpdateDTO,
@@ -29,8 +29,8 @@ impl SysRoleResService {
             })
             .await?;
         let all = CONTEXT.sys_permission_service.finds_all_map().await?;
-        let role_res_map = self.find_role_res_map(&role_page.records).await?;
-        role_page.records = self.loop_set_res_vec(role_page.records, &role_res_map, &all)?;
+        let role_res = self.find_role_res(&role_page.records).await?;
+        role_page.records = self.loop_set_res_vec(role_page.records, &role_res, &all)?;
         Result::Ok(role_page)
     }
 
@@ -38,19 +38,33 @@ impl SysRoleResService {
         let mut results = vec![];
         for x in arg {
             results.push(x.id.as_deref().unwrap_or_default().to_string());
-            match &x.childs {
-                Some(childs) => {
-                    let ids = self.loop_find_role_ids(childs);
-                    for id in ids {
-                        results.push(id);
-                    }
+            if let Some(childs) = &x.childs {
+                let ids = self.loop_find_role_ids(childs);
+                for id in ids {
+                    results.push(id);
                 }
-                _ => {}
-            }
+            } 
         }
         results
     }
 
+    async fn find_role_res(
+        &self,
+        arg: &Vec<SysRoleVO>,
+    ) -> Result<Vec<SysRolePermission>> {
+        let role_ids = self.loop_find_role_ids(arg);
+        let role_res_vec = {
+            if role_ids.is_empty() {
+                vec![]
+            } else {
+                SysRolePermission::select_in_column(pool!(), "role_id", &role_ids).await?
+            }
+        };
+        
+        Ok(role_res_vec)
+    }
+
+    #[allow(dead_code)]
     async fn find_role_res_map(
         &self,
         arg: &Vec<SysRoleVO>,
@@ -83,32 +97,29 @@ impl SysRoleResService {
         Ok(role_res_map)
     }
 
-    /// Add the resource
+    /// Add the resource for role
     fn loop_set_res_vec(
         &self,
         arg: Vec<SysRoleVO>,
-        role_res_map: &HashMap<String, HashSet<SysRolePermission>>,
-        all: &BTreeMap<String, SysPermissionVO>,
+        role_res: &Vec<SysRolePermission>,
+        all: &HashMap<String, SysPermissionVO>,
     ) -> Result<Vec<SysRoleVO>> {
         let mut data = vec![];
         for mut role in arg {
-            let permission_ids = role_res_map.get(role.id.as_deref().unwrap_or_default());
+           
+            let permission_ids: Vec<&SysRolePermission> = role_res.iter().filter(|x| x.role_id == role.id).collect();
             let mut res_vos = vec![];
-            if let Some(permission_ids) = permission_ids {
-                for x in permission_ids {
-                    match all.get(x.permission_id.as_deref().unwrap_or_default()) {
-                        Some(res) => {
-                            res_vos.push(res.clone());
-                        }
-                        _ => {}
-                    }
+            for x in permission_ids {
+                if let Some(res) = all.get(x.permission_id.as_deref().unwrap_or_default()) {
+                    res_vos.push(res.clone());
                 }
             }
+
             role.resources = res_vos;
             if role.childs.is_some() {
                 role.childs = Some(self.loop_set_res_vec(
                     role.childs.unwrap_or(vec![]),
-                    role_res_map,
+                    role_res,
                     all,
                 )?);
             }
@@ -118,6 +129,7 @@ impl SysRoleResService {
         Ok(data)
     }
 
+    
     pub async fn add(&self, arg: &SysRoleResAddDTO) -> Result<u64> {
         let (_, role_id) = CONTEXT
             .sys_role_service

@@ -69,7 +69,7 @@ pub async fn sync_tables_data(rb: &RBatis) {
             parent_id: None,
             name: Some("setting".to_string()),
             permission: Some("setting".to_string()),
-            path: Some("setting".to_string()),
+            path: Some("/admin".to_string()),
             create_date: Some(DateTime::now()),
         },
     ];

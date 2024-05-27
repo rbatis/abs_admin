@@ -1,7 +1,13 @@
+use std::sync::OnceLock;
+
 use crate::error::Error;
+use crate::service::CONTEXT;
+use axum::extract::FromRequestParts;
+use axum::http::request::Parts;
 use jsonwebtoken::errors::ErrorKind;
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
 use serde::{Deserialize, Serialize};
+
 
 /// JWT authentication Token structure
 #[derive(Debug, Serialize, Deserialize, Clone, Eq, PartialEq)]
@@ -16,24 +22,23 @@ pub struct JWTToken {
 impl JWTToken {
     /// create token
     /// secret: your secret string
-    pub fn create_token(&self, secret: &str) -> Result<String, Error> {
-        return match encode(
+    pub fn create_token(&self) -> Result<String, Error> {
+        match encode(
             &Header::default(),
             self,
-            &EncodingKey::from_secret(secret.as_ref()),
+            &get_key().encoding_key,
         ) {
             Ok(t) => Ok(t),
             Err(_) => Err(Error::from("JWTToken encode fail!")), // in practice you would return the error
-        };
+        }
     }
     /// verify token invalid
-    /// secret: your secret string
-    pub fn verify(secret: &str, token: &str) -> Result<JWTToken, Error> {
+    pub fn verify(token: &str) -> Result<JWTToken, Error> {
         let mut validation = Validation::default();
         validation.leeway = 0;
         return match decode::<JWTToken>(
             token,
-            &DecodingKey::from_secret(secret.as_ref()),
+            &get_key().decoding_key,
             &validation,
         ) {
             Ok(c) => Ok(c.claims),
@@ -46,10 +51,58 @@ impl JWTToken {
         };
     }
 
-    pub fn refresh(&self, secret: &str, jwt_exp: usize) -> Result<String, Error> {
-        let mut jwt = self.clone();
-        jwt.exp += jwt_exp;
-        jwt.create_token(secret)
+    /// refresh exp seconds
+    pub fn refresh(&mut self, jwt_exp: usize) -> Result<String, Error> {
+        self.exp += jwt_exp;
+        self.create_token()
+    }
+}
+
+
+fn get_key()-> &'static Keys {
+    static KEYS: OnceLock<Keys> = OnceLock::new();
+    KEYS.get_or_init(|| {
+        // let secret = std::env::var("JWT_SECRET").expect("JWT_SECRET must be set");
+        let secret = CONTEXT.config.jwt_secret.as_str();
+        Keys::new(secret)
+
+    })
+}
+
+struct Keys {
+    encoding_key: EncodingKey,
+    decoding_key: DecodingKey,
+}
+
+impl Keys {
+    fn new(secret: impl AsRef<[u8]>) -> Self {
+        let secret = secret.as_ref();
+        Self {
+            encoding_key: EncodingKey::from_secret(secret),
+            decoding_key: DecodingKey::from_secret(secret),
+        }
+    }
+}
+
+// impl FromRequest 
+#[axum::async_trait]
+impl<S> FromRequestParts<S> for JWTToken
+where
+    S: Send + Sync,
+{
+    type Rejection = String;
+
+    async fn from_request_parts(parts: &mut Parts, _state: &S) -> Result<Self, Self::Rejection> {
+        log::info!("JWTToken from_request_parts");
+        if let Some(auth) = parts.extensions.get::<Self>() {
+            log::info!("JWTToken from_request_parts extensions");
+            return Ok(auth.clone());
+        }
+
+        let token = parts.headers.get("access_token").ok_or("access_token not found")?;
+        let token = token.to_str().unwrap_or(""); //.trim_start_matches("Bearer ");
+        JWTToken::verify(token).map_err(|e| e.to_string())
+        
     }
 }
 
@@ -70,7 +123,7 @@ mod test {
             exp: DateTime::now().unix_timestamp() as usize,
         };
         sleep(Duration::from_secs(5));
-        let token = j.create_token("ssss").unwrap();
-        assert_eq!(JWTToken::verify("ssss", &token).unwrap(), j);
+        let token = j.create_token().unwrap();
+        assert_eq!(JWTToken::verify( &token).unwrap(), j);
     }
 }

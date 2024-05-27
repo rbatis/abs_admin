@@ -7,7 +7,7 @@ use crate::error::Result;
 use crate::service::CONTEXT;
 use crate::{error_info, pool};
 use rbatis::{Page, PageRequest};
-use std::collections::{BTreeMap, HashMap};
+use std::collections::HashMap;
 const RES_KEY: &str = "sys_permission:all";
 
 /// Resource service
@@ -18,13 +18,13 @@ impl SysPermissionService {
     pub async fn page(&self, arg: &ResPageDTO) -> Result<Page<SysPermissionVO>> {
         let data = SysPermission::select_page(pool!(), &PageRequest::from(arg), arg).await?;
         let all_res = self.finds_all_map().await?;
-        let mut all_res_vo = HashMap::new();
-        for (k, v) in all_res {
-            all_res_vo.insert(k, v);
-        }
+        // let mut all_res_vo = HashMap::new();
+        // for (k, v) in all_res {
+        //     all_res_vo.insert(k, v);
+        // }
         let mut page = Page::<SysPermissionVO>::from(data);
         for vo in &mut page.records {
-            vo.set_childs_recursive(&all_res_vo);
+            vo.set_childs_recursive(&all_res);
         }
         Ok(page)
     }
@@ -68,80 +68,60 @@ impl SysPermissionService {
         Ok(num)
     }
 
-    pub fn make_permission_ids(&self, args: &Vec<SysPermissionVO>) -> Vec<String> {
-        let mut ids = vec![];
-        for x in args {
-            ids.push(x.id.as_deref().unwrap_or_default().to_string());
-            if let Some(childs) = &x.childs {
-                let child_ids = rbatis::make_table_field_vec!(childs, id);
-                for child_id in child_ids {
-                    ids.push(child_id);
-                }
-            }
-        }
+    /// collect all permission ids from res array and its childs
+    pub fn make_permission_ids(&self, args: &[SysPermissionVO]) -> Vec<String> {
+        let childs = args.iter().filter_map(|x| x.childs.as_ref()).flatten();
+        let ids: Vec<String> = args.iter().chain(childs)
+            .filter_map(|x| x.id.clone()).collect();
         ids
     }
 
     /// Find the res array
-    pub async fn finds_all(&self) -> Result<Vec<SysPermissionVO>> {
+    pub async fn finds_all_vo(&self) -> Result<Vec<SysPermissionVO>> {
+        let js = self.finds_all_cache().await?;
+        let arr = js.into_iter().map(|x| x.into()).collect();
+        
+        Ok(arr)
+    }
+
+    pub async fn finds_all_cache(&self) -> Result<Vec<SysPermission>> {
         let js = CONTEXT
             .cache_service
             .get_json::<Option<Vec<SysPermission>>>(RES_KEY)
             .await;
-        if js.is_err()
-            || js.as_ref().unwrap().is_none()
-            || js.as_ref().unwrap().as_ref().unwrap().is_empty()
+        let js = js.unwrap_or(None);
+        if js.is_none() || js.as_ref().unwrap().is_empty()
         {
-            let all = self.update_cache().await?;
-            return Ok(all);
+            return self.update_cache().await;
         }
         if CONTEXT.config.debug {
-            log::info!("[abs_admin] get from cache:{}", RES_KEY);
+            log::info!("get from cache:{}", RES_KEY);
         }
-        let mut arr = vec![];
-        if let Ok(v) = js {
-            for x in v.unwrap_or(vec![]) {
-                arr.push(x.into());
-            }
-        }
+        let arr = js.unwrap();
         Ok(arr)
     }
 
-    pub async fn update_cache(&self) -> Result<Vec<SysPermissionVO>> {
-        log::info!("[abs_admin] update cache");
+    pub async fn update_cache(&self) -> Result<Vec<SysPermission>> {
+        log::info!("update cache: {}", RES_KEY);
         let all = SysPermission::select_all(pool!()).await?;
         CONTEXT.cache_service.set_json(RES_KEY, &all).await?;
-        let mut v = vec![];
-        for x in all {
-            v.push(x.into());
-        }
-        Ok(v)
+        Ok(all)
     }
 
-    pub async fn finds_all_map(&self) -> Result<BTreeMap<String, SysPermissionVO>> {
-        let all = self.finds_all().await?;
-        let mut result = BTreeMap::new();
-        for x in all {
-            result.insert(x.id.as_deref().unwrap_or_default().to_string(), x);
-        }
+    pub async fn finds_all_map(&self) -> Result<HashMap<String, SysPermissionVO>> {
+        let all = self.finds_all_vo().await?;
+        // let result: BTreeMap<String, SysPermissionVO> = all.into_iter().map(|x| (x.id.clone().unwrap(), x)).collect();
+        let result: HashMap<String, SysPermissionVO> = all.into_iter().map(|x| (x.id.clone().unwrap(), x)).collect();
         Ok(result)
     }
 
     pub fn finds_res(
         &self,
-        ids: &Vec<String>,
-        all_res: &BTreeMap<String, SysPermissionVO>,
+        ids: &[String],
+        all_res: &HashMap<String, SysPermissionVO>,
     ) -> Vec<SysPermissionVO> {
-        let mut res = vec![];
         //filter res id
-        for x in ids {
-            for (k, v) in all_res {
-                if k.eq(x) {
-                    res.push(v.clone());
-                    break;
-                }
-            }
-        }
+        let res = ids.iter().filter_map(|x| all_res.get(x)).cloned().collect::<Vec<SysPermissionVO>>();
         res
     }
 
@@ -156,18 +136,12 @@ impl SysPermissionService {
     ///An res array with a hierarchy
     pub async fn finds_layer(
         &self,
-        ids: &Vec<String>,
-        all_res: &BTreeMap<String, SysPermissionVO>,
+        ids: &[String],
+        all_res: &HashMap<String, SysPermissionVO>,
     ) -> Result<Vec<SysPermissionVO>> {
         let res = self.finds_res(ids, all_res);
         //find tops
-        let mut tops = vec![];
-        for item in res {
-            //parent id null, it is an top resource
-            if item.parent_id.is_none() {
-                tops.push(item);
-            }
-        }
+        let mut tops = res.into_iter().filter(|x| x.parent_id.is_none()).collect::<Vec<SysPermissionVO>>();
         //find child
         for item in &mut tops {
             self.loop_find_childs(item, all_res);
@@ -179,7 +153,7 @@ impl SysPermissionService {
     pub fn loop_find_childs(
         &self,
         arg: &mut SysPermissionVO,
-        all_res: &BTreeMap<String, SysPermissionVO>,
+        all_res: &HashMap<String, SysPermissionVO>,
     ) {
         let mut childs = vec![];
         for x in all_res.values() {

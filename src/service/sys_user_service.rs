@@ -8,10 +8,9 @@ use rbatis::rbdc::DateTime;
 use crate::domain::dto::{IdDTO, SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO, UserRoleAddDTO};
 use crate::domain::table::{LoginCheck, SysUser};
 use crate::domain::vo::user::SysUserVO;
-use crate::domain::vo::{JWTToken, SignInVO, SysPermissionVO};
+use crate::domain::vo::{JWTToken, SignInVO};
 use crate::util::password_encoder::PasswordEncoder;
 use crate::{error_info, pool};
-use std::collections::BTreeMap;
 use std::time::Duration;
 
 const CACHE_KEY_RETRY: &str = "login:login_retry";
@@ -239,12 +238,7 @@ impl SysUserService {
 
     pub async fn remove_retry_login_limit_num(&self, account: &str) -> Result<()> {
         if CONTEXT.config.login_fail_retry > 0 {
-            // if CONTEXT
-            //     .cache_service
-            //     .get_string(&format!("{}{}", CACHE_KEY_RETRY, account))
-            //     .await.is_err() {
-            //         return Ok(());
-            //     }
+            
             CONTEXT
                 .cache_service
                 .set_string_ex(
@@ -283,19 +277,22 @@ impl SysUserService {
         let mut sign_vo = SignInVO::from(user);
 
         let all_res = CONTEXT.sys_permission_service.finds_all_map().await?;
-        sign_vo.permissions = self.load_level_permission(&user_id, &all_res).await?;
+        // sign_vo.permissions = self.load_level_permission(&user_id, &all_res).await?;
+        sign_vo.role = CONTEXT
+            .sys_user_role_service
+            .find_user_role(&sign_vo.id.clone().unwrap_or_default(), &all_res)
+            .await?;
+        sign_vo.merge_permissions();
+
         let jwt_token = JWTToken {
-            id: sign_vo.id.clone().unwrap_or_default(),
+            id: user_id,
             account: sign_vo.account.clone().unwrap_or_default(),
             permissions: sign_vo.permissions.clone(),
             role_ids: vec![],
             exp: DateTime::now().unix_timestamp() as usize + CONTEXT.config.jwt_exp,
         };
-        sign_vo.access_token = jwt_token.create_token(&CONTEXT.config.jwt_secret)?;
-        sign_vo.role = CONTEXT
-            .sys_user_role_service
-            .find_user_role(&sign_vo.id.clone().unwrap_or_default(), &all_res)
-            .await?;
+        sign_vo.access_token = jwt_token.create_token()?;
+       
         Ok(sign_vo)
     }
 
@@ -348,15 +345,15 @@ impl SysUserService {
         Ok(r.rows_affected)
     }
 
-    ///Find user-authority hierarchy permissions
-    pub async fn load_level_permission(
-        &self,
-        user_id: &str,
-        all_res: &BTreeMap<String, SysPermissionVO>,
-    ) -> Result<Vec<String>> {
-        CONTEXT
-            .sys_role_service
-            .find_user_permission(user_id, all_res)
-            .await
-    }
+    /////Find user-authority hierarchy permissions
+    // pub async fn load_level_permission(
+    //     &self,
+    //     user_id: &str,
+    //     all_res: &BTreeMap<String, SysPermissionVO>,
+    // ) -> Result<Vec<String>> {
+    //     CONTEXT
+    //         .sys_role_service
+    //         .find_user_permission(user_id, all_res)
+    //         .await
+    // }
 }

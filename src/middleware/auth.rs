@@ -19,7 +19,7 @@ pub fn is_white_list_api(path: &str) -> bool {
 ///Check whether the token is valid and has not expired
 pub fn checked_token(token: &str) -> Result<JWTToken, crate::error::Error> {
     //check token alive
-    let token = JWTToken::verify(&CONTEXT.config.jwt_secret, token);
+    let token = JWTToken::verify(token);
     match token {
         Ok(token) => {
             Ok(token)
@@ -32,19 +32,16 @@ pub fn checked_token(token: &str) -> Result<JWTToken, crate::error::Error> {
 
 ///Permission to check
 pub async fn check_auth(token: &JWTToken, path: &str) -> Result<(), crate::error::Error> {
-    let sys_permission = CONTEXT.sys_permission_service.finds_all().await?;
+    let sys_permission = CONTEXT.sys_permission_service.finds_all_cache().await?;
     for token_permission in &token.permissions {
         for x in &sys_permission {
-            match &x.permission {
-                Some(permission) => match &x.path {
-                    None => {}
-                    Some(x_path) => {
-                        if permission.eq(token_permission) && path.contains(x_path) {
-                            return Ok(());
-                        }
+            if let Some(permission) = &x.permission {
+                if let Some(x_path) = &x.path {
+                    println!("{}:{}", permission, x_path);
+                    if permission.eq(token_permission) && path.contains(x_path) {
+                        return Ok(());
                     }
-                },
-                None => todo!(),
+                }
             }
         }
     }
