@@ -108,21 +108,21 @@ where
 
 #[cfg(test)]
 mod test {
-    use crate::domain::vo::JWTToken;
+    use super::JWTToken;
     use rbatis::rbdc::types::DateTime;
     use std::thread::sleep;
     use std::time::Duration;
 
-    #[test]
-    fn test_jwt() {
+    #[tokio::test]
+    async fn test_jwt() {
         let j = JWTToken {
             id: "1".to_string(),
             account: "189".to_string(),
             permissions: vec![],
             role_ids: vec![],
-            exp: DateTime::now().unix_timestamp() as usize,
+            exp: DateTime::now().unix_timestamp() as usize+ 600,
         };
-        sleep(Duration::from_secs(5));
+        sleep(Duration::from_secs(3));
         let token = j.create_token().unwrap();
         assert_eq!(JWTToken::verify( &token).unwrap(), j);
     }

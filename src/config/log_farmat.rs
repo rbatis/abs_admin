@@ -1,5 +1,6 @@
 use fast_log::{appender::{Command, FastLogRecord, RecordFormat}, TimeType};
 use log::LevelFilter;
+use fastdate::DateTime;
 
 
 pub struct FastLogFormat {
@@ -13,10 +14,10 @@ impl RecordFormat for FastLogFormat {
         match &arg.command {
             Command::CommandRecord => {
                 let now = match self.time_type {
-                    TimeType::Local => fastdate::DateTime::from(arg.now)
+                    TimeType::Local => DateTime::from(arg.now)
                         .set_offset(fastdate::offset_sec())
                         .display_stand(),
-                    TimeType::Utc => fastdate::DateTime::from(arg.now).display_stand(),
+                    TimeType::Utc => DateTime::from(arg.now).display_stand(),
                 };
                 // 调整line的输出位置
                 if arg.level.to_level_filter() <= self.display_line_level {

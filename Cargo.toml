@@ -42,9 +42,9 @@ parking_lot = "0.12.1"
 sqlparser = "0.46.0"
 json5 = "0.4"
 
-#以下是我加的
-bcrypt = "0.15"
+# me
 # inventory = "0.3.15"
+bcrypt = "0.15"
 fastdate = "0.3"
 axum-otel-metrics = "0.8.1"
 

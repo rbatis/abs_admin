@@ -1,7 +1,6 @@
 use crate::error::Error;
 use crate::error::Result;
 use crate::service::CONTEXT;
-use fastdate::DurationFrom;
 use rbatis::page::{Page, PageRequest};
 use rbatis::rbdc::DateTime;
 
@@ -215,7 +214,7 @@ impl SysUserService {
                 .set_string_ex(
                     &format!("{}{}", CACHE_KEY_RETRY, account),
                     &num.to_string(),
-                    Some(Duration::from_minute(15)),
+                    Some(Duration::from_secs(60*15)),
                 )
                 .await?;
             CONTEXT
