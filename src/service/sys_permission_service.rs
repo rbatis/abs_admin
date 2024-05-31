@@ -38,7 +38,7 @@ impl SysPermissionService {
             return Err(Error::from(format!(
                 "{}={:?}",
                 error_info!("permission_exists"),
-                rbatis::make_table_field_vec!(old, name)
+                rbatis::table_field_vec!(old, name)
             )));
         }
         let result = Ok(SysPermission::insert(pool!(), &arg).await?.rows_affected);
@@ -71,7 +71,7 @@ impl SysPermissionService {
         for x in args {
             ids.push(x.id.as_deref().unwrap_or_default().to_string());
             if let Some(childs) = &x.childs {
-                let child_ids = rbatis::make_table_field_vec!(childs, id);
+                let child_ids = rbatis::table_field_vec!(childs, id);
                 for child_id in child_ids {
                     ids.push(child_id);
                 }
@@ -146,7 +146,7 @@ impl SysPermissionService {
     pub async fn finds_layer_top(&self) -> Result<Vec<SysPermissionVO>> {
         let list = SysPermission::select_by_parent_id_null(pool!()).await?;
         let all = self.finds_all_map().await?;
-        self.finds_layer(&rbatis::make_table_field_vec!(list, id), &all)
+        self.finds_layer(&rbatis::table_field_vec!(list, id), &all)
             .await
     }
 

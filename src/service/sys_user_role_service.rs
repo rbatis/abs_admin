@@ -22,16 +22,16 @@ impl SysUserRoleService {
             .await?;
         if arg.resp_set_role.unwrap_or(true) {
             let all_roles = CONTEXT.sys_role_service.finds_all_map().await?;
-            let user_ids = rbatis::make_table_field_vec!(&vo.records, id);
+            let user_ids = rbatis::table_field_vec!(&vo.records, id);
             let user_roles = SysUserRole::select_in_column(pool!(), "user_id", &user_ids).await?;
-            let user_role_map = rbatis::make_table_field_map!(&user_roles, user_id);
-            let role_ids = rbatis::make_table_field_vec!(&user_roles, role_id);
+            let role_ids = rbatis::table_field_vec!(&user_roles, role_id).iter().map(|v|v.to_string()).collect();
+            let user_role_map = rbatis::table_field_map!(user_roles, user_id);
             let roles = CONTEXT.sys_role_service.finds(&role_ids).await?;
-            let roles_map = rbatis::make_table_field_map!(&roles, id);
+            let roles_map = rbatis::table_field_map!(&roles, id);
             for x in &mut vo.records {
                 if let Some(user_role) = user_role_map.get(x.id.as_deref().unwrap_or_default()) {
                     if let Some(role_id) = &user_role.role_id {
-                        let role = roles_map.get(role_id).cloned();
+                        let role = roles_map.get(role_id).cloned().cloned();
                         x.role = SysRoleVO::from_option(role);
                         if let Some(role_vo) = &mut x.role {
                             CONTEXT
@@ -79,11 +79,11 @@ impl SysUserRoleService {
             return Ok(None);
         }
         let user_roles = SysUserRole::select_by_column(pool!(), "user_id", user_id).await?;
-        let role_ids = &rbatis::make_table_field_vec!(&user_roles, role_id);
-        let roles = CONTEXT.sys_role_service.finds(role_ids).await?;
+        let role_ids = rbatis::table_field_vec!(user_roles, role_id);
+        let roles = CONTEXT.sys_role_service.finds(&role_ids).await?;
         let role_res_vec = CONTEXT
             .sys_role_service
-            .find_role_res(&rbatis::make_table_field_vec!(&user_roles, role_id))
+            .find_role_res(&role_ids)
             .await?;
         let mut role_vos = vec![];
         for role in roles {

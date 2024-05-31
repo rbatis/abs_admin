@@ -110,7 +110,7 @@ impl SysRoleResService {
                     all,
                 )?);
             }
-            role.resource_ids = rbatis::make_table_field_vec!(&role.resources, id);
+            role.resource_ids = rbatis::table_field_vec!(role.resources.clone(), id);
             data.push(role);
         }
         return Ok(data);
