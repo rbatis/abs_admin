@@ -35,9 +35,9 @@ pub struct ApplicationConfig {
 
 impl Default for ApplicationConfig {
     fn default() -> Self {
-        let mut f = File::open("application.json5").expect("读取配置文件失败");
+        let mut f = File::open("application.json5").expect("not find 'application.json5'");
         let mut cfg_data = "".to_string();
-        f.read_to_string(&mut cfg_data).expect("读取配置文件失败");
+        f.read_to_string(&mut cfg_data).expect("read 'application.json5' fail");
         //load config
         let mut result: ApplicationConfig =
             json5::from_str(&cfg_data).expect("load config file fail");
