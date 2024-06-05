@@ -1,4 +1,6 @@
 use std::collections::HashMap;
+use std::fs::File;
+use std::io::Read;
 use rbs::to_value;
 
 /// Config
@@ -33,10 +35,12 @@ pub struct ApplicationConfig {
 
 impl Default for ApplicationConfig {
     fn default() -> Self {
-        let js_data = include_str!("../../application.json5");
+        let mut f = File::open("application.json5").expect("读取配置文件失败");
+        let mut cfg_data = "".to_string();
+        f.read_to_string(&mut cfg_data).expect("读取配置文件失败");
         //load config
         let mut result: ApplicationConfig =
-            json5::from_str(js_data).expect("load config file fail");
+            json5::from_str(&cfg_data).expect("load config file fail");
         result.init_infos();
         if cfg!(debug_assertions) {
             result.debug = true;
