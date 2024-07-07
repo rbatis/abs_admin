@@ -158,58 +158,58 @@ pub async fn sync_tables(rb: &RBatis) {
     };
     let conn = rb.acquire().await.expect("connection database fail");
     let table = SysPermission {
-        id: Some("".to_string()),
-        parent_id: Some("".to_string()),
-        name: Some("".to_string()),
-        permission: Some("".to_string()),
-        path: Some("".to_string()),
-        create_date: Some(DateTime::now()),
+        id: Some(Default::default()),
+        parent_id: Some(Default::default()),
+        name: Some(Default::default()),
+        permission: Some(Default::default()),
+        path: Some(Default::default()),
+        create_date: Some(Default::default()),
     };
     let _ = RBatis::sync(&conn, mapper, &table, "sys_permission").await;
     let table = SysRole {
-        id: Some("".to_string()),
-        parent_id: Some("".to_string()),
-        name: Some("".to_string()),
-        create_date: Some(DateTime::now()),
+        id: Some(Default::default()),
+        parent_id: Some(Default::default()),
+        name: Some(Default::default()),
+        create_date: Some(Default::default()),
     };
     let _ = RBatis::sync(&conn, mapper, &table, "sys_role").await;
     let table = SysRolePermission {
-        id: Some("".to_string()),
-        role_id: Some("".to_string()),
-        permission_id: Some("".to_string()),
-        create_date: Some(DateTime::now()),
+        id: Some(Default::default()),
+        role_id: Some(Default::default()),
+        permission_id: Some(Default::default()),
+        create_date: Some(Default::default()),
     };
     let _ = RBatis::sync(&conn, mapper, &table, "sys_role_permission").await;
     let table = SysUser {
-        id: Some("".to_string()),
-        account: Some("".to_string()),
-        password: Some("".to_string()),
-        name: Some("".to_string()),
-        login_check: Some(LoginCheck::NoCheck),
-        state: Some(0),
-        create_date: Some(DateTime::now()),
+        id: Some(Default::default()),
+        account: Some(Default::default()),
+        password: Some(Default::default()),
+        name: Some(Default::default()),
+        login_check: Some(Default::default()),
+        state: Some(Default::default()),
+        create_date: Some(Default::default()),
     };
     let _ = RBatis::sync(&conn, mapper, &table, "sys_user").await;
     let table = SysUserRole {
-        id: Some("".to_string()),
-        user_id: Some("".to_string()),
-        role_id: Some("".to_string()),
-        create_date: Some(DateTime::now()),
+        id: Some(Default::default()),
+        user_id: Some(Default::default()),
+        role_id: Some(Default::default()),
+        create_date: Some(Default::default()),
     };
     let _ = RBatis::sync(&conn, mapper, &table, "sys_user_role").await;
     let table = SysDict {
-        id: Some("".to_string()),
-        name: Some("".to_string()),
-        code: Some("".to_string()),
-        state: Some(0),
-        create_date: Some(DateTime::now()),
+        id: Some(Default::default()),
+        name: Some(Default::default()),
+        code: Some(Default::default()),
+        state: Some(Default::default()),
+        create_date: Some(Default::default()),
     };
     let _ = RBatis::sync(&conn, mapper, &table, "sys_dict").await;
     let table = SysTrash {
-        id: Some("".to_string()),
-        table_name: Some("".to_string()),
-        data: Some("".to_string()),
-        create_date: Some(DateTime::now()),
+        id: Some(Default::default()),
+        table_name: Some(Default::default()),
+        data: Some(Default::default()),
+        create_date: Some(Default::default()),
     };
     let _ = RBatis::sync(&conn, mapper, &table, "sys_trash").await;
 }

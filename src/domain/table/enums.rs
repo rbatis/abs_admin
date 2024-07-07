@@ -9,6 +9,12 @@ pub enum LoginCheck {
     PhoneCodeCheck,
 }
 
+impl Default for LoginCheck{
+    fn default() -> Self {
+        LoginCheck::NoCheck
+    }
+}
+
 impl From<LoginCheck> for &str {
     fn from(arg: LoginCheck) -> Self {
         match arg {
