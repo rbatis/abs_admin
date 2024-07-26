@@ -14,9 +14,9 @@ pub struct RedisCacheService {
 
 impl RedisCacheService {
     pub fn new(url: &str) -> Self {
-        println!("[abs_admin] conncect redis ({})...", url);
+        println!("[abs_admin] connect redis ({})...", url);
         let client = redis::Client::open(url).unwrap();
-        println!("[abs_admin] conncect redis success!");
+        println!("[abs_admin] connect redis success!");
         Self { client }
     }
 

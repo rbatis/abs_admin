@@ -1,7 +1,7 @@
 mod enums;
 mod tables;
-mod init;
+mod tables_init;
 
 pub use enums::*;
 pub use tables::*;
-pub use init::*;
+pub use tables_init::*;
