@@ -3,6 +3,7 @@ use fast_log::config::Config;
 use fast_log::consts::LogSize;
 use fast_log::plugin::file_split::{DateType, KeepType, Packer, Rolling, RollingType};
 use std::time::Duration;
+use log::Log;
 
 pub fn init_log() {
     //init fast log
@@ -25,11 +26,11 @@ pub fn init_log() {
                 rolling_type = RollingType::ByDate(DateType::Day);
             }
             _ => {
-                panic!("unknown log_rolling");
+                panic!("unknown log_rolling {}",log_rolling);
             }
         }
     } else {
-        panic!("unknown log_rolling");
+        panic!("unknown log_rolling {}",log_rolling);
     }
     cfg = cfg.file_split(&CONTEXT.config.log_dir,
                          Rolling::new(rolling_type),
