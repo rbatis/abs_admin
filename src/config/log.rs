@@ -3,7 +3,6 @@ use fast_log::config::Config;
 use fast_log::consts::LogSize;
 use fast_log::plugin::file_split::{DateType, KeepType, Packer, Rolling, RollingType};
 use std::time::Duration;
-use log::Log;
 
 pub fn init_log() {
     //init fast log
