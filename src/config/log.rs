@@ -25,11 +25,11 @@ pub fn init_log() {
                 rolling_type = RollingType::ByDate(DateType::Day);
             }
             _ => {
-                panic!("unknown log_rolling {}",log_rolling);
+                panic!("unknown log_rolling '{}'", log_rolling);
             }
         }
     } else {
-        panic!("unknown log_rolling {}",log_rolling);
+        panic!("unknown log_rolling '{}'", log_rolling);
     }
     cfg = cfg.file_split(&CONTEXT.config.log_dir,
                          Rolling::new(rolling_type),
@@ -81,14 +81,19 @@ fn str_to_keep_type(arg: &str) -> KeepType {
         arg if arg.starts_with("KeepNum(") => {
             let end = arg.find(")").unwrap();
             let num = arg["KeepNum(".len()..end].to_string();
-            KeepType::KeepNum(num.parse::<i64>().unwrap())
+            return KeepType::KeepNum(num.parse::<i64>().unwrap());
         }
         arg if arg.starts_with("KeepTime(") => {
             let end = arg.find(")").unwrap();
             let num = arg["KeepTime(".len()..end].to_string();
-            KeepType::KeepTime(Duration::from_secs(num.parse::<u64>().unwrap()))
+           return  KeepType::KeepTime(Duration::from_secs(num.parse::<u64>().unwrap()));
         }
-        _ => KeepType::All,
+        arg if arg.to_uppercase().as_str() == "ALL" => {
+           return KeepType::All;
+        }
+        _ => {
+            panic!("unknown keep_type '{}'",arg)
+        }
     }
 }
 
