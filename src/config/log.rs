@@ -6,11 +6,26 @@ use std::time::Duration;
 
 pub fn init_log() {
     //init fast log
-    let mut cfg = Config::new().level(str_to_log_level(&CONTEXT.config.log_level));
-    let log_rolling = CONTEXT.config.log_rolling.as_str();
+    let mut cfg = Config::new().level(parse_log_level(&CONTEXT.config.log_level));
+    cfg = cfg.file_split(&CONTEXT.config.log_dir,
+                         Rolling::new(parse_rolling(CONTEXT.config.log_rolling.as_str())),
+                         parse_keep_type(&CONTEXT.config.log_keep_type),
+                         parse_packer(&CONTEXT.config.log_pack_compress),
+    );
+    if CONTEXT.config.debug {
+        cfg = cfg.console();
+    }
+    cfg = cfg.chan_len(CONTEXT.config.log_chan_len);
+    let _ = fast_log::init(cfg);
+    if CONTEXT.config.debug == false {
+        println!("[abs_admin] release_mode is up! [file_log] open,[console_log] disabled!");
+    }
+}
+
+fn parse_rolling(log_rolling: &str) -> RollingType {
     let rolling_type;
     if log_rolling.ends_with("B") {
-        rolling_type = RollingType::BySize(str_to_temp_size(&CONTEXT.config.log_rolling));
+        rolling_type = RollingType::BySize(parse_log_size(&CONTEXT.config.log_rolling));
     } else if log_rolling.to_lowercase().as_str() == "hour"
         || log_rolling.to_lowercase().as_str() == "minute"
         || log_rolling.to_lowercase().as_str() == "day" {
@@ -31,22 +46,10 @@ pub fn init_log() {
     } else {
         panic!("unknown log_rolling '{}'", log_rolling);
     }
-    cfg = cfg.file_split(&CONTEXT.config.log_dir,
-                         Rolling::new(rolling_type),
-                         str_to_keep_type(&CONTEXT.config.log_keep_type),
-                         choose_packer(&CONTEXT.config.log_pack_compress),
-    );
-    if CONTEXT.config.debug {
-        cfg = cfg.console();
-    }
-    cfg = cfg.chan_len(CONTEXT.config.log_chan_len);
-    let _ = fast_log::init(cfg);
-    if CONTEXT.config.debug == false {
-        println!("[abs_admin] release_mode is up! [file_log] open,[console_log] disabled!");
-    }
+    return rolling_type;
 }
 
-fn choose_packer(packer: &str) -> Box<dyn Packer> {
+fn parse_packer(packer: &str) -> Box<dyn Packer> {
     match packer {
         // "lz4" => Box::new(fast_log::plugin::packer::LZ4Packer {}),
         // "zip" => Box::new(fast_log::plugin::packer::ZipPacker {}),
@@ -55,7 +58,7 @@ fn choose_packer(packer: &str) -> Box<dyn Packer> {
     }
 }
 
-fn str_to_temp_size(arg: &str) -> LogSize {
+fn parse_log_size(arg: &str) -> LogSize {
     match arg {
         arg if arg.ends_with("MB") => {
             let end = arg.find("MB").unwrap();
@@ -76,7 +79,7 @@ fn str_to_temp_size(arg: &str) -> LogSize {
     }
 }
 
-fn str_to_keep_type(arg: &str) -> KeepType {
+fn parse_keep_type(arg: &str) -> KeepType {
     match arg {
         arg if arg.starts_with("KeepNum(") => {
             let end = arg.find(")").unwrap();
@@ -86,18 +89,18 @@ fn str_to_keep_type(arg: &str) -> KeepType {
         arg if arg.starts_with("KeepTime(") => {
             let end = arg.find(")").unwrap();
             let num = arg["KeepTime(".len()..end].to_string();
-           return  KeepType::KeepTime(Duration::from_secs(num.parse::<u64>().unwrap()));
+            return KeepType::KeepTime(Duration::from_secs(num.parse::<u64>().unwrap()));
         }
         arg if arg.to_uppercase().as_str() == "ALL" => {
-           return KeepType::All;
+            return KeepType::All;
         }
         _ => {
-            panic!("unknown keep_type '{}'",arg)
+            panic!("unknown keep_type '{}'", arg)
         }
     }
 }
 
-fn str_to_log_level(arg: &str) -> log::LevelFilter {
+fn parse_log_level(arg: &str) -> log::LevelFilter {
     return match arg {
         "off" => log::LevelFilter::Off,
         "warn" => log::LevelFilter::Warn,
