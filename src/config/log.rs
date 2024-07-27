@@ -8,7 +8,7 @@ pub fn init_log() {
     //init fast log
     let mut cfg = Config::new().level(parse_log_level(&CONTEXT.config.log_level));
     cfg = cfg.file_split(&CONTEXT.config.log_dir,
-                         Rolling::new(parse_rolling(CONTEXT.config.log_rolling.as_str())),
+                         Rolling::new(parse_rolling_type(CONTEXT.config.log_rolling.as_str())),
                          parse_keep_type(&CONTEXT.config.log_keep_type),
                          parse_packer(&CONTEXT.config.log_pack_compress),
     );
@@ -22,7 +22,7 @@ pub fn init_log() {
     }
 }
 
-fn parse_rolling(log_rolling: &str) -> RollingType {
+fn parse_rolling_type(log_rolling: &str) -> RollingType {
     let rolling_type;
     if log_rolling.ends_with("B") {
         rolling_type = RollingType::BySize(parse_log_size(&CONTEXT.config.log_rolling));
