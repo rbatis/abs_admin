@@ -3,6 +3,7 @@ use fast_log::config::Config;
 use fast_log::consts::LogSize;
 use fast_log::plugin::file_split::{DateType, KeepType, Packer, Rolling, RollingType};
 use std::time::Duration;
+use rbatis::rbdc::DateTime;
 
 pub fn init_log() {
     //init fast log
@@ -23,24 +24,36 @@ pub fn init_log() {
 }
 
 fn parse_rolling_type(log_rolling: &str) -> RollingType {
+    let lower = log_rolling.to_lowercase();
     let rolling_type;
     if log_rolling.ends_with("B") {
         rolling_type = RollingType::BySize(parse_log_size(&CONTEXT.config.log_rolling));
-    } else if log_rolling.to_lowercase().as_str() == "hour"
-        || log_rolling.to_lowercase().as_str() == "minute"
-        || log_rolling.to_lowercase().as_str() == "day" {
-        match log_rolling.to_lowercase().as_str() {
-            "hour" => {
-                rolling_type = RollingType::ByDate(DateType::Hour);
-            }
+    } else if lower.as_str().ends_with("minute")
+        || lower.as_str().ends_with("hour")
+        || lower.as_str().ends_with("day") {
+        match lower.as_str() {
             "minute" => {
                 rolling_type = RollingType::ByDate(DateType::Minute);
+            }
+            "hour" => {
+                rolling_type = RollingType::ByDate(DateType::Hour);
             }
             "day" => {
                 rolling_type = RollingType::ByDate(DateType::Day);
             }
             _ => {
-                panic!("unknown log_rolling '{}'", log_rolling);
+                if lower.ends_with("minute") {
+                    let value: u64 = lower.trim_end_matches("minute").parse().expect("parse number fail");
+                    rolling_type = RollingType::ByDuration((DateTime::now().0, Duration::from_secs(value * 60)));
+                } else if lower.ends_with("hour") {
+                    let value: u64 = lower.trim_end_matches("hour").parse().expect("parse number fail");
+                    rolling_type = RollingType::ByDuration((DateTime::now().0, Duration::from_secs(value * 60 * 60)));
+                } else if lower.ends_with("day") {
+                    let value: u64 = lower.trim_end_matches("day").parse().expect("parse number fail");
+                    rolling_type = RollingType::ByDuration((DateTime::now().0, Duration::from_secs(value * 24 * 60 * 60)));
+                } else {
+                    panic!("unknown log_rolling '{}'", log_rolling);
+                }
             }
         }
     } else {
