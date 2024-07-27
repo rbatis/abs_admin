@@ -1,57 +1,28 @@
 use crate::service::CONTEXT;
 use fast_log::config::Config;
 use fast_log::consts::LogSize;
-use fast_log::plugin::file_split::{DateType, FileSplitAppender, KeepType, Packer, RawFile, Rolling, RollingType};
+use fast_log::plugin::file_split::{DateType, KeepType, Packer, Rolling, RollingType};
 use std::time::Duration;
 
 pub fn init_log() {
     //init fast log
     let mut cfg = Config::new().level(str_to_log_level(&CONTEXT.config.log_level));
     let log_rolling = CONTEXT.config.log_rolling.as_str();
+    let mut rolling_type = RollingType::BySize(LogSize::GB(1));
     if log_rolling.ends_with("B") {
-        cfg = cfg.custom(
-            FileSplitAppender::new::<RawFile>(
-                &CONTEXT.config.log_dir,
-                Box::new(Rolling::new(RollingType::BySize(str_to_temp_size(&CONTEXT.config.log_rolling)))),
-                Box::new(str_to_keep_type(&CONTEXT.config.log_keep_type)),
-                choose_packer(&CONTEXT.config.log_pack_compress),
-            )
-                .unwrap(),
-        );
+        rolling_type = RollingType::BySize(str_to_temp_size(&CONTEXT.config.log_rolling));
     } else if log_rolling.to_lowercase().as_str() == "hour"
         || log_rolling.to_lowercase().as_str() == "minute"
         || log_rolling.to_lowercase().as_str() == "day" {
-        //Hour,Minute,Day
         match log_rolling.to_lowercase().as_str() {
             "hour" => {
-                cfg = cfg.custom(
-                    FileSplitAppender::new::<RawFile>(
-                        &CONTEXT.config.log_dir,
-                        Box::new(Rolling::new(RollingType::ByDate(DateType::Hour))),
-                        Box::new(str_to_keep_type(&CONTEXT.config.log_keep_type)),
-                        choose_packer(&CONTEXT.config.log_pack_compress),
-                    ).unwrap(),
-                );
+                rolling_type = RollingType::ByDate(DateType::Hour);
             }
             "minute" => {
-                cfg = cfg.custom(
-                    FileSplitAppender::new::<RawFile>(
-                        &CONTEXT.config.log_dir,
-                        Box::new(Rolling::new(RollingType::ByDate(DateType::Minute))),
-                        Box::new(str_to_keep_type(&CONTEXT.config.log_keep_type)),
-                        choose_packer(&CONTEXT.config.log_pack_compress),
-                    ).unwrap(),
-                );
+                rolling_type = RollingType::ByDate(DateType::Minute);
             }
             "day" => {
-                cfg = cfg.custom(
-                    FileSplitAppender::new::<RawFile>(
-                        &CONTEXT.config.log_dir,
-                        Box::new(Rolling::new(RollingType::ByDate(DateType::Day))),
-                        Box::new(str_to_keep_type(&CONTEXT.config.log_keep_type)),
-                        choose_packer(&CONTEXT.config.log_pack_compress),
-                    ).unwrap(),
-                );
+                rolling_type = RollingType::ByDate(DateType::Day);
             }
             _ => {
                 panic!("unknown log_rolling");
@@ -60,6 +31,11 @@ pub fn init_log() {
     } else {
         panic!("unknown log_rolling");
     }
+    cfg = cfg.file_split(&CONTEXT.config.log_dir,
+                         Rolling::new(rolling_type),
+                         str_to_keep_type(&CONTEXT.config.log_keep_type),
+                         choose_packer(&CONTEXT.config.log_pack_compress),
+    );
     if CONTEXT.config.debug {
         cfg = cfg.console();
     }
