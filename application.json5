@@ -18,7 +18,7 @@
   db_pool_timeout: 60,
   //log dir, you can use "target/logs/abc.log"  default is "target/logs/"
   log_dir: "target/logs/",
-  //rolling by Size use-[KB,MB,GB], rolling by Date use ['hour','minute','day']
+  //rolling by Size use-[1KB,1MB,1GB], rolling by Date use ['hour','minute','day']
   log_rolling: "day",
   // Log rolling retention options:
   // Retain all logs: All
