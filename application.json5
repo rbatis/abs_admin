@@ -18,10 +18,8 @@
   db_pool_timeout: 60,
   //log dir, you can use "target/logs/abc.log"  default is "target/logs/"
   log_dir: "target/logs/",
-  //log size-KB,MB,GB
-  log_temp_size: "100MB",
-  //log type,choose one of  ("mmap","file")
-  log_type: "file",
+  //rolling by Size use-[KB,MB,GB], rolling by Date use ['hour','minute','day']
+  log_rolling: "day",
   //Log channel length: null for unbounded queue, non-null for bounded queue (better performance)
   log_chan_len: 100000,
   // Optional log packaging formats: "" (keep as .log), "gzip" (GZip compressed), "zip" (ZIP compressed), "lz4" (LZ4 compressed (very fast))
@@ -34,7 +32,7 @@
   // Retain all logs: All
   // Retain logs by time (in seconds): KeepTime(i64)
   // Retain logs by version: KeepNum(i64)
-  log_rolling_type: "KeepNum(60)",
+  log_keep_type: "KeepNum(120)",
   //log_level: off,info,error,warn,debug,trace
   log_level: "info",
   //jwt_secret

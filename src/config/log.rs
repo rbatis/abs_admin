@@ -1,36 +1,64 @@
 use crate::service::CONTEXT;
 use fast_log::config::Config;
 use fast_log::consts::LogSize;
-use fast_log::plugin::file_mmap::MmapFile;
-use fast_log::plugin::file_split::{FileSplitAppender, Packer, RawFile, RollingType};
+use fast_log::plugin::file_split::{DateType, FileSplitAppender, KeepType, Packer, RawFile, Rolling, RollingType};
 use std::time::Duration;
 
 pub fn init_log() {
     //init fast log
     let mut cfg = Config::new().level(str_to_log_level(&CONTEXT.config.log_level));
-    match CONTEXT.config.log_type.as_str() {
-        "mmap" => {
-            cfg = cfg.custom(
-                FileSplitAppender::<MmapFile>::new(
-                    &CONTEXT.config.log_dir,
-                    str_to_temp_size(&CONTEXT.config.log_temp_size),
-                    str_to_rolling(&CONTEXT.config.log_rolling_type),
-                    choose_packer(&CONTEXT.config.log_pack_compress),
-                )
+    let log_rolling = CONTEXT.config.log_rolling.as_str();
+    if log_rolling.ends_with("B") {
+        cfg = cfg.custom(
+            FileSplitAppender::new::<RawFile>(
+                &CONTEXT.config.log_dir,
+                Box::new(Rolling::new(RollingType::BySize(str_to_temp_size(&CONTEXT.config.log_rolling)))),
+                Box::new(str_to_keep_type(&CONTEXT.config.log_keep_type)),
+                choose_packer(&CONTEXT.config.log_pack_compress),
+            )
                 .unwrap(),
-            );
+        );
+    } else if log_rolling.to_lowercase().as_str() == "hour"
+        || log_rolling.to_lowercase().as_str() == "minute"
+        || log_rolling.to_lowercase().as_str() == "day" {
+        //Hour,Minute,Day
+        match log_rolling.to_lowercase().as_str() {
+            "hour" => {
+                cfg = cfg.custom(
+                    FileSplitAppender::new::<RawFile>(
+                        &CONTEXT.config.log_dir,
+                        Box::new(Rolling::new(RollingType::ByDate(DateType::Hour))),
+                        Box::new(str_to_keep_type(&CONTEXT.config.log_keep_type)),
+                        choose_packer(&CONTEXT.config.log_pack_compress),
+                    ).unwrap(),
+                );
+            }
+            "minute" => {
+                cfg = cfg.custom(
+                    FileSplitAppender::new::<RawFile>(
+                        &CONTEXT.config.log_dir,
+                        Box::new(Rolling::new(RollingType::ByDate(DateType::Minute))),
+                        Box::new(str_to_keep_type(&CONTEXT.config.log_keep_type)),
+                        choose_packer(&CONTEXT.config.log_pack_compress),
+                    ).unwrap(),
+                );
+            }
+            "day" => {
+                cfg = cfg.custom(
+                    FileSplitAppender::new::<RawFile>(
+                        &CONTEXT.config.log_dir,
+                        Box::new(Rolling::new(RollingType::ByDate(DateType::Day))),
+                        Box::new(str_to_keep_type(&CONTEXT.config.log_keep_type)),
+                        choose_packer(&CONTEXT.config.log_pack_compress),
+                    ).unwrap(),
+                );
+            }
+            _ => {
+                panic!("unknown log_rolling");
+            }
         }
-        _ => {
-            cfg = cfg.custom(
-                FileSplitAppender::<RawFile>::new(
-                    &CONTEXT.config.log_dir,
-                    str_to_temp_size(&CONTEXT.config.log_temp_size),
-                    str_to_rolling(&CONTEXT.config.log_rolling_type),
-                    choose_packer(&CONTEXT.config.log_pack_compress),
-                )
-                .unwrap(),
-            );
-        }
+    } else {
+        panic!("unknown log_rolling");
     }
     if CONTEXT.config.debug {
         cfg = cfg.console();
@@ -72,19 +100,19 @@ fn str_to_temp_size(arg: &str) -> LogSize {
     }
 }
 
-fn str_to_rolling(arg: &str) -> RollingType {
+fn str_to_keep_type(arg: &str) -> KeepType {
     match arg {
         arg if arg.starts_with("KeepNum(") => {
             let end = arg.find(")").unwrap();
             let num = arg["KeepNum(".len()..end].to_string();
-            RollingType::KeepNum(num.parse::<i64>().unwrap())
+            KeepType::KeepNum(num.parse::<i64>().unwrap())
         }
         arg if arg.starts_with("KeepTime(") => {
             let end = arg.find(")").unwrap();
             let num = arg["KeepTime(".len()..end].to_string();
-            RollingType::KeepTime(Duration::from_secs(num.parse::<u64>().unwrap()))
+            KeepType::KeepTime(Duration::from_secs(num.parse::<u64>().unwrap()))
         }
-        _ => RollingType::All,
+        _ => KeepType::All,
     }
 }
 
