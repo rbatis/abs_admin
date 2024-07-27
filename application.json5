@@ -20,6 +20,11 @@
   log_dir: "target/logs/",
   //rolling by Size use-[KB,MB,GB], rolling by Date use ['hour','minute','day']
   log_rolling: "day",
+  // Log rolling retention options:
+  // Retain all logs: All
+  // Retain logs by time (in seconds): KeepTime(i64)
+  // Retain logs by version: KeepNum(i64)
+  log_keep_type: "KeepNum(120)",
   //Log channel length: null for unbounded queue, non-null for bounded queue (better performance)
   log_chan_len: 100000,
   // Optional log packaging formats: "" (keep as .log), "gzip" (GZip compressed), "zip" (ZIP compressed), "lz4" (LZ4 compressed (very fast))
@@ -28,11 +33,6 @@
   // In src/config/log.rs, uncomment the section under fn choose_packer()
   // In application.json5, add: log_pack_compress: "zip"
   log_pack_compress: "",
-  // Log rolling retention options:
-  // Retain all logs: All
-  // Retain logs by time (in seconds): KeepTime(i64)
-  // Retain logs by version: KeepNum(i64)
-  log_keep_type: "KeepNum(120)",
   //log_level: off,info,error,warn,debug,trace
   log_level: "info",
   //jwt_secret
