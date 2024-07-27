@@ -14,10 +14,9 @@ mod sys_user_service;
 pub use crate::config::config::ApplicationConfig;
 pub use cache_service::*;
 pub use cache_mem_service::*;
-use once_cell::sync::Lazy;
 use rbatis::rbatis::RBatis;
 pub use cache_redis_service::*;
-use std::sync::Arc;
+use std::sync::{Arc, LazyLock};
 use std::time::Duration;
 pub use sys_auth_service::*;
 pub use sys_dict_service::*;
@@ -29,8 +28,8 @@ pub use sys_trash_service::*;
 pub use sys_user_role_service::*;
 pub use sys_user_service::*;
 
-/// CONTEXT is all of the service struct
-pub static CONTEXT: Lazy<ServiceContext> = Lazy::new(|| ServiceContext::default());
+/// Service CONTEXT
+pub static CONTEXT: LazyLock<ServiceContext> = LazyLock::new(|| ServiceContext::default());
 
 #[macro_export]
 macro_rules! pool {
