@@ -8,7 +8,7 @@ pub fn init_log() {
     //init fast log
     let mut cfg = Config::new().level(str_to_log_level(&CONTEXT.config.log_level));
     let log_rolling = CONTEXT.config.log_rolling.as_str();
-    let mut rolling_type = RollingType::BySize(LogSize::GB(1));
+    let rolling_type;
     if log_rolling.ends_with("B") {
         rolling_type = RollingType::BySize(str_to_temp_size(&CONTEXT.config.log_rolling));
     } else if log_rolling.to_lowercase().as_str() == "hour"
