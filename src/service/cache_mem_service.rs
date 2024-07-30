@@ -14,7 +14,7 @@ pub struct MemCacheService {
 
 impl MemCacheService {
     pub fn recycling(&self) {
-        let mut need_removed = vec![];
+        let mut need_removed = Vec::with_capacity(self.cache.len());
         for (k, v) in self.cache.iter() {
             if let Some((i, d)) = v.1 {
                 if i.elapsed() >= d {

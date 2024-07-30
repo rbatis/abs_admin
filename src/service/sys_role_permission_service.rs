@@ -33,7 +33,7 @@ impl SysRoleResService {
     }
 
     fn loop_find_role_ids(&self, arg: &Vec<SysRoleVO>) -> Vec<String> {
-        let mut results = vec![];
+        let mut results = Vec::with_capacity(arg.len()+10);
         for x in arg {
             results.push(x.id.as_deref().unwrap_or_default().to_string());
             match &x.childs {
@@ -88,10 +88,16 @@ impl SysRoleResService {
         role_res_map: &HashMap<String, HashSet<SysRolePermission>>,
         all: &BTreeMap<String, SysPermissionVO>,
     ) -> Result<Vec<SysRoleVO>> {
-        let mut data = vec![];
+        let mut data = Vec::with_capacity(arg.len());
         for mut role in arg {
             let permission_ids = role_res_map.get(role.id.as_deref().unwrap_or_default());
-            let mut res_vos = vec![];
+            let mut res_vos = Vec::with_capacity({
+                let mut cap = 0;
+                if let Some(ids)= permission_ids{
+                    cap  = ids.len();
+                }
+                cap
+            });
             if let Some(permission_ids) = permission_ids {
                 for x in permission_ids {
                     match all.get(x.permission_id.as_deref().unwrap_or_default()) {

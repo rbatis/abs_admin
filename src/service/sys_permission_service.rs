@@ -7,6 +7,7 @@ use crate::service::CONTEXT;
 use crate::{error_info, pool};
 use rbatis::{Page, PageRequest};
 use std::collections::{BTreeMap, HashMap};
+
 const RES_KEY: &'static str = "sys_permission:all";
 
 /// Resource service
@@ -33,7 +34,7 @@ impl SysPermissionService {
             arg.permission.as_deref().unwrap_or_default(),
             arg.name.as_deref().unwrap_or_default(),
         )
-        .await?;
+            .await?;
         if old.len() > 0 {
             return Err(Error::from(format!(
                 "{}={:?}",
@@ -67,7 +68,15 @@ impl SysPermissionService {
     }
 
     pub fn make_permission_ids(&self, args: &Vec<SysPermissionVO>) -> Vec<String> {
-        let mut ids = vec![];
+        let mut ids = Vec::with_capacity({
+            let mut cap = 0;
+            for x in args {
+                if let Some(childs) = &x.childs {
+                    cap += childs.len();
+                }
+            }
+            cap
+        });
         for x in args {
             ids.push(x.id.as_deref().unwrap_or_default().to_string());
             if let Some(childs) = &x.childs {
@@ -96,7 +105,15 @@ impl SysPermissionService {
         if CONTEXT.config.debug {
             log::info!("[abs_admin] get from cache:{}", RES_KEY);
         }
-        let mut arr = vec![];
+        let mut arr = Vec::with_capacity({
+            let mut cap = 0;
+            if let Ok(v) = &js {
+                if let Some(v) = v {
+                    cap = v.len();
+                }
+            }
+            cap
+        });
         if let Ok(v) = js {
             for x in v.unwrap_or(vec![]) {
                 arr.push(x.into());
@@ -108,7 +125,7 @@ impl SysPermissionService {
     pub async fn update_cache(&self) -> Result<Vec<SysPermissionVO>> {
         let all = SysPermission::select_all(pool!()).await?;
         CONTEXT.cache_service.set_json(RES_KEY, &all).await?;
-        let mut v = vec![];
+        let mut v = Vec::with_capacity(all.len());
         for x in all {
             v.push(x.into());
         }
@@ -129,7 +146,7 @@ impl SysPermissionService {
         ids: &Vec<String>,
         all_res: &BTreeMap<String, SysPermissionVO>,
     ) -> Vec<SysPermissionVO> {
-        let mut res = vec![];
+        let mut res = Vec::with_capacity(all_res.len());
         //filter res id
         for x in ids {
             for (k, v) in all_res {
@@ -158,7 +175,7 @@ impl SysPermissionService {
     ) -> Result<Vec<SysPermissionVO>> {
         let res = self.finds_res(ids, &all_res);
         //find tops
-        let mut tops = vec![];
+        let mut tops = Vec::with_capacity(res.len());
         for item in res {
             //parent id null, it is an top resource
             if item.parent_id.is_none() {
@@ -178,7 +195,7 @@ impl SysPermissionService {
         arg: &mut SysPermissionVO,
         all_res: &BTreeMap<String, SysPermissionVO>,
     ) {
-        let mut childs = vec![];
+        let mut childs = Vec::with_capacity(all_res.len());
         for (_key, x) in all_res {
             if x.parent_id.is_some() && x.parent_id.eq(&arg.id) {
                 let mut item = x.clone();

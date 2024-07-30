@@ -85,10 +85,10 @@ impl SysUserRoleService {
             .sys_role_service
             .find_role_res(&role_ids)
             .await?;
-        let mut role_vos = vec![];
+        let mut role_vos = Vec::with_capacity(roles.len());
         for role in roles {
             //load res
-            let mut resources = vec![];
+            let mut resources = Vec::with_capacity(role_res_vec.len());
             for role_res in &role_res_vec {
                 if role.id.is_some() && role.id.eq(&role_res.role_id) {
                     if let Some(res) =

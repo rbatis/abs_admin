@@ -49,8 +49,7 @@ impl SysPermissionVO {
                             childs.push(item);
                         }
                         None => {
-                            let mut vec = vec![];
-                            vec.push(item);
+                            let vec = vec![item];
                             childs = Some(vec);
                         }
                     }
