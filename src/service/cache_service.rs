@@ -40,7 +40,7 @@ impl CacheService {
             })
         } else {
             panic!(
-                "[abs_admin] unknown of cache_type: \"{}\",current support 'mem' or 'redis'", cache);
+                "[abs_admin] unknown of cache: \"{}\",current support 'mem' or 'redis'", cache);
         }
     }
 
