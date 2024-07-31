@@ -8,7 +8,6 @@ use rbs::to_value;
 pub struct ApplicationConfig {
     pub debug: bool,
     pub server_url: String,
-    pub redis_url: String,
     pub db_url: String,
     pub db_pool_len: usize,
     pub db_pool_timeout: usize,
@@ -23,7 +22,7 @@ pub struct ApplicationConfig {
     pub jwt_exp: usize,
     pub jwt_refresh_token: usize,
     pub white_list_api: Vec<String>,
-    pub cache_type: String,
+    pub cache: String,
     pub login_fail_retry: u64,
     pub login_fail_retry_wait_sec: u64,
     pub trash_recycle_days: u64,

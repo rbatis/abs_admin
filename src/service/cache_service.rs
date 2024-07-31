@@ -26,27 +26,21 @@ pub struct CacheService {
 }
 
 impl CacheService {
-    pub async fn aaa(&self) {}
     pub fn new(cfg: &ApplicationConfig) -> Result<Self> {
-        match cfg.cache_type.as_str() {
-            "mem" => {
-                println!("[abs_admin] cache_type: mem");
-                Ok(Self {
-                    inner: Box::new(MemCacheService::default()),
-                })
-            }
-            "redis" => {
-                println!("[abs_admin] cache_type: redis");
-                Ok(Self {
-                    inner: Box::new(RedisCacheService::new(&cfg.redis_url)),
-                })
-            }
-            e => {
-                panic!(
-                    "[abs_admin] unknown of cache_type: \"{}\",current support 'mem' or 'redis'",
-                    e
-                );
-            }
+        let cache = cfg.cache.as_str();
+        if cache == "mem" {
+            println!("[abs_admin] cache_type: mem");
+            Ok(Self {
+                inner: Box::new(MemCacheService::default()),
+            })
+        } else if cache.starts_with("redis") {
+            println!("[abs_admin] cache_type: redis");
+            Ok(Self {
+                inner: Box::new(RedisCacheService::new(&cache)),
+            })
+        } else {
+            panic!(
+                "[abs_admin] unknown of cache_type: \"{}\",current support 'mem' or 'redis'", cache);
         }
     }
 
