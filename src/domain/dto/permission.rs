@@ -29,7 +29,18 @@ impl From<PermissionAddDTO> for SysPermission {
     fn from(arg: PermissionAddDTO) -> Self {
         SysPermission {
             id: ObjectId::new().to_string().into(),
-            parent_id: arg.parent_id.clone(),
+            parent_id: {
+                match arg.parent_id {
+                    None => { None}
+                    Some(v) => {
+                        if v.is_empty(){
+                            None
+                        }else{
+                            Some(v)
+                        }
+                    }
+                }
+            },
             name: arg.name.clone(),
             permission: arg.permission.clone(),
             path: arg.path.clone(),

@@ -29,7 +29,18 @@ impl From<RoleAddDTO> for SysRole {
         SysRole {
             id: ObjectId::new().to_string().into(),
             name: arg.name,
-            parent_id: arg.parent_id,
+            parent_id: {
+                match arg.parent_id {
+                    None => { None}
+                    Some(v) => {
+                        if v.is_empty(){
+                            None
+                        }else{
+                            Some(v)
+                        }
+                    }
+                }
+            },
             create_date: DateTime::now().into(),
         }
     }
