@@ -12,7 +12,7 @@ pub use role::*;
 pub use sign_in::*;
 
 use crate::error::Error;
-use crate::service::CONTEXT;
+use crate::context::CONTEXT;
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 

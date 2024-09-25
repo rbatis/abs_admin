@@ -1,6 +1,6 @@
 use crate::domain::table::SysRole;
 use crate::domain::vo::SysPermissionVO;
-use crate::service::CONTEXT;
+use crate::context::CONTEXT;
 
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SysRoleVO {

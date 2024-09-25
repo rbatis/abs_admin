@@ -5,7 +5,7 @@ use crate::domain::table::SysDict;
 use crate::domain::vo::SysDictVO;
 use crate::error::Error;
 use crate::error::Result;
-use crate::service::CONTEXT;
+use crate::context::CONTEXT;
 use crate::{error_info, pool};
 
 const DICT_KEY: &'static str = "sys_dict:all";

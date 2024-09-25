@@ -84,6 +84,6 @@ impl ApplicationConfig {
 #[macro_export]
 macro_rules! error_info {
     ($code: expr) => {
-        $crate::service::CONTEXT.config.get_error_info($code)
+        $crate::context::CONTEXT.config.get_error_info($code)
     };
 }

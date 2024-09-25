@@ -1,6 +1,6 @@
 use crate::domain::vo::JWTToken;
 use crate::error_info;
-use crate::service::CONTEXT;
+use crate::context::CONTEXT;
 pub struct Auth;
 
 ///Whether the interface is in the whitelist

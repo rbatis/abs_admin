@@ -6,7 +6,7 @@ use crate::domain::dto::{IdDTO, SignInDTO, UserAddDTO, UserEditDTO, UserRolePage
 use crate::domain::vo::{JWTToken, RespVO, SignInVO};
 use crate::error::Error;
 use crate::error_info;
-use crate::service::CONTEXT;
+use crate::context::CONTEXT;
 
 pub async fn login(arg: Json<SignInDTO>) -> impl IntoResponse {
     log::info!("login:{:?}", arg.0);

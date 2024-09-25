@@ -1,7 +1,7 @@
 use crate::domain::table::Sms;
 use crate::error::{Error, Result};
 use crate::error_info;
-use crate::service::CONTEXT;
+use crate::context::CONTEXT;
 use std::collections::HashMap;
 
 pub struct SysSmsService {}

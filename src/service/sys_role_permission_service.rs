@@ -7,7 +7,7 @@ use crate::domain::table::SysRolePermission;
 use crate::domain::vo::{SysPermissionVO, SysRoleVO};
 use crate::error::Error;
 use crate::error::Result;
-use crate::service::CONTEXT;
+use crate::context::CONTEXT;
 use crate::{error_info, pool};
 use rbatis::plugin::object_id::ObjectId;
 use rbatis::rbdc::DateTime;

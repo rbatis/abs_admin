@@ -1,7 +1,7 @@
 use crate::domain::vo::JWTToken;
 use crate::error::Error;
 use crate::middleware::auth::{checked_token, is_white_list_api};
-use crate::service::CONTEXT;
+use crate::context::CONTEXT;
 use axum::{
     extract::Request,
     http,

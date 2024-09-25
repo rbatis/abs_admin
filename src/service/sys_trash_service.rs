@@ -1,6 +1,6 @@
 use crate::domain::table::SysTrash;
 use crate::pool;
-use crate::service::CONTEXT;
+use crate::context::CONTEXT;
 use parking_lot::Mutex;
 use rbatis::executor::Executor;
 use rbatis::intercept::{Intercept, ResultType};

@@ -2,7 +2,7 @@ use crate::domain::dto::{DictAddDTO, DictEditDTO, DictPageDTO, IdDTO};
 use crate::domain::table::SysDict;
 use crate::domain::vo::RespVO;
 use crate::error_info;
-use crate::service::CONTEXT;
+use crate::context::CONTEXT;
 use axum::response::IntoResponse;
 use axum::Json;
 
