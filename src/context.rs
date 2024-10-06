@@ -1,7 +1,6 @@
 use std::sync::{Arc, LazyLock};
 use std::time::Duration;
 use rbatis::RBatis;
-use rbs::to_value;
 use crate::config::config::ApplicationConfig;
 use crate::service::{CacheService, SysAuthService, SysDictService, SysPermissionService, SysRoleResService, SysRoleService, SysTrashService, SysUserRoleService, SysUserService};
 
