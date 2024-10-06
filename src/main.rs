@@ -6,6 +6,7 @@ use abs_admin::domain::table;
 use abs_admin::context::CONTEXT;
 use axum::Router;
 use axum::routing::{get, post};
+use rbs::to_value;
 use tower_http::{
     services::{ServeDir,ServeFile},
 };
@@ -16,11 +17,18 @@ use abs_admin::domain::vo::RespVO;
 async fn main() -> std::io::Result<()> {
     //log
     abs_admin::config::log::init_log();
+    if CONTEXT.config.debug {
+        log::info!("[abs_admin] {}", to_value!(&CONTEXT.config));
+        log::info!("[abs_admin] ///////////////////// Start On Debug Mode //////////////////////////////");
+    } else {
+        log::info!("[abs_admin] ///////////////////// Start On Release Mode ////////////////////////////");
+    }
     //database
     CONTEXT.init_database().await;
     table::sync_tables(&CONTEXT.rb).await;
     table::sync_tables_data(&CONTEXT.rb).await;
-    CONTEXT.init_complete().await;
+    log::info!("Serve: http://{}",CONTEXT.config.server_url.replace("0.0.0.0", "127.0.0.1"));
+    log::info!("[abs_admin] ////////////////////////////////////////////////////////////////////////");
     //router
     let app = Router::new()
         .nest_service("/", ServeDir::new("dist/").not_found_service(ServeFile::new("dist/index.html")))

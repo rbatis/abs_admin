@@ -53,17 +53,6 @@ impl ServiceContext {
             self.rb.get_pool().expect("pool not init!").state().await
         );
     }
-
-    pub async fn init_complete(&self){
-        if self.config.debug {
-            log::info!("[abs_admin] {}", to_value!(&self.config));
-            log::info!("[abs_admin] ///////////////////// Start On Debug Mode //////////////////////////////");
-        } else {
-            log::info!("[abs_admin] ///////////////////// Start On Release Mode ////////////////////////////");
-        }
-        log::info!("Serve:   http://{}",self.config.server_url.replace("0.0.0.0", "127.0.0.1"));
-        log::info!("[abs_admin] ////////////////////////////////////////////////////////////////////////");
-    }
 }
 
 impl Default for ServiceContext {
