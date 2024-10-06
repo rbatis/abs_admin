@@ -1,6 +1,7 @@
 use std::sync::{Arc, LazyLock};
 use std::time::Duration;
 use rbatis::RBatis;
+use rbs::to_value;
 use crate::config::config::ApplicationConfig;
 use crate::service::{CacheService, SysAuthService, SysDictService, SysPermissionService, SysRoleResService, SysRoleService, SysTrashService, SysUserRoleService, SysUserService};
 
@@ -51,10 +52,17 @@ impl ServiceContext {
             "[abs_admin] rbatis pool init success! pool state = {}",
             self.rb.get_pool().expect("pool not init!").state().await
         );
-        log::info!(
-            "Serve:   http://{}",
-            self.config.server_url.replace("0.0.0.0", "127.0.0.1")
-        );
+    }
+
+    pub async fn init_complete(&self){
+        if self.config.debug {
+            log::info!("[abs_admin] {}", to_value!(&self.config));
+            log::info!("[abs_admin] ///////////////////// Start On Debug Mode //////////////////////////////");
+        } else {
+            log::info!("[abs_admin] ///////////////////// Start On Release Mode ////////////////////////////");
+        }
+        log::info!("Serve:   http://{}",self.config.server_url.replace("0.0.0.0", "127.0.0.1"));
+        log::info!("[abs_admin] ////////////////////////////////////////////////////////////////////////");
     }
 }
 

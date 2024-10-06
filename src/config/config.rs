@@ -1,7 +1,6 @@
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::Read;
-use rbs::to_value;
 
 /// Config
 #[derive(Debug, PartialEq, serde::Serialize, serde::Deserialize)]
@@ -44,12 +43,6 @@ impl Default for ApplicationConfig {
             result.debug = true;
         } else {
             result.debug = false;
-        }
-        if result.debug {
-            println!("[abs_admin] {}", to_value!(&result));
-            println!("[abs_admin] ///////////////////// Start On Debug Mode ////////////////////////////");
-        } else {
-            println!("[abs_admin] ///////////////////// Start On Release Mode ////////////////////////////");
         }
         result
     }

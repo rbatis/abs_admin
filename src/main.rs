@@ -20,6 +20,7 @@ async fn main() -> std::io::Result<()> {
     CONTEXT.init_database().await;
     table::sync_tables(&CONTEXT.rb).await;
     table::sync_tables_data(&CONTEXT.rb).await;
+    CONTEXT.init_complete().await;
     //router
     let app = Router::new()
         .nest_service("/", ServeDir::new("dist/").not_found_service(ServeFile::new("dist/index.html")))
