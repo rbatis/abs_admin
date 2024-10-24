@@ -3,7 +3,7 @@ use rbatis::dark_std::defer;
 use rbatis::intercept_log::LogInterceptor;
 use rbatis::RBatis;
 use rbatis::rbdc::DateTime;
-use rbatis::table_sync::{ColumMapper, MssqlTableMapper, MysqlTableMapper, PGTableMapper, SqliteTableMapper};
+use rbatis::table_sync::{ColumnMapper, MssqlTableMapper, MysqlTableMapper, PGTableMapper, SqliteTableMapper};
 use crate::domain::table::LoginCheck::PasswordCheck;
 use crate::domain::table::{SysDict, SysPermission, SysRole, SysRolePermission, SysTrash, SysUser, SysUserRole};
 
@@ -15,12 +15,12 @@ pub async fn sync_tables(rb: &RBatis) {
     defer!(|| {
         log_intercept.set_level_filter(level);
     });
-    let mapper = {
+    let mapper: &dyn ColumnMapper = {
         match rb.driver_type().unwrap() {
-            "sqlite" => &SqliteTableMapper {} as &dyn ColumMapper,
-            "mssql" => &MssqlTableMapper {} as &dyn ColumMapper,
-            "mysql" => &MysqlTableMapper {} as &dyn ColumMapper,
-            "postgres" => &PGTableMapper {} as &dyn ColumMapper,
+            "sqlite" => &SqliteTableMapper {},
+            "mssql" => &MssqlTableMapper {},
+            "mysql" => &MysqlTableMapper {},
+            "postgres" => &PGTableMapper {},
             _ => {
                 panic!("not find driver mapper")
             }
