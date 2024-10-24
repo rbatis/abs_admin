@@ -32,7 +32,7 @@ impl SysDictService {
         }
         let result = Ok(SysDict::insert(pool!(), &arg).await?.rows_affected);
         self.update_cache().await?;
-        return result;
+        result
     }
 
     pub async fn edit(&self, arg: &DictEditDTO) -> Result<u64> {
@@ -41,7 +41,7 @@ impl SysDictService {
         if result.is_ok() {
             self.update_cache().await?;
         }
-        return Ok(result?.rows_affected);
+        Ok(result?.rows_affected)
     }
 
     pub async fn remove(&self, id: &str) -> Result<u64> {
@@ -56,6 +56,6 @@ impl SysDictService {
     pub async fn update_cache(&self) -> Result<()> {
         let all = SysDict::select_all(pool!()).await?;
         CONTEXT.cache_service.set_json(DICT_KEY, &all).await?;
-        return Ok(());
+        Ok(())
     }
 }

@@ -44,14 +44,14 @@ impl SysPermissionService {
         }
         let result = Ok(SysPermission::insert(pool!(), &arg).await?.rows_affected);
         self.update_cache().await?;
-        return result;
+        result
     }
 
     pub async fn edit(&self, arg: &ResEditDTO) -> Result<u64> {
         let data = SysPermission::from(arg);
         let result = SysPermission::update_by_column(pool!(), &data, "id").await?;
         self.update_cache().await?;
-        return Ok(result.rows_affected);
+        Ok(result.rows_affected)
     }
 
     pub async fn remove(&self, id: &str) -> Result<u64> {
@@ -64,7 +64,7 @@ impl SysPermissionService {
             .remove_by_permission_id(id)
             .await;
         self.update_cache().await?;
-        return Ok(num);
+        Ok(num)
     }
 
     pub fn make_permission_ids(&self, args: &Vec<SysPermissionVO>) -> Vec<String> {
@@ -119,7 +119,7 @@ impl SysPermissionService {
                 arr.push(x.into());
             }
         }
-        return Ok(arr);
+        Ok(arr)
     }
 
     pub async fn update_cache(&self) -> Result<Vec<SysPermissionVO>> {
@@ -129,7 +129,7 @@ impl SysPermissionService {
         for x in all {
             v.push(x.into());
         }
-        return Ok(v);
+        Ok(v)
     }
 
     pub async fn finds_all_map(&self) -> Result<BTreeMap<String, SysPermissionVO>> {
@@ -138,7 +138,7 @@ impl SysPermissionService {
         for x in all {
             result.insert(x.id.as_deref().unwrap_or_default().to_string(), x);
         }
-        return Ok(result);
+        Ok(result)
     }
 
     pub fn finds_res(

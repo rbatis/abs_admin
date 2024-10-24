@@ -24,7 +24,7 @@ impl SysUserRoleService {
             let all_roles = CONTEXT.sys_role_service.finds_all_map().await?;
             let user_ids = rbatis::table_field_vec!(&vo.records, id);
             let user_roles = SysUserRole::select_in_column(pool!(), "user_id", &user_ids).await?;
-            let role_ids = rbatis::table_field_vec!(&user_roles, role_id).iter().map(|v|v.to_string()).collect();
+            let role_ids = rbatis::table_field_vec!(&user_roles, role_id).iter().map(|v| v.to_string()).collect();
             let user_role_map = rbatis::table_field_map!(user_roles, user_id);
             let roles = CONTEXT.sys_role_service.finds(&role_ids).await?;
             let roles_map = rbatis::table_field_map!(&roles, id);
@@ -42,7 +42,7 @@ impl SysUserRoleService {
                 }
             }
         }
-        return Ok(vo);
+        Ok(vo)
     }
 
     pub async fn add(&self, arg: UserRoleAddDTO) -> Result<u64> {
@@ -106,9 +106,9 @@ impl SysUserRoleService {
             role_vos.push(vo);
         }
         if role_vos.is_empty() {
-            return Ok(None);
+            Ok(None)
         } else {
-            return Ok(Some(role_vos[0].clone()));
+            Ok(Some(role_vos[0].clone()))
         }
     }
 }

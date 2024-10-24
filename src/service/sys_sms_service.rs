@@ -22,7 +22,7 @@ impl SysSmsService {
                 },
             )
             .await?;
-        return Ok(());
+        Ok(())
     }
 
     ///Verifying verification code
@@ -34,12 +34,12 @@ impl SysSmsService {
                 CONTEXT.config.sms_cache_send_key_prefix, account
             ))
             .await?;
-        return match sms {
+        match sms {
             Some(v) => {
                 let sms_code_cached = v.args.get("sms_code");
                 Ok(sms_code_cached.eq(&Some(&sms_code.to_string())))
             }
             _ => Err(Error::from(error_info!("please_send_code"))),
-        };
+        }
     }
 }

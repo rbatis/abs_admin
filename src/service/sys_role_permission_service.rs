@@ -33,7 +33,7 @@ impl SysRoleResService {
     }
 
     fn loop_find_role_ids(&self, arg: &Vec<SysRoleVO>) -> Vec<String> {
-        let mut results = Vec::with_capacity(arg.len()+10);
+        let mut results = Vec::with_capacity(arg.len() + 10);
         for x in arg {
             results.push(x.id.as_deref().unwrap_or_default().to_string());
             match &x.childs {
@@ -46,7 +46,7 @@ impl SysRoleResService {
                 _ => {}
             }
         }
-        return results;
+        results
     }
 
     async fn find_role_res_map(
@@ -78,7 +78,7 @@ impl SysRoleResService {
                 }
             }
         }
-        return Ok(role_res_map);
+        Ok(role_res_map)
     }
 
     /// Add the resource
@@ -93,8 +93,8 @@ impl SysRoleResService {
             let permission_ids = role_res_map.get(role.id.as_deref().unwrap_or_default());
             let mut res_vos = Vec::with_capacity({
                 let mut cap = 0;
-                if let Some(ids)= permission_ids{
-                    cap  = ids.len();
+                if let Some(ids) = permission_ids {
+                    cap = ids.len();
                 }
                 cap
             });
@@ -119,7 +119,7 @@ impl SysRoleResService {
             role.resource_ids = rbatis::table_field_vec!(role.resources.clone(), id);
             data.push(role);
         }
-        return Ok(data);
+        Ok(data)
     }
 
     pub async fn add(&self, arg: &SysRoleResAddDTO) -> Result<u64> {
@@ -127,9 +127,9 @@ impl SysRoleResService {
             .sys_role_service
             .add(RoleAddDTO::from(arg.clone()))
             .await?;
-        return self
+        self
             .save_resources(&role_id, arg.resource_ids.clone())
-            .await;
+            .await
     }
 
     pub async fn edit(&self, arg: &SysRoleResUpdateDTO) -> Result<u64> {
@@ -141,7 +141,7 @@ impl SysRoleResService {
             .sys_role_service
             .edit(RoleEditDTO::from(arg.clone()))
             .await?;
-        return self.save_resources(role_id, arg.resource_ids.clone()).await;
+        self.save_resources(role_id, arg.resource_ids.clone()).await
     }
 
     async fn save_resources(&self, role_id: &str, resource_ids: Vec<String>) -> Result<u64> {
@@ -173,7 +173,7 @@ impl SysRoleResService {
             .sys_role_permission_service
             .remove_by_role_id(role_id)
             .await?;
-        return Ok(remove_roles + remove_user_roles + remove_role_res);
+        Ok(remove_roles + remove_user_roles + remove_role_res)
     }
 
     pub async fn remove(&self, id: &str) -> Result<u64> {

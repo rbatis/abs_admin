@@ -8,6 +8,6 @@ impl SysAuthService {
     pub async fn check_auth(&self, arg: SysAuthDTO) -> Result<JWTToken> {
         let jwt = crate::middleware::auth::checked_token(&arg.access_token)?;
         crate::middleware::auth::check_auth(&jwt, &arg.path).await?;
-        return Ok(jwt);
+        Ok(jwt)
     }
 }

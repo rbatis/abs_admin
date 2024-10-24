@@ -26,9 +26,9 @@ impl SysUserService {
             arg.name.as_deref().unwrap_or_default(),
             arg.account.as_deref().unwrap_or_default(),
         )
-        .await?;
+            .await?;
         let page = Page::<SysUserVO>::from(sys_user_page);
-        return Ok(page);
+        Ok(page)
     }
 
     ///user details
@@ -44,7 +44,7 @@ impl SysUserService {
             .find_user_role(&user_id, &all_res)
             .await?;
         user_vo.role = role;
-        return Ok(user_vo);
+        Ok(user_vo)
     }
 
     pub async fn find(&self, id: &str) -> Result<Option<SysUser>> {
@@ -172,7 +172,7 @@ impl SysUserService {
             return Err(error.unwrap());
         }
         let sign_in_vo = self.get_user_info(&user).await?;
-        return Ok(sign_in_vo);
+        Ok(sign_in_vo)
     }
 
     ///is need to wait
@@ -194,7 +194,7 @@ impl SysUserService {
                 }
             }
         }
-        return Ok(());
+        Ok(())
     }
 
     ///Add redis retry record
@@ -220,7 +220,7 @@ impl SysUserService {
                 )
                 .await?;
         }
-        return Ok(());
+        Ok(())
     }
 
     pub async fn get_user_info_by_token(&self, token: &JWTToken) -> Result<SignInVO> {
@@ -235,7 +235,7 @@ impl SysUserService {
                 token.account
             ))
         })?;
-        return self.get_user_info(&user).await;
+        self.get_user_info(&user).await
     }
 
     pub async fn get_user_info(&self, user: &SysUser) -> Result<SignInVO> {
@@ -261,7 +261,7 @@ impl SysUserService {
             .sys_user_role_service
             .find_user_role(&sign_vo.id.clone().unwrap_or_default(), &all_res)
             .await?;
-        return Ok(sign_vo);
+        Ok(sign_vo)
     }
 
     pub async fn sign_out(&self) {}
@@ -305,7 +305,7 @@ impl SysUserService {
         }
         let r = SysUser::delete_by_column(pool!(), "id", id).await?;
         CONTEXT.sys_user_role_service.remove_by_user_id(id).await?;
-        return Ok(r.rows_affected);
+        Ok(r.rows_affected)
     }
 
     ///Find user-authority hierarchy permissions
@@ -314,9 +314,9 @@ impl SysUserService {
         user_id: &str,
         all_res: &BTreeMap<String, SysPermissionVO>,
     ) -> Result<Vec<String>> {
-        return CONTEXT
+        CONTEXT
             .sys_role_service
             .find_user_permission(user_id, all_res)
-            .await;
+            .await
     }
 }

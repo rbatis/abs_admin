@@ -27,7 +27,7 @@ impl RedisCacheService {
             error!("{}", err);
             return Err(crate::error::Error::from(err));
         }
-        return Ok(conn.unwrap());
+        Ok(conn.unwrap())
     }
 }
 

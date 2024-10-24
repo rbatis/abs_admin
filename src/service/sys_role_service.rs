@@ -19,7 +19,7 @@ impl SysRoleService {
             &PageRequest::from(arg),
             arg.name.as_deref().unwrap_or_default(),
         )
-        .await?;
+            .await?;
         let all_role = self.finds_all_map().await?;
         let mut page = Page::<SysRoleVO>::from(data);
         for mut vo in &mut page.records {
@@ -39,7 +39,7 @@ impl SysRoleService {
                 data.push(top);
             }
         }
-        return Ok(data);
+        Ok(data)
     }
 
     pub async fn finds_all(&self) -> Result<Vec<SysRole>> {
@@ -57,13 +57,13 @@ impl SysRoleService {
         if CONTEXT.config.debug {
             log::info!("[abs_admin] get from cache:{}", RES_KEY);
         }
-        return Ok(js?.unwrap_or_default());
+        Ok(js?.unwrap_or_default())
     }
 
     pub async fn update_cache(&self) -> Result<Vec<SysRole>> {
         let all = SysRole::select_all(pool!()).await?;
         CONTEXT.cache_service.set_json(RES_KEY, &all).await?;
-        return Ok(all);
+        Ok(all)
     }
 
     /// All user ids - User Map data
@@ -73,7 +73,7 @@ impl SysRoleService {
         for x in all {
             result.insert(x.id.as_deref().unwrap_or_default().to_string(), x);
         }
-        return Ok(result);
+        Ok(result)
     }
 
     pub async fn add(&self, arg: RoleAddDTO) -> Result<(u64, String)> {
@@ -119,7 +119,7 @@ impl SysRoleService {
         all_res: &BTreeMap<String, SysPermissionVO>,
     ) -> Result<Vec<String>> {
         let user_roles = SysUserRole::select_by_column(pool!(), "user_id", user_id).await?;
-        let role_ids = rbatis::table_field_vec!(&user_roles, role_id).iter().map(|v|v.to_string()).collect();
+        let role_ids = rbatis::table_field_vec!(&user_roles, role_id).iter().map(|v| v.to_string()).collect();
         let role_res = self
             .find_role_res(&role_ids)
             .await?;
@@ -131,7 +131,7 @@ impl SysRoleService {
             )
             .await?;
         let permissions = rbatis::table_field_vec!(res, permission);
-        return Ok(permissions);
+        Ok(permissions)
     }
 
     ///Loop to find the parent-child associative relation array
