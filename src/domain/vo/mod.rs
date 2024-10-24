@@ -5,6 +5,7 @@ pub mod role;
 pub mod sign_in;
 pub mod user;
 
+use axum::response::{IntoResponse, Response};
 pub use dict::*;
 pub use jwt::*;
 pub use res::*;
@@ -65,10 +66,6 @@ where
             data: None,
         }
     }
-
-    pub fn json(self) -> axum::Json<RespVO<T>> {
-        axum::Json(self)
-    }
 }
 
 impl<T> ToString for RespVO<T>
@@ -77,5 +74,11 @@ where
 {
     fn to_string(&self) -> String {
         serde_json::to_string(self).unwrap()
+    }
+}
+
+impl<T: Serialize + DeserializeOwned> IntoResponse for RespVO<T> {
+    fn into_response(self) -> Response {
+        axum::Json(self).into_response()
     }
 }

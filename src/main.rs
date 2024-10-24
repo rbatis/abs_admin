@@ -32,7 +32,7 @@ async fn main() -> std::io::Result<()> {
     //router
     let app = Router::new()
         .nest_service("/", ServeDir::new("dist/").not_found_service(ServeFile::new("dist/index.html")))
-        .route("/admin/", get(|| async { RespVO::from("hello".to_string()).json() }))
+        .route("/admin/", get(|| async { RespVO::from("hello".to_string()) }))
         .route("/admin/sys_login", post(sys_user_controller::login))
         .route("/admin/sys_user_info", post(sys_user_controller::info))
         .route("/admin/sys_user_detail", post(sys_user_controller::detail))
