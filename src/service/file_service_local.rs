@@ -54,4 +54,14 @@ impl IFileService for FileServiceLocal {
             Ok(result)
         })
     }
+
+    fn remove(&self, name: String) -> BoxFuture<Result<()>> {
+        let path = self.path.clone();
+        Box::pin(async move {
+            let path = path.join(name);
+            tokio::fs::create_dir_all(&path).await?;
+            let f = tokio::fs::remove_file(&path).await?;
+            Ok(f)
+        })
+    }
 }

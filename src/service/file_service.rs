@@ -6,4 +6,5 @@ pub trait IFileService: Sync + Send + Debug {
     fn upload(&self, name: String, data: Vec<u8>) -> BoxFuture<Result<()>>;
     fn download(&self, name: String) -> BoxFuture<Result<Vec<u8>>>;
     fn list(&self) -> BoxFuture<Result<Vec<String>>>;
+    fn remove(&self, name: String) -> BoxFuture<Result<()>>;
 }
