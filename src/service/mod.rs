@@ -12,6 +12,8 @@ mod sys_user_role_service;
 mod sys_user_service;
 mod file_service;
 
+mod file_service_local;
+
 pub use cache_service::*;
 pub use cache_mem_service::*;
 pub use cache_redis_service::*;
@@ -25,4 +27,6 @@ pub use sys_trash_service::*;
 pub use sys_user_role_service::*;
 pub use sys_user_service::*;
 pub use file_service::*;
+pub use file_service_local::*;
+
 
