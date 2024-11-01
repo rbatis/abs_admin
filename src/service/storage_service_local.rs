@@ -21,7 +21,7 @@ impl IStorageService for FileServiceLocal {
             if let Some(parent) = name.parent() {
                 tokio::fs::create_dir_all(&parent).await?;
             }
-            let mut f = tokio::fs::File::open(&name).await?;
+            let mut f = tokio::fs::File::create(&name).await?;
             f.write(&data).await?;
             f.flush().await?;
             Ok(name.to_str().unwrap_or_default().to_string())
@@ -49,6 +49,8 @@ impl IStorageService for FileServiceLocal {
             while let Ok(v) = rd.next_entry().await {
                 if let Some(v) = v {
                     result.push(v.path().display().to_string());
+                } else {
+                    break;
                 }
             }
             Ok(result)
