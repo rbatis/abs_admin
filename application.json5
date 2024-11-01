@@ -5,7 +5,7 @@
   //choose one ["mem","redis://127.0.0.1:6379"]
   cache: "mem",
   //choose one storage
-  //local storage "local://<path>"
+  //local storage "local"
   //oss storage   "s3://{\"bucket\":\"test\",\"endpoint\":\"http://127.0.0.1:9000\",\"access_key\":\"minioadmin\",\"secret_key\":\"minioadmin\",\"region\":\"\"}"
   storage: "local",
   //choose database (need add `rbdc-<database> = { version = "*" }` of Cargo.toml)
