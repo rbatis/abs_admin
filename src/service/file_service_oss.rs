@@ -35,7 +35,7 @@ impl FileServiceOss {
             .build();
         let client = Client::from_conf(config);
         Self {
-            path: PathBuf::from(path),
+            path: PathBuf::from(path.trim_start_matches("/").to_string()),
             client: client,
             bucket: cfg.bucket.to_string(),
         }
