@@ -6,15 +6,15 @@ use crate::error::Result;
 use crate::service::IStorageService;
 
 #[derive(Debug)]
-pub struct FileServiceLocal {}
+pub struct FileLocalService {}
 
-impl FileServiceLocal {
+impl FileLocalService {
     pub fn new() -> Self {
         Self {}
     }
 }
 
-impl IStorageService for FileServiceLocal {
+impl IStorageService for FileLocalService {
     fn upload(&self, name: String, data: Vec<u8>) -> BoxFuture<Result<String>> {
         let name = PathBuf::from(name);
         Box::pin(async move {

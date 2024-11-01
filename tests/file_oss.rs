@@ -1,4 +1,4 @@
-use abs_admin::service::{FileServiceOss, IStorageService, S3Config};
+use abs_admin::service::{FileS3Service, IStorageService, S3Config};
 
 
 #[tokio::test]
@@ -16,7 +16,7 @@ async fn test_config_load() {
 }
 #[tokio::test]
 async fn test_oss_upload() {
-    let server = FileServiceOss::new(S3Config {
+    let server = FileS3Service::new(S3Config {
         bucket: "test".to_string(),
         endpoint: "http://127.0.0.1:9000".to_string(),
         access_key: "minioadmin".to_string(),
@@ -29,7 +29,7 @@ async fn test_oss_upload() {
 
 #[tokio::test]
 async fn test_oss_list() {
-    let server = FileServiceOss::new( S3Config {
+    let server = FileS3Service::new( S3Config {
         bucket: "test".to_string(),
         endpoint: "http://127.0.0.1:9000".to_string(),
         access_key: "minioadmin".to_string(),

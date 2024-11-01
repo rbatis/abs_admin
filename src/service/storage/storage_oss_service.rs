@@ -11,7 +11,7 @@ use crate::error::Error;
 use crate::service::{IStorageService};
 
 #[derive(Debug)]
-pub struct FileServiceOss {
+pub struct FileS3Service {
     client: Client,
     bucket: String,
 }
@@ -36,7 +36,7 @@ impl S3Config {
     }
 }
 
-impl FileServiceOss {
+impl FileS3Service {
     pub fn new(cfg: S3Config) -> Self {
         let credentials = Credentials::new(cfg.access_key, cfg.secret_key, None, None, "minio");
         let config = Config::builder()
@@ -59,7 +59,7 @@ impl FileServiceOss {
     }
 }
 
-impl IStorageService for FileServiceOss {
+impl IStorageService for FileS3Service {
     fn upload(&self, name: String, data: Vec<u8>) -> BoxFuture<crate::error::Result<String>> {
         let name = name.trim_start_matches("/").to_string();
         let name = PathBuf::from(name);
