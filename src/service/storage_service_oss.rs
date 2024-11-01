@@ -62,7 +62,7 @@ impl FileServiceOss {
 }
 
 impl IStorageService for FileServiceOss {
-    fn upload(&self, name: String, data: Vec<u8>) -> BoxFuture<crate::error::Result<()>> {
+    fn upload(&self, name: String, data: Vec<u8>) -> BoxFuture<crate::error::Result<String>> {
         let name = name.trim_start_matches("/").to_string();
         let path = self.path.clone();
         let name = path.join(name);
@@ -73,7 +73,7 @@ impl IStorageService for FileServiceOss {
                 .body(ByteStream::from(data))
                 .send().await
                 .map_err(|e| Error::from(e.to_string()))?;
-            Ok(())
+            Ok(name.to_str().unwrap_or_default().to_string())
         })
     }
 

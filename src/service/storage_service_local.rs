@@ -17,7 +17,7 @@ impl FileServiceLocal {
 }
 
 impl IStorageService for FileServiceLocal {
-    fn upload(&self, name: String, data: Vec<u8>) -> BoxFuture<Result<()>> {
+    fn upload(&self, name: String, data: Vec<u8>) -> BoxFuture<Result<String>> {
         let path = self.path.clone();
         let name = path.join(name);
         Box::pin(async move {
@@ -27,7 +27,7 @@ impl IStorageService for FileServiceLocal {
             let mut f = tokio::fs::File::open(&name).await?;
             f.write(&data).await?;
             f.flush().await?;
-            Ok(())
+            Ok(name.to_str().unwrap_or_default().to_string())
         })
     }
 

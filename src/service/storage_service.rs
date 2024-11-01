@@ -5,7 +5,7 @@ use crate::error::Result;
 use crate::service::{FileServiceLocal, FileServiceOss, S3Config};
 
 pub trait IStorageService: Sync + Send + Debug {
-    fn upload(&self, name: String, data: Vec<u8>) -> BoxFuture<Result<()>>;
+    fn upload(&self, name: String, data: Vec<u8>) -> BoxFuture<Result<String>>;
     fn download(&self, name: String) -> BoxFuture<Result<Vec<u8>>>;
     fn list(&self, name: String) -> BoxFuture<Result<Vec<String>>>;
     fn remove(&self, name: String) -> BoxFuture<Result<()>>;
