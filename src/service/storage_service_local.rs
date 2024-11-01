@@ -6,20 +6,17 @@ use crate::error::Result;
 use crate::service::IStorageService;
 
 #[derive(Debug)]
-pub struct FileServiceLocal {
-    path: PathBuf,
-}
+pub struct FileServiceLocal {}
 
 impl FileServiceLocal {
-    pub fn new(path: &str) -> Self {
-        Self { path: PathBuf::from(path) }
+    pub fn new() -> Self {
+        Self {}
     }
 }
 
 impl IStorageService for FileServiceLocal {
     fn upload(&self, name: String, data: Vec<u8>) -> BoxFuture<Result<String>> {
-        let path = self.path.clone();
-        let name = path.join(name);
+        let name = PathBuf::from(name);
         Box::pin(async move {
             if let Some(parent) = name.parent() {
                 tokio::fs::create_dir_all(&parent).await?;
@@ -32,8 +29,7 @@ impl IStorageService for FileServiceLocal {
     }
 
     fn download(&self, name: String) -> BoxFuture<Result<Vec<u8>>> {
-        let path = self.path.clone();
-        let name = path.join(name);
+        let name = PathBuf::from(name);
         Box::pin(async move {
             if let Some(parent) = name.parent() {
                 tokio::fs::create_dir_all(&parent).await?;
@@ -46,8 +42,7 @@ impl IStorageService for FileServiceLocal {
     }
 
     fn list(&self, name: String) -> BoxFuture<Result<Vec<String>>> {
-        let path = self.path.clone();
-        let name = path.join(name);
+        let name = PathBuf::from(name);
         Box::pin(async move {
             let mut rd = tokio::fs::read_dir(&name).await?;
             let mut result = Vec::new();
@@ -61,8 +56,7 @@ impl IStorageService for FileServiceLocal {
     }
 
     fn remove(&self, name: String) -> BoxFuture<Result<()>> {
-        let path = self.path.clone();
-        let name = path.join(name);
+        let name = PathBuf::from(name);
         Box::pin(async move {
             let f = tokio::fs::remove_file(&name).await?;
             Ok(f)
