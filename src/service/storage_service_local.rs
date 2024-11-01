@@ -3,7 +3,7 @@ use std::path::PathBuf;
 use futures_util::future::BoxFuture;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use crate::error::Result;
-use crate::service::IFileService;
+use crate::service::IStorageService;
 
 #[derive(Debug)]
 pub struct FileServiceLocal {
@@ -16,7 +16,7 @@ impl FileServiceLocal {
     }
 }
 
-impl IFileService for FileServiceLocal {
+impl IStorageService for FileServiceLocal {
     fn upload(&self, name: String, data: Vec<u8>) -> BoxFuture<Result<()>> {
         let path = self.path.clone();
         let name = path.join(name);

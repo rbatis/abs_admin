@@ -2,7 +2,7 @@ use std::sync::{Arc, LazyLock};
 use std::time::Duration;
 use rbatis::RBatis;
 use crate::config::config::ApplicationConfig;
-use crate::service::{CacheService, SysAuthService, SysDictService, SysPermissionService, SysRoleResService, SysRoleService, SysTrashService, SysUserRoleService, SysUserService};
+use crate::service::{CacheService, StorageService, SysAuthService, SysDictService, SysPermissionService, SysRoleResService, SysRoleService, SysTrashService, SysUserRoleService, SysUserService};
 
 /// Service CONTEXT
 pub static CONTEXT: LazyLock<ServiceContext> = LazyLock::new(|| ServiceContext::default());
@@ -18,6 +18,7 @@ pub struct ServiceContext {
     pub config: ApplicationConfig,
     pub rb: RBatis,
     pub cache_service: CacheService,
+    pub storage_service: StorageService,
     pub sys_permission_service: SysPermissionService,
     pub sys_user_service: SysUserService,
     pub sys_role_service: SysRoleService,
@@ -66,6 +67,7 @@ impl Default for ServiceContext {
                 rb
             },
             cache_service: CacheService::new(&config).unwrap(),
+            storage_service:  StorageService::new(&config.storage),
             sys_permission_service: SysPermissionService {},
             sys_user_service: SysUserService {},
             sys_role_service: SysRoleService {},

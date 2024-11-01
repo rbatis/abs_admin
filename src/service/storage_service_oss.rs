@@ -8,7 +8,7 @@ use futures_util::future::BoxFuture;
 use serde::{Deserialize, Serialize};
 use tokio::io::AsyncReadExt;
 use crate::error::Error;
-use crate::service::{IFileService};
+use crate::service::{IStorageService};
 
 #[derive(Debug)]
 pub struct FileServiceOss {
@@ -17,13 +17,24 @@ pub struct FileServiceOss {
     bucket: String,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct S3Config {
     pub bucket: String,
     pub endpoint: String,
     pub access_key: String,
     pub secret_key: String,
     pub region: String,
+}
+
+impl S3Config {
+    pub fn load(arg: &str) -> Result<S3Config, Error> {
+        if arg.starts_with("s3://") {
+            let v = serde_json::from_str(arg.trim_start_matches("s3://")).map_err(|e| Error::from(e.to_string()))?;
+            Ok(v)
+        } else {
+            Err(Error::from("s3 must have prefix 's3://'"))
+        }
+    }
 }
 
 impl FileServiceOss {
@@ -36,7 +47,7 @@ impl FileServiceOss {
                 } else {
                     Cow::Owned(cfg.region)
                 }
-            })) // MinIO 可以使用任何 Region 值
+            }))
             .credentials_provider(credentials)
             .endpoint_url(cfg.endpoint)
             .behavior_version(BehaviorVersion::latest())
@@ -50,7 +61,7 @@ impl FileServiceOss {
     }
 }
 
-impl IFileService for FileServiceOss {
+impl IStorageService for FileServiceOss {
     fn upload(&self, name: String, data: Vec<u8>) -> BoxFuture<crate::error::Result<()>> {
         let name = name.trim_start_matches("/").to_string();
         let path = self.path.clone();
