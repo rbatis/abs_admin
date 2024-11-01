@@ -36,6 +36,6 @@ impl StorageService {
                 };
             }
         }
-        panic!("unknown config of storage url={}", storage)
+        panic!("unknown storage url={}. did you forget open default `[features]` on Cargo.toml?", storage)
     }
 }
