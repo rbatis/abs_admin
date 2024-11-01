@@ -6,7 +6,8 @@ edition = "2021"
 
 [features]
 default = []
-s3 = ["aws-config","aws-sdk-s3"]
+storage_s3 = ["aws-config","aws-sdk-s3"]
+cache_redis = ["redis"]
 
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -30,7 +31,7 @@ fast_log = { version = "1.7" }
 axum = { version = "0.7.4", features = ["macros"] }
 tower-http = { version = "0.5.2", features = ["fs", "cors"] }
 #redis
-redis = { version = "0.25.2", features = ["tokio-comp"] }
+redis = { version = "0.25.2", features = ["tokio-comp"] ,optional = true}
 #jwt
 jsonwebtoken = "9.2"
 md5 = "0.7"

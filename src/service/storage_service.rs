@@ -29,7 +29,7 @@ impl StorageService {
                 inner: Box::new(FileServiceLocal::new(storage))
             };
         } else if storage.starts_with("s3://") {
-            #[cfg(feature = "s3")]
+            #[cfg(feature = "storage_s3")]
             {
                 return Self {
                     inner: Box::new(crate::service::FileServiceOss::new(storage, crate::service::S3Config::load(storage).unwrap()))

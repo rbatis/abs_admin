@@ -1,6 +1,6 @@
 use crate::config::config::ApplicationConfig;
 use crate::error::Result;
-use crate::service::{MemCacheService, RedisCacheService};
+use crate::service::{MemCacheService};
 use futures_util::future::BoxFuture;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
@@ -30,18 +30,19 @@ impl CacheService {
         let cache = cfg.cache.as_str();
         if cache == "mem" {
             println!("[abs_admin] cache_type: mem");
-            Ok(Self {
+            return Ok(Self {
                 inner: Box::new(MemCacheService::default()),
-            })
+            });
         } else if cache.starts_with("redis") {
-            println!("[abs_admin] cache_type: redis");
-            Ok(Self {
-                inner: Box::new(RedisCacheService::new(&cache)),
-            })
-        } else {
-            panic!(
-                "[abs_admin] unknown of cache: \"{}\",current support 'mem' or 'redis'", cache);
+            #[cfg(feature = "cache_redis")]
+            {
+                println!("[abs_admin] cache_type: redis");
+                return Ok(Self {
+                    inner: Box::new(crate::service::RedisCacheService::new(&cache)),
+                });
+            }
         }
+        panic!("[abs_admin] unknown of cache: \"{}\",current support 'mem' or 'redis'", cache);
     }
 
     pub async fn set_string(&self, k: &str, v: &str) -> Result<String> {

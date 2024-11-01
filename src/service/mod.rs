@@ -1,5 +1,6 @@
 mod cache_service;
 mod cache_mem_service;
+#[cfg(feature = "cache_redis")]
 mod cache_redis_service;
 mod sys_auth_service;
 mod sys_dict_service;
@@ -14,11 +15,12 @@ mod storage_service;
 
 mod storage_service_local;
 
-#[cfg(feature = "s3")]
+#[cfg(feature = "storage_s3")]
 mod storage_service_oss;
 
 pub use cache_service::*;
 pub use cache_mem_service::*;
+#[cfg(feature = "cache_redis")]
 pub use cache_redis_service::*;
 pub use sys_auth_service::*;
 pub use sys_dict_service::*;
@@ -31,6 +33,6 @@ pub use sys_user_role_service::*;
 pub use sys_user_service::*;
 pub use storage_service::*;
 pub use storage_service_local::*;
-#[cfg(feature = "s3")]
+#[cfg(feature = "storage_s3")]
 pub use storage_service_oss::*;
 
