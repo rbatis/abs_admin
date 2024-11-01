@@ -20,7 +20,7 @@ pub struct FileServiceOss {
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct S3Config {
     pub bucket: String,
-    pub endpoint_url: String,
+    pub endpoint: String,
     pub access_key: String,
     pub secret_key: String,
     pub region: String,
@@ -38,7 +38,7 @@ impl FileServiceOss {
                 }
             })) // MinIO 可以使用任何 Region 值
             .credentials_provider(credentials)
-            .endpoint_url(cfg.endpoint_url)
+            .endpoint_url(cfg.endpoint)
             .behavior_version(BehaviorVersion::latest())
             .build();
         let client = Client::from_conf(config);

@@ -5,7 +5,7 @@ use abs_admin::service::{FileServiceOss, IFileService, S3Config};
 async fn test_oss_upload() {
     let server = FileServiceOss::new("", S3Config{
         bucket: "test".to_string(),
-        endpoint_url: "http://127.0.0.1:9000".to_string(),
+        endpoint: "http://127.0.0.1:9000".to_string(),
         access_key: "minioadmin".to_string(),
         secret_key: "minioadmin".to_string(),
         region: "".to_string(),
@@ -18,7 +18,7 @@ async fn test_oss_upload() {
 async fn test_oss_list() {
     let server = FileServiceOss::new("", S3Config{
         bucket: "test".to_string(),
-        endpoint_url: "http://127.0.0.1:9000".to_string(),
+        endpoint: "http://127.0.0.1:9000".to_string(),
         access_key: "minioadmin".to_string(),
         secret_key: "minioadmin".to_string(),
         region: "".to_string(),
