@@ -59,7 +59,7 @@ fn parse_rolling_type(log_rolling: &str) -> RollingType {
     } else {
         panic!("unknown log_rolling '{}'", log_rolling);
     }
-    return rolling_type;
+    rolling_type
 }
 
 fn parse_packer(packer: &str) -> Box<dyn Packer> {
@@ -97,15 +97,15 @@ fn parse_keep_type(arg: &str) -> KeepType {
         arg if arg.starts_with("KeepNum(") => {
             let end = arg.find(")").unwrap();
             let num = arg["KeepNum(".len()..end].to_string();
-            return KeepType::KeepNum(num.parse::<i64>().unwrap());
+            KeepType::KeepNum(num.parse::<i64>().unwrap())
         }
         arg if arg.starts_with("KeepTime(") => {
             let end = arg.find(")").unwrap();
             let num = arg["KeepTime(".len()..end].to_string();
-            return KeepType::KeepTime(Duration::from_secs(num.parse::<u64>().unwrap()));
+            KeepType::KeepTime(Duration::from_secs(num.parse::<u64>().unwrap()))
         }
         arg if arg.to_uppercase().as_str() == "ALL" => {
-            return KeepType::All;
+            KeepType::All
         }
         _ => {
             panic!("unknown keep_type '{}'", arg)
@@ -114,7 +114,7 @@ fn parse_keep_type(arg: &str) -> KeepType {
 }
 
 fn parse_log_level(arg: &str) -> log::LevelFilter {
-    return match arg {
+    match arg {
         "off" => log::LevelFilter::Off,
         "warn" => log::LevelFilter::Warn,
         "error" => log::LevelFilter::Error,
@@ -122,5 +122,5 @@ fn parse_log_level(arg: &str) -> log::LevelFilter {
         "info" => log::LevelFilter::Info,
         "debug" => log::LevelFilter::Debug,
         _ => log::LevelFilter::Info,
-    };
+    }
 }
