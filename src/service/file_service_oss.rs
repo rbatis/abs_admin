@@ -1,3 +1,4 @@
+use std::borrow::Cow;
 use std::path::PathBuf;
 use aws_config::BehaviorVersion;
 use aws_sdk_s3::{Client, Config};
@@ -22,13 +23,20 @@ pub struct S3Config {
     pub endpoint_url: String,
     pub access_key: String,
     pub secret_key: String,
+    pub region: String,
 }
 
 impl FileServiceOss {
     pub fn new(path: &str, cfg: S3Config) -> Self {
         let credentials = Credentials::new(cfg.access_key, cfg.secret_key, None, None, "minio");
         let config = Config::builder()
-            .region(Region::from_static("us-east-1")) // MinIO 可以使用任何 Region 值
+            .region(Region::new({
+                if cfg.region.is_empty() {
+                    Cow::Borrowed("us-east-1")
+                } else {
+                    Cow::Owned(cfg.region)
+                }
+            })) // MinIO 可以使用任何 Region 值
             .credentials_provider(credentials)
             .endpoint_url(cfg.endpoint_url)
             .behavior_version(BehaviorVersion::latest())

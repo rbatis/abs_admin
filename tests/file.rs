@@ -8,6 +8,7 @@ async fn test_oss_upload() {
         endpoint_url: "http://127.0.0.1:9000".to_string(),
         access_key: "minioadmin".to_string(),
         secret_key: "minioadmin".to_string(),
+        region: "".to_string(),
     });
     let data = server.upload("/test.txt".to_string(),"test2222".into()).await.unwrap();
     println!("{:?}", data);
@@ -20,6 +21,7 @@ async fn test_oss_list() {
         endpoint_url: "http://127.0.0.1:9000".to_string(),
         access_key: "minioadmin".to_string(),
         secret_key: "minioadmin".to_string(),
+        region: "".to_string(),
     });
     let data = server.list("/".to_string()).await.unwrap();
     println!("{:?}", data);
