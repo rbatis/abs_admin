@@ -2,7 +2,7 @@ use std::fmt::Debug;
 use std::ops::Deref;
 use futures_util::future::BoxFuture;
 use crate::error::Result;
-use crate::service::{FileServiceLocal, FileServiceOss, S3Config};
+use crate::service::{FileServiceLocal};
 
 pub trait IStorageService: Sync + Send + Debug {
     fn upload(&self, name: String, data: Vec<u8>) -> BoxFuture<Result<String>>;
@@ -25,15 +25,17 @@ impl Deref for StorageService {
 impl StorageService {
     pub fn new(storage: &str) -> StorageService {
         if storage == "local" {
-            Self {
+            return Self {
                 inner: Box::new(FileServiceLocal::new(storage))
-            }
+            };
         } else if storage.starts_with("s3://") {
-            Self {
-                inner: Box::new(FileServiceOss::new(storage, S3Config::load(storage).unwrap()))
+            #[cfg(feature = "s3")]
+            {
+                return Self {
+                    inner: Box::new(crate::service::FileServiceOss::new(storage, crate::service::S3Config::load(storage).unwrap()))
+                };
             }
-        } else {
-            panic!("warn config of storage url={}", storage)
         }
+        panic!("unknown config of storage url={}", storage)
     }
 }

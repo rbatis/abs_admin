@@ -4,6 +4,11 @@ version = "0.1.0"
 authors = ["zhuxiujia <zhuxiujia@qq.com>"]
 edition = "2021"
 
+[features]
+default = []
+s3 = ["aws-config","aws-sdk-s3"]
+
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
 rbs = { version = "4.5" }
@@ -41,8 +46,8 @@ sqlparser = "0.44.0"
 json5 = "0.4"
 
 
-aws-config = { version = "1.5.9", features = ["behavior-version-latest"] }
-aws-sdk-s3 = { version = "1.58.0", features = ["rt-tokio"] }
+aws-config = { version = "1.5.9", features = ["behavior-version-latest"], optional = true }
+aws-sdk-s3 = { version = "1.58.0", features = ["rt-tokio"], optional = true }
 
 
 [build-dependencies]

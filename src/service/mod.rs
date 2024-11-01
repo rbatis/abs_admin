@@ -13,6 +13,8 @@ mod sys_user_service;
 mod storage_service;
 
 mod storage_service_local;
+
+#[cfg(feature = "s3")]
 mod storage_service_oss;
 
 pub use cache_service::*;
@@ -29,5 +31,6 @@ pub use sys_user_role_service::*;
 pub use sys_user_service::*;
 pub use storage_service::*;
 pub use storage_service_local::*;
+#[cfg(feature = "s3")]
 pub use storage_service_oss::*;
 
