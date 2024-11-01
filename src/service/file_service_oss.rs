@@ -1,8 +1,10 @@
 use std::path::PathBuf;
-use aws_config::SdkConfig;
-use aws_sdk_s3::Client;
+use aws_config::BehaviorVersion;
+use aws_sdk_s3::{Client, Config};
+use aws_sdk_s3::config::{Credentials, Region};
 use aws_sdk_s3::primitives::ByteStream;
 use futures_util::future::BoxFuture;
+use serde::{Deserialize, Serialize};
 use tokio::io::AsyncReadExt;
 use crate::error::Error;
 use crate::service::{IFileService};
@@ -14,22 +16,35 @@ pub struct FileServiceOss {
     bucket: String,
 }
 
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct S3Config {
+    pub bucket: String,
+    pub endpoint_url: String,
+    pub access_key: String,
+    pub secret_key: String,
+}
+
 impl FileServiceOss {
-    pub fn new(path: &str) -> Self {
-        //TODO
-        let shared_config = SdkConfig::builder()
+    pub fn new(path: &str, cfg: S3Config) -> Self {
+        let credentials = Credentials::new(cfg.access_key, cfg.secret_key, None, None, "minio");
+        let config = Config::builder()
+            .region(Region::from_static("us-east-1")) // MinIO 可以使用任何 Region 值
+            .credentials_provider(credentials)
+            .endpoint_url(cfg.endpoint_url)
+            .behavior_version(BehaviorVersion::latest())
             .build();
-        let client = Client::new(&shared_config);
+        let client = Client::from_conf(config);
         Self {
             path: PathBuf::from(path),
             client: client,
-            bucket: "".to_string(),
+            bucket: cfg.bucket.to_string(),
         }
     }
 }
 
 impl IFileService for FileServiceOss {
     fn upload(&self, name: String, data: Vec<u8>) -> BoxFuture<crate::error::Result<()>> {
+        let name = name.trim_start_matches("/").to_string();
         let path = self.path.clone();
         let name = path.join(name);
         Box::pin(async move {
@@ -44,6 +59,7 @@ impl IFileService for FileServiceOss {
     }
 
     fn download(&self, name: String) -> BoxFuture<crate::error::Result<Vec<u8>>> {
+        let name = name.trim_start_matches("/").to_string();
         let path = self.path.clone();
         let name = path.join(name);
         Box::pin(async move {
@@ -59,6 +75,7 @@ impl IFileService for FileServiceOss {
     }
 
     fn list(&self, name: String) -> BoxFuture<crate::error::Result<Vec<String>>> {
+        let name = name.trim_start_matches("/").to_string();
         let path = self.path.clone();
         let name = path.join(name);
         Box::pin(async move {
@@ -77,6 +94,7 @@ impl IFileService for FileServiceOss {
     }
 
     fn remove(&self, name: String) -> BoxFuture<crate::error::Result<()>> {
+        let name = name.trim_start_matches("/").to_string();
         let path = self.path.clone();
         let name = path.join(name);
         Box::pin(async move {
