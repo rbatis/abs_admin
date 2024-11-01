@@ -5,8 +5,11 @@ authors = ["zhuxiujia <zhuxiujia@qq.com>"]
 edition = "2021"
 
 [features]
+#add this to enable storage_s3 or cache_redis
 default = []
+#oss/s3
 storage_s3 = ["aws-config","aws-sdk-s3"]
+#redis
 cache_redis = ["redis"]
 
 
