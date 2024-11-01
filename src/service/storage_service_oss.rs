@@ -105,7 +105,6 @@ impl IStorageService for FileServiceOss {
                 .map_err(|e| Error::from(e.to_string()))?;
             let mut data = vec![];
             for object in resp.contents() {
-                println!("{}", object.key().unwrap_or_default());
                 data.push(object.key().unwrap_or_default().to_string());
             }
             Ok(data)
