@@ -95,9 +95,12 @@ impl SysPermissionService {
             .cache_service
             .get_json::<Option<Vec<SysPermission>>>(RES_KEY)
             .await;
-        if js.is_err()
-            || js.as_ref().unwrap().is_none()
-            || js.as_ref().unwrap().as_ref().unwrap().is_empty()
+        let is_empty = match js {
+            Err(_) => true,
+            Ok(Some(ref inner)) => inner.is_empty(),
+            Ok(None) => true,
+        };
+        if is_empty
         {
             let all = self.update_cache().await?;
             return Ok(all);

@@ -49,7 +49,7 @@ impl SysUserRoleService {
         if arg.user_id.is_none() || arg.role_id.is_none() {
             return Err(Error::from(error_info!("role_user_cannot_empty")));
         }
-        let user_id = arg.user_id.as_deref().unwrap().to_string();
+        let user_id = arg.user_id.as_deref().unwrap_or_default().to_string();
         let mut role = SysUserRole::from(arg);
         if role.id.is_none() {
             role.id = Some(ObjectId::new().to_string());

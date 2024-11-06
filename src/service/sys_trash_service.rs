@@ -81,12 +81,12 @@ impl Intercept for SysTrashService {
     ) -> Result<Option<bool>, Error> {
         if sql.starts_with("delete from ") {
             let dialect = GenericDialect {}; // or AnsiDialect
-            let v: Vec<Statement> = Parser::parse_sql(&dialect, &sql.clone())
+            let mut v: Vec<Statement> = Parser::parse_sql(&dialect, &sql.clone())
                 .map_err(|e| Error::from(e.to_string()))?;
             if v.len() <= 0 {
                 return Err(Error::from("sql is empty"));
             }
-            let table = match v.get(0).unwrap() {
+            let table = match v.remove(0) {
                 Statement::Delete { from, .. } => {
                     let mut data = "".to_string();
                     match from {
