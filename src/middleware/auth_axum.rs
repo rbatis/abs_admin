@@ -10,6 +10,9 @@ use axum::{
     response::Response,
 };
 
+/// token key name
+pub const TOKEN_KEY: &'static str = "access_token";
+
 pub async fn auth(mut request: Request, next: Next) -> Result<Response, StatusCode> {
     let path = request.uri().path().to_string();
     if !CONTEXT.config.debug {
@@ -23,7 +26,7 @@ pub async fn auth(mut request: Request, next: Next) -> Result<Response, StatusCo
                             .refresh(&CONTEXT.config.jwt_secret, CONTEXT.config.jwt_exp) {
                             if let Ok(new_header) = http::HeaderValue::from_str(&new_token) {
                                 request.headers_mut().insert(
-                                    "access_token",
+                                    TOKEN_KEY,
                                     new_header,
                                 );
                             }
@@ -49,7 +52,7 @@ fn token_is_valid(token: &str) -> Option<JWTToken> {
 }
 
 fn get_token(h: &HeaderMap) -> Result<&str, Error> {
-    Ok(h.get("access_token")
+    Ok(h.get(TOKEN_KEY)
         .map(|v| v.to_str().unwrap_or_default())
         .unwrap_or_default())
 }

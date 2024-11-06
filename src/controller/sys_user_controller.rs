@@ -7,6 +7,7 @@ use crate::domain::vo::{JWTToken, RespVO, SignInVO};
 use crate::error::Error;
 use crate::error_info;
 use crate::context::CONTEXT;
+use crate::middleware::auth_axum::TOKEN_KEY;
 
 pub async fn login(arg: Json<SignInDTO>) -> impl IntoResponse {
     log::info!("login:{:?}", arg.0);
@@ -15,7 +16,7 @@ pub async fn login(arg: Json<SignInDTO>) -> impl IntoResponse {
 }
 
 pub async fn info(req: Request) -> impl IntoResponse {
-    let token = req.headers().get("access_token");
+    let token = req.headers().get(TOKEN_KEY);
     match token {
         Some(token) => {
             let token = token.to_str().unwrap_or("");
