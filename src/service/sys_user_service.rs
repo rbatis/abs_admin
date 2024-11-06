@@ -167,9 +167,9 @@ impl SysUserService {
                 }
             }
         }
-        if error.is_some() {
+        if let Some(e) = &error {
             self.add_retry_login_limit_num(&arg.account).await?;
-            return Err(error.unwrap());
+            return Err(e.clone());
         }
         let sign_in_vo = self.get_user_info(&user).await?;
         Ok(sign_in_vo)

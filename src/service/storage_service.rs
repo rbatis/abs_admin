@@ -32,7 +32,7 @@ impl StorageService {
             #[cfg(feature = "storage_s3")]
             {
                 return Self {
-                    inner: Box::new(crate::service::FileS3Service::new(crate::service::S3Config::load(storage).unwrap()))
+                    inner: Box::new(crate::service::FileS3Service::new(crate::service::S3Config::load(storage).expect("S3Config::load failed")))
                 };
             }
         }

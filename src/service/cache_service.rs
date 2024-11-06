@@ -77,14 +77,8 @@ impl CacheService {
         if r.is_empty() {
             r = "null".to_string();
         }
-        let data: serde_json::Result<T> = serde_json::from_str(r.as_str());
-        if let Err(e) = &data {
-            return Err(crate::error::Error::from(format!(
-                "MemCacheService GET fail:{}",
-                e
-            )));
-        }
-        Ok(data.unwrap())
+        let data: T = serde_json::from_str(r.as_str()).map_err(|e|Error::from(format!("MemCacheService GET fail:{}",e)))?;
+        Ok(data)
     }
 
     pub async fn set_string_ex(&self, k: &str, v: &str, ex: Option<Duration>) -> Result<String> {

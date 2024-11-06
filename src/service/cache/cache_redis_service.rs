@@ -21,13 +21,11 @@ impl RedisCacheService {
     }
 
     pub async fn get_conn(&self) -> Result<MultiplexedConnection> {
-        let conn = self.client.get_multiplexed_async_connection().await;
-        if conn.is_err() {
-            let err = format!("RedisService connect fail:{}", conn.err().unwrap());
-            error!("{}", err);
-            return Err(crate::error::Error::from(err));
-        }
-        Ok(conn.unwrap())
+        let conn = self.client.get_multiplexed_async_connection().await
+            .map_err(|e| {
+                format!("RedisService connect fail:{}", e)
+            })?;
+        Ok(conn)
     }
 }
 
