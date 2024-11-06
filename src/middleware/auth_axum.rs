@@ -36,7 +36,7 @@ pub async fn auth(mut request: Request, next: Next) -> Result<Response, StatusCo
         }
     }
     let response = next.run(request).await;
-    return Ok(response);
+    Ok(response)
 }
 
 fn token_is_valid(token: &str) -> Option<JWTToken> {

@@ -16,7 +16,7 @@ pub async fn login(arg: Json<SignInDTO>) -> impl IntoResponse {
 
 pub async fn info(req: Request) -> impl IntoResponse {
     let token = req.headers().get("access_token");
-    return match token {
+    match token {
         Some(token) => {
             let token = token.to_str().unwrap_or("");
             let token = JWTToken::verify(&CONTEXT.config.jwt_secret, token);
@@ -30,7 +30,7 @@ pub async fn info(req: Request) -> impl IntoResponse {
             RespVO::from_result(user_data)
         }
         _ => RespVO::<SignInVO>::from_error(error_info!("access_token_empty")),
-    };
+    }
 }
 
 pub async fn add(arg: Json<UserAddDTO>) -> impl IntoResponse {

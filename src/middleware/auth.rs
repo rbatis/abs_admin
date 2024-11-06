@@ -13,7 +13,7 @@ pub fn is_white_list_api(path: &str) -> bool {
             return true;
         }
     }
-    return false;
+    false
 }
 
 ///Check whether the token is valid and has not expired
@@ -22,10 +22,10 @@ pub fn checked_token(token: &str) -> Result<JWTToken, crate::error::Error> {
     let token = JWTToken::verify(&CONTEXT.config.jwt_secret, token);
     match token {
         Ok(token) => {
-            return Ok(token);
+            Ok(token)
         }
         Err(e) => {
-            return Err(crate::error::Error::from(e.to_string()));
+            Err(crate::error::Error::from(e.to_string()))
         }
     }
 }
@@ -48,5 +48,5 @@ pub async fn check_auth(token: &JWTToken, path: &str) -> Result<(), crate::error
             }
         }
     }
-    return Err(crate::error::Error::from(error_info!("access_denied")));
+    Err(crate::error::Error::from(error_info!("access_denied")))
 }

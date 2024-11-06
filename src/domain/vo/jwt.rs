@@ -17,21 +17,21 @@ impl JWTToken {
     /// create token
     /// secret: your secret string
     pub fn create_token(&self, secret: &str) -> Result<String, Error> {
-        return match encode(
+        match encode(
             &Header::default(),
             self,
             &EncodingKey::from_secret(secret.as_ref()),
         ) {
             Ok(t) => Ok(t),
             Err(_) => Err(Error::from("JWTToken encode fail!")), // in practice you would return the error
-        };
+        }
     }
     /// verify token invalid
     /// secret: your secret string
     pub fn verify(secret: &str, token: &str) -> Result<JWTToken, Error> {
         let mut validation = Validation::default();
         validation.leeway = 0;
-        return match decode::<JWTToken>(
+        match decode::<JWTToken>(
             &token,
             &DecodingKey::from_secret(secret.as_ref()),
             &validation,
@@ -43,7 +43,7 @@ impl JWTToken {
                 ErrorKind::ExpiredSignature => return Err(Error::from("ExpiredSignature")),
                 _ => return Err(Error::from("InvalidToken other errors")),
             },
-        };
+        }
     }
 
     pub fn refresh(&self, secret: &str, jwt_exp: usize) -> Result<String, Error> {

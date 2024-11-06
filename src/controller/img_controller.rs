@@ -55,7 +55,7 @@ pub async fn captcha(arg: Query<CatpchaDTO>) -> impl IntoResponse {
         .header("Content-Type", "image/png")
         .body(Body::from(png))
         .unwrap();
-    return resp.into();
+    resp.into()
 }
 
 fn make() -> (Vec<u8>, String) {
