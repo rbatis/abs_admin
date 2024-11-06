@@ -19,13 +19,15 @@ pub async fn auth(mut request: Request, next: Next) -> Result<Response, StatusCo
                     //Jwt resolution determines whether the expiration time is less than 10 minutes and automatically renews the contract.
                     let now = rbatis::rbdc::DateTime::now().unix_timestamp() as usize;
                     if (token.exp - now) < CONTEXT.config.jwt_refresh_token {
-                        let new_token = token
-                            .refresh(&CONTEXT.config.jwt_secret, CONTEXT.config.jwt_exp)
-                            .unwrap();
-                        request.headers_mut().insert(
-                            "access_token",
-                            http::HeaderValue::from_str(&new_token).unwrap(),
-                        );
+                        if let Ok(new_token) = token
+                            .refresh(&CONTEXT.config.jwt_secret, CONTEXT.config.jwt_exp) {
+                            if let Ok(new_header) = http::HeaderValue::from_str(&new_token) {
+                                request.headers_mut().insert(
+                                    "access_token",
+                                    new_header,
+                                );
+                            }
+                        }
                     }
                 } else {
                     return Err(StatusCode::UNAUTHORIZED);
