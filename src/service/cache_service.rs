@@ -1,5 +1,5 @@
 use crate::config::config::ApplicationConfig;
-use crate::error::Result;
+use crate::error::{Error, Result};
 use crate::service::{MemCacheService};
 use futures_util::future::BoxFuture;
 use serde::de::DeserializeOwned;
@@ -58,14 +58,15 @@ impl CacheService {
         T: Serialize + Sync,
     {
         let data = serde_json::to_string(v);
-        if data.is_err() {
+        if let Err(e) = &data{
             return Err(crate::error::Error::from(format!(
                 "MemCacheService set_json fail:{}",
-                data.err().unwrap()
+                e
             )));
         }
-        let data = self.set_string(k, data.unwrap().as_str()).await?;
-        Ok(data)
+        let value= data.map_err(|e|Error::from(e.to_string()))?;
+        let result = self.set_string(k, &value).await?;
+        Ok(result)
     }
 
     pub async fn get_json<T>(&self, k: &str) -> Result<T>
@@ -77,10 +78,10 @@ impl CacheService {
             r = "null".to_string();
         }
         let data: serde_json::Result<T> = serde_json::from_str(r.as_str());
-        if data.is_err() {
+        if let Err(e) = &data {
             return Err(crate::error::Error::from(format!(
                 "MemCacheService GET fail:{}",
-                data.err().unwrap()
+                e
             )));
         }
         Ok(data.unwrap())

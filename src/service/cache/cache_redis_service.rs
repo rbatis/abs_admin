@@ -15,7 +15,7 @@ pub struct RedisCacheService {
 impl RedisCacheService {
     pub fn new(url: &str) -> Self {
         println!("[abs_admin] connect redis ({})...", url);
-        let client = redis::Client::open(url).unwrap();
+        let client = redis::Client::open(url).expect("open redis client failed");
         println!("[abs_admin] connect redis success!");
         Self { client }
     }
@@ -73,7 +73,7 @@ impl ICacheService for RedisCacheService {
                 }
             } else {
                 match redis::cmd("SET")
-                    .arg(&[&k, &v, "EX", &ex.unwrap().as_secs().to_string()])
+                    .arg(&[&k, &v, "EX", &ex.unwrap_or_default().as_secs().to_string()])
                     .query_async(&mut conn)
                     .await
                 {
