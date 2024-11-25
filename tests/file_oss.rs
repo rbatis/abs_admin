@@ -1,6 +1,5 @@
 use abs_admin::service::{FileS3Service, IStorageService, S3Config};
 
-
 #[tokio::test]
 async fn test_config_load() {
     let cfg = S3Config {

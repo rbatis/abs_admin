@@ -67,7 +67,7 @@ impl Default for ServiceContext {
                 rb
             },
             cache_service: CacheService::new(&config).unwrap(),
-            storage_service:  StorageService::new(&config.storage),
+            storage_service:  StorageService::new(&config.storage).expect("Failed to create storage service"),
             sys_permission_service: SysPermissionService {},
             sys_user_service: SysUserService {},
             sys_role_service: SysRoleService {},

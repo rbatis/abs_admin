@@ -29,20 +29,20 @@ impl CacheService {
     pub fn new(cfg: &ApplicationConfig) -> Result<Self> {
         let cache = cfg.cache.as_str();
         if cache == "mem" {
-            println!("[abs_admin] cache_type: mem");
+            println!("[xuangyin] cache_type: mem");
             return Ok(Self {
                 inner: Box::new(MemCacheService::default()),
             });
         } else if cache.starts_with("redis") {
             #[cfg(feature = "cache_redis")]
             {
-                println!("[abs_admin] cache_type: redis");
+                println!("[xuangyin] cache_type: redis");
                 return Ok(Self {
                     inner: Box::new(crate::service::RedisCacheService::new(&cache)),
                 });
             }
         }
-        panic!("[abs_admin] unknown of cache: \"{}\",current support 'mem' or 'redis'", cache);
+        Err(Error::from(format!("[xuangyin] unknown of cache: \"{}\",current support 'mem' or 'redis'", cache)))
     }
 
     pub async fn set_string(&self, k: &str, v: &str) -> Result<String> {

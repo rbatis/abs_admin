@@ -1,7 +1,7 @@
 use std::fmt::Debug;
 use std::ops::Deref;
 use futures_util::future::BoxFuture;
-use crate::error::Result;
+use crate::error::{Error, Result};
 use crate::service::{FileLocalService};
 
 pub trait IStorageService: Sync + Send + Debug {
@@ -23,19 +23,19 @@ impl Deref for StorageService {
 }
 
 impl StorageService {
-    pub fn new(storage: &str) -> StorageService {
+    pub fn new(storage: &str) -> Result<StorageService> {
         if storage == "local" {
-            return Self {
+            return Ok(Self {
                 inner: Box::new(FileLocalService::new())
-            };
+            });
         } else if storage.starts_with("s3://") {
             #[cfg(feature = "storage_s3")]
             {
-                return Self {
+                return Ok(Self {
                     inner: Box::new(crate::service::FileS3Service::new(crate::service::S3Config::load(storage).expect("S3Config::load failed")))
-                };
+                });
             }
         }
-        panic!("unknown storage url={}. did you forget open default `[features]` on Cargo.toml?", storage)
+        Err(Error::from(format!("Unsupported storage service: {}", storage)))
     }
 }
