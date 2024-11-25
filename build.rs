@@ -1,5 +1,6 @@
-use std::fs::OpenOptions;
+use std::fs::{File, OpenOptions};
 use std::io::{Read, Write};
+use walkdir::WalkDir;
 
 //choose driver struct(Cargo.toml must add like 'rbdc-*** = { version = "4.5" }')
 //database_struct: "rbdc_sqlite::Driver{}",
@@ -37,4 +38,30 @@ fn main() {
     _ = f.set_len(0);
     f.write_all(driver_path.as_bytes()).unwrap();
     f.flush().unwrap();
+
+    //unwrap check
+    unwrap_check();
+}
+
+//check server code have .unwrap()
+fn unwrap_check() {
+    let walk = WalkDir::new("src/service");
+    for item in walk {
+        if let Ok(item) = item {
+            let path = item.path().to_str().unwrap_or_default();
+            let name = item.file_name().to_str().unwrap_or_default();
+            if name.ends_with(".rs") {
+                if let Ok(mut f) = File::open(path) {
+                    let mut data = String::new();
+                    _ = f.read_to_string(&mut data);
+                    if data.contains(".unwrap()") {
+                        panic!("find file='{}' have .unwrap(),please check code", name);
+                    }
+                    if data.contains("panic!") {
+                        panic!("find file='{}' have panic!(),please check code", name);
+                    }
+                }
+            }
+        }
+    }
 }
