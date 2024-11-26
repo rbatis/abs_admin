@@ -60,6 +60,9 @@ fn unwrap_check() {
                     if data.contains("panic!") {
                         panic!("find file='{}' have panic!(),please check code", name);
                     }
+                    if data.contains(".expect(") {
+                        panic!("find file='{}' have .expect(),please check code", name);
+                    }
                 }
             }
         }

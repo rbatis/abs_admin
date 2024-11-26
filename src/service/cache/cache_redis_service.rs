@@ -4,7 +4,7 @@ use crate::error::{Error, Result};
 use crate::service::ICacheService;
 use futures_util::future::BoxFuture;
 use log::error;
-use redis::aio::{MultiplexedConnection};
+use redis::aio::MultiplexedConnection;
 use redis::RedisResult;
 ///Redis Cache service
 #[derive(Debug)]
@@ -13,18 +13,20 @@ pub struct RedisCacheService {
 }
 
 impl RedisCacheService {
-    pub fn new(url: &str) -> Self {
+    pub fn new(url: &str) -> Result<Self> {
         println!("[xuangyin] connect redis ({})...", url);
-        let client = redis::Client::open(url).expect("open redis client failed");
+        let client = redis::Client::open(url)
+            .map_err(|e| Error::from(format!("open redis client failed={}", e)))?;
         println!("[xuangyin] connect redis success!");
-        Self { client }
+        Ok(Self { client })
     }
 
     pub async fn get_conn(&self) -> Result<MultiplexedConnection> {
-        let conn = self.client.get_multiplexed_async_connection().await
-            .map_err(|e| {
-                format!("RedisService connect fail:{}", e)
-            })?;
+        let conn = self
+            .client
+            .get_multiplexed_async_connection()
+            .await
+            .map_err(|e| format!("RedisService connect fail:{}", e))?;
         Ok(conn)
     }
 }

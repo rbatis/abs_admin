@@ -1,6 +1,6 @@
 use crate::config::config::ApplicationConfig;
 use crate::error::{Error, Result};
-use crate::service::{MemCacheService};
+use crate::service::MemCacheService;
 use futures_util::future::BoxFuture;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
@@ -38,11 +38,14 @@ impl CacheService {
             {
                 println!("[xuangyin] cache_type: redis");
                 return Ok(Self {
-                    inner: Box::new(crate::service::RedisCacheService::new(&cache)),
+                    inner: Box::new(crate::service::RedisCacheService::new(&cache)?),
                 });
             }
         }
-        Err(Error::from(format!("[xuangyin] unknown of cache: \"{}\",current support 'mem' or 'redis'", cache)))
+        Err(Error::from(format!(
+            "[xuangyin] unknown of cache: \"{}\",current support 'mem' or 'redis'",
+            cache
+        )))
     }
 
     pub async fn set_string(&self, k: &str, v: &str) -> Result<String> {
@@ -58,13 +61,13 @@ impl CacheService {
         T: Serialize + Sync,
     {
         let data = serde_json::to_string(v);
-        if let Err(e) = &data{
+        if let Err(e) = &data {
             return Err(crate::error::Error::from(format!(
                 "MemCacheService set_json fail:{}",
                 e
             )));
         }
-        let value= data.map_err(|e|Error::from(e.to_string()))?;
+        let value = data.map_err(|e| Error::from(e.to_string()))?;
         let result = self.set_string(k, &value).await?;
         Ok(result)
     }
@@ -77,7 +80,8 @@ impl CacheService {
         if r.is_empty() {
             r = "null".to_string();
         }
-        let data: T = serde_json::from_str(r.as_str()).map_err(|e|Error::from(format!("MemCacheService GET fail:{}",e)))?;
+        let data: T = serde_json::from_str(r.as_str())
+            .map_err(|e| Error::from(format!("MemCacheService GET fail:{}", e)))?;
         Ok(data)
     }
 
