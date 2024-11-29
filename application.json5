@@ -36,7 +36,7 @@
   // In application.json5, add: log_pack_compress: "zip"
   log_pack_compress: "",
   //log_level: off,info,error,warn,debug,trace
-  log_level: "info",
+  log_level: "debug",
   //jwt_secret
   jwt_secret: "abs_admin",
   //jwt to the exp (in seconds)  default 30 minutes
