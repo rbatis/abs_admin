@@ -1,5 +1,7 @@
 use std::sync::{Arc, LazyLock};
 use std::time::Duration;
+use log::LevelFilter;
+use rbatis::intercept_log::LogInterceptor;
 use rbatis::RBatis;
 use crate::config::config::ApplicationConfig;
 use crate::service::{CacheService, StorageService, SysAuthService, SysDictService, SysPermissionService, SysRoleResService, SysRoleService, SysTrashService, SysUserRoleService, SysUserService};
@@ -40,6 +42,8 @@ impl ServiceContext {
             .expect("[abs_admin] rbatis pool init fail!");
         self.rb.intercepts.push(Arc::new(SysTrashService::new()));
         let pool = self.rb.get_pool().unwrap();
+        //level
+        self.rb.get_intercept::<LogInterceptor>().expect("rbatis LogInterceptor init fail!").set_level_filter(LevelFilter::Debug);
         //max connections
         pool.set_max_open_conns(self.config.db_pool_len as u64)
             .await;
