@@ -7,8 +7,10 @@ use rbatis::rbdc::DateTime;
 
 pub fn init_log() {
     //init fast log
-    let mut cfg = Config::new().level(parse_log_level(&CONTEXT.config.log_level));
-    cfg = cfg.file_split(&CONTEXT.config.log_dir,
+    let mut cfg = Config::new()
+        .chan_len(CONTEXT.config.log_chan_len)
+        .level(parse_log_level(&CONTEXT.config.log_level))
+        .file_split(&CONTEXT.config.log_dir,
                          Rolling::new(parse_rolling_type(CONTEXT.config.log_rolling.as_str())),
                          parse_keep_type(&CONTEXT.config.log_keep_type),
                          parse_packer(&CONTEXT.config.log_pack_compress),
@@ -16,7 +18,6 @@ pub fn init_log() {
     if CONTEXT.config.debug {
         cfg = cfg.console();
     }
-    cfg = cfg.chan_len(CONTEXT.config.log_chan_len);
     let _ = fast_log::init(cfg);
     if CONTEXT.config.debug == false {
         println!("[abs_admin] release_mode is up! [file_log] open,[console_log] disabled!");
