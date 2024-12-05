@@ -1,48 +1,52 @@
 use std::collections::BTreeMap;
 
-use crate::domain::dto::{UserPageDTO, UserRoleAddDTO, UserRolePageDTO};
-use crate::domain::table::SysUserRole;
-use crate::domain::vo::user::SysUserVO;
-use crate::domain::vo::{SysPermissionVO, SysRoleVO};
+use crate::context::CONTEXT;
+use crate::domain::dto::UserRoleAddDTO;
+use crate::domain::table::RbacUserRole;
+use crate::domain::vo::rbac::SysPermissionVO;
+use crate::domain::vo::rbac::SysRoleVO;
 use crate::error::Error;
 use crate::error::Result;
-use crate::context::CONTEXT;
 use crate::{error_info, pool};
 use rbatis::plugin::object_id::ObjectId;
-use rbatis::Page;
+
+pub struct SetUserVO {
+    //this is user_id
+    pub id: Option<String>,
+    //set user role
+    pub role: Option<SysRoleVO>,
+}
 
 ///User Role Service
 pub struct SysUserRoleService {}
 
 impl SysUserRoleService {
-    pub async fn page(&self, arg: &UserRolePageDTO) -> Result<Page<SysUserVO>> {
-        let mut vo = CONTEXT
-            .sys_user_service
-            .page(&UserPageDTO::from(arg))
-            .await?;
-        if arg.resp_set_role.unwrap_or(true) {
-            let all_roles = CONTEXT.sys_role_service.finds_all_map().await?;
-            let user_ids = rbatis::table_field_vec!(&vo.records, id);
-            let user_roles = SysUserRole::select_in_column(pool!(), "user_id", &user_ids).await?;
-            let role_ids = rbatis::table_field_vec!(&user_roles, role_id).iter().map(|v| v.to_string()).collect();
-            let user_role_map = rbatis::table_field_map!(user_roles, user_id);
-            let roles = CONTEXT.sys_role_service.finds(&role_ids).await?;
-            let roles_map = rbatis::table_field_map!(&roles, id);
-            for x in &mut vo.records {
-                if let Some(user_role) = user_role_map.get(x.id.as_deref().unwrap_or_default()) {
-                    if let Some(role_id) = &user_role.role_id {
-                        let role = roles_map.get(role_id).cloned().cloned();
-                        x.role = SysRoleVO::from_option(role);
-                        if let Some(role_vo) = &mut x.role {
-                            CONTEXT
-                                .sys_role_service
-                                .loop_find_childs(role_vo, &all_roles);
-                        }
+    ///set to user list 
+    pub async fn set_roles(&self, records: &mut Vec<SetUserVO>) -> Result<()> {
+        let all_roles = CONTEXT.sys_role_service.finds_all_map().await?;
+        let user_ids = rbatis::table_field_vec!(&*records, id);
+        let user_roles = RbacUserRole::select_in_column(pool!(), "user_id", &user_ids).await?;
+        let role_ids = rbatis::table_field_vec!(&user_roles, role_id)
+            .iter()
+            .map(|v| v.to_string())
+            .collect();
+        let user_role_map = rbatis::table_field_map!(user_roles, user_id);
+        let roles = CONTEXT.sys_role_service.finds(&role_ids).await?;
+        let roles_map = rbatis::table_field_map!(&roles, id);
+        for x in records {
+            if let Some(user_role) = user_role_map.get(x.id.as_deref().unwrap_or_default()) {
+                if let Some(role_id) = &user_role.role_id {
+                    let role = roles_map.get(role_id).cloned().cloned();
+                    x.role = SysRoleVO::from_option(role);
+                    if let Some(role_vo) = &mut x.role {
+                        CONTEXT
+                            .sys_role_service
+                            .loop_find_childs(role_vo, &all_roles);
                     }
                 }
             }
         }
-        Ok(vo)
+        Ok(())
     }
 
     pub async fn add(&self, arg: UserRoleAddDTO) -> Result<u64> {
@@ -50,22 +54,22 @@ impl SysUserRoleService {
             return Err(Error::from(error_info!("role_user_cannot_empty")));
         }
         let user_id = arg.user_id.as_deref().unwrap_or_default().to_string();
-        let mut role = SysUserRole::from(arg);
+        let mut role = RbacUserRole::from(arg);
         if role.id.is_none() {
             role.id = Some(ObjectId::new().to_string());
         }
         self.remove_by_user_id(user_id.as_str()).await?;
-        Ok(SysUserRole::insert(pool!(), &role).await?.rows_affected)
+        Ok(RbacUserRole::insert(pool!(), &role).await?.rows_affected)
     }
 
     pub async fn remove_by_role_id(&self, role_id: &str) -> Result<u64> {
-        Ok(SysUserRole::delete_by_column(pool!(), "role_id", role_id)
+        Ok(RbacUserRole::delete_by_column(pool!(), "role_id", role_id)
             .await?
             .rows_affected)
     }
 
     pub async fn remove_by_user_id(&self, user_id: &str) -> Result<u64> {
-        Ok(SysUserRole::delete_by_column(pool!(), "user_id", user_id)
+        Ok(RbacUserRole::delete_by_column(pool!(), "user_id", user_id)
             .await?
             .rows_affected)
     }
@@ -78,13 +82,10 @@ impl SysUserRoleService {
         if user_id.is_empty() {
             return Ok(None);
         }
-        let user_roles = SysUserRole::select_by_column(pool!(), "user_id", user_id).await?;
+        let user_roles = RbacUserRole::select_by_column(pool!(), "user_id", user_id).await?;
         let role_ids = rbatis::table_field_vec!(user_roles, role_id);
         let roles = CONTEXT.sys_role_service.finds(&role_ids).await?;
-        let role_res_vec = CONTEXT
-            .sys_role_service
-            .find_role_res(&role_ids)
-            .await?;
+        let role_res_vec = CONTEXT.sys_role_service.find_role_res(&role_ids).await?;
         let mut role_vos = Vec::with_capacity(roles.len());
         for role in roles {
             //load res

@@ -1,10 +1,11 @@
 use crate::domain::dto::{
-    EmptyDTO, IdDTO, SysRoleResAddDTO, SysRoleResPageDTO, SysRoleResUpdateDTO,
+    EmptyDTO, IdDTO
 };
 use crate::domain::vo::RespVO;
 use crate::context::CONTEXT;
 use axum::response::IntoResponse;
 use axum::Json;
+use crate::domain::dto::rbac::{SysRoleResAddDTO, SysRoleResPageDTO, SysRoleResUpdateDTO};
 
 pub async fn add(arg: Json<SysRoleResAddDTO>) -> impl IntoResponse {
     let vo = CONTEXT.sys_role_permission_service.add(&arg.0).await;

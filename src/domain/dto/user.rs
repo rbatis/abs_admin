@@ -1,4 +1,4 @@
-use crate::domain::table::{LoginCheck, SysUser, SysUserRole};
+use crate::domain::table::{LoginCheck, SysUser, RbacUserRole};
 use crate::util::password_encoder::PasswordEncoder;
 use rbatis::object_id::ObjectId;
 use rbatis::rbdc::DateTime;
@@ -86,9 +86,9 @@ pub struct UserRoleAddDTO {
     pub role_id: Option<String>,
 }
 
-impl From<UserRoleAddDTO> for SysUserRole {
+impl From<UserRoleAddDTO> for RbacUserRole {
     fn from(arg: UserRoleAddDTO) -> Self {
-        SysUserRole {
+        RbacUserRole {
             id: arg.id.clone(),
             user_id: arg.user_id.clone(),
             role_id: arg.role_id.clone(),

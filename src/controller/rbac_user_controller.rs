@@ -40,7 +40,7 @@ pub async fn add(arg: Json<UserAddDTO>) -> impl IntoResponse {
 }
 
 pub async fn page(arg: Json<UserRolePageDTO>) -> impl IntoResponse {
-    let vo = CONTEXT.sys_user_role_service.page(&arg.0).await;
+    let vo = CONTEXT.sys_user_service.role_page(&arg.0).await;
     RespVO::from_result(vo)
 }
 

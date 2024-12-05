@@ -1,6 +1,6 @@
-use crate::domain::dto::{ResEditDTO, ResPageDTO};
-use crate::domain::table::SysPermission;
-use crate::domain::vo::SysPermissionVO;
+use crate::domain::dto::rbac::{ResEditDTO, ResPageDTO};
+use crate::domain::table::RbacPermission;
+use crate::domain::vo::rbac::SysPermissionVO;
 use crate::error::Error;
 use crate::error::Result;
 use crate::context::CONTEXT;
@@ -15,7 +15,7 @@ pub struct SysPermissionService {}
 
 impl SysPermissionService {
     pub async fn page(&self, arg: &ResPageDTO) -> Result<Page<SysPermissionVO>> {
-        let data = SysPermission::select_page(pool!(), &PageRequest::from(arg), arg).await?;
+        let data = RbacPermission::select_page(pool!(), &PageRequest::from(arg), arg).await?;
         let all_res = self.finds_all_map().await?;
         let mut all_res_vo = HashMap::new();
         for (k, v) in all_res {
@@ -28,8 +28,8 @@ impl SysPermissionService {
         Ok(page)
     }
 
-    pub async fn add(&self, arg: &SysPermission) -> Result<u64> {
-        let old = SysPermission::select_by_permission_or_name(
+    pub async fn add(&self, arg: &RbacPermission) -> Result<u64> {
+        let old = RbacPermission::select_by_permission_or_name(
             pool!(),
             arg.permission.as_deref().unwrap_or_default(),
             arg.name.as_deref().unwrap_or_default(),
@@ -42,23 +42,23 @@ impl SysPermissionService {
                 rbatis::table_field_vec!(old, name)
             )));
         }
-        let result = Ok(SysPermission::insert(pool!(), &arg).await?.rows_affected);
+        let result = Ok(RbacPermission::insert(pool!(), &arg).await?.rows_affected);
         self.update_cache().await?;
         result
     }
 
     pub async fn edit(&self, arg: &ResEditDTO) -> Result<u64> {
-        let data = SysPermission::from(arg);
-        let result = SysPermission::update_by_column(pool!(), &data, "id").await?;
+        let data = RbacPermission::from(arg);
+        let result = RbacPermission::update_by_column(pool!(), &data, "id").await?;
         self.update_cache().await?;
         Ok(result.rows_affected)
     }
 
     pub async fn remove(&self, id: &str) -> Result<u64> {
-        let num = SysPermission::delete_by_column(pool!(), "id", id)
+        let num = RbacPermission::delete_by_column(pool!(), "id", id)
             .await?
             .rows_affected;
-        SysPermission::delete_by_column(pool!(), "parent_id", id).await?;
+        RbacPermission::delete_by_column(pool!(), "parent_id", id).await?;
         let _ = CONTEXT
             .sys_role_permission_service
             .remove_by_permission_id(id)
@@ -93,7 +93,7 @@ impl SysPermissionService {
     pub async fn finds_all(&self) -> Result<Vec<SysPermissionVO>> {
         let js = CONTEXT
             .cache_service
-            .get_json::<Option<Vec<SysPermission>>>(RES_KEY)
+            .get_json::<Option<Vec<RbacPermission>>>(RES_KEY)
             .await;
         let is_empty = match js {
             Err(_) => true,
@@ -126,7 +126,7 @@ impl SysPermissionService {
     }
 
     pub async fn update_cache(&self) -> Result<Vec<SysPermissionVO>> {
-        let all = SysPermission::select_all(pool!()).await?;
+        let all = RbacPermission::select_all(pool!()).await?;
         CONTEXT.cache_service.set_json(RES_KEY, &all).await?;
         let mut v = Vec::with_capacity(all.len());
         for x in all {
@@ -164,7 +164,7 @@ impl SysPermissionService {
 
     ///The top-level permissions
     pub async fn finds_layer_top(&self) -> Result<Vec<SysPermissionVO>> {
-        let list = SysPermission::select_by_parent_id_null(pool!()).await?;
+        let list = RbacPermission::select_by_parent_id_null(pool!()).await?;
         let all = self.finds_all_map().await?;
         self.finds_layer(&rbatis::table_field_vec!(list, id), &all)
             .await

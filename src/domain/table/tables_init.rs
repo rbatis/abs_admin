@@ -5,7 +5,7 @@ use rbatis::RBatis;
 use rbatis::rbdc::DateTime;
 use rbatis::table_sync::{ColumnMapper, MssqlTableMapper, MysqlTableMapper, PGTableMapper, SqliteTableMapper};
 use crate::domain::table::LoginCheck::PasswordCheck;
-use crate::domain::table::{SysDict, SysPermission, SysRole, SysRolePermission, SysTrash, SysUser, SysUserRole};
+use crate::domain::table::{SysDict, RbacPermission, RbacRole, RbacRolePermission, SysTrash, SysUser, RbacUserRole};
 
 pub async fn sync_tables(rb: &RBatis) {
     //disable log
@@ -27,7 +27,8 @@ pub async fn sync_tables(rb: &RBatis) {
         }
     };
     let conn = rb.acquire().await.expect("connection database fail");
-    let table = SysPermission {
+    // RBAC permission
+    let table = RbacPermission {
         id: Some(Default::default()),
         parent_id: Some(Default::default()),
         name: Some(Default::default()),
@@ -35,21 +36,31 @@ pub async fn sync_tables(rb: &RBatis) {
         path: Some(Default::default()),
         create_date: Some(Default::default()),
     };
-    let _ = RBatis::sync(&conn, mapper, &table, "sys_permission").await;
-    let table = SysRole {
+    let _ = RBatis::sync(&conn, mapper, &table, "rbac_permission").await;
+    let table = RbacRole {
         id: Some(Default::default()),
         parent_id: Some(Default::default()),
         name: Some(Default::default()),
         create_date: Some(Default::default()),
     };
-    let _ = RBatis::sync(&conn, mapper, &table, "sys_role").await;
-    let table = SysRolePermission {
+    let _ = RBatis::sync(&conn, mapper, &table, "rbac_role").await;
+    let table = RbacRolePermission {
         id: Some(Default::default()),
         role_id: Some(Default::default()),
         permission_id: Some(Default::default()),
         create_date: Some(Default::default()),
     };
-    let _ = RBatis::sync(&conn, mapper, &table, "sys_role_permission").await;
+    let _ = RBatis::sync(&conn, mapper, &table, "rbac_role_permission").await;
+    let table = RbacUserRole {
+        id: Some(Default::default()),
+        user_id: Some(Default::default()),
+        role_id: Some(Default::default()),
+        create_date: Some(Default::default()),
+    };
+    let _ = RBatis::sync(&conn, mapper, &table, "rbac_user_role").await;
+    
+    // RBAC permission end
+    
     let table = SysUser {
         id: Some(Default::default()),
         account: Some(Default::default()),
@@ -60,13 +71,6 @@ pub async fn sync_tables(rb: &RBatis) {
         create_date: Some(Default::default()),
     };
     let _ = RBatis::sync(&conn, mapper, &table, "sys_user").await;
-    let table = SysUserRole {
-        id: Some(Default::default()),
-        user_id: Some(Default::default()),
-        role_id: Some(Default::default()),
-        create_date: Some(Default::default()),
-    };
-    let _ = RBatis::sync(&conn, mapper, &table, "sys_user_role").await;
     let table = SysDict {
         id: Some(Default::default()),
         name: Some(Default::default()),
@@ -107,9 +111,9 @@ pub async fn sync_tables_data(rb: &RBatis) {
     )
         .await;
 
-    let _ = SysRole::insert(
+    let _ = RbacRole::insert(
         &conn,
-        &SysRole {
+        &RbacRole {
             id: Some(1.to_string()),
             name: Some("admin".to_string()),
             parent_id: None,
@@ -118,9 +122,9 @@ pub async fn sync_tables_data(rb: &RBatis) {
     )
         .await;
 
-    let _ = SysUserRole::insert(
+    let _ = RbacUserRole::insert(
         &conn,
-        &SysUserRole {
+        &RbacUserRole {
             id: Some(1.to_string()),
             user_id: Some(1.to_string()),
             role_id: Some(1.to_string()),
@@ -130,7 +134,7 @@ pub async fn sync_tables_data(rb: &RBatis) {
         .await;
 
     let sys_permissions = vec![
-        SysPermission {
+        RbacPermission {
             id: Some(1.to_string()),
             parent_id: None,
             name: Some("首页".to_string()),
@@ -138,7 +142,7 @@ pub async fn sync_tables_data(rb: &RBatis) {
             path: Some("/".to_string()),
             create_date: Some(DateTime::now()),
         },
-        SysPermission {
+        RbacPermission {
             id: Some(9.to_string()),
             parent_id: None,
             name: Some("user".to_string()),
@@ -146,7 +150,7 @@ pub async fn sync_tables_data(rb: &RBatis) {
             path: Some("user".to_string()),
             create_date: Some(DateTime::now()),
         },
-        SysPermission {
+        RbacPermission {
             id: Some(10.to_string()),
             parent_id: None,
             name: Some("setting".to_string()),
@@ -158,14 +162,14 @@ pub async fn sync_tables_data(rb: &RBatis) {
 
     let mut index = 1;
     for permission in sys_permissions {
-        let _ = SysPermission::insert(&conn, &permission).await;
-        let role_permission = SysRolePermission {
+        let _ = RbacPermission::insert(&conn, &permission).await;
+        let role_permission = RbacRolePermission {
             id: Some(index.to_string()),
             role_id: Some(1.to_string()),
             permission_id: permission.id.clone(),
             create_date: Some(DateTime::now()),
         };
-        let _ = SysRolePermission::insert(&conn, &role_permission).await;
+        let _ = RbacRolePermission::insert(&conn, &role_permission).await;
         index += 1;
     }
 }

@@ -1,10 +1,10 @@
 use std::collections::{BTreeMap, HashMap, HashSet};
 
-use crate::domain::dto::{
+use crate::domain::dto::rbac::{
     RoleAddDTO, RoleEditDTO, RolePageDTO, SysRoleResAddDTO, SysRoleResPageDTO, SysRoleResUpdateDTO,
 };
-use crate::domain::table::SysRolePermission;
-use crate::domain::vo::{SysPermissionVO, SysRoleVO};
+use crate::domain::table::RbacRolePermission;
+use crate::domain::vo::rbac::{SysPermissionVO};
 use crate::error::Error;
 use crate::error::Result;
 use crate::context::CONTEXT;
@@ -12,6 +12,7 @@ use crate::{error_info, pool};
 use rbatis::plugin::object_id::ObjectId;
 use rbatis::rbdc::DateTime;
 use rbatis::Page;
+use crate::domain::vo::rbac::SysRoleVO;
 
 /// Role Resource Service
 pub struct SysRoleResService {}
@@ -52,16 +53,16 @@ impl SysRoleResService {
     async fn find_role_res_map(
         &self,
         arg: &Vec<SysRoleVO>,
-    ) -> Result<HashMap<String, HashSet<SysRolePermission>>> {
+    ) -> Result<HashMap<String, HashSet<RbacRolePermission>>> {
         let role_ids = self.loop_find_role_ids(arg);
         let role_res_vec = {
             if role_ids.is_empty() {
                 vec![]
             } else {
-                SysRolePermission::select_in_column(pool!(), "role_id", &role_ids).await?
+                RbacRolePermission::select_in_column(pool!(), "role_id", &role_ids).await?
             }
         };
-        let mut role_res_map: HashMap<String, HashSet<SysRolePermission>> =
+        let mut role_res_map: HashMap<String, HashSet<RbacRolePermission>> =
             HashMap::with_capacity(role_res_vec.capacity());
         for role_res in role_res_vec {
             let role_id = role_res.role_id.as_deref().unwrap_or_default();
@@ -85,7 +86,7 @@ impl SysRoleResService {
     fn loop_set_res_vec(
         &self,
         arg: Vec<SysRoleVO>,
-        role_res_map: &HashMap<String, HashSet<SysRolePermission>>,
+        role_res_map: &HashMap<String, HashSet<RbacRolePermission>>,
         all: &BTreeMap<String, SysPermissionVO>,
     ) -> Result<Vec<SysRoleVO>> {
         let mut data = Vec::with_capacity(arg.len());
@@ -148,7 +149,7 @@ impl SysRoleResService {
         self.remove_by_role_id(role_id).await?;
         let mut sys_role_permission = Vec::with_capacity(resource_ids.len());
         for resource_id in resource_ids {
-            sys_role_permission.push(SysRolePermission {
+            sys_role_permission.push(RbacRolePermission {
                 id: ObjectId::new().to_string().into(),
                 role_id: role_id.to_string().into(),
                 permission_id: resource_id.clone().into(),
@@ -156,7 +157,7 @@ impl SysRoleResService {
             });
         }
         Ok(
-            SysRolePermission::insert_batch(pool!(), &sys_role_permission, 20)
+            RbacRolePermission::insert_batch(pool!(), &sys_role_permission, 20)
                 .await?
                 .rows_affected,
         )
@@ -177,14 +178,14 @@ impl SysRoleResService {
     }
 
     pub async fn remove(&self, id: &str) -> Result<u64> {
-        Ok(SysRolePermission::delete_by_column(pool!(), "id", id)
+        Ok(RbacRolePermission::delete_by_column(pool!(), "id", id)
             .await?
             .rows_affected)
     }
 
     pub async fn remove_by_permission_id(&self, permission_id: &str) -> Result<u64> {
         Ok(
-            SysRolePermission::delete_by_column(pool!(), "permission_id", permission_id)
+            RbacRolePermission::delete_by_column(pool!(), "permission_id", permission_id)
                 .await?
                 .rows_affected,
         )
@@ -192,7 +193,7 @@ impl SysRoleResService {
 
     pub async fn remove_by_role_id(&self, role_id: &str) -> Result<u64> {
         Ok(
-            SysRolePermission::delete_by_column(pool!(), "role_id", role_id)
+            RbacRolePermission::delete_by_column(pool!(), "role_id", role_id)
                 .await?
                 .rows_affected,
         )

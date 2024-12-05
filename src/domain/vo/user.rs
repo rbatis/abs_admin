@@ -1,5 +1,5 @@
 use crate::domain::table::{LoginCheck, SysUser};
-use crate::domain::vo::SysRoleVO;
+use crate::domain::vo::rbac::SysRoleVO;
 use crate::context::CONTEXT;
 use serde::{Deserialize, Serialize};
 

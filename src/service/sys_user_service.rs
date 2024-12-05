@@ -1,13 +1,17 @@
+use crate::context::CONTEXT;
 use crate::error::Error;
 use crate::error::Result;
-use crate::context::CONTEXT;
 use rbatis::page::{Page, PageRequest};
 use rbatis::rbdc::DateTime;
 
-use crate::domain::dto::{IdDTO, SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO, UserRoleAddDTO};
+use crate::domain::dto::{
+    IdDTO, SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO, UserRoleAddDTO, UserRolePageDTO,
+};
 use crate::domain::table::{LoginCheck, SysUser};
+use crate::domain::vo::rbac::SysPermissionVO;
 use crate::domain::vo::user::SysUserVO;
-use crate::domain::vo::{JWTToken, SignInVO, SysPermissionVO};
+use crate::domain::vo::{JWTToken, SignInVO};
+use crate::service::SetUserVO;
 use crate::util::password_encoder::PasswordEncoder;
 use crate::{error_info, pool};
 use std::collections::BTreeMap;
@@ -19,6 +23,29 @@ const CACHE_KEY_RETRY: &'static str = "login:login_retry";
 pub struct SysUserService {}
 
 impl SysUserService {
+    pub async fn role_page(&self, dto: &UserRolePageDTO) -> Result<Page<SysUserVO>> {
+        let mut vo = CONTEXT
+            .sys_user_service
+            .page(&UserPageDTO::from(dto))
+            .await?;
+        let mut roles = Vec::with_capacity(vo.records.len());
+        for x in &vo.records {
+            roles.push(SetUserVO {
+                id: x.id.clone(),
+                role: x.role.clone(),
+            });
+        }
+        CONTEXT.sys_user_role_service.set_roles(&mut roles).await?;
+        let mut idx = 0;
+        for x in &roles {
+            vo.records[idx].role = x.role.clone();
+            idx += 1;
+        }
+        Ok(vo)
+    }
+}
+
+impl SysUserService {
     pub async fn page(&self, arg: &UserPageDTO) -> Result<Page<SysUserVO>> {
         let sys_user_page: Page<SysUser> = SysUser::select_page(
             pool!(),
@@ -26,7 +53,7 @@ impl SysUserService {
             arg.name.as_deref().unwrap_or_default(),
             arg.account.as_deref().unwrap_or_default(),
         )
-            .await?;
+        .await?;
         let page = Page::<SysUserVO>::from(sys_user_page);
         Ok(page)
     }
@@ -141,16 +168,23 @@ impl SysUserService {
                     .cache_service
                     .get_string(&format!("captch:account_{}", &arg.account))
                     .await?;
-                if arg.vcode == "" || cache_code.to_lowercase().as_str().ne(arg.vcode.to_lowercase().as_str()) {
+                if arg.vcode == ""
+                    || cache_code
+                        .to_lowercase()
+                        .as_str()
+                        .ne(arg.vcode.to_lowercase().as_str())
+                {
                     error = Some(Error::from(error_info!("vcode_error")))
                 }
                 // check pwd
-                if error.is_none() && !PasswordEncoder::verify(
-                    user.password
-                        .as_ref()
-                        .ok_or_else(|| Error::from(error_info!("password_empty")))?,
-                    &arg.password,
-                ) {
+                if error.is_none()
+                    && !PasswordEncoder::verify(
+                        user.password
+                            .as_ref()
+                            .ok_or_else(|| Error::from(error_info!("password_empty")))?,
+                        &arg.password,
+                    )
+                {
                     error = Some(Error::from(error_info!("password_error")));
                 }
             }
