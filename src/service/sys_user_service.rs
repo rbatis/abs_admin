@@ -5,7 +5,7 @@ use rbatis::page::{Page, PageRequest};
 use rbatis::rbdc::DateTime;
 
 use crate::domain::dto::{
-    IdDTO, SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO, UserRoleAddDTO, UserRolePageDTO,
+    IdDTO, SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO, UserRolePageDTO,
 };
 use crate::domain::table::{LoginCheck, SysUser};
 use crate::domain::vo::rbac::SysPermissionVO;
@@ -16,6 +16,7 @@ use crate::util::password_encoder::PasswordEncoder;
 use crate::{error_info, pool};
 use std::collections::BTreeMap;
 use std::time::Duration;
+use crate::domain::dto::rbac::UserRoleAddDTO;
 
 const CACHE_KEY_RETRY: &'static str = "login:login_retry";
 

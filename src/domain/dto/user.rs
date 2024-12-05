@@ -4,7 +4,6 @@ use rbatis::object_id::ObjectId;
 use rbatis::rbdc::DateTime;
 use rbatis::PageRequest;
 use serde::{Deserialize, Serialize};
-use crate::domain::table::rbac::RbacUserRole;
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct UserAddDTO {
@@ -80,23 +79,6 @@ impl From<&UserRolePageDTO> for UserPageDTO {
     }
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug)]
-pub struct UserRoleAddDTO {
-    pub id: Option<String>,
-    pub user_id: Option<String>,
-    pub role_id: Option<String>,
-}
-
-impl From<UserRoleAddDTO> for RbacUserRole {
-    fn from(arg: UserRoleAddDTO) -> Self {
-        RbacUserRole {
-            id: arg.id.clone(),
-            user_id: arg.user_id.clone(),
-            role_id: arg.role_id.clone(),
-            create_date: DateTime::now().into(),
-        }
-    }
-}
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct UserRolePageDTO {

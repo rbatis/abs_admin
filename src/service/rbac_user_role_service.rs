@@ -1,7 +1,7 @@
 use std::collections::BTreeMap;
 
 use crate::context::CONTEXT;
-use crate::domain::dto::UserRoleAddDTO;
+use crate::domain::dto::rbac::UserRoleAddDTO;
 use crate::domain::table::rbac::RbacUserRole;
 use crate::domain::vo::rbac::SysPermissionVO;
 use crate::domain::vo::rbac::SysRoleVO;
