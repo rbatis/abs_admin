@@ -3,7 +3,7 @@ use std::collections::{BTreeMap, HashMap, HashSet};
 use crate::domain::dto::rbac::{
     RoleAddDTO, RoleEditDTO, RolePageDTO, SysRoleResAddDTO, SysRoleResPageDTO, SysRoleResUpdateDTO,
 };
-use crate::domain::table::RbacRolePermission;
+use crate::domain::table::rbac::RbacRolePermission;
 use crate::domain::vo::rbac::{SysPermissionVO};
 use crate::error::Error;
 use crate::error::Result;

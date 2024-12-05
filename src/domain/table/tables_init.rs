@@ -5,7 +5,8 @@ use rbatis::RBatis;
 use rbatis::rbdc::DateTime;
 use rbatis::table_sync::{ColumnMapper, MssqlTableMapper, MysqlTableMapper, PGTableMapper, SqliteTableMapper};
 use crate::domain::table::LoginCheck::PasswordCheck;
-use crate::domain::table::{SysDict, RbacPermission, RbacRole, RbacRolePermission, SysTrash, SysUser, RbacUserRole};
+use crate::domain::table::rbac::{RbacPermission, RbacRole, RbacRolePermission, RbacUserRole};
+use crate::domain::table::{SysDict, SysTrash, SysUser};
 
 pub async fn sync_tables(rb: &RBatis) {
     //disable log

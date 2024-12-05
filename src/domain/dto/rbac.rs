@@ -1,4 +1,4 @@
-use crate::domain::table::{RbacPermission, RbacRole, RbacUserRole};
+use crate::domain::table::rbac::{RbacPermission, RbacRole, RbacUserRole};
 use rbatis::object_id::ObjectId;
 use rbatis::rbdc::DateTime;
 use rbatis::PageRequest;

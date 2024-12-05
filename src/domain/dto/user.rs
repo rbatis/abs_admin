@@ -1,9 +1,10 @@
-use crate::domain::table::{LoginCheck, SysUser, RbacUserRole};
+use crate::domain::table::{LoginCheck, SysUser};
 use crate::util::password_encoder::PasswordEncoder;
 use rbatis::object_id::ObjectId;
 use rbatis::rbdc::DateTime;
 use rbatis::PageRequest;
 use serde::{Deserialize, Serialize};
+use crate::domain::table::rbac::RbacUserRole;
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct UserAddDTO {

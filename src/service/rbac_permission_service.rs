@@ -1,5 +1,5 @@
 use crate::domain::dto::rbac::{ResEditDTO, ResPageDTO};
-use crate::domain::table::RbacPermission;
+use crate::domain::table::rbac::RbacPermission;
 use crate::domain::vo::rbac::SysPermissionVO;
 use crate::error::Error;
 use crate::error::Result;

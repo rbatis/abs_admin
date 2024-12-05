@@ -1,5 +1,5 @@
 use crate::domain::dto::rbac::{RoleAddDTO, RoleEditDTO, RolePageDTO};
-use crate::domain::table::{RbacRole, RbacRolePermission, RbacUserRole};
+use crate::domain::table::rbac::{RbacRole, RbacRolePermission, RbacUserRole};
 use crate::error::Result;
 use crate::pool;
 use crate::context::CONTEXT;

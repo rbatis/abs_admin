@@ -1,5 +1,5 @@
 use crate::domain::dto::{EmptyDTO, IdDTO};
-use crate::domain::table::RbacPermission;
+use crate::domain::table::rbac::RbacPermission;
 use crate::domain::vo::RespVO;
 use crate::error_info;
 use crate::context::CONTEXT;

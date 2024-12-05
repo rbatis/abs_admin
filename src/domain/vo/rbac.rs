@@ -1,4 +1,4 @@
-use crate::domain::table::{RbacPermission, RbacRole};
+use crate::domain::table::rbac::{RbacPermission, RbacRole};
 use crate::context::CONTEXT;
 use std::collections::HashMap;
 
