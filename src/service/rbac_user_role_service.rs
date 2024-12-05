@@ -17,12 +17,12 @@ pub struct SetUserVO {
 }
 
 ///User Role Service
-pub struct SysUserRoleService {}
+pub struct RbacUserRoleService {}
 
-impl SysUserRoleService {
+impl RbacUserRoleService {
     ///set to user list
     pub async fn set_roles(&self, records: &mut Vec<SetUserVO>) -> Result<()> {
-        let all_roles = CONTEXT.sys_role_service.finds_all_map().await?;
+        let all_roles = CONTEXT.rbac_role_service.finds_all_map().await?;
         let user_ids = rbatis::table_field_vec!(&*records, id);
         let user_roles = RbacUserRole::select_in_column(pool!(), "user_id", &user_ids).await?;
         let role_ids = rbatis::table_field_vec!(&user_roles, role_id)
@@ -30,7 +30,7 @@ impl SysUserRoleService {
             .map(|v| v.to_string())
             .collect();
         let user_role_map = rbatis::table_field_map!(user_roles, user_id);
-        let roles = CONTEXT.sys_role_service.finds(&role_ids).await?;
+        let roles = CONTEXT.rbac_role_service.finds(&role_ids).await?;
         let roles_map = rbatis::table_field_map!(&roles, id);
         for x in records {
             if let Some(user_role) = user_role_map.get(x.id.as_deref().unwrap_or_default()) {
@@ -39,7 +39,7 @@ impl SysUserRoleService {
                     x.role = SysRoleVO::from_option(role);
                     if let Some(role_vo) = &mut x.role {
                         CONTEXT
-                            .sys_role_service
+                            .rbac_role_service
                             .loop_find_childs(role_vo, &all_roles);
                     }
                 }
@@ -83,8 +83,8 @@ impl SysUserRoleService {
         }
         let user_roles = RbacUserRole::select_by_column(pool!(), "user_id", user_id).await?;
         let role_ids = rbatis::table_field_vec!(user_roles, role_id);
-        let roles = CONTEXT.sys_role_service.finds(&role_ids).await?;
-        let role_res_vec = CONTEXT.sys_role_service.find_role_res(&role_ids).await?;
+        let roles = CONTEXT.rbac_role_service.finds(&role_ids).await?;
+        let role_res_vec = CONTEXT.rbac_role_service.find_role_res(&role_ids).await?;
         let mut role_vos = Vec::with_capacity(roles.len());
         for role in roles {
             //load res
@@ -100,7 +100,7 @@ impl SysUserRoleService {
             }
             let mut vo = SysRoleVO::from(role);
             vo.resource_ids = CONTEXT
-                .sys_permission_service
+                .rbac_permission_service
                 .make_permission_ids(&resources);
             vo.resources = resources;
             role_vos.push(vo);

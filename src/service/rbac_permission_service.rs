@@ -11,9 +11,9 @@ use std::collections::{BTreeMap, HashMap};
 const RES_KEY: &'static str = "sys_permission:all";
 
 /// Resource service
-pub struct SysPermissionService {}
+pub struct RbacPermissionService {}
 
-impl SysPermissionService {
+impl RbacPermissionService {
     pub async fn page(&self, arg: &ResPageDTO) -> Result<Page<SysPermissionVO>> {
         let data = RbacPermission::select_page(pool!(), &PageRequest::from(arg), arg).await?;
         let all_res = self.finds_all_map().await?;
@@ -60,7 +60,7 @@ impl SysPermissionService {
             .rows_affected;
         RbacPermission::delete_by_column(pool!(), "parent_id", id).await?;
         let _ = CONTEXT
-            .sys_role_permission_service
+            .rbac_role_permission_service
             .remove_by_permission_id(id)
             .await;
         self.update_cache().await?;

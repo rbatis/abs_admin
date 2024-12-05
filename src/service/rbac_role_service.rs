@@ -11,9 +11,9 @@ use crate::domain::vo::rbac::SysRoleVO;
 const RES_KEY: &'static str = "sys_role:all";
 
 ///Role of service
-pub struct SysRoleService {}
+pub struct RbacRoleService {}
 
-impl SysRoleService {
+impl RbacRoleService {
     pub async fn page(&self, arg: &RolePageDTO) -> Result<Page<SysRoleVO>> {
         let data = RbacRole::select_page_by_name(
             pool!(),
@@ -128,7 +128,7 @@ impl SysRoleService {
             .find_role_res(&role_ids)
             .await?;
         let res = CONTEXT
-            .sys_permission_service
+            .rbac_permission_service
             .finds_layer(
                 &rbatis::table_field_vec!(role_res, permission_id),
                 &all_res,

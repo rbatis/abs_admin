@@ -32,7 +32,7 @@ pub fn checked_token(token: &str) -> Result<JWTToken, crate::error::Error> {
 
 ///Permission to check
 pub async fn check_auth(token: &JWTToken, path: &str) -> Result<(), crate::error::Error> {
-    let sys_permission = CONTEXT.sys_permission_service.finds_all().await?;
+    let sys_permission = CONTEXT.rbac_permission_service.finds_all().await?;
     for token_permission in &token.permissions {
         for x in &sys_permission {
             match &x.permission {

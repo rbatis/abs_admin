@@ -8,17 +8,17 @@ use axum::Json;
 use crate::domain::dto::rbac::{PermissionAddDTO, ResEditDTO, ResPageDTO};
 
 pub async fn page(page: Json<ResPageDTO>) -> impl IntoResponse {
-    let data = CONTEXT.sys_permission_service.page(&page.0).await;
+    let data = CONTEXT.rbac_permission_service.page(&page.0).await;
     RespVO::from_result(data)
 }
 
 pub async fn all(_page: Json<EmptyDTO>) -> impl IntoResponse {
-    let data = CONTEXT.sys_permission_service.finds_all().await;
+    let data = CONTEXT.rbac_permission_service.finds_all().await;
     RespVO::from_result(data)
 }
 
 pub async fn layer_top(_page: Json<EmptyDTO>) -> impl IntoResponse {
-    let data = CONTEXT.sys_permission_service.finds_layer_top().await;
+    let data = CONTEXT.rbac_permission_service.finds_layer_top().await;
     RespVO::from_result(data)
 }
 
@@ -33,22 +33,22 @@ pub async fn add(mut arg: Json<PermissionAddDTO>) -> impl IntoResponse {
         arg.path = Some("".to_string());
     }
     let res = RbacPermission::from(arg.0);
-    let data = CONTEXT.sys_permission_service.add(&res).await;
-    let _ = CONTEXT.sys_permission_service.update_cache().await;
+    let data = CONTEXT.rbac_permission_service.add(&res).await;
+    let _ = CONTEXT.rbac_permission_service.update_cache().await;
     RespVO::from_result(data)
 }
 
 pub async fn update(arg: Json<ResEditDTO>) -> impl IntoResponse {
-    let data = CONTEXT.sys_permission_service.edit(&arg.0).await;
-    let _ = CONTEXT.sys_permission_service.update_cache().await;
+    let data = CONTEXT.rbac_permission_service.edit(&arg.0).await;
+    let _ = CONTEXT.rbac_permission_service.update_cache().await;
     RespVO::from_result(data)
 }
 
 pub async fn remove(arg: Json<IdDTO>) -> impl IntoResponse {
     let data = CONTEXT
-        .sys_permission_service
+        .rbac_permission_service
         .remove(&arg.0.id.unwrap_or_default())
         .await;
-    let _ = CONTEXT.sys_permission_service.update_cache().await;
+    let _ = CONTEXT.rbac_permission_service.update_cache().await;
     RespVO::from_result(data)
 }

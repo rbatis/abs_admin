@@ -36,7 +36,7 @@ impl SysUserService {
                 role: x.role.clone(),
             });
         }
-        CONTEXT.sys_user_role_service.set_roles(&mut roles).await?;
+        CONTEXT.rbac_user_role_service.set_roles(&mut roles).await?;
         let mut idx = 0;
         for x in &roles {
             vo.records[idx].role = x.role.clone();
@@ -66,9 +66,9 @@ impl SysUserService {
             Error::from(format!("{}={}", error_info!("user_not_exists"), user_id))
         })?;
         let mut user_vo = SysUserVO::from(user);
-        let all_res = CONTEXT.sys_permission_service.finds_all_map().await?;
+        let all_res = CONTEXT.rbac_permission_service.finds_all_map().await?;
         let role = CONTEXT
-            .sys_user_role_service
+            .rbac_user_role_service
             .find_user_role(&user_id, &all_res)
             .await?;
         user_vo.role = role;
@@ -116,7 +116,7 @@ impl SysUserService {
         let user = SysUser::from(arg);
         if role_id.is_some() {
             CONTEXT
-                .sys_user_role_service
+                .rbac_user_role_service
                 .add(UserRoleAddDTO {
                     id: None,
                     user_id: user.id.clone(),
@@ -282,7 +282,7 @@ impl SysUserService {
             .ok_or_else(|| Error::from(error_info!("id_empty")))?;
         let mut sign_vo = SignInVO::from(user);
 
-        let all_res = CONTEXT.sys_permission_service.finds_all_map().await?;
+        let all_res = CONTEXT.rbac_permission_service.finds_all_map().await?;
         sign_vo.permissions = self.load_level_permission(&user_id, &all_res).await?;
         let jwt_token = JWTToken {
             id: sign_vo.id.clone().unwrap_or_default(),
@@ -293,7 +293,7 @@ impl SysUserService {
         };
         sign_vo.access_token = jwt_token.create_token(&CONTEXT.config.jwt_secret)?;
         sign_vo.role = CONTEXT
-            .sys_user_role_service
+            .rbac_user_role_service
             .find_user_role(&sign_vo.id.clone().unwrap_or_default(), &all_res)
             .await?;
         Ok(sign_vo)
@@ -321,7 +321,7 @@ impl SysUserService {
         arg.password = password;
         if role_id.is_some() {
             CONTEXT
-                .sys_user_role_service
+                .rbac_user_role_service
                 .add(UserRoleAddDTO {
                     id: None,
                     user_id: arg.id.clone(),
@@ -339,7 +339,7 @@ impl SysUserService {
             return Err(Error::from(error_info!("id_empty")));
         }
         let r = SysUser::delete_by_column(pool!(), "id", id).await?;
-        CONTEXT.sys_user_role_service.remove_by_user_id(id).await?;
+        CONTEXT.rbac_user_role_service.remove_by_user_id(id).await?;
         Ok(r.rows_affected)
     }
 
@@ -350,7 +350,7 @@ impl SysUserService {
         all_res: &BTreeMap<String, SysPermissionVO>,
     ) -> Result<Vec<String>> {
         CONTEXT
-            .sys_role_service
+            .rbac_role_service
             .find_user_permission(user_id, all_res)
             .await
     }

@@ -15,19 +15,19 @@ use rbatis::Page;
 use crate::domain::vo::rbac::SysRoleVO;
 
 /// Role Resource Service
-pub struct SysRoleResService {}
+pub struct RbacRoleResService {}
 
-impl SysRoleResService {
+impl RbacRoleResService {
     pub async fn page(&self, arg: &SysRoleResPageDTO) -> Result<Page<SysRoleVO>> {
         let mut role_page = CONTEXT
-            .sys_role_service
+            .rbac_role_service
             .page(&RolePageDTO {
                 page_no: arg.page_no.clone(),
                 page_size: arg.page_size.clone(),
                 name: arg.name.clone(),
             })
             .await?;
-        let all = CONTEXT.sys_permission_service.finds_all_map().await?;
+        let all = CONTEXT.rbac_permission_service.finds_all_map().await?;
         let role_res_map = self.find_role_res_map(&role_page.records).await?;
         role_page.records = self.loop_set_res_vec(role_page.records, &role_res_map, &all)?;
         return Result::Ok(role_page);
@@ -125,7 +125,7 @@ impl SysRoleResService {
 
     pub async fn add(&self, arg: &SysRoleResAddDTO) -> Result<u64> {
         let (_, role_id) = CONTEXT
-            .sys_role_service
+            .rbac_role_service
             .add(RoleAddDTO::from(arg.clone()))
             .await?;
         self
@@ -139,7 +139,7 @@ impl SysRoleResService {
             .as_ref()
             .ok_or_else(|| Error::from(error_info!("role_id_empty")))?;
         CONTEXT
-            .sys_role_service
+            .rbac_role_service
             .edit(RoleEditDTO::from(arg.clone()))
             .await?;
         self.save_resources(role_id, arg.resource_ids.clone()).await
@@ -165,13 +165,13 @@ impl SysRoleResService {
 
     ///Roles, user relationships, and rights are deleted
     pub async fn remove_role(&self, role_id: &str) -> Result<u64> {
-        let remove_roles = CONTEXT.sys_role_service.remove(role_id).await?;
+        let remove_roles = CONTEXT.rbac_role_service.remove(role_id).await?;
         let remove_user_roles = CONTEXT
-            .sys_user_role_service
+            .rbac_user_role_service
             .remove_by_role_id(role_id)
             .await?;
         let remove_role_res = CONTEXT
-            .sys_role_permission_service
+            .rbac_role_permission_service
             .remove_by_role_id(role_id)
             .await?;
         Ok(remove_roles + remove_user_roles + remove_role_res)

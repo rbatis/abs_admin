@@ -4,7 +4,7 @@ use log::LevelFilter;
 use rbatis::intercept_log::LogInterceptor;
 use rbatis::RBatis;
 use crate::config::config::ApplicationConfig;
-use crate::service::{CacheService, StorageService, SysAuthService, SysDictService, SysPermissionService, SysRoleResService, SysRoleService, SysTrashService, SysUserRoleService, SysUserService};
+use crate::service::{CacheService, StorageService, SysAuthService, SysDictService, RbacPermissionService, RbacRoleResService, RbacRoleService, SysTrashService, RbacUserRoleService, SysUserService};
 
 /// Service CONTEXT
 pub static CONTEXT: LazyLock<ServiceContext> = LazyLock::new(|| ServiceContext::default());
@@ -21,11 +21,11 @@ pub struct ServiceContext {
     pub rb: RBatis,
     pub cache_service: CacheService,
     pub storage_service: StorageService,
-    pub sys_permission_service: SysPermissionService,
     pub sys_user_service: SysUserService,
-    pub sys_role_service: SysRoleService,
-    pub sys_role_permission_service: SysRoleResService,
-    pub sys_user_role_service: SysUserRoleService,
+    pub rbac_permission_service: RbacPermissionService,
+    pub rbac_role_service: RbacRoleService,
+    pub rbac_role_permission_service: RbacRoleResService,
+    pub rbac_user_role_service: RbacUserRoleService,
     pub sys_dict_service: SysDictService,
     pub sys_auth_service: SysAuthService,
     pub sys_trash_service: SysTrashService,
@@ -72,11 +72,11 @@ impl Default for ServiceContext {
             },
             cache_service: CacheService::new(&config).unwrap(),
             storage_service:  StorageService::new(&config.storage).expect("Failed to create storage service"),
-            sys_permission_service: SysPermissionService {},
+            rbac_permission_service: RbacPermissionService {},
             sys_user_service: SysUserService {},
-            sys_role_service: SysRoleService {},
-            sys_role_permission_service: SysRoleResService {},
-            sys_user_role_service: SysUserRoleService {},
+            rbac_role_service: RbacRoleService {},
+            rbac_role_permission_service: RbacRoleResService {},
+            rbac_user_role_service: RbacUserRoleService {},
             sys_dict_service: SysDictService {},
             sys_auth_service: SysAuthService {},
             sys_trash_service: SysTrashService::new(),
