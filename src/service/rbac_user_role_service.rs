@@ -1,5 +1,3 @@
-use std::collections::BTreeMap;
-
 use crate::context::CONTEXT;
 use crate::domain::dto::rbac::UserRoleAddDTO;
 use crate::domain::table::rbac::RbacUserRole;
@@ -9,6 +7,7 @@ use crate::error::Error;
 use crate::error::Result;
 use crate::{error_info, pool};
 use rbatis::plugin::object_id::ObjectId;
+use std::collections::BTreeMap;
 
 pub struct SetUserVO {
     //this is user_id
@@ -21,7 +20,7 @@ pub struct SetUserVO {
 pub struct SysUserRoleService {}
 
 impl SysUserRoleService {
-    ///set to user list 
+    ///set to user list
     pub async fn set_roles(&self, records: &mut Vec<SetUserVO>) -> Result<()> {
         let all_roles = CONTEXT.sys_role_service.finds_all_map().await?;
         let user_ids = rbatis::table_field_vec!(&*records, id);
