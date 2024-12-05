@@ -1,5 +1,7 @@
 use rbatis::rbdc::DateTime;
-use rbatis::{crud, impl_select, impl_select_page};
+use rbatis::{crud, impl_select, impl_select_page, RBatis};
+use rbatis::executor::Executor;
+use rbatis::table_sync::ColumnMapper;
 use crate::domain::dto::rbac::ResPageDTO;
 
 ///Permission Resource Table
@@ -65,3 +67,40 @@ pub struct RbacUserRole {
     pub create_date: Option<DateTime>,
 }
 crud!(RbacUserRole {});
+
+
+pub async fn sync_tables(conn: &dyn Executor, mapper: &dyn ColumnMapper) {
+    // RBAC permission
+    let table = RbacPermission {
+        id: Some(Default::default()),
+        parent_id: Some(Default::default()),
+        name: Some(Default::default()),
+        permission: Some(Default::default()),
+        path: Some(Default::default()),
+        create_date: Some(Default::default()),
+    };
+    let _ = RBatis::sync(conn, mapper, &table, "rbac_permission").await;
+    let table = RbacRole {
+        id: Some(Default::default()),
+        parent_id: Some(Default::default()),
+        name: Some(Default::default()),
+        create_date: Some(Default::default()),
+    };
+    let _ = RBatis::sync(conn, mapper, &table, "rbac_role").await;
+    let table = RbacRolePermission {
+        id: Some(Default::default()),
+        role_id: Some(Default::default()),
+        permission_id: Some(Default::default()),
+        create_date: Some(Default::default()),
+    };
+    let _ = RBatis::sync(conn, mapper, &table, "rbac_role_permission").await;
+    let table = RbacUserRole {
+        id: Some(Default::default()),
+        user_id: Some(Default::default()),
+        role_id: Some(Default::default()),
+        create_date: Some(Default::default()),
+    };
+    let _ = RBatis::sync(conn, mapper, &table, "rbac_user_role").await;
+
+    // RBAC permission end
+}

@@ -29,38 +29,7 @@ pub async fn sync_tables(rb: &RBatis) {
     };
     let conn = rb.acquire().await.expect("connection database fail");
     // RBAC permission
-    let table = RbacPermission {
-        id: Some(Default::default()),
-        parent_id: Some(Default::default()),
-        name: Some(Default::default()),
-        permission: Some(Default::default()),
-        path: Some(Default::default()),
-        create_date: Some(Default::default()),
-    };
-    let _ = RBatis::sync(&conn, mapper, &table, "rbac_permission").await;
-    let table = RbacRole {
-        id: Some(Default::default()),
-        parent_id: Some(Default::default()),
-        name: Some(Default::default()),
-        create_date: Some(Default::default()),
-    };
-    let _ = RBatis::sync(&conn, mapper, &table, "rbac_role").await;
-    let table = RbacRolePermission {
-        id: Some(Default::default()),
-        role_id: Some(Default::default()),
-        permission_id: Some(Default::default()),
-        create_date: Some(Default::default()),
-    };
-    let _ = RBatis::sync(&conn, mapper, &table, "rbac_role_permission").await;
-    let table = RbacUserRole {
-        id: Some(Default::default()),
-        user_id: Some(Default::default()),
-        role_id: Some(Default::default()),
-        create_date: Some(Default::default()),
-    };
-    let _ = RBatis::sync(&conn, mapper, &table, "rbac_user_role").await;
-    
-    // RBAC permission end
+    crate::domain::table::rbac::sync_tables(&conn,mapper).await;
     
     let table = SysUser {
         id: Some(Default::default()),
