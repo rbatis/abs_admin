@@ -15,7 +15,7 @@ pub struct SignInVO {
     pub create_date: Option<String>,
     pub permissions: Vec<String>,
     pub access_token: String,
-    pub role: Option<SysRoleVO>,
+    pub roles: Vec<SysRoleVO>,
 }
 
 impl From<SysUser> for SignInVO {
@@ -32,7 +32,7 @@ impl From<SysUser> for SignInVO {
                 .map(|v| v.format(&CONTEXT.config.datetime_format)),
             permissions: vec![],
             access_token: "".to_string(),
-            role: None,
+            roles: vec![],
         }
     }
 }

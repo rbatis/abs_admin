@@ -40,7 +40,6 @@ async fn main() -> std::io::Result<()> {
         .route("/admin/sys_permission_remove", post(rbac_permission_controller::remove))
         .route("/admin/sys_permission_add", post(rbac_permission_controller::add))
         .route("/admin/sys_permission_page", post(rbac_permission_controller::page))
-        .route("/admin/sys_permission_all", post(rbac_permission_controller::all))
         .route("/admin/sys_permission_layer_top", post(rbac_permission_controller::layer_top))
         .route("/admin/sys_user_add", post(rbac_user_controller::add))
         .route("/admin/sys_user_page", post(rbac_user_controller::page))

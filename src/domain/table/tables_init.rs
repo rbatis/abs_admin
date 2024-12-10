@@ -6,7 +6,7 @@ use rbatis::rbdc::DateTime;
 use rbatis::table_sync::{ColumnMapper, MssqlTableMapper, MysqlTableMapper, PGTableMapper, SqliteTableMapper};
 use crate::domain::table::LoginCheck::PasswordCheck;
 use crate::domain::table::rbac::{RbacPermission, RbacRole, RbacRolePermission, RbacUserRole};
-use crate::domain::table::{SysDict, SysTrash, SysUser};
+use crate::domain::table::{rbac, SysDict, SysTrash, SysUser};
 
 pub async fn sync_tables(rb: &RBatis) {
     //disable log
@@ -56,6 +56,8 @@ pub async fn sync_tables(rb: &RBatis) {
         create_date: Some(Default::default()),
     };
     let _ = RBatis::sync(&conn, mapper, &table, "sys_trash").await;
+
+    let _ = rbac::sync_tables(&conn, mapper).await;
 }
 
 
@@ -86,7 +88,6 @@ pub async fn sync_tables_data(rb: &RBatis) {
         &RbacRole {
             id: Some(1.to_string()),
             name: Some("admin".to_string()),
-            parent_id: None,
             create_date: Some(DateTime::now()),
         },
     )
@@ -106,7 +107,6 @@ pub async fn sync_tables_data(rb: &RBatis) {
     let sys_permissions = vec![
         RbacPermission {
             id: Some(1.to_string()),
-            parent_id: None,
             name: Some("首页".to_string()),
             permission: Some("/".to_string()),
             path: Some("/".to_string()),
@@ -114,7 +114,6 @@ pub async fn sync_tables_data(rb: &RBatis) {
         },
         RbacPermission {
             id: Some(9.to_string()),
-            parent_id: None,
             name: Some("user".to_string()),
             permission: Some("user".to_string()),
             path: Some("user".to_string()),
@@ -122,7 +121,6 @@ pub async fn sync_tables_data(rb: &RBatis) {
         },
         RbacPermission {
             id: Some(10.to_string()),
-            parent_id: None,
             name: Some("setting".to_string()),
             permission: Some("setting".to_string()),
             path: Some("setting".to_string()),

@@ -12,7 +12,7 @@ pub struct SysUserVO {
     pub login_check: Option<LoginCheck>,
     pub state: Option<i32>,
     pub create_date: Option<String>,
-    pub role: Option<SysRoleVO>,
+    pub roles: Vec<SysRoleVO>,
 }
 
 impl From<SysUser> for SysUserVO {
@@ -27,7 +27,7 @@ impl From<SysUser> for SysUserVO {
             create_date: arg
                 .create_date
                 .map(|v| v.format(&CONTEXT.config.datetime_format)),
-            role: None,
+            roles: vec![],
         }
     }
 }

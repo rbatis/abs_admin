@@ -29,18 +29,6 @@ impl From<PermissionAddDTO> for RbacPermission {
     fn from(arg: PermissionAddDTO) -> Self {
         RbacPermission {
             id: ObjectId::new().to_string().into(),
-            parent_id: {
-                match arg.parent_id {
-                    None => { None}
-                    Some(v) => {
-                        if v.is_empty(){
-                            None
-                        }else{
-                            Some(v)
-                        }
-                    }
-                }
-            },
             name: arg.name.clone(),
             permission: arg.permission.clone(),
             path: arg.path.clone(),
@@ -62,7 +50,6 @@ impl From<&ResEditDTO> for RbacPermission {
     fn from(arg: &ResEditDTO) -> Self {
         RbacPermission {
             id: arg.id.clone(),
-            parent_id: arg.parent_id.clone(),
             name: arg.name.clone(),
             permission: arg.permission.clone(),
             path: arg.path.clone(),
@@ -97,18 +84,6 @@ impl From<RoleAddDTO> for RbacRole {
         RbacRole {
             id: ObjectId::new().to_string().into(),
             name: arg.name,
-            parent_id: {
-                match arg.parent_id {
-                    None => { None}
-                    Some(v) => {
-                        if v.is_empty(){
-                            None
-                        }else{
-                            Some(v)
-                        }
-                    }
-                }
-            },
             create_date: DateTime::now().into(),
         }
     }
@@ -127,7 +102,6 @@ impl From<RoleEditDTO> for RbacRole {
         RbacRole {
             id: arg.id,
             name: arg.name,
-            parent_id: arg.parent_id,
             create_date: None,
         }
     }

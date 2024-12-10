@@ -4,19 +4,15 @@ use crate::error::Result;
 use rbatis::page::{Page, PageRequest};
 use rbatis::rbdc::DateTime;
 
-use crate::domain::dto::{
-    IdDTO, SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO, UserRolePageDTO,
-};
+use crate::domain::dto::rbac::UserRoleAddDTO;
+use crate::domain::dto::{IdDTO, SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO, UserRolePageDTO};
 use crate::domain::table::{LoginCheck, SysUser};
-use crate::domain::vo::rbac::SysPermissionVO;
 use crate::domain::vo::user::SysUserVO;
 use crate::domain::vo::{JWTToken, SignInVO};
 use crate::service::SetUserVO;
 use crate::util::password_encoder::PasswordEncoder;
 use crate::{error_info, pool};
-use std::collections::BTreeMap;
 use std::time::Duration;
-use crate::domain::dto::rbac::UserRoleAddDTO;
 
 const CACHE_KEY_RETRY: &'static str = "login:login_retry";
 
@@ -33,13 +29,13 @@ impl SysUserService {
         for x in &vo.records {
             roles.push(SetUserVO {
                 id: x.id.clone(),
-                role: x.role.clone(),
+                roles: vec![],
             });
         }
         CONTEXT.rbac_user_role_service.set_roles(&mut roles).await?;
         let mut idx = 0;
-        for x in &roles {
-            vo.records[idx].role = x.role.clone();
+        for x in roles {
+            vo.records[idx].roles = x.roles;
             idx += 1;
         }
         Ok(vo)
@@ -66,12 +62,11 @@ impl SysUserService {
             Error::from(format!("{}={}", error_info!("user_not_exists"), user_id))
         })?;
         let mut user_vo = SysUserVO::from(user);
-        let all_res = CONTEXT.rbac_permission_service.finds_all_map().await?;
-        let role = CONTEXT
+        let roles = CONTEXT
             .rbac_user_role_service
-            .find_user_role(&user_id, &all_res)
+            .find_user_role(&user_id)
             .await?;
-        user_vo.role = role;
+        user_vo.roles = roles;
         Ok(user_vo)
     }
 
@@ -281,9 +276,7 @@ impl SysUserService {
             .clone()
             .ok_or_else(|| Error::from(error_info!("id_empty")))?;
         let mut sign_vo = SignInVO::from(user);
-
-        let all_res = CONTEXT.rbac_permission_service.finds_all_map().await?;
-        sign_vo.permissions = self.load_level_permission(&user_id, &all_res).await?;
+        sign_vo.permissions = self.load_level_permission(&user_id).await?;
         let jwt_token = JWTToken {
             id: sign_vo.id.clone().unwrap_or_default(),
             account: sign_vo.account.clone().unwrap_or_default(),
@@ -292,9 +285,9 @@ impl SysUserService {
             exp: DateTime::now().unix_timestamp() as usize + CONTEXT.config.jwt_exp,
         };
         sign_vo.access_token = jwt_token.create_token(&CONTEXT.config.jwt_secret)?;
-        sign_vo.role = CONTEXT
+        sign_vo.roles = CONTEXT
             .rbac_user_role_service
-            .find_user_role(&sign_vo.id.clone().unwrap_or_default(), &all_res)
+            .find_user_role(&sign_vo.id.clone().unwrap_or_default())
             .await?;
         Ok(sign_vo)
     }
@@ -344,14 +337,17 @@ impl SysUserService {
     }
 
     ///Find user-authority hierarchy permissions
-    pub async fn load_level_permission(
-        &self,
-        user_id: &str,
-        all_res: &BTreeMap<String, SysPermissionVO>,
-    ) -> Result<Vec<String>> {
-        CONTEXT
-            .rbac_role_service
-            .find_user_permission(user_id, all_res)
-            .await
+    pub async fn load_level_permission(&self, user_id: &str) -> Result<Vec<String>> {
+        let data = CONTEXT
+            .rbac_user_role_service
+            .find_user_role(user_id)
+            .await?;
+        let mut perms= Vec::with_capacity(data.len());
+        for x in data {
+            for x in x.permissions {
+                perms.push(x.permission.clone().unwrap_or_default());
+            }
+        }
+        Ok(perms)
     }
 }

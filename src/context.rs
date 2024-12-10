@@ -4,7 +4,7 @@ use log::LevelFilter;
 use rbatis::intercept_log::LogInterceptor;
 use rbatis::RBatis;
 use crate::config::config::ApplicationConfig;
-use crate::service::{CacheService, StorageService, SysAuthService, SysDictService, RbacPermissionService, RbacRoleResService, RbacRoleService, SysTrashService, RbacUserRoleService, SysUserService};
+use crate::service::{CacheService, StorageService, SysAuthService, SysDictService, RbacPermissionService, RbacRolePermissionService, RbacRoleService, SysTrashService, RbacUserRoleService, SysUserService};
 
 /// Service CONTEXT
 pub static CONTEXT: LazyLock<ServiceContext> = LazyLock::new(|| ServiceContext::default());
@@ -24,7 +24,7 @@ pub struct ServiceContext {
     pub sys_user_service: SysUserService,
     pub rbac_permission_service: RbacPermissionService,
     pub rbac_role_service: RbacRoleService,
-    pub rbac_role_permission_service: RbacRoleResService,
+    pub rbac_role_permission_service: RbacRolePermissionService,
     pub rbac_user_role_service: RbacUserRoleService,
     pub sys_dict_service: SysDictService,
     pub sys_auth_service: SysAuthService,
@@ -75,7 +75,7 @@ impl Default for ServiceContext {
             sys_user_service: SysUserService {},
             rbac_role_service: RbacRoleService {},
             rbac_permission_service: RbacPermissionService {},
-            rbac_role_permission_service: RbacRoleResService {},
+            rbac_role_permission_service: RbacRolePermissionService {},
             rbac_user_role_service: RbacUserRoleService {},
             sys_dict_service: SysDictService {},
             sys_auth_service: SysAuthService {},

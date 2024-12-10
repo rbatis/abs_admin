@@ -20,7 +20,7 @@ pub struct SysUser {
 crud!(SysUser {});
 
 impl_select_page!(SysUser{select_page(name:&str,account:&str)=>
-    "`where 0 = 0`
+    "` where 0 = 0 `
     if name != '':
       ` and name like #{'%'+name+'%'}`
     if account != '':
