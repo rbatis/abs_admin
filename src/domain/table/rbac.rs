@@ -24,7 +24,7 @@ impl_select_page!(RbacPermission{select_page(dto: &ResPageDTO) =>
       if dto.name!=null && dto.name!= '':
          ` and name like #{'%'+dto.name+'%'}`
       ` and parent_id IS NULL`
-      if !sql.contains('count'):
+      if do_count == false:
         ` order by create_date desc`"});
 impl_select!(RbacPermission{select_by_permission_or_name(permission:&str,name:&str) => "`where permission = #{permission} or name = #{name}`"});
 impl_select!(RbacPermission{select_by_parent_id_null()=>"`where parent_id IS NULL order by create_date desc`"});
@@ -45,7 +45,7 @@ impl_select_page!(RbacRole{select_page_by_name(name:&str)=>
     if name != '':
       ` and name like #{'%'+name+'%'}`
     ` and parent_id IS NULL `
-    if !sql.contains('count'):
+    if do_count == false:
      `order by create_date desc`"});
 
 ///Role Permission relational tables (relational tables do not use logical deletion)

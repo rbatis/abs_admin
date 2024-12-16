@@ -25,7 +25,7 @@ impl_select_page!(SysUser{select_page(name:&str,account:&str)=>
       ` and name like #{'%'+name+'%'}`
     if account != '':
       ` and account like #{'%'+account+'%'}`
-    if !sql.contains('count'):
+    if do_count == false:
      ` order by create_date desc`"});
 
 ///dictionary table
@@ -45,7 +45,7 @@ impl_select_page!(SysDict{select_page(dto: &crate::domain::dto::DictPageDTO) =>
          ` and code = #{dto.code}`
       if dto.name!=null:
          ` and name = #{dto.name}`
-      if !sql.contains('count'):
+      if do_count == false:
          ` order by create_date `"});
 
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
