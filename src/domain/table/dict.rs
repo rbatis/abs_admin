@@ -1,5 +1,7 @@
-use rbatis::{crud, impl_select_page};
+use crate::domain::dto::DictPageDTO;
+use rbatis::executor::Executor;
 use rbatis::rbdc::DateTime;
+use rbatis::{crud, html_sql, Page, PageRequest};
 
 ///dictionary table
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
@@ -12,11 +14,13 @@ pub struct SysDict {
 }
 
 crud!(SysDict {});
-impl_select_page!(SysDict{select_page(dto: &crate::domain::dto::DictPageDTO) =>
-    "`where id!=''`
-      if dto.code!=null:
-         ` and code = #{dto.code}`
-      if dto.name!=null:
-         ` and name = #{dto.name}`
-      if do_count == false:
-         ` order by create_date `"});
+impl SysDict {
+    #[html_sql("src/domain/table/dict.html")]
+    pub async fn select_page(
+        rb: &dyn Executor,
+        page_request: &PageRequest,
+        dto: &DictPageDTO,
+    ) -> rbatis::Result<Page<SysDict>> {
+        impled!()
+    }
+}
