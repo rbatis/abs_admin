@@ -1,4 +1,3 @@
-use crate::domain::table::SysTrash;
 use crate::pool;
 use crate::context::CONTEXT;
 use parking_lot::Mutex;
@@ -16,6 +15,7 @@ use sqlparser::parser::Parser;
 use std::fmt::Debug;
 use std::time::Duration;
 use rbatis::async_trait;
+use crate::domain::table::trash::SysTrash;
 
 /// A trash can service that can recycle data. Retrieve the data, display the trash can data
 #[derive(Debug)]

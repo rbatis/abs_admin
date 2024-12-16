@@ -4,9 +4,12 @@ use rbatis::intercept_log::LogInterceptor;
 use rbatis::RBatis;
 use rbatis::rbdc::DateTime;
 use rbatis::table_sync::{ColumnMapper, MssqlTableMapper, MysqlTableMapper, PGTableMapper, SqliteTableMapper};
+use crate::domain::table::dict::SysDict;
 use crate::domain::table::LoginCheck::PasswordCheck;
+use crate::domain::table::rbac;
 use crate::domain::table::rbac::{RbacPermission, RbacRole, RbacRolePermission, RbacUserRole};
-use crate::domain::table::{rbac, SysDict, SysTrash, SysUser};
+use crate::domain::table::trash::SysTrash;
+use crate::domain::table::user::SysUser;
 
 pub async fn sync_tables(rb: &RBatis) {
     //disable log

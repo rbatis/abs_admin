@@ -6,13 +6,14 @@ use rbatis::rbdc::DateTime;
 
 use crate::domain::dto::rbac::UserRoleAddDTO;
 use crate::domain::dto::{IdDTO, SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO, UserRolePageDTO};
-use crate::domain::table::{LoginCheck, SysUser};
+use crate::domain::table::{LoginCheck};
 use crate::domain::vo::user::SysUserVO;
 use crate::domain::vo::{JWTToken, SignInVO};
 use crate::service::SetUserVO;
 use crate::util::password_encoder::PasswordEncoder;
 use crate::{error_info, pool};
 use std::time::Duration;
+use crate::domain::table::user::SysUser;
 
 const CACHE_KEY_RETRY: &'static str = "login:login_retry";
 
