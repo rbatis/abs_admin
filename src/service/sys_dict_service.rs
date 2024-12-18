@@ -1,12 +1,12 @@
 use rbatis::{Page, PageRequest};
 
 use crate::domain::dto::{DictEditDTO, DictPageDTO};
-use crate::domain::table::SysDict;
 use crate::domain::vo::SysDictVO;
 use crate::error::Error;
 use crate::error::Result;
 use crate::context::CONTEXT;
 use crate::{error_info, pool};
+use crate::domain::table::dict::SysDict;
 
 const DICT_KEY: &'static str = "sys_dict:all";
 
