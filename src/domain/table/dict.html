@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "https://raw.githubusercontent.com/rbatis/rbatis/master/rbatis-codegen/mybatis-3-mapper.dtd">
 <mapper>
 <select id="select_page">
-    ` select * from dict `
+    ` select * from sys_dict `
     <where>
         <if test="dto.code!=null">
             ` and code = #{dto.code}`
