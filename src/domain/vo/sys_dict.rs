@@ -1,5 +1,5 @@
 use crate::context::CONTEXT;
-use crate::domain::table::dict::SysDict;
+use crate::domain::table::sys_dict::SysDict;
 
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SysDictVO {

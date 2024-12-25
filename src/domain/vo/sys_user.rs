@@ -2,7 +2,7 @@ use crate::domain::table::{LoginCheck};
 use crate::domain::vo::rbac::SysRoleVO;
 use crate::context::CONTEXT;
 use serde::{Deserialize, Serialize};
-use crate::domain::table::user::SysUser;
+use crate::domain::table::sys_user::SysUser;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct SysUserVO {

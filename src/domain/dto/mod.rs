@@ -1,14 +1,14 @@
 pub mod auth;
-pub mod dict;
+pub mod sys_dict;
 pub mod sign_in;
-pub mod user;
+pub mod sys_user;
 
 pub mod rbac;
 
 pub use auth::*;
-pub use dict::*;
+pub use sys_dict::*;
 pub use sign_in::*;
-pub use user::*;
+pub use sys_user::*;
 
 use serde::{Deserialize, Serialize};
 

@@ -1,7 +1,7 @@
 use rbatis::rbdc::DateTime;
 use rbatis::PageRequest;
 use serde::{Deserialize, Serialize};
-use crate::domain::table::dict::SysDict;
+use crate::domain::table::sys_dict::SysDict;
 
 /// dictionary page DTO
 #[derive(Serialize, Deserialize, Clone, Debug)]
