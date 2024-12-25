@@ -1,5 +1,4 @@
 use crate::domain::dto::DictPageDTO;
-use rbatis::executor::Executor;
 use rbatis::rbdc::DateTime;
 use rbatis::{crud, htmlsql_select_page};
 
