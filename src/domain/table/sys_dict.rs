@@ -15,5 +15,5 @@ pub struct SysDict {
 
 crud!(SysDict {});
 impl SysDict {
-    htmlsql_select_page!(select_page(dto:&DictPageDTO) -> SysDict => "src/domain/table/dict.html");
+    htmlsql_select_page!(select_page(dto:&DictPageDTO) -> SysDict => "src/domain/table/sys_dict.html");
 }
