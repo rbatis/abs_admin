@@ -4,7 +4,7 @@ use crate::error_info;
 use crate::context::CONTEXT;
 use axum::response::IntoResponse;
 use axum::Json;
-use crate::domain::table::dict::SysDict;
+use crate::domain::table::sys_dict::SysDict;
 
 pub async fn page(page: Json<DictPageDTO>) -> impl IntoResponse {
     let data = CONTEXT.sys_dict_service.page(&page.0).await;

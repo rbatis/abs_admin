@@ -4,7 +4,7 @@ use rbatis::object_id::ObjectId;
 use rbatis::rbdc::DateTime;
 use rbatis::PageRequest;
 use serde::{Deserialize, Serialize};
-use crate::domain::table::user::SysUser;
+use crate::domain::table::sys_user::SysUser;
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct UserAddDTO {

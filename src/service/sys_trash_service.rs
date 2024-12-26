@@ -15,7 +15,7 @@ use sqlparser::parser::Parser;
 use std::fmt::Debug;
 use std::time::Duration;
 use rbatis::async_trait;
-use crate::domain::table::trash::SysTrash;
+use crate::domain::table::sys_trash::SysTrash;
 
 /// A trash can service that can recycle data. Retrieve the data, display the trash can data
 #[derive(Debug)]

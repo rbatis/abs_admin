@@ -1,11 +1,11 @@
-pub mod dict;
+pub mod sys_dict;
 pub mod jwt;
 pub mod sign_in;
-pub mod user;
+pub mod sys_user;
 pub mod rbac;
 
 use axum::response::{IntoResponse, Response};
-pub use dict::*;
+pub use sys_dict::*;
 pub use jwt::*;
 pub use sign_in::*;
 

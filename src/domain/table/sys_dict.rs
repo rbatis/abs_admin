@@ -1,7 +1,6 @@
 use crate::domain::dto::DictPageDTO;
-use rbatis::executor::Executor;
 use rbatis::rbdc::DateTime;
-use rbatis::{crud, html_sql, htmlsql_select_page, Error, Page, PageRequest};
+use rbatis::{crud, htmlsql_select_page};
 
 ///dictionary table
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
@@ -15,5 +14,5 @@ pub struct SysDict {
 
 crud!(SysDict {});
 impl SysDict {
-    htmlsql_select_page!(select_page(dto:&DictPageDTO) -> SysDict => "src/domain/table/dict.html");
+    htmlsql_select_page!(select_page(dto:&DictPageDTO) -> SysDict => "src/domain/table/sys_dict.html");
 }
