@@ -27,6 +27,7 @@ impl From<&DictPageDTO> for PageRequest {
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct DictAddDTO {
+    pub id: Option<String>,
     pub name: Option<String>,
     pub code: Option<String>,
     pub state: Option<i32>,
@@ -35,7 +36,13 @@ pub struct DictAddDTO {
 impl From<DictAddDTO> for SysDict {
     fn from(arg: DictAddDTO) -> Self {
         SysDict {
-            id: arg.name.clone().into(),
+            id: {
+                if let Some(id) = arg.id {
+                    Some(id)
+                } else {
+                    arg.code.clone()
+                }
+            },
             name: arg.name.clone(),
             code: arg.code.clone(),
             state: arg.state.clone(),
