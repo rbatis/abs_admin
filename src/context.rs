@@ -43,7 +43,7 @@ impl ServiceContext {
         self.rb.intercepts.push(Arc::new(SysTrashService::new()));
         let pool = self.rb.get_pool().unwrap();
         //level
-        self.rb.get_intercept::<LogInterceptor>().expect("rbatis LogInterceptor init fail!").set_level_filter(LevelFilter::Debug);
+        self.rb.get_intercept::<LogInterceptor>().expect("rbatis LogInterceptor init fail!").set_level_filter(log::max_level());
         //max connections
         pool.set_max_open_conns(self.config.db_pool_len as u64)
             .await;
