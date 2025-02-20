@@ -82,7 +82,7 @@ impl<S> FromRequestParts<S> for JwtAuth {
     type Rejection = (StatusCode, String);
 
     async fn from_request_parts(parts: &mut Parts, _state: &S) -> Result<Self, Self::Rejection> {
-        // 提取Authorization头
+        // take token
         if let Some(auth_header) = parts.headers.get(TOKEN_KEY) {
             if let Ok(auth_str) = auth_header.to_str() {
                 match checked_token(auth_str) {
