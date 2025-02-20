@@ -61,7 +61,7 @@ fn get_token(h: &HeaderMap) -> Result<&str, Error> {
 }
 
 
-///可以放入Axum的Controller参数中获取JwtToken
+///Put to Axum Handle
 pub struct JwtAuth(pub JWTToken);
 
 impl Deref for JwtAuth {
