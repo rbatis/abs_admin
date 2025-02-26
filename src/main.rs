@@ -30,8 +30,9 @@ async fn main() -> std::io::Result<()> {
     log::info!("Serve: http://{}",CONTEXT.config.server_url.replace("0.0.0.0", "127.0.0.1"));
     log::info!("[abs_admin] ////////////////////////////////////////////////////////////////////////");
     //router
-    let app = Router::new()
-        .nest_service("/", ServeDir::new("dist/").not_found_service(ServeFile::new("dist/index.html")))
+    let no_auth_router = Router::new()
+        .nest_service("/", ServeDir::new("dist/").not_found_service(ServeFile::new("dist/index.html")));
+    let auth_router = Router::new()
         .route("/admin/", get(|| async { RespVO::from("hello".to_string()) }))
         .route("/admin/sys_login", post(rbac_user_controller::login))
         .route("/admin/sys_user_info", post(rbac_user_controller::info))
@@ -56,13 +57,16 @@ async fn main() -> std::io::Result<()> {
         .route("/admin/sys_dict_page", post(sys_dict_controller::page))
         .route("/admin/auth/check", post(sys_auth_controller::check))
         .route("/admin/captcha", get(img_controller::captcha))
-        .layer(axum::middleware::from_fn(abs_admin::middleware::auth_axum::auth))
+        .layer(axum::middleware::from_fn(abs_admin::middleware::auth_axum::auth));
+    let listener = tokio::net::TcpListener::bind(&CONTEXT.config.server_url).await.unwrap();
+    let app = Router::new()
+        .merge(no_auth_router)
+        .merge(auth_router)
         .layer(
             CorsLayer::new()
                 .allow_origin(Any)
                 .allow_methods(Any)
                 .allow_headers(Any)
         );
-    let listener = tokio::net::TcpListener::bind(&CONTEXT.config.server_url).await.unwrap();
     axum::serve(listener, app).await
 }
