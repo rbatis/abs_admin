@@ -43,7 +43,7 @@ impl RbacRolePermissionService {
             .rbac_role_service
             .add(RoleAddDTO::from(arg.clone()))
             .await?;
-        self.save_resources(&role_id, arg.resource_ids.clone())
+        self.save_resources(&role_id, arg.permission_ids.clone())
             .await
     }
 
@@ -56,13 +56,13 @@ impl RbacRolePermissionService {
             .rbac_role_service
             .edit(RoleEditDTO::from(arg.clone()))
             .await?;
-        self.save_resources(role_id, arg.resource_ids.clone()).await
+        self.save_resources(role_id, arg.permission_ids.clone()).await
     }
 
-    async fn save_resources(&self, role_id: &str, resource_ids: Vec<String>) -> Result<u64> {
+    async fn save_resources(&self, role_id: &str, permission_ids: Vec<String>) -> Result<u64> {
         self.remove_by_role_id(role_id).await?;
-        let mut sys_role_permission = Vec::with_capacity(resource_ids.len());
-        for resource_id in resource_ids {
+        let mut sys_role_permission = Vec::with_capacity(permission_ids.len());
+        for resource_id in permission_ids {
             sys_role_permission.push(RbacRolePermission {
                 id: ObjectId::new().to_string().into(),
                 role_id: role_id.to_string().into(),
