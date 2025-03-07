@@ -94,7 +94,7 @@ pub struct RoleEditDTO {
     pub id: Option<String>,
     pub name: Option<String>,
     pub parent_id: Option<String>,
-    pub resource_ids: Vec<String>,
+    pub permission_ids: Vec<String>,
 }
 
 impl From<RoleEditDTO> for RbacRole {
@@ -113,7 +113,7 @@ pub struct SysRoleResAddDTO {
     //father id(可空)
     pub parent_id: Option<String>,
     //resource id vec
-    pub resource_ids: Vec<String>,
+    pub permission_ids: Vec<String>,
 }
 
 impl From<SysRoleResAddDTO> for RoleAddDTO {
@@ -131,7 +131,7 @@ pub struct SysRoleResUpdateDTO {
     pub name: Option<String>,
     pub parent_id: Option<String>,
     //resource id vec
-    pub resource_ids: Vec<String>,
+    pub permission_ids: Vec<String>,
 }
 
 impl From<SysRoleResUpdateDTO> for RoleEditDTO {
@@ -139,7 +139,7 @@ impl From<SysRoleResUpdateDTO> for RoleEditDTO {
         Self {
             id: arg.id,
             name: arg.name,
-            resource_ids: arg.resource_ids,
+            permission_ids: arg.permission_ids,
             parent_id: arg.parent_id,
         }
     }
