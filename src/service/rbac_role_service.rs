@@ -28,7 +28,7 @@ impl RbacRoleService {
             .rbac_role_permission_service
             .find_by_role_ids(&role_ids)
             .await?;
-        let perm_ids: Vec<String> = rbatis::table_field_set!(&role_perms, id)
+        let perm_ids: Vec<String> = rbatis::table_field_set!(&role_perms, permission_id)
             .iter()
             .map(|v| v.to_string())
             .collect();
