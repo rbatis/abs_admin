@@ -1,6 +1,5 @@
 use std::sync::{Arc, LazyLock};
 use std::time::Duration;
-use log::LevelFilter;
 use rbatis::intercept_log::LogInterceptor;
 use rbatis::RBatis;
 use crate::config::config::ApplicationConfig;
