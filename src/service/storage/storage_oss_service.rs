@@ -1,7 +1,6 @@
 use crate::error::Error;
 use crate::service::IStorageService;
-use aws_config::BehaviorVersion;
-use aws_sdk_s3::config::{Credentials, Region};
+use aws_sdk_s3::config::{BehaviorVersion, Credentials, Region};
 use aws_sdk_s3::primitives::ByteStream;
 use aws_sdk_s3::{Client, Config};
 use futures_util::future::BoxFuture;

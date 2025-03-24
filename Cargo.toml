@@ -2,13 +2,13 @@
 name = "abs_admin"
 version = "0.1.0"
 authors = ["zhuxiujia <zhuxiujia@qq.com>"]
-edition = "2021"
+edition = "2024"
 
 [features]
 #add this to enable storage_s3 or cache_redis
 default = []
 #oss/s3
-storage_s3 = ["aws-config","aws-sdk-s3"]
+storage_s3 = ["aws-sdk-s3"]
 #redis
 cache_redis = ["redis"]
 
@@ -49,9 +49,7 @@ parking_lot = "0.12.1"
 sqlparser = "0.44.0"
 json5 = "0.4"
 
-
-aws-config = { version = "1.5.9", features = ["behavior-version-latest"], optional = true }
-aws-sdk-s3 = { version = "1.58.0", features = ["rt-tokio"], optional = true }
+aws-sdk-s3 = { version = "1.58.0", features = ["rt-tokio","rustls"], optional = true }
 async-trait = "0.1.83"
 
 
