@@ -14,7 +14,7 @@ use axum::extract::FromRequestParts;
 use axum::http::request::Parts;
 
 /// token key name
-pub const TOKEN_KEY: &'static str = "access_token";
+pub const TOKEN_KEY: &'static str = "Authorization";
 
 pub async fn auth(mut request: Request, next: Next) -> Result<Response, StatusCode> {
     let path = request.uri().path().to_string();
