@@ -58,18 +58,17 @@ async fn main() -> std::io::Result<()> {
         .route("/admin/auth/check", post(sys_auth_controller::check))
         .route("/admin/captcha", get(img_controller::captcha))
         .layer(axum::middleware::from_fn(abs_admin::middleware::auth_axum::auth));
+    let cors = CorsLayer::new()
+        .allow_origin(Any)
+        .allow_methods(Any)
+        .allow_headers(Any);
     let listener = tokio::net::TcpListener::bind(&CONTEXT.config.server_url).await.unwrap();
     let app = Router::new()
         .merge(no_auth_router)
         .merge(auth_router)
-        .layer(
-            CorsLayer::new()
-                .allow_origin(Any)
-                .allow_methods(Any)
-                .allow_headers(Any)
-        )
-        .layer(DefaultBodyLimit::max(50 * 1024 * 1024)) // 50MB
-        .layer(RequestBodyLimitLayer::new(50 * 1024 * 1024))
-        ;
+        .layer(cors)
+        //limit 50MB
+        .layer(DefaultBodyLimit::max(50 * 1024 * 1024))
+        .layer(RequestBodyLimitLayer::new(50 * 1024 * 1024));
     axum::serve(listener, app).await
 }
