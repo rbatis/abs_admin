@@ -67,6 +67,9 @@ async fn main() -> std::io::Result<()> {
                 .allow_origin(Any)
                 .allow_methods(Any)
                 .allow_headers(Any)
-        );
+        )
+        .layer(DefaultBodyLimit::max(50 * 1024 * 1024)) // 50MB
+        .layer(RequestBodyLimitLayer::new(50 * 1024 * 1024))
+        ;
     axum::serve(listener, app).await
 }
