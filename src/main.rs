@@ -63,11 +63,11 @@ async fn main() -> std::io::Result<()> {
         .allow_methods(Any)
         .allow_headers(Any);
     let listener = tokio::net::TcpListener::bind(&CONTEXT.config.server_url).await.unwrap();
+    //no_auth_router+auth_router+cors+body_limit
     let app = Router::new()
         .merge(no_auth_router)
         .merge(auth_router)
         .layer(cors)
-        //limit 50MB
         .layer(DefaultBodyLimit::max(50 * 1024 * 1024))
         .layer(RequestBodyLimitLayer::new(50 * 1024 * 1024));
     axum::serve(listener, app).await
