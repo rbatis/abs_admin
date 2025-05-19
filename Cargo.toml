@@ -32,7 +32,7 @@ log = "0.4"
 fast_log = { version = "1.7" }
 
 axum = { version = "0.7.4", features = ["macros"] }
-tower-http = { version = "0.6.1", features = ["fs", "cors"] }
+tower-http = { version = "0.6.1", features = ["full"] }
 #redis
 redis = { version = "0.27.5", features = ["tokio-comp"] ,optional = true}
 #jwt
