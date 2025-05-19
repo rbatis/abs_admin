@@ -1,5 +1,6 @@
 use axum::extract::DefaultBodyLimit;
 use tower_http::limit::RequestBodyLimitLayer;
+use tower_http::cors::{Any, CorsLayer};
 use abs_admin::controller::{
     img_controller, sys_auth_controller, sys_dict_controller, rbac_permission_controller,
     rbac_role_controller, rbac_user_controller,
@@ -12,7 +13,6 @@ use rbs::to_value;
 use tower_http::{
     services::{ServeDir,ServeFile},
 };
-use tower_http::cors::{Any, CorsLayer};
 use abs_admin::domain::vo::RespVO;
 
 #[tokio::main]
