@@ -3,17 +3,15 @@ use crate::context::CONTEXT;
 use crate::domain::vo::JWTToken;
 use crate::error::Error;
 use crate::middleware::auth::{checked_token, is_white_list_api};
-use actix_service::{Service, ServiceFactory};
+use actix_service::{Service};
 use actix_web::body::MessageBody;
 use actix_web::dev::{ServiceRequest, ServiceResponse};
 use actix_web::error::ErrorUnauthorized;
 use actix_web::http::header::{HeaderMap, HeaderName};
-use futures_util::FutureExt;
 use futures_util::future::LocalBoxFuture;
 use std::ops::{Deref, DerefMut};
 use actix_web::{FromRequest, HttpRequest};
 use actix_web::http::header;
-use actix_web::web::Payload;
 
 /// token key name
 pub const TOKEN_KEY: &'static str = "Authorization";
@@ -113,7 +111,7 @@ impl FromRequest for JwtAuth {
     type Error = actix_web::Error;
     type Future = Ready<Result<Self, Self::Error>>;
 
-    fn from_request(req: &HttpRequest, _payload: &mut Payload) -> Self::Future {
+    fn from_request(req: &HttpRequest, _payload: &mut actix_web::dev::Payload) -> Self::Future {
         // 从 Header 获取 Token
         let auth_header = req
             .headers()
