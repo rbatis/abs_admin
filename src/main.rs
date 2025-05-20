@@ -61,7 +61,7 @@ async fn main() -> std::io::Result<()> {
             .route("/admin/sys_dict_page", web::post().to(sys_dict_controller::page))
             .route("/admin/auth/check", web::post().to(sys_auth_controller::check))
             .route("/admin/captcha", web::get().to(img_controller::captcha))
-            .wrap(abs_admin::middleware::auth_actix::Auth)
+            .wrap_fn(abs_admin::middleware::auth_actix::auth)
             .service(Files::new("/", "dist/").index_file("index.html")
                 .default_handler(fn_service(|req: ServiceRequest| async {
                     let (req, _) = req.into_parts();
