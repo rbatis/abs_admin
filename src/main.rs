@@ -67,11 +67,6 @@ async fn main() -> std::io::Result<()> {
                     .route("/admin/auth/check", web::post().to(sys_auth_controller::check))
                     .wrap_fn(abs_admin::middleware::auth_actix::auth)
             )
-            // serve vue files
-            .default_service(web::route().to(|| async {
-                NamedFile::open("dist/index.html")
-            })
-            )
             .wrap(cors)
             .app_data(
                 web::PayloadConfig::default()
