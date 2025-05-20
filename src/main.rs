@@ -71,6 +71,9 @@ async fn main() -> std::io::Result<()> {
                 }))
             )
             .wrap(cors)
+            .app_data(
+                web::PayloadConfig::default()
+                    .limit(50 * 1024 * 1024))
     })
     .bind(&CONTEXT.config.server_url)?
     .run()
