@@ -52,8 +52,6 @@
   login_fail_retry: 3,
   //Wait time (in seconds) for login after exceeding the retry count limit for login failures
   login_fail_retry_wait_sec: 30,
-  //white_list_api
-  white_list_api: ["/","/admin/sys_login","/admin/captcha"],
   // Garbage data timeout, unit: days (data that exceeds the timeout for deletion will be permanently removed)
   trash_recycle_days: 90,
   /// format datetime.you can choose any ['YYYY-MM-DD hh:mm:ss.000000', 'YYYY-MM-DD hh:mm:ss']

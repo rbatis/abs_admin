@@ -2,7 +2,7 @@ use std::future::{ready, Ready};
 use crate::context::CONTEXT;
 use crate::domain::vo::JWTToken;
 use crate::error::Error;
-use crate::middleware::auth::{checked_token, is_white_list_api};
+use crate::middleware::auth::{checked_token};
 use actix_service::{Service};
 use actix_web::body::MessageBody;
 use actix_web::dev::{ServiceRequest, ServiceResponse};
@@ -24,32 +24,29 @@ where
     B: MessageBody,
     <S as Service<ServiceRequest>>::Future: 'static,
 {
-    let path = request.uri().path().to_string();
     if !CONTEXT.config.debug {
-        if !is_white_list_api(&path) {
-            if let Ok(token) = get_token(&request.headers()) {
-                if let Some(token) = token_is_valid(&token) {
-                    //Jwt resolution determines whether the expiration time is less than 10 minutes and automatically renews the contract.
-                    let now = rbatis::rbdc::DateTime::now().unix_timestamp() as usize;
-                    if (token.exp - now) < CONTEXT.config.jwt_refresh_token {
-                        if let Ok(new_token) =
-                            token.refresh(&CONTEXT.config.jwt_secret, CONTEXT.config.jwt_exp)
+        if let Ok(token) = get_token(&request.headers()) {
+            if let Some(token) = token_is_valid(&token) {
+                //Jwt resolution determines whether the expiration time is less than 10 minutes and automatically renews the contract.
+                let now = rbatis::rbdc::DateTime::now().unix_timestamp() as usize;
+                if (token.exp - now) < CONTEXT.config.jwt_refresh_token {
+                    if let Ok(new_token) =
+                        token.refresh(&CONTEXT.config.jwt_secret, CONTEXT.config.jwt_exp)
+                    {
+                        if let Ok(new_header) =
+                            actix_web::http::header::HeaderValue::from_str(&new_token)
                         {
-                            if let Ok(new_header) =
-                                actix_web::http::header::HeaderValue::from_str(&new_token)
-                            {
-                                request
-                                    .headers_mut()
-                                    .insert(HeaderName::from_static(TOKEN_KEY), new_header);
-                            }
+                            request
+                                .headers_mut()
+                                .insert(HeaderName::from_static(TOKEN_KEY), new_header);
                         }
                     }
-                } else {
-                    return Box::pin(async { Err(ErrorUnauthorized("Unauthorized")) });
                 }
             } else {
                 return Box::pin(async { Err(ErrorUnauthorized("Unauthorized")) });
             }
+        } else {
+            return Box::pin(async { Err(ErrorUnauthorized("Unauthorized")) });
         }
     }
     let fut = service.call(request);

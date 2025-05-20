@@ -20,7 +20,6 @@ pub struct ApplicationConfig {
     pub jwt_secret: String,
     pub jwt_exp: usize,
     pub jwt_refresh_token: usize,
-    pub white_list_api: Vec<String>,
     pub cache: String,
     pub storage: String,
     pub login_fail_retry: u64,
