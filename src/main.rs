@@ -71,9 +71,6 @@ async fn main() -> std::io::Result<()> {
                 }))
             )
             .wrap(cors)
-            // .wrap(middleware::Compress::default())
-            // .wrap(middleware::Logger::default())
-            .app_data(web::JsonConfig::default().limit(50 * 1024 * 1024))
     })
     .bind(&CONTEXT.config.server_url)?
     .run()
