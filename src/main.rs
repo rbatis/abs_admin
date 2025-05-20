@@ -41,6 +41,7 @@ async fn main() -> std::io::Result<()> {
             .route("/admin/", web::get().to(|| async { web::Json(RespVO::from("hello".to_string())) }))
             .route("/admin/sys_login", web::post().to(rbac_user_controller::login))
             .route("/admin/captcha", web::get().to(img_controller::captcha))
+            //auth paths
             .service(
                 scope("")
                     .route("/admin/sys_user_info", web::post().to(rbac_user_controller::info))
