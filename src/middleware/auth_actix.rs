@@ -1,3 +1,4 @@
+use std::future::{ready, Ready};
 use crate::context::CONTEXT;
 use crate::domain::vo::JWTToken;
 use crate::error::Error;
@@ -10,6 +11,9 @@ use actix_web::http::header::{HeaderMap, HeaderName};
 use futures_util::FutureExt;
 use futures_util::future::LocalBoxFuture;
 use std::ops::{Deref, DerefMut};
+use actix_web::{FromRequest, HttpRequest};
+use actix_web::http::header;
+use actix_web::web::Payload;
 
 /// token key name
 pub const TOKEN_KEY: &'static str = "Authorization";
@@ -68,7 +72,28 @@ fn get_token(h: &HeaderMap) -> Result<&str, Error> {
         .unwrap_or_default())
 }
 
-///Put to Axum Handle
+/// JWT Authentication extractor for Actix-Web handlers.
+///
+/// This struct wraps a validated JWT token and implements `FromRequest`
+/// to enable automatic extraction in route handlers.
+///
+/// # Example
+/// ```
+/// use actix_web::get;
+/// use abs_admin::middleware::auth_actix::JwtAuth;
+/// use actix_web::Responder;
+///
+/// #[get("/protected")]
+/// async fn protected_route(jwt: JwtAuth) -> impl Responder {
+///     format!("Authenticated user: {:?}", jwt)
+/// }
+/// ```
+///
+/// # Extraction Process
+/// 1. Checks for `Authorization` header
+/// 2. Validates the `Bearer` token format
+/// 3. Verifies the JWT signature
+/// 4. Returns 401 Unauthorized if any step fails
 pub struct JwtAuth(pub JWTToken);
 
 impl Deref for JwtAuth {
@@ -84,35 +109,28 @@ impl DerefMut for JwtAuth {
     }
 }
 
-// #[async_trait::async_trait]
-// impl<S> FromRequestParts<S> for JwtAuth {
-//     type Rejection = (StatusCode, String);
-//
-//     async fn from_request_parts(parts: &mut Parts, _state: &S) -> Result<Self, Self::Rejection> {
-//         // take token
-//         if let Some(auth_header) = parts.headers.get(TOKEN_KEY) {
-//             if let Ok(auth_str) = auth_header.to_str() {
-//                 match checked_token(auth_str) {
-//                     Ok(v) => Ok(JwtAuth(v)),
-//                     Err(e) => Err((
-//                         StatusCode::UNAUTHORIZED,
-//                         format!("Invalid authorization header={}", e),
-//                     )),
-//                 }
-//             } else {
-//                 Err((
-//                     StatusCode::UNAUTHORIZED,
-//                     "Invalid authorization header".to_string(),
-//                 ))
-//             }
-//         } else {
-//             Err((
-//                 StatusCode::UNAUTHORIZED,
-//                 "Authorization header missing".to_string(),
-//             ))
-//         }
-//     }
-// }
+impl FromRequest for JwtAuth {
+    type Error = actix_web::Error;
+    type Future = Ready<Result<Self, Self::Error>>;
+
+    fn from_request(req: &HttpRequest, _payload: &mut Payload) -> Self::Future {
+        // 从 Header 获取 Token
+        let auth_header = req
+            .headers()
+            .get(header::AUTHORIZATION)
+            .and_then(|h| h.to_str().ok());
+        match auth_header {
+            Some(auth_str) => {
+                if let Ok(jwt)= checked_token(auth_str) {
+                    ready(Ok(JwtAuth(jwt)))
+                } else {
+                    ready(Err(ErrorUnauthorized("Invalid authorization format")))
+                }
+            }
+            None => ready(Err(ErrorUnauthorized("Missing authorization header"))),
+        }
+    }
+}
 
 impl From<JwtAuth> for JWTToken {
     fn from(jwt: JwtAuth) -> Self {
