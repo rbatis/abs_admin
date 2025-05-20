@@ -4,7 +4,6 @@ pub mod sign_in;
 pub mod sys_user;
 pub mod rbac;
 
-use axum::response::{IntoResponse, Response};
 pub use sys_dict::*;
 pub use jwt::*;
 pub use sign_in::*;
@@ -71,11 +70,5 @@ where
 {
     fn to_string(&self) -> String {
         serde_json::to_string(self).unwrap()
-    }
-}
-
-impl<T: Serialize + DeserializeOwned> IntoResponse for RespVO<T> {
-    fn into_response(self) -> Response {
-        axum::Json(self).into_response()
     }
 }
