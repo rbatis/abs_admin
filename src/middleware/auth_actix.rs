@@ -11,7 +11,6 @@ use actix_web::http::header::{HeaderMap, HeaderName};
 use futures_util::future::LocalBoxFuture;
 use std::ops::{Deref, DerefMut};
 use actix_web::{FromRequest, HttpRequest};
-use actix_web::http::header;
 
 /// token key name
 pub const TOKEN_KEY: &'static str = "Authorization";
@@ -115,7 +114,7 @@ impl FromRequest for JwtAuth {
         // 从 Header 获取 Token
         let auth_header = req
             .headers()
-            .get(header::AUTHORIZATION)
+            .get(actix_web::http::header::AUTHORIZATION)
             .and_then(|h| h.to_str().ok());
         match auth_header {
             Some(auth_str) => {
