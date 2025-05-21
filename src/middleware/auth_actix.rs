@@ -24,7 +24,7 @@ where
     B: MessageBody,
     <S as Service<ServiceRequest>>::Future: 'static,
 {
-    if !CONTEXT.config.debug {
+    if request.path().starts_with("/admin/") && !CONTEXT.config.debug {
         if let Ok(token) = get_token(&request.headers()) {
             if let Some(token) = token_is_valid(&token) {
                 //Jwt resolution determines whether the expiration time is less than 10 minutes and automatically renews the contract.
