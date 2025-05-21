@@ -22,10 +22,6 @@ rbdc-sqlite = { version = "4.5" }
 #rbdc-pg = { version = "4.5" }
 #rbdc-mssql = { version = "4.5" }
 
-actix-web = "4.11.0"
-actix-files = "0.6.2"
-actix-cors = "0.6.4"
-actix-service = "2.0.2"
 tokio = { version = "1", features = ["macros"] }
 #serde and json
 serde = { version = "1.0", features = ["derive"] }
@@ -35,16 +31,19 @@ log = "0.4"
 #fast_log enable features = ["lz4", "zip", "gzip"], and edit src/config/log.rs fn choose_packer(),edit application.json5 add log_pack_compress: "zip"
 fast_log = { version = "1.7" }
 
+axum = { version = "0.7.4", features = ["macros"] }
+tower-http = { version = "0.6.1", features = ["fs","cors","limit"] }
 #redis
 redis = { version = "0.27.5", features = ["tokio-comp"] ,optional = true}
 #jwt
 jsonwebtoken = "9.2"
 md5 = "0.7"
 #captcha
-captcha = "1.0.0"
+captcha = "0.0.9"
 #http client,use rust-tls replace to native tls
 reqwest = { version = "0.12", features = ["json"] }
-
+#image code
+image = "0.25.0"
 futures-util = "0.3.21"
 parking_lot = "0.12.1"
 sqlparser = "0.44.0"
@@ -52,6 +51,7 @@ json5 = "0.4"
 
 aws-sdk-s3 = { version = "1.58.0", features = ["rt-tokio","rustls"], optional = true }
 async-trait = "0.1.83"
+
 
 [build-dependencies]
 json5 = "0.4"

@@ -2,7 +2,9 @@ use crate::domain::dto::CatpchaDTO;
 use crate::error_info;
 use crate::context::CONTEXT;
 use crate::util::string::IsEmptyString;
-use actix_web::{web, HttpResponse, Responder};
+use axum::body::Body;
+use axum::extract::Query;
+use axum::response::{IntoResponse, Response};
 use captcha::filters::{Dots, Noise, Wave};
 use captcha::Captcha;
 
@@ -11,11 +13,15 @@ use captcha::Captcha;
 /// example：
 /// http://localhost:8000/admin/captcha?account=18900000000
 ///
-pub async fn captcha(arg: web::Query<CatpchaDTO>) -> impl Responder {
+pub async fn captcha(arg: Query<CatpchaDTO>) -> impl IntoResponse {
     if arg.account.is_empty() {
-        return HttpResponse::BadRequest()
-            .content_type("application/json")
-            .body(error_info!("account_empty"));
+        let resp = Response::builder()
+            .header("Access-Control-Allow-Origin", "*")
+            .header("Cache-Control", "no-cache")
+            .header("Content-Type", "json")
+            .body(Body::from(error_info!("account_empty")))
+            .unwrap();
+        return resp;
     }
     let (png, code) = make();
     if CONTEXT.config.debug {
@@ -33,15 +39,23 @@ pub async fn captcha(arg: web::Query<CatpchaDTO>) -> impl Responder {
         if CONTEXT.config.debug == false {
             //release mode, return the error
             if let Err(e) = result {
-                return HttpResponse::InternalServerError()
-                    .content_type("application/json")
-                    .body(e.to_string());
+                let resp = Response::builder()
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Cache-Control", "no-cache")
+                    .header("Content-Type", "json")
+                    .body(Body::from(e.to_string()))
+                    .unwrap();
+                return resp;
             }
         }
     }
-    HttpResponse::Ok()
-        .content_type("image/png")
-        .body(png)
+    let resp = Response::builder()
+        .header("Access-Control-Allow-Origin", "*")
+        .header("Cache-Control", "no-cache")
+        .header("Content-Type", "image/png")
+        .body(Body::from(png))
+        .unwrap();
+    resp.into()
 }
 
 fn make() -> (Vec<u8>, String) {

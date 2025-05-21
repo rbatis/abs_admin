@@ -3,21 +3,22 @@ use crate::domain::table::rbac::RbacPermission;
 use crate::domain::vo::RespVO;
 use crate::error_info;
 use crate::context::CONTEXT;
-use actix_web::{web, Responder};
+use axum::response::IntoResponse;
+use axum::Json;
 use crate::domain::dto::rbac::{PermissionAddDTO, ResEditDTO, ResPageDTO};
 
 
-pub async fn layer_top() -> impl Responder {
+pub async fn layer_top() -> impl IntoResponse {
     let data = CONTEXT.rbac_permission_service.finds_all().await;
     RespVO::from_result(data)
 }
 
-pub async fn page(page: web::Json<ResPageDTO>) -> impl Responder {
+pub async fn page(page: Json<ResPageDTO>) -> impl IntoResponse {
     let data = CONTEXT.rbac_permission_service.page(&page.0).await;
     RespVO::from_result(data)
 }
 
-pub async fn add(mut arg: web::Json<PermissionAddDTO>) -> impl Responder {
+pub async fn add(mut arg: Json<PermissionAddDTO>) -> impl IntoResponse {
     if arg.name.is_none() {
         return RespVO::<u64>::from_error(error_info!("arg.name_empty"));
     }
@@ -32,12 +33,12 @@ pub async fn add(mut arg: web::Json<PermissionAddDTO>) -> impl Responder {
     RespVO::from_result(data)
 }
 
-pub async fn update(arg: web::Json<ResEditDTO>) -> impl Responder {
+pub async fn update(arg: Json<ResEditDTO>) -> impl IntoResponse {
     let data = CONTEXT.rbac_permission_service.edit(&arg.0).await;
     RespVO::from_result(data)
 }
 
-pub async fn remove(arg: web::Json<IdDTO>) -> impl Responder {
+pub async fn remove(arg: Json<IdDTO>) -> impl IntoResponse {
     let data = CONTEXT
         .rbac_permission_service
         .remove(&arg.0.id.unwrap_or_default())
