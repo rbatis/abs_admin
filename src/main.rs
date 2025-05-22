@@ -9,7 +9,7 @@ use abs_admin::controller::{
 };
 use abs_admin::domain::table;
 use abs_admin::context::CONTEXT;
-use rbs::to_value;
+use rbs::value;
 use abs_admin::domain::vo::RespVO;
 
 #[tokio::main]
@@ -17,7 +17,7 @@ async fn main() -> std::io::Result<()> {
     //log
     abs_admin::config::log::init_log();
     if CONTEXT.config.debug {
-        log::info!("[abs_admin] {}", to_value!(&CONTEXT.config));
+        log::info!("[abs_admin] {}", value!(&CONTEXT.config));
         log::info!("[abs_admin] ///////////////////// Start On Debug Mode //////////////////////////////");
     } else {
         log::info!("[abs_admin] ///////////////////// Start On Release Mode ////////////////////////////");

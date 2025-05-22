@@ -4,6 +4,7 @@ use rbatis::intercept_log::LogInterceptor;
 use rbatis::RBatis;
 use rbatis::rbdc::DateTime;
 use rbatis::table_sync::{ColumnMapper, MssqlTableMapper, MysqlTableMapper, PGTableMapper, SqliteTableMapper};
+use rbs::value;
 use crate::domain::table::sys_dict::SysDict;
 use crate::domain::table::LoginCheck::PasswordCheck;
 use crate::domain::table::rbac;
@@ -66,7 +67,7 @@ pub async fn sync_tables(rb: &RBatis) {
 
 pub async fn sync_tables_data(rb: &RBatis) {
     let conn = rb.acquire().await.expect("init data fail");
-    if let Ok(v) = SysUser::select_by_column(&conn, "id", "1").await {
+    if let Ok(v) = SysUser::select_by_map(&conn, value! {"id":"1"}).await {
         if v.len() > 0 {
             //if user exists,return
             return;
