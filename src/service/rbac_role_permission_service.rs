@@ -10,6 +10,7 @@ use crate::{error_info, pool};
 use rbatis::plugin::object_id::ObjectId;
 use rbatis::rbdc::DateTime;
 use rbatis::Page;
+use rbs::value;
 
 /// Role Resource Service
 pub struct RbacRolePermissionService {}
@@ -34,7 +35,7 @@ impl RbacRolePermissionService {
         if role_ids.is_empty(){
             return Ok(vec![]);
         }
-        let datas = RbacRolePermission::select_in_column(pool!(), "role_id", role_ids).await?;
+        let datas = RbacRolePermission::select_by_map(pool!(), value! {"role_id":role_ids}).await?;
         Ok(datas)
     }
 
@@ -92,14 +93,14 @@ impl RbacRolePermissionService {
     }
 
     pub async fn remove(&self, id: &str) -> Result<u64> {
-        Ok(RbacRolePermission::delete_by_column(pool!(), "id", id)
+        Ok(RbacRolePermission::delete_by_map(pool!(), value! {"id":id})
             .await?
             .rows_affected)
     }
 
     pub async fn remove_by_permission_id(&self, permission_id: &str) -> Result<u64> {
         Ok(
-            RbacRolePermission::delete_by_column(pool!(), "permission_id", permission_id)
+            RbacRolePermission::delete_by_map(pool!(), value! {"permission_id": permission_id})
                 .await?
                 .rows_affected,
         )
@@ -107,7 +108,7 @@ impl RbacRolePermissionService {
 
     pub async fn remove_by_role_id(&self, role_id: &str) -> Result<u64> {
         Ok(
-            RbacRolePermission::delete_by_column(pool!(), "role_id", role_id)
+            RbacRolePermission::delete_by_map(pool!(), value! {"role_id": role_id})
                 .await?
                 .rows_affected,
         )

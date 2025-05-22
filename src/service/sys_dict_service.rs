@@ -1,5 +1,5 @@
 use rbatis::{Page, PageRequest};
-
+use rbs::value;
 use crate::domain::dto::{DictEditDTO, DictPageDTO};
 use crate::domain::vo::SysDictVO;
 use crate::error::Error;
@@ -22,7 +22,7 @@ impl SysDictService {
 
     pub async fn add(&self, arg: &SysDict) -> Result<u64> {
         let old =
-            SysDict::select_by_column(pool!(), "id", arg.id.as_deref().unwrap_or_default()).await?;
+            SysDict::select_by_map(pool!(),  value! {"id":arg.id.as_deref().unwrap_or_default()}).await?;
         if old.len() > 0 {
             return Err(Error::from(format!(
                 "{},code={}",
@@ -37,7 +37,7 @@ impl SysDictService {
 
     pub async fn edit(&self, arg: &DictEditDTO) -> Result<u64> {
         let data = SysDict::from(arg);
-        let result = SysDict::update_by_column(pool!(), &data, "id").await;
+        let result = SysDict::update_by_map(pool!(), &data, value! {"id": &data.id }).await;
         if result.is_ok() {
             self.update_cache().await?;
         }
@@ -45,7 +45,7 @@ impl SysDictService {
     }
 
     pub async fn remove(&self, id: &str) -> Result<u64> {
-        let r = SysDict::delete_by_column(pool!(), "id", id).await?;
+        let r = SysDict::delete_by_map(pool!(), value! {"id": id }).await?;
         if r.rows_affected > 0 {
             self.update_cache().await?;
         }

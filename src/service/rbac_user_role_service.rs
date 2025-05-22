@@ -8,6 +8,7 @@ use crate::error::Error;
 use crate::error::Result;
 use crate::{error_info, pool};
 use rbatis::plugin::object_id::ObjectId;
+use rbs::value;
 
 pub struct SetUserVO {
     //this is user_id
@@ -23,7 +24,7 @@ impl RbacUserRoleService {
     ///set to user list
     pub async fn set_roles(&self, records: &mut Vec<SetUserVO>) -> Result<()> {
         let user_ids = rbatis::table_field_vec!(&*records, id);
-        let user_roles = RbacUserRole::select_in_column(pool!(), "user_id", &user_ids).await?;
+        let user_roles = RbacUserRole::select_by_map(pool!(), value! {"user_id": &user_ids}).await?;
         let role_ids = rbatis::table_field_vec!(&user_roles, role_id).into_iter().map(|v|v.to_string()).collect();
         let user_id_map = user_roles.into_map(|v|v.user_id.clone().unwrap_or_default());
 
@@ -82,13 +83,13 @@ impl RbacUserRoleService {
     }
 
     pub async fn remove_by_role_id(&self, role_id: &str) -> Result<u64> {
-        Ok(RbacUserRole::delete_by_column(pool!(), "role_id", role_id)
+        Ok(RbacUserRole::delete_by_map(pool!(), value! {"role_id": role_id})
             .await?
             .rows_affected)
     }
 
     pub async fn remove_by_user_id(&self, user_id: &str) -> Result<u64> {
-        Ok(RbacUserRole::delete_by_column(pool!(), "user_id", user_id)
+        Ok(RbacUserRole::delete_by_map(pool!(), value! {"user_id": user_id})
             .await?
             .rows_affected)
     }

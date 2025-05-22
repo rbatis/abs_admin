@@ -7,6 +7,7 @@ use crate::error::Result;
 use crate::pool;
 use rbatis::{Page, PageRequest};
 use std::collections::{HashMap, HashSet};
+use rbs::value;
 use crate::domain::table::rbac::IntoMap;
 
 ///Role of service
@@ -69,12 +70,12 @@ impl RbacRoleService {
 
     pub async fn edit(&self, arg: RoleEditDTO) -> Result<u64> {
         let role = RbacRole::from(arg);
-        let result = RbacRole::update_by_column(pool!(), &role, "id").await;
+        let result = RbacRole::update_by_map(pool!(), &role, value! {"id": &role.id}).await;
         Ok(result?.rows_affected)
     }
 
     pub async fn remove(&self, id: &str) -> Result<u64> {
-        let result = RbacRole::delete_by_column(pool!(), "id", id).await?;
+        let result = RbacRole::delete_by_map(pool!(), value! {"id": id}).await?;
         Ok(result.rows_affected)
     }
 
@@ -82,14 +83,14 @@ impl RbacRoleService {
         if ids.is_empty() {
             return Ok(vec![]);
         }
-        Ok(RbacRole::select_in_column(pool!(), "id", ids).await?)
+        Ok(RbacRole::select_by_map(pool!(), value! {"id":ids}).await?)
     }
 
     pub async fn find_role_res(&self, role_ids: &Vec<String>) -> Result<Vec<RbacRolePermission>> {
         if role_ids.is_empty() {
             return Ok(vec![]);
         }
-        Ok(RbacRolePermission::select_in_column(pool!(), "role_id", role_ids).await?)
+        Ok(RbacRolePermission::select_by_map(pool!(), value! {"role_id":role_ids}).await?)
     }
 
     pub async fn find_all(&self) -> Result<Vec<RbacRole>> {

@@ -6,6 +6,8 @@ use crate::error::Result;
 use crate::context::CONTEXT;
 use crate::{error_info, pool};
 use rbatis::{Page, PageRequest};
+use rbs::value;
+
 /// Resource service
 pub struct RbacPermissionService {}
 
@@ -36,15 +38,15 @@ impl RbacPermissionService {
 
     pub async fn edit(&self, arg: &ResEditDTO) -> Result<u64> {
         let data = RbacPermission::from(arg);
-        let result = RbacPermission::update_by_column(pool!(), &data, "id").await?;
+        let result = RbacPermission::update_by_map(pool!(), &data, value! {"id": &data.id }).await?;
         Ok(result.rows_affected)
     }
 
     pub async fn remove(&self, id: &str) -> Result<u64> {
-        let num = RbacPermission::delete_by_column(pool!(), "id", id)
+        let num = RbacPermission::delete_by_map(pool!(), value! {"id":id})
             .await?
             .rows_affected;
-        RbacPermission::delete_by_column(pool!(), "id", id).await?;
+        RbacPermission::delete_by_map(pool!(), value! {"id":id}).await?;
         let _ = CONTEXT
             .rbac_role_permission_service
             .remove_by_permission_id(id)
@@ -56,7 +58,7 @@ impl RbacPermissionService {
         if ids.is_empty(){
             return Ok(vec![]);
         }
-        let data=RbacPermission::select_in_column(pool!(), "id", &ids).await?;
+        let data=RbacPermission::select_by_map(pool!(), value! {"id": &ids}).await?;
         Ok(data)
     }
 

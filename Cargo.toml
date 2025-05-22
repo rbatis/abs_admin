@@ -15,12 +15,12 @@ cache_redis = ["redis"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
-rbs = { version = "4.5" }
-rbatis = { version = "4.5", features = [] }
-rbdc-sqlite = { version = "4.5" }
-#rbdc-mysql = { version = "4.5" }
-#rbdc-pg = { version = "4.5" }
-#rbdc-mssql = { version = "4.5" }
+rbs = { version = "4.6" }
+rbatis = { version = "4.6", features = [] }
+rbdc-sqlite = { version = "4.6" }
+#rbdc-mysql = { version = "4.6" }
+#rbdc-pg = { version = "4.6" }
+#rbdc-mssql = { version = "4.6" }
 
 tokio = { version = "1", features = ["macros"] }
 #serde and json
