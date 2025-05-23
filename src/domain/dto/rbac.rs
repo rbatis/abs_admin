@@ -5,14 +5,14 @@ use rbatis::PageRequest;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
-pub struct ResPageDTO {
+pub struct PermissionPageDTO {
     pub page_no: Option<u64>,
     pub page_size: Option<u64>,
     pub name: Option<String>,
 }
 
-impl From<&ResPageDTO> for PageRequest {
-    fn from(arg: &ResPageDTO) -> Self {
+impl From<&PermissionPageDTO> for PageRequest {
+    fn from(arg: &PermissionPageDTO) -> Self {
         PageRequest::new(arg.page_no.unwrap_or(1), arg.page_size.unwrap_or(10))
     }
 }

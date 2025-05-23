@@ -5,7 +5,7 @@ use crate::error_info;
 use crate::context::CONTEXT;
 use axum::response::IntoResponse;
 use axum::Json;
-use crate::domain::dto::rbac::{PermissionAddDTO, ResEditDTO, ResPageDTO};
+use crate::domain::dto::rbac::{PermissionAddDTO, ResEditDTO, PermissionPageDTO};
 
 
 pub async fn layer_top() -> impl IntoResponse {
@@ -13,7 +13,7 @@ pub async fn layer_top() -> impl IntoResponse {
     RespVO::from_result(data)
 }
 
-pub async fn page(page: Json<ResPageDTO>) -> impl IntoResponse {
+pub async fn page(page: Json<PermissionPageDTO>) -> impl IntoResponse {
     let data = CONTEXT.rbac_permission_service.page(&page.0).await;
     RespVO::from_result(data)
 }

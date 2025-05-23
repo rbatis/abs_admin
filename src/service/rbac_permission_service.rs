@@ -1,4 +1,4 @@
-use crate::domain::dto::rbac::{ResEditDTO, ResPageDTO};
+use crate::domain::dto::rbac::{ResEditDTO, PermissionPageDTO};
 use crate::domain::table::rbac::RbacPermission;
 use crate::domain::vo::rbac::RbacPermissionVO;
 use crate::error::Error;
@@ -12,7 +12,7 @@ use rbs::value;
 pub struct RbacPermissionService {}
 
 impl RbacPermissionService {
-    pub async fn page(&self, arg: &ResPageDTO) -> Result<Page<RbacPermissionVO>> {
+    pub async fn page(&self, arg: &PermissionPageDTO) -> Result<Page<RbacPermissionVO>> {
         let data = RbacPermission::select_page(pool!(), &PageRequest::from(arg), arg).await?;
         let page = Page::<RbacPermissionVO>::from(data);
         Ok(page)

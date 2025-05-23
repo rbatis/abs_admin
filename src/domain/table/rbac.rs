@@ -1,4 +1,4 @@
-use crate::domain::dto::rbac::ResPageDTO;
+use crate::domain::dto::rbac::PermissionPageDTO;
 use rbatis::executor::Executor;
 use rbatis::rbdc::DateTime;
 use rbatis::table_sync::ColumnMapper;
@@ -19,7 +19,7 @@ pub struct RbacPermission {
 }
 
 crud!(RbacPermission {});
-impl_select_page!(RbacPermission{select_page(dto: &ResPageDTO) =>
+impl_select_page!(RbacPermission{select_page(dto: &PermissionPageDTO) =>
     "` where 0 = 0 `
       if dto.name!=null && dto.name!= '':
          ` and name like #{'%'+dto.name+'%'}`
