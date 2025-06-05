@@ -74,8 +74,7 @@ impl DerefMut for JwtAuth {
     }
 }
 
-#[async_trait::async_trait]
-impl<S> FromRequestParts<S> for JwtAuth {
+impl<S:Sync> FromRequestParts<S> for JwtAuth {
     type Rejection = (StatusCode, String);
 
     async fn from_request_parts(parts: &mut Parts, _state: &S) -> Result<Self, Self::Rejection> {

@@ -31,7 +31,7 @@ log = "0.4"
 #fast_log enable features = ["lz4", "zip", "gzip"], and edit src/config/log.rs fn choose_packer(),edit application.json5 add log_pack_compress: "zip"
 fast_log = { version = "1.7" }
 
-axum = { version = "0.7.4", features = ["macros"] }
+axum = { version = "0.8.4", features = ["macros"] }
 tower-http = { version = "0.6.1", features = ["fs","cors","limit"] }
 #redis
 redis = { version = "0.27.5", features = ["tokio-comp"] ,optional = true}

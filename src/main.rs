@@ -60,7 +60,7 @@ async fn main() -> std::io::Result<()> {
         .route("/admin/sys_dict_page", post(sys_dict_controller::page))
         .layer(axum::middleware::from_fn(abs_admin::middleware::auth_axum::auth));
     let resource_router = Router::new()
-        .nest_service("/", ServeDir::new("dist/").not_found_service(ServeFile::new("dist/index.html")));
+        .fallback_service( ServeDir::new("dist/").not_found_service(ServeFile::new("dist/index.html")));
     let cors = CorsLayer::new()
         .allow_origin(Any)
         .allow_methods(Any)
