@@ -17,7 +17,7 @@ use axum::http::request::Parts;
 pub const TOKEN_KEY: &'static str = "Authorization";
 
 pub async fn auth(mut request: Request, next: Next) -> Result<Response, StatusCode> {
-    if !CONTEXT.config.debug {
+    if !CONTEXT.config.debug() {
         if let Ok(token) = get_token(&request.headers()) {
             if let Some(token) = token_is_valid(&token) {
                 //Jwt resolution determines whether the expiration time is less than 10 minutes and automatically renews the contract.

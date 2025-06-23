@@ -15,11 +15,11 @@ pub fn init_log() {
                          parse_keep_type(&CONTEXT.config.log_keep_type),
                          parse_packer(&CONTEXT.config.log_pack_compress),
     );
-    if CONTEXT.config.debug {
+    if CONTEXT.config.debug() {
         cfg = cfg.console();
     }
     let _ = fast_log::init(cfg);
-    if CONTEXT.config.debug == false {
+    if CONTEXT.config.debug() == false {
         println!("[abs_admin] release_mode is up! [file_log] open,[console_log] disabled!");
     }
 }

@@ -24,7 +24,7 @@ pub async fn captcha(arg: Query<CatpchaDTO>) -> impl IntoResponse {
         return resp;
     }
     let (png, code) = make();
-    if CONTEXT.config.debug {
+    if CONTEXT.config.debug() {
         log::info!("account:{},captcha:{}", arg.account.as_ref().unwrap(), code);
     }
     if arg.account.is_some() {
@@ -36,7 +36,7 @@ pub async fn captcha(arg: Query<CatpchaDTO>) -> impl IntoResponse {
             )
             .await;
         println!("{:?}", result);
-        if CONTEXT.config.debug == false {
+        if CONTEXT.config.debug() == false {
             //release mode, return the error
             if let Err(e) = result {
                 let resp = Response::builder()

@@ -19,7 +19,7 @@ use abs_admin::domain::vo::RespVO;
 async fn main() -> std::io::Result<()> {
     //log
     abs_admin::config::log::init_log();
-    if CONTEXT.config.debug {
+    if CONTEXT.config.debug() {
         log::info!("[abs_admin] {}", value!(&CONTEXT.config));
         log::info!("[abs_admin] ///////////////////// Start On Debug Mode //////////////////////////////");
     } else {

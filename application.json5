@@ -1,5 +1,4 @@
 {
-  debug: true,
   server_name: "abs_admin",
   server_url: "0.0.0.0:8000",
   //choose one ["mem","redis://127.0.0.1:6379"]

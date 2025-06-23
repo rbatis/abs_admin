@@ -60,13 +60,10 @@ impl ServiceContext {
 
 impl Default for ServiceContext {
     fn default() -> Self {
-        let mut config = ApplicationConfig::default();
+        let config = ApplicationConfig::default();
         ServiceContext {
             rb: {
                 let rb = RBatis::new();
-                if cfg!(debug_assertions) == false && config.debug.eq(&true) {
-                    config.debug = false;
-                }
                 rb
             },
             cache_service: CacheService::new(&config).unwrap(),
