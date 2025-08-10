@@ -59,75 +59,68 @@ impl FileS3Service {
     }
 }
 
+#[async_trait]
 impl IStorageService for FileS3Service {
-    fn upload(&self, name: String, data: Vec<u8>) -> BoxFuture<crate::error::Result<String>> {
+    async fn upload(&self, name: String, data: Vec<u8>) -> crate::error::Result<String> {
         let name = name.trim_start_matches("/").to_string();
         let name = PathBuf::from(name);
-        Box::pin(async move {
-            let _resp = self
-                .client
-                .put_object()
-                .bucket(&self.bucket)
-                .key(name.to_str().unwrap_or_default())
-                .body(ByteStream::from(data))
-                .send()
-                .await
-                .map_err(|e| Error::from(e.to_string()))?;
-            Ok(name.to_str().unwrap_or_default().to_string())
-        })
+        let _resp = self
+            .client
+            .put_object()
+            .bucket(&self.bucket)
+            .key(name.to_str().unwrap_or_default())
+            .body(ByteStream::from(data))
+            .send()
+            .await
+            .map_err(|e| Error::from(e.to_string()))?;
+        Ok(name.to_str().unwrap_or_default().to_string())
     }
 
-    fn download(&self, name: String) -> BoxFuture<crate::error::Result<Vec<u8>>> {
+    async  fn download(&self, name: String) -> crate::error::Result<Vec<u8>> {
         let name = name.trim_start_matches("/").to_string();
         let name = PathBuf::from(name);
-        Box::pin(async move {
-            let resp = self
-                .client
-                .get_object()
-                .bucket(&self.bucket)
-                .key(name.to_str().unwrap_or_default())
-                .send()
-                .await
-                .map_err(|e| Error::from(e.to_string()))?;
-            let mut buf = vec![];
-            resp.body.into_async_read().read_to_end(&mut buf).await?;
-            Ok(buf)
-        })
+        let resp = self
+            .client
+            .get_object()
+            .bucket(&self.bucket)
+            .key(name.to_str().unwrap_or_default())
+            .send()
+            .await
+            .map_err(|e| Error::from(e.to_string()))?;
+        let mut buf = vec![];
+        resp.body.into_async_read().read_to_end(&mut buf).await?;
+        Ok(buf)
     }
 
-    fn list(&self, name: String) -> BoxFuture<crate::error::Result<Vec<String>>> {
+    async fn list(&self, name: String) -> crate::error::Result<Vec<String>> {
         let name = name.trim_start_matches("/").to_string();
         let name = PathBuf::from(name);
-        Box::pin(async move {
-            let resp = self
-                .client
-                .list_objects_v2()
-                .bucket(&self.bucket)
-                .prefix(name.to_str().unwrap_or_default())
-                .send()
-                .await
-                .map_err(|e| Error::from(e.to_string()))?;
-            let mut data = vec![];
-            for object in resp.contents() {
-                data.push(object.key().unwrap_or_default().to_string());
-            }
-            Ok(data)
-        })
+        let resp = self
+            .client
+            .list_objects_v2()
+            .bucket(&self.bucket)
+            .prefix(name.to_str().unwrap_or_default())
+            .send()
+            .await
+            .map_err(|e| Error::from(e.to_string()))?;
+        let mut data = vec![];
+        for object in resp.contents() {
+            data.push(object.key().unwrap_or_default().to_string());
+        }
+        Ok(data)
     }
 
-    fn remove(&self, name: String) -> BoxFuture<crate::error::Result<()>> {
+    async fn remove(&self, name: String) -> crate::error::Result<()> {
         let name = name.trim_start_matches("/").to_string();
         let name = PathBuf::from(name);
-        Box::pin(async move {
-            let _resp = self
-                .client
-                .delete_object()
-                .bucket(&self.bucket)
-                .key(name.to_str().unwrap_or_default())
-                .send()
-                .await
-                .map_err(|e| Error::from(e.to_string()))?;
-            Ok(())
-        })
+        let _resp = self
+            .client
+            .delete_object()
+            .bucket(&self.bucket)
+            .key(name.to_str().unwrap_or_default())
+            .send()
+            .await
+            .map_err(|e| Error::from(e.to_string()))?;
+        Ok(())
     }
 }

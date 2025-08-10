@@ -31,74 +31,67 @@ impl RedisCacheService {
     }
 }
 
+#[async_trait]
 impl ICacheService for RedisCacheService {
-    fn set_string(&self, k: &str, v: &str) -> BoxFuture<Result<String>> {
+    async fn set_string(&self, k: &str, v: &str) -> Result<String> {
         let k = k.to_string();
         let v = v.to_string();
-        Box::pin(async move {
-            return self.set_string_ex(&k, &v, None).await;
-        })
+        return self.set_string_ex(&k, &v, None).await;
     }
 
-    fn get_string(&self, k: &str) -> BoxFuture<Result<String>> {
+    async fn get_string(&self, k: &str) -> Result<String> {
         let k = k.to_string();
-        Box::pin(async move {
-            let mut conn = self.get_conn().await?;
-            let result: RedisResult<Option<String>> =
-                redis::cmd("GET").arg(&[&k]).query_async(&mut conn).await;
-            return match result {
-                Ok(v) => Ok(v.unwrap_or_default()),
-                Err(e) => Err(Error::from(format!(
-                    "RedisService get_string({}) fail:{}",
-                    k,
-                    e.to_string()
-                ))),
-            };
-        })
+        let mut conn = self.get_conn().await?;
+        let result: RedisResult<Option<String>> =
+            redis::cmd("GET").arg(&[&k]).query_async(&mut conn).await;
+        return match result {
+            Ok(v) => Ok(v.unwrap_or_default()),
+            Err(e) => Err(Error::from(format!(
+                "RedisService get_string({}) fail:{}",
+                k,
+                e.to_string()
+            ))),
+        };
     }
 
     ///set_string Automatically expire
-    fn set_string_ex(&self, k: &str, v: &str, ex: Option<Duration>) -> BoxFuture<Result<String>> {
+    async fn set_string_ex(&self, k: &str, v: &str, ex: Option<Duration>) -> Result<String> {
         let k = k.to_string();
         let v = v.to_string();
-        Box::pin(async move {
-            let mut conn = self.get_conn().await?;
-            return if ex.is_none() {
-                match redis::cmd("SET").arg(&[k, v]).query_async(&mut conn).await {
-                    Ok(v) => Ok(v),
-                    Err(e) => Err(Error::from(format!(
-                        "RedisService set_string_ex fail:{}",
-                        e.to_string()
-                    ))),
-                }
-            } else {
-                match redis::cmd("SET")
-                    .arg(&[&k, &v, "EX", &ex.unwrap_or_default().as_secs().to_string()])
-                    .query_async(&mut conn)
-                    .await
-                {
-                    Ok(v) => Ok(v),
-                    Err(e) => Err(Error::from(format!(
-                        "RedisService set_string_ex fail:{}",
-                        e.to_string()
-                    ))),
-                }
-            };
-        })
-    }
-
-    ///set_string Automatically expire
-    fn ttl(&self, k: &str) -> BoxFuture<Result<i64>> {
-        let k = k.to_string();
-        Box::pin(async move {
-            let mut conn = self.get_conn().await?;
-            return match redis::cmd("TTL").arg(&[k]).query_async(&mut conn).await {
+        let mut conn = self.get_conn().await?;
+        return if ex.is_none() {
+            match redis::cmd("SET").arg(&[k, v]).query_async(&mut conn).await {
                 Ok(v) => Ok(v),
                 Err(e) => Err(Error::from(format!(
-                    "RedisService ttl fail:{}",
+                    "RedisService set_string_ex fail:{}",
                     e.to_string()
                 ))),
-            };
-        })
+            }
+        } else {
+            match redis::cmd("SET")
+                .arg(&[&k, &v, "EX", &ex.unwrap_or_default().as_secs().to_string()])
+                .query_async(&mut conn)
+                .await
+            {
+                Ok(v) => Ok(v),
+                Err(e) => Err(Error::from(format!(
+                    "RedisService set_string_ex fail:{}",
+                    e.to_string()
+                ))),
+            }
+        };
+    }
+
+    ///set_string Automatically expire
+    async fn ttl(&self, k: &str) -> Result<i64> {
+        let k = k.to_string();
+        let mut conn = self.get_conn().await?;
+        return match redis::cmd("TTL").arg(&[k]).query_async(&mut conn).await {
+            Ok(v) => Ok(v),
+            Err(e) => Err(Error::from(format!(
+                "RedisService ttl fail:{}",
+                e.to_string()
+            ))),
+        };
     }
 }
