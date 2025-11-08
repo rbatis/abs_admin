@@ -1,4 +1,40 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "https://raw.githubusercontent.com/rbatis/rbatis/master/rbatis-codegen/mybatis-3-mapper.dtd">
 <mapper>
 
+<!-- RbacPermission select_page -->
+<select id="select_page">
+    `select * from rbac_permission`
+    <where>
+        <if test="dto.name != null">
+            ` and name like concat('%', #{dto.name}, '%')`
+        </if>
+    </where>
+    <if test="do_count == false">
+        ` order by create_date desc`
+    </if>
+</select>
+
+<!-- RbacPermission select_by_permission_or_name -->
+<select id="select_by_permission_or_name">
+    `select * from rbac_permission where permission = #{permission} or name = #{name}`
+</select>
+
+<!-- RbacPermission select_by_parent_id_null -->
+<select id="select_by_parent_id_null">
+    `select * from rbac_permission order by create_date desc`
+</select>
+
+<!-- RbacRole select_page_by_name -->
+<select id="select_page_by_name">
+    `select * from rbac_role`
+    <where>
+        <if test="name != null">
+            ` and name like concat('%', #{name}, '%')`
+        </if>
+    </where>
+    <if test="do_count == false">
+        ` order by create_date desc`
+    </if>
+</select>
+
 </mapper>

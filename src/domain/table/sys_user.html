@@ -1,4 +1,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "https://raw.githubusercontent.com/rbatis/rbatis/master/rbatis-codegen/mybatis-3-mapper.dtd">
 <mapper>
-
+<select id="select_page">
+    `select * from sys_user`
+    <where>
+        <if test="name != null">
+            ` and name like concat('%', #{name}, '%')`
+        </if>
+        <if test="account != null">
+            ` and account like concat('%', #{account}, '%')`
+        </if>
+    </where>
+    <if test="do_count == false">
+        ` order by create_date desc`
+    </if>
+</select>
 </mapper>
