@@ -4,8 +4,8 @@ use crate::error::{Error, Result};
 use crate::service::ICacheService;
 use futures_util::future::BoxFuture;
 use log::error;
-use redis::aio::MultiplexedConnection;
 use redis::RedisResult;
+use redis::aio::MultiplexedConnection;
 ///Redis Cache service
 #[derive(Debug)]
 pub struct RedisCacheService {

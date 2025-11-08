@@ -1,8 +1,9 @@
-use std::ops::{Deref, DerefMut};
+use crate::context::CONTEXT;
 use crate::domain::vo::JWTToken;
 use crate::error::Error;
-use crate::middleware::auth::{checked_token};
-use crate::context::CONTEXT;
+use crate::middleware::auth::checked_token;
+use axum::extract::FromRequestParts;
+use axum::http::request::Parts;
 use axum::{
     extract::Request,
     http,
@@ -10,8 +11,7 @@ use axum::{
     middleware::Next,
     response::Response,
 };
-use axum::extract::FromRequestParts;
-use axum::http::request::Parts;
+use std::ops::{Deref, DerefMut};
 
 /// token key name
 pub const TOKEN_KEY: &'static str = "Authorization";
@@ -23,13 +23,11 @@ pub async fn auth(mut request: Request, next: Next) -> Result<Response, StatusCo
                 //Jwt resolution determines whether the expiration time is less than 10 minutes and automatically renews the contract.
                 let now = rbatis::rbdc::DateTime::now().unix_timestamp() as usize;
                 if (token.exp - now) < CONTEXT.config.jwt_refresh_token {
-                    if let Ok(new_token) = token
-                        .refresh(&CONTEXT.config.jwt_secret, CONTEXT.config.jwt_exp) {
+                    if let Ok(new_token) =
+                        token.refresh(&CONTEXT.config.jwt_secret, CONTEXT.config.jwt_exp)
+                    {
                         if let Ok(new_header) = http::HeaderValue::from_str(&new_token) {
-                            request.headers_mut().insert(
-                                TOKEN_KEY,
-                                new_header,
-                            );
+                            request.headers_mut().insert(TOKEN_KEY, new_header);
                         }
                     }
                 }
@@ -57,7 +55,6 @@ fn get_token(h: &HeaderMap) -> Result<&str, Error> {
         .unwrap_or_default())
 }
 
-
 ///Put to Axum Handle
 pub struct JwtAuth(pub JWTToken);
 
@@ -74,7 +71,7 @@ impl DerefMut for JwtAuth {
     }
 }
 
-impl<S:Sync> FromRequestParts<S> for JwtAuth {
+impl<S: Sync> FromRequestParts<S> for JwtAuth {
     type Rejection = (StatusCode, String);
 
     async fn from_request_parts(parts: &mut Parts, _state: &S) -> Result<Self, Self::Rejection> {

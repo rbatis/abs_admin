@@ -1,10 +1,9 @@
-use crate::domain::dto::{IdDTO};
-use crate::domain::vo::RespVO;
 use crate::context::CONTEXT;
-use axum::response::IntoResponse;
-use axum::Json;
+use crate::domain::dto::IdDTO;
 use crate::domain::dto::rbac::{SysRoleResAddDTO, SysRoleResPageDTO, SysRoleResUpdateDTO};
-
+use crate::domain::vo::RespVO;
+use axum::Json;
+use axum::response::IntoResponse;
 
 pub async fn layer_top() -> impl IntoResponse {
     let vo = CONTEXT.rbac_role_service.find_all().await;

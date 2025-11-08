@@ -1,12 +1,12 @@
-use rbatis::{Page, PageRequest};
-use rbs::value;
+use crate::context::CONTEXT;
 use crate::domain::dto::{DictEditDTO, DictPageDTO};
+use crate::domain::table::sys_dict::SysDict;
 use crate::domain::vo::SysDictVO;
 use crate::error::Error;
 use crate::error::Result;
-use crate::context::CONTEXT;
 use crate::{error_info, pool};
-use crate::domain::table::sys_dict::SysDict;
+use rbatis::{Page, PageRequest};
+use rbs::value;
 
 const DICT_KEY: &'static str = "sys_dict:all";
 
@@ -22,7 +22,8 @@ impl SysDictService {
 
     pub async fn add(&self, arg: &SysDict) -> Result<u64> {
         let old =
-            SysDict::select_by_map(pool!(),  value! {"id":arg.id.as_deref().unwrap_or_default()}).await?;
+            SysDict::select_by_map(pool!(), value! {"id":arg.id.as_deref().unwrap_or_default()})
+                .await?;
         if old.len() > 0 {
             return Err(Error::from(format!(
                 "{},code={}",

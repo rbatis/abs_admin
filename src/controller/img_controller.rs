@@ -1,12 +1,12 @@
+use crate::context::CONTEXT;
 use crate::domain::dto::CatpchaDTO;
 use crate::error_info;
-use crate::context::CONTEXT;
 use crate::util::string::IsEmptyString;
 use axum::body::Body;
 use axum::extract::Query;
 use axum::response::{IntoResponse, Response};
-use captcha::filters::{Dots, Noise, Wave};
 use captcha::Captcha;
+use captcha::filters::{Dots, Noise, Wave};
 
 /// Image Code interface
 /// Http Method GET

@@ -33,7 +33,8 @@ impl Default for ApplicationConfig {
     fn default() -> Self {
         let mut f = File::open("application.json5").expect("not find 'application.json5'");
         let mut cfg_data = "".to_string();
-        f.read_to_string(&mut cfg_data).expect("read 'application.json5' fail");
+        f.read_to_string(&mut cfg_data)
+            .expect("read 'application.json5' fail");
         //load config
         let mut result: ApplicationConfig =
             json5::from_str(&cfg_data).expect("load config file fail");
@@ -66,13 +67,9 @@ impl ApplicationConfig {
                 .insert(error, k.to_string());
         }
     }
-    
+
     pub fn debug(&self) -> bool {
-        if cfg!(debug_assertions){
-            true
-        }else { 
-            false
-        }
+        if cfg!(debug_assertions) { true } else { false }
     }
 }
 

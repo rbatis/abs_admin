@@ -1,8 +1,8 @@
 use crate::error::{Error, Result};
 use crate::service::FileLocalService;
+use async_trait::async_trait;
 use std::fmt::Debug;
 use std::ops::Deref;
-use async_trait::async_trait;
 
 #[async_trait]
 pub trait IStorageService: Sync + Send + Debug {

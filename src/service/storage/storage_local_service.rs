@@ -1,8 +1,8 @@
 use crate::error::Result;
 use crate::service::IStorageService;
+use async_trait::async_trait;
 use std::fmt::Debug;
 use std::path::PathBuf;
-use async_trait::async_trait;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 
 #[derive(Debug)]
@@ -52,7 +52,7 @@ impl IStorageService for FileLocalService {
         Ok(result)
     }
 
-    async  fn remove(&self, name: String) -> Result<()> {
+    async fn remove(&self, name: String) -> Result<()> {
         let name = PathBuf::from(name);
         let f = tokio::fs::remove_file(&name).await?;
         Ok(f)

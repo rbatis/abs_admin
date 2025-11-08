@@ -1,11 +1,11 @@
 use crate::config::config::ApplicationConfig;
 use crate::error::{Error, Result};
 use crate::service::MemCacheService;
-use serde::de::DeserializeOwned;
+use async_trait::async_trait;
 use serde::Serialize;
+use serde::de::DeserializeOwned;
 use std::fmt::Debug;
 use std::time::Duration;
-use async_trait::async_trait;
 
 #[async_trait]
 pub trait ICacheService: Sync + Send + Debug {
@@ -13,7 +13,7 @@ pub trait ICacheService: Sync + Send + Debug {
     async fn set_string(&self, k: &str, v: &str) -> Result<String>;
 
     /// get value from key
-    async  fn get_string(&self, k: &str) -> Result<String>;
+    async fn get_string(&self, k: &str) -> Result<String>;
 
     /// set key  Time To Live(Duration)
     async fn set_string_ex(&self, k: &str, v: &str, ex: Option<Duration>) -> Result<String>;

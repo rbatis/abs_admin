@@ -76,7 +76,7 @@ impl IStorageService for FileS3Service {
         Ok(name.to_str().unwrap_or_default().to_string())
     }
 
-    async  fn download(&self, name: String) -> crate::error::Result<Vec<u8>> {
+    async fn download(&self, name: String) -> crate::error::Result<Vec<u8>> {
         let name = name.trim_start_matches("/").to_string();
         let name = PathBuf::from(name);
         let resp = self

@@ -7,9 +7,9 @@ use crate::domain::vo::rbac::SysRoleVO;
 use crate::error::Error;
 use crate::error::Result;
 use crate::{error_info, pool};
+use rbatis::Page;
 use rbatis::plugin::object_id::ObjectId;
 use rbatis::rbdc::DateTime;
-use rbatis::Page;
 use rbs::value;
 
 /// Role Resource Service
@@ -32,7 +32,7 @@ impl RbacRolePermissionService {
         &self,
         role_ids: &Vec<String>,
     ) -> Result<Vec<RbacRolePermission>> {
-        if role_ids.is_empty(){
+        if role_ids.is_empty() {
             return Ok(vec![]);
         }
         let datas = RbacRolePermission::select_by_map(pool!(), value! {"role_id":role_ids}).await?;
@@ -57,7 +57,8 @@ impl RbacRolePermissionService {
             .rbac_role_service
             .edit(RoleEditDTO::from(arg.clone()))
             .await?;
-        self.save_resources(role_id, arg.permission_ids.clone()).await
+        self.save_resources(role_id, arg.permission_ids.clone())
+            .await
     }
 
     async fn save_resources(&self, role_id: &str, permission_ids: Vec<String>) -> Result<u64> {

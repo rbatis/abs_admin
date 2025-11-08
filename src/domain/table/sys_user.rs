@@ -1,6 +1,6 @@
-use rbatis::{crud, htmlsql_select_page};
 use crate::domain::table::LoginCheck;
 use rbatis::rbdc::DateTime;
+use rbatis::{crud, htmlsql_select_page};
 
 ///Background user table
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]

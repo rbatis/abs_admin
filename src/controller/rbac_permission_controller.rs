@@ -1,12 +1,11 @@
-use crate::domain::dto::{IdDTO};
+use crate::context::CONTEXT;
+use crate::domain::dto::IdDTO;
+use crate::domain::dto::rbac::{PermissionAddDTO, PermissionPageDTO, ResEditDTO};
 use crate::domain::table::rbac::RbacPermission;
 use crate::domain::vo::RespVO;
 use crate::error_info;
-use crate::context::CONTEXT;
-use axum::response::IntoResponse;
 use axum::Json;
-use crate::domain::dto::rbac::{PermissionAddDTO, ResEditDTO, PermissionPageDTO};
-
+use axum::response::IntoResponse;
 
 pub async fn layer_top() -> impl IntoResponse {
     let data = CONTEXT.rbac_permission_service.finds_all().await;

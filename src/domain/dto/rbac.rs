@@ -1,7 +1,7 @@
 use crate::domain::table::rbac::{RbacPermission, RbacRole, RbacUserRole};
+use rbatis::PageRequest;
 use rbatis::object_id::ObjectId;
 use rbatis::rbdc::DateTime;
-use rbatis::PageRequest;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
@@ -57,7 +57,6 @@ impl From<&ResEditDTO> for RbacPermission {
         }
     }
 }
-
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct RolePageDTO {
@@ -157,7 +156,6 @@ impl From<&SysRoleResPageDTO> for PageRequest {
         PageRequest::new(arg.page_no.unwrap_or(1), arg.page_size.unwrap_or(10))
     }
 }
-
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct UserRoleAddDTO {

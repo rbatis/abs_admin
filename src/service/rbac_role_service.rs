@@ -1,14 +1,14 @@
 use crate::context::CONTEXT;
 use crate::domain::dto::rbac::{RoleAddDTO, RoleEditDTO, RolePageDTO};
+use crate::domain::table::rbac::IntoMap;
 use crate::domain::table::rbac::{RbacPermission, RbacRole, RbacRolePermission};
 use crate::domain::vo::rbac::RbacPermissionVO;
 use crate::domain::vo::rbac::SysRoleVO;
 use crate::error::Result;
 use crate::pool;
 use rbatis::{Page, PageRequest};
-use std::collections::{HashMap, HashSet};
 use rbs::value;
-use crate::domain::table::rbac::IntoMap;
+use std::collections::{HashMap, HashSet};
 
 ///Role of service
 pub struct RbacRoleService {}
@@ -20,7 +20,7 @@ impl RbacRoleService {
             &PageRequest::from(arg),
             arg.name.as_deref().unwrap_or_default(),
         )
-            .await?;
+        .await?;
         let role_ids: Vec<String> = rbatis::table_field_set!(&data.records, id)
             .iter()
             .map(|v| v.to_string())
@@ -33,7 +33,11 @@ impl RbacRoleService {
             .iter()
             .map(|v| v.to_string())
             .collect();
-        let perm_map = CONTEXT.rbac_permission_service.finds(perm_ids).await?.into_map(|v|v.id.clone().unwrap_or_default());
+        let perm_map = CONTEXT
+            .rbac_permission_service
+            .finds(perm_ids)
+            .await?
+            .into_map(|v| v.id.clone().unwrap_or_default());
         let role_perms = {
             let mut map = HashMap::<String, HashSet<RbacPermission>>::new();
             for x in role_perms {
@@ -52,12 +56,16 @@ impl RbacRoleService {
         let mut page = Page::<SysRoleVO>::from(data);
         for vo in &mut page.records {
             if let Some(perms) = role_perms.get(vo.id.as_deref().unwrap_or_default()) {
-                vo.set_permissions(perms.iter().map(|v| RbacPermissionVO::from(v.clone())).collect());
+                vo.set_permissions(
+                    perms
+                        .iter()
+                        .map(|v| RbacPermissionVO::from(v.clone()))
+                        .collect(),
+                );
             }
         }
         Ok(page)
     }
-
 
     pub async fn add(&self, arg: RoleAddDTO) -> Result<(u64, String)> {
         let role = RbacRole::from(arg);

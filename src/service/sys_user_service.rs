@@ -6,15 +6,15 @@ use rbatis::rbdc::DateTime;
 
 use crate::domain::dto::rbac::UserRoleAddDTO;
 use crate::domain::dto::{IdDTO, SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO, UserRolePageDTO};
-use crate::domain::table::{LoginCheck};
+use crate::domain::table::LoginCheck;
+use crate::domain::table::sys_user::SysUser;
 use crate::domain::vo::sys_user::SysUserVO;
 use crate::domain::vo::{JWTToken, SignInVO};
 use crate::service::SetUserVO;
 use crate::util::password_encoder::PasswordEncoder;
 use crate::{error_info, pool};
-use std::time::Duration;
 use rbs::value;
-use crate::domain::table::sys_user::SysUser;
+use std::time::Duration;
 
 const CACHE_KEY_RETRY: &'static str = "login:login_retry";
 
@@ -126,10 +126,11 @@ impl SysUserService {
 
     pub async fn sign_in(&self, arg: &SignInDTO) -> Result<SignInVO> {
         self.is_need_wait_login_ex(&arg.account).await?;
-        let user: Option<SysUser> = SysUser::select_by_map(pool!(), value! {"account": &arg.account})
-            .await?
-            .into_iter()
-            .next();
+        let user: Option<SysUser> =
+            SysUser::select_by_map(pool!(), value! {"account": &arg.account})
+                .await?
+                .into_iter()
+                .next();
         let user = user.ok_or_else(|| {
             Error::from(format!(
                 "{}={}",
@@ -344,7 +345,7 @@ impl SysUserService {
             .rbac_user_role_service
             .find_user_role(user_id)
             .await?;
-        let mut perms= Vec::with_capacity(data.len());
+        let mut perms = Vec::with_capacity(data.len());
         for x in data {
             for x in x.permissions {
                 perms.push(x.permission.clone().unwrap_or_default());

@@ -2,7 +2,7 @@ use crate::domain::dto::rbac::PermissionPageDTO;
 use rbatis::executor::Executor;
 use rbatis::rbdc::DateTime;
 use rbatis::table_sync::ColumnMapper;
-use rbatis::{crud, htmlsql_select_page, htmlsql, RBatis};
+use rbatis::{RBatis, crud, htmlsql, htmlsql_select_page};
 use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
 

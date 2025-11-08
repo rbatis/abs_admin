@@ -1,9 +1,9 @@
 use crate::error::Result;
 use crate::service::ICacheService;
+use async_trait::async_trait;
 use rbatis::dark_std::sync::SyncHashMap;
 use std::ops::Sub;
 use std::time::{Duration, Instant};
-use async_trait::async_trait;
 
 ///Memory Cache Service
 #[derive(Debug)]
@@ -92,4 +92,3 @@ impl ICacheService for MemCacheService {
         Ok(v)
     }
 }
-

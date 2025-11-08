@@ -1,9 +1,9 @@
-use crate::domain::dto::rbac::{ResEditDTO, PermissionPageDTO};
+use crate::context::CONTEXT;
+use crate::domain::dto::rbac::{PermissionPageDTO, ResEditDTO};
 use crate::domain::table::rbac::RbacPermission;
 use crate::domain::vo::rbac::RbacPermissionVO;
 use crate::error::Error;
 use crate::error::Result;
-use crate::context::CONTEXT;
 use crate::{error_info, pool};
 use rbatis::{Page, PageRequest};
 use rbs::value;
@@ -24,7 +24,7 @@ impl RbacPermissionService {
             arg.permission.as_deref().unwrap_or_default(),
             arg.name.as_deref().unwrap_or_default(),
         )
-            .await?;
+        .await?;
         if old.len() > 0 {
             return Err(Error::from(format!(
                 "{}={:?}",
@@ -38,7 +38,8 @@ impl RbacPermissionService {
 
     pub async fn edit(&self, arg: &ResEditDTO) -> Result<u64> {
         let data = RbacPermission::from(arg);
-        let result = RbacPermission::update_by_map(pool!(), &data, value! {"id": &data.id }).await?;
+        let result =
+            RbacPermission::update_by_map(pool!(), &data, value! {"id": &data.id }).await?;
         Ok(result.rows_affected)
     }
 
@@ -54,16 +55,16 @@ impl RbacPermissionService {
         Ok(num)
     }
 
-    pub async fn finds(&self,ids:Vec<String>) -> Result<Vec<RbacPermission>> {
-        if ids.is_empty(){
+    pub async fn finds(&self, ids: Vec<String>) -> Result<Vec<RbacPermission>> {
+        if ids.is_empty() {
             return Ok(vec![]);
         }
-        let data=RbacPermission::select_by_map(pool!(), value! {"id": &ids}).await?;
+        let data = RbacPermission::select_by_map(pool!(), value! {"id": &ids}).await?;
         Ok(data)
     }
 
     pub async fn finds_all(&self) -> Result<Vec<RbacPermission>> {
-        let data=RbacPermission::select_all(pool!()).await?;
+        let data = RbacPermission::select_all(pool!()).await?;
         Ok(data)
     }
 }

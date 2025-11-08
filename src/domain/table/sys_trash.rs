@@ -1,6 +1,6 @@
-use rbatis::{crud, htmlsql};
-use rbatis::rbdc::DateTime;
 use rbatis::executor::Executor;
+use rbatis::rbdc::DateTime;
+use rbatis::{crud, htmlsql};
 
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SysTrash {
