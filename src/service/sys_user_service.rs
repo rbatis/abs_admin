@@ -47,7 +47,7 @@ impl SysUserService {
 
 impl SysUserService {
     pub async fn page(&self, arg: UserPageDTO) -> Result<Page<SysUserVO>> {
-        let sys_user_page = SysUser::select_page(pool!(),&PageRequest::from(arg.clone()),arg).await?;
+        let sys_user_page = SysUser::select_page(pool!(),&PageRequest::from(arg.clone()),&arg).await?;
         let page = Page::<SysUserVO>::from(sys_user_page);
         Ok(page)
     }
