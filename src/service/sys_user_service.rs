@@ -6,14 +6,15 @@ use rbatis::rbdc::DateTime;
 
 use crate::domain::dto::rbac::UserRoleAddDTO;
 use crate::domain::dto::{IdDTO, SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO, UserRolePageDTO};
-use crate::domain::table::{LoginCheck};
+use crate::domain::table::LoginCheck;
+use crate::domain::table::sys_user::SysUser;
 use crate::domain::vo::sys_user::SysUserVO;
 use crate::domain::vo::{JWTToken, SignInVO};
 use crate::service::SetUserVO;
 use crate::util::password_encoder::PasswordEncoder;
 use crate::{error_info, pool};
+use rbs::value;
 use std::time::Duration;
-use crate::domain::table::sys_user::SysUser;
 
 
 const CACHE_KEY_RETRY: &'static str = "login:login_retry";
@@ -67,14 +68,14 @@ impl SysUserService {
     }
 
     pub async fn find(&self, id: &str) -> Result<Option<SysUser>> {
-        Ok(SysUser::select_by_column(pool!(), "id", id)
+        Ok(SysUser::select_by_map(pool!(), value! {"id":id})
             .await?
             .into_iter()
             .next())
     }
 
     pub async fn find_by_account(&self, account: &str) -> Result<Option<SysUser>> {
-        Ok(SysUser::select_by_column(pool!(), "account", account)
+        Ok(SysUser::select_by_map(pool!(), value! {"account": account})
             .await?
             .into_iter()
             .next())
@@ -120,10 +121,11 @@ impl SysUserService {
 
     pub async fn sign_in(&self, arg: &SignInDTO) -> Result<SignInVO> {
         self.is_need_wait_login_ex(&arg.account).await?;
-        let user: Option<SysUser> = SysUser::select_by_column(pool!(), "account", &arg.account)
-            .await?
-            .into_iter()
-            .next();
+        let user: Option<SysUser> =
+            SysUser::select_by_map(pool!(), value! {"account": &arg.account})
+                .await?
+                .into_iter()
+                .next();
         let user = user.ok_or_else(|| {
             Error::from(format!(
                 "{}={}",
@@ -250,7 +252,7 @@ impl SysUserService {
     }
 
     pub async fn get_user_info_by_token(&self, token: &JWTToken) -> Result<SignInVO> {
-        let user = SysUser::select_by_column(pool!(), "id", &token.id)
+        let user = SysUser::select_by_map(pool!(), value! {"id": &token.id})
             .await?
             .into_iter()
             .next();
@@ -294,7 +296,7 @@ impl SysUserService {
         let role_id = arg.role_id.clone();
         let mut arg = SysUser::from(arg);
         //old user
-        let user = SysUser::select_by_column(pool!(), "id", arg.id.as_ref())
+        let user = SysUser::select_by_map(pool!(), value! {"id": arg.id.as_ref()})
             .await?
             .into_iter()
             .next()
@@ -318,7 +320,7 @@ impl SysUserService {
                 })
                 .await?;
         }
-        Ok(SysUser::update_by_column(pool!(), &arg, "id")
+        Ok(SysUser::update_by_map(pool!(), &arg, value! {"id":&arg.id})
             .await?
             .rows_affected)
     }
@@ -327,7 +329,7 @@ impl SysUserService {
         if id.is_empty() {
             return Err(Error::from(error_info!("id_empty")));
         }
-        let r = SysUser::delete_by_column(pool!(), "id", id).await?;
+        let r = SysUser::delete_by_map(pool!(), value! {"id": id}).await?;
         CONTEXT.rbac_user_role_service.remove_by_user_id(id).await?;
         Ok(r.rows_affected)
     }
@@ -338,7 +340,7 @@ impl SysUserService {
             .rbac_user_role_service
             .find_user_role(user_id)
             .await?;
-        let mut perms= Vec::with_capacity(data.len());
+        let mut perms = Vec::with_capacity(data.len());
         for x in data {
             for x in x.permissions {
                 perms.push(x.permission.clone().unwrap_or_default());

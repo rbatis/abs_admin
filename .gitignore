@@ -24,3 +24,7 @@ Cargo.lock
 
 /.vscode
 .Ds_Store
+
+.claude/
+.diea/
+.vscode/

@@ -5,7 +5,6 @@ use std::io::Read;
 /// Config
 #[derive(Debug, PartialEq, serde::Serialize, serde::Deserialize)]
 pub struct ApplicationConfig {
-    pub debug: bool,
     pub server_url: String,
     pub db_url: String,
     pub db_pool_len: usize,
@@ -20,7 +19,6 @@ pub struct ApplicationConfig {
     pub jwt_secret: String,
     pub jwt_exp: usize,
     pub jwt_refresh_token: usize,
-    pub white_list_api: Vec<String>,
     pub cache: String,
     pub storage: String,
     pub login_fail_retry: u64,
@@ -35,16 +33,12 @@ impl Default for ApplicationConfig {
     fn default() -> Self {
         let mut f = File::open("application.json5").expect("not find 'application.json5'");
         let mut cfg_data = "".to_string();
-        f.read_to_string(&mut cfg_data).expect("read 'application.json5' fail");
+        f.read_to_string(&mut cfg_data)
+            .expect("read 'application.json5' fail");
         //load config
         let mut result: ApplicationConfig =
             json5::from_str(&cfg_data).expect("load config file fail");
         result.init_infos();
-        if cfg!(debug_assertions) {
-            result.debug = true;
-        } else {
-            result.debug = false;
-        }
         result
     }
 }
@@ -72,6 +66,10 @@ impl ApplicationConfig {
                 .unwrap()
                 .insert(error, k.to_string());
         }
+    }
+
+    pub fn debug(&self) -> bool {
+        if cfg!(debug_assertions) { true } else { false }
     }
 }
 

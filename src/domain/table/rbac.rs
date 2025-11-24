@@ -1,8 +1,8 @@
-use crate::domain::dto::rbac::ResPageDTO;
+use crate::domain::dto::rbac::PermissionPageDTO;
 use rbatis::executor::Executor;
 use rbatis::rbdc::DateTime;
 use rbatis::table_sync::ColumnMapper;
-use rbatis::{crud, impl_select, impl_select_page, RBatis};
+use rbatis::{RBatis, crud, htmlsql, htmlsql_select_page};
 use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
 
@@ -19,14 +19,11 @@ pub struct RbacPermission {
 }
 
 crud!(RbacPermission {});
-impl_select_page!(RbacPermission{select_page(dto: &ResPageDTO) =>
-    "` where 0 = 0 `
-      if dto.name!=null && dto.name!= '':
-         ` and name like #{'%'+dto.name+'%'}`
-      if do_count == false:
-        ` order by create_date desc`"});
-impl_select!(RbacPermission{select_by_permission_or_name(permission:&str,name:&str) => "`where permission = #{permission} or name = #{name}`"});
-impl_select!(RbacPermission{select_by_parent_id_null()=>"` order by create_date desc`"});
+impl RbacPermission {
+    htmlsql_select_page!(select_page(dto: &PermissionPageDTO) -> RbacPermission => "src/domain/table/rbac.html");
+    htmlsql!(select_by_permission_or_name(rb:&dyn Executor, permission:&str,name:&str) -> Vec<RbacPermission> => "src/domain/table/rbac.html");
+    htmlsql!(select_by_parent_id_null(rb:&dyn Executor) -> Vec<RbacPermission> => "src/domain/table/rbac.html");
+}
 
 ///RoleTable
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
@@ -37,12 +34,9 @@ pub struct RbacRole {
 }
 
 crud!(RbacRole {});
-impl_select_page!(RbacRole{select_page_by_name(name:&str)=>
-    "` where 0 = 0 `
-    if name != '':
-      ` and name like #{'%'+name+'%'}`
-    if do_count == false:
-     `order by create_date desc`"});
+impl RbacRole {
+    htmlsql_select_page!(select_page_by_name(name:&str) -> RbacRole => "src/domain/table/rbac.html");
+}
 
 ///Role Permission relational tables (relational tables do not use logical deletion)
 #[derive(Clone, Debug, Eq, PartialEq, Hash, serde::Serialize, serde::Deserialize)]

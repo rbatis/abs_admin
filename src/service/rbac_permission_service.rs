@@ -1,16 +1,18 @@
-use crate::domain::dto::rbac::{ResEditDTO, ResPageDTO};
+use crate::context::CONTEXT;
+use crate::domain::dto::rbac::{PermissionPageDTO, ResEditDTO};
 use crate::domain::table::rbac::RbacPermission;
 use crate::domain::vo::rbac::RbacPermissionVO;
 use crate::error::Error;
 use crate::error::Result;
-use crate::context::CONTEXT;
 use crate::{error_info, pool};
 use rbatis::{Page, PageRequest};
+use rbs::value;
+
 /// Resource service
 pub struct RbacPermissionService {}
 
 impl RbacPermissionService {
-    pub async fn page(&self, arg: &ResPageDTO) -> Result<Page<RbacPermissionVO>> {
+    pub async fn page(&self, arg: &PermissionPageDTO) -> Result<Page<RbacPermissionVO>> {
         let data = RbacPermission::select_page(pool!(), &PageRequest::from(arg), arg).await?;
         let page = Page::<RbacPermissionVO>::from(data);
         Ok(page)
@@ -22,7 +24,7 @@ impl RbacPermissionService {
             arg.permission.as_deref().unwrap_or_default(),
             arg.name.as_deref().unwrap_or_default(),
         )
-            .await?;
+        .await?;
         if old.len() > 0 {
             return Err(Error::from(format!(
                 "{}={:?}",
@@ -36,15 +38,16 @@ impl RbacPermissionService {
 
     pub async fn edit(&self, arg: &ResEditDTO) -> Result<u64> {
         let data = RbacPermission::from(arg);
-        let result = RbacPermission::update_by_column(pool!(), &data, "id").await?;
+        let result =
+            RbacPermission::update_by_map(pool!(), &data, value! {"id": &data.id }).await?;
         Ok(result.rows_affected)
     }
 
     pub async fn remove(&self, id: &str) -> Result<u64> {
-        let num = RbacPermission::delete_by_column(pool!(), "id", id)
+        let num = RbacPermission::delete_by_map(pool!(), value! {"id":id})
             .await?
             .rows_affected;
-        RbacPermission::delete_by_column(pool!(), "id", id).await?;
+        RbacPermission::delete_by_map(pool!(), value! {"id":id}).await?;
         let _ = CONTEXT
             .rbac_role_permission_service
             .remove_by_permission_id(id)
@@ -52,16 +55,16 @@ impl RbacPermissionService {
         Ok(num)
     }
 
-    pub async fn finds(&self,ids:Vec<String>) -> Result<Vec<RbacPermission>> {
-        if ids.is_empty(){
+    pub async fn finds(&self, ids: Vec<String>) -> Result<Vec<RbacPermission>> {
+        if ids.is_empty() {
             return Ok(vec![]);
         }
-        let data=RbacPermission::select_in_column(pool!(), "id", &ids).await?;
+        let data = RbacPermission::select_by_map(pool!(), value! {"id": &ids}).await?;
         Ok(data)
     }
 
     pub async fn finds_all(&self) -> Result<Vec<RbacPermission>> {
-        let data=RbacPermission::select_all(pool!()).await?;
+        let data = RbacPermission::select_all(pool!()).await?;
         Ok(data)
     }
 }

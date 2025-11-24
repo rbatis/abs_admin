@@ -1,14 +1,15 @@
 use crate::error::{Error, Result};
 use crate::service::FileLocalService;
-use futures_util::future::BoxFuture;
+use async_trait::async_trait;
 use std::fmt::Debug;
 use std::ops::Deref;
 
+#[async_trait]
 pub trait IStorageService: Sync + Send + Debug {
-    fn upload(&self, name: String, data: Vec<u8>) -> BoxFuture<'_, Result<String>>;
-    fn download(&self, name: String) -> BoxFuture<'_, Result<Vec<u8>>>;
-    fn list(&self, name: String) -> BoxFuture<'_, Result<Vec<String>>>;
-    fn remove(&self, name: String) -> BoxFuture<'_, Result<()>>;
+    async fn upload(&self, name: String, data: Vec<u8>) -> Result<String>;
+    async fn download(&self, name: String) -> Result<Vec<u8>>;
+    async fn list(&self, name: String) -> Result<Vec<String>>;
+    async fn remove(&self, name: String) -> Result<()>;
 }
 
 pub struct StorageService {

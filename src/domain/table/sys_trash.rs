@@ -1,5 +1,6 @@
-use rbatis::{crud, impl_delete};
+use rbatis::executor::Executor;
 use rbatis::rbdc::DateTime;
+use rbatis::{crud, htmlsql};
 
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SysTrash {
@@ -10,4 +11,6 @@ pub struct SysTrash {
 }
 
 crud!(SysTrash {});
-impl_delete!(SysTrash{ delete_by_day_before(before:DateTime) => "` where create_date < #{before}`"});
+impl SysTrash {
+    htmlsql!(delete_by_day_before(rb:&dyn Executor, before:DateTime) -> rbatis::rbdc::db::ExecResult => "src/domain/table/sys_trash.html");
+}

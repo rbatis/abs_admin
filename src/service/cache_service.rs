@@ -1,24 +1,25 @@
 use crate::config::config::ApplicationConfig;
 use crate::error::{Error, Result};
 use crate::service::MemCacheService;
-use futures_util::future::BoxFuture;
-use serde::de::DeserializeOwned;
+use async_trait::async_trait;
 use serde::Serialize;
+use serde::de::DeserializeOwned;
 use std::fmt::Debug;
 use std::time::Duration;
 
+#[async_trait]
 pub trait ICacheService: Sync + Send + Debug {
     /// set key-value
-    fn set_string(&self, k: &str, v: &str) -> BoxFuture<'_, Result<String>>;
+    async fn set_string(&self, k: &str, v: &str) -> Result<String>;
 
     /// get value from key
-    fn get_string(&self, k: &str) -> BoxFuture<'_, Result<String>>;
+    async fn get_string(&self, k: &str) -> Result<String>;
 
     /// set key  Time To Live(Duration)
-    fn set_string_ex(&self, k: &str, v: &str, ex: Option<Duration>) -> BoxFuture<'_, Result<String>>;
+    async fn set_string_ex(&self, k: &str, v: &str, ex: Option<Duration>) -> Result<String>;
 
     /// get key  Time To Live(secs)
-    fn ttl(&self, k: &str) -> BoxFuture<'_, Result<i64>>;
+    async fn ttl(&self, k: &str) -> Result<i64>;
 }
 
 pub struct CacheService {

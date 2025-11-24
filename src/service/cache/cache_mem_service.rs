@@ -1,6 +1,6 @@
 use crate::error::Result;
 use crate::service::ICacheService;
-use futures_util::future::BoxFuture;
+use async_trait::async_trait;
 use rbatis::dark_std::sync::SyncHashMap;
 use std::ops::Sub;
 use std::time::{Duration, Instant};
@@ -40,28 +40,27 @@ impl Default for MemCacheService {
     }
 }
 
+#[async_trait]
 impl ICacheService for MemCacheService {
-    fn set_string(&self, k: &str, v: &str) -> BoxFuture<'_, Result<String>> {
+    async fn set_string(&self, k: &str, v: &str) -> Result<String> {
         self.recycling();
         let k = k.to_string();
         let v = v.to_string();
         self.cache.insert(k.to_string(), (v.clone(), None));
-        Box::pin(async move {
-            return Ok(v.to_string());
-        })
+        Ok(v.to_string())
     }
 
-    fn get_string(&self, k: &str) -> BoxFuture<'_, Result<String>> {
+    async fn get_string(&self, k: &str) -> Result<String> {
         self.recycling();
         let k = k.to_string();
         let mut v = String::new();
         if let Some(r) = self.cache.get(&k) {
             v = r.0.to_string();
         }
-        Box::pin(async move { Ok(v) })
+        Ok(v)
     }
 
-    fn set_string_ex(&self, k: &str, v: &str, t: Option<Duration>) -> BoxFuture<'_, Result<String>> {
+    async fn set_string_ex(&self, k: &str, v: &str, t: Option<Duration>) -> Result<String> {
         self.recycling();
         let k = k.to_string();
         let v = v.to_string();
@@ -70,12 +69,10 @@ impl ICacheService for MemCacheService {
             e = Some((Instant::now(), ex));
         }
         _ = self.cache.insert(k.to_string(), (v.clone(), e));
-        Box::pin(async move {
-            return Ok(v.to_string());
-        })
+        Ok(v.to_string())
     }
 
-    fn ttl(&self, k: &str) -> BoxFuture<'_, Result<i64>> {
+    async fn ttl(&self, k: &str) -> Result<i64> {
         self.recycling();
         let v = self.cache.get(k).cloned();
         let v = match v {
@@ -92,6 +89,6 @@ impl ICacheService for MemCacheService {
                 }
             },
         };
-        Box::pin(async move { Ok(v) })
+        Ok(v)
     }
 }

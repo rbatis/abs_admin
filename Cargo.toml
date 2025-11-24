@@ -2,25 +2,25 @@
 name = "abs_admin"
 version = "0.1.0"
 authors = ["zhuxiujia <zhuxiujia@qq.com>"]
-edition = "2021"
+edition = "2024"
 
 [features]
 #add this to enable storage_s3 or cache_redis
 default = []
 #oss/s3
-storage_s3 = ["aws-config","aws-sdk-s3"]
+storage_s3 = ["aws-sdk-s3"]
 #redis
 cache_redis = ["redis"]
 
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
-rbs = { version = "4.5" }
-rbatis = { version = "4.5", features = [] }
-rbdc-sqlite = { version = "4.5" }
-#rbdc-mysql = { version = "4.5" }
-#rbdc-pg = { version = "4.5" }
-#rbdc-mssql = { version = "4.5" }
+rbs = { version = "4.6" }
+rbatis = { version = "4.6", features = [] }
+rbdc-sqlite = { version = "4.6" }
+#rbdc-mysql = { version = "4.6" }
+#rbdc-pg = { version = "4.6" }
+#rbdc-mssql = { version = "4.6" }
 
 tokio = { version = "1", features = ["macros"] }
 #serde and json
@@ -31,8 +31,8 @@ log = "0.4"
 #fast_log enable features = ["lz4", "zip", "gzip"], and edit src/config/log.rs fn choose_packer(),edit application.json5 add log_pack_compress: "zip"
 fast_log = { version = "1.7" }
 
-axum = { version = "0.7.4", features = ["macros"] }
-tower-http = { version = "0.6.1", features = ["fs", "cors"] }
+axum = { version = "0.8.4", features = ["macros"] }
+tower-http = { version = "0.6.1", features = ["fs","cors","limit"] }
 #redis
 redis = { version = "0.27.5", features = ["tokio-comp"] ,optional = true}
 #jwt
@@ -49,9 +49,7 @@ parking_lot = "0.12.1"
 sqlparser = "0.44.0"
 json5 = "0.4"
 
-
-aws-config = { version = "1.5.9", features = ["behavior-version-latest"], optional = true }
-aws-sdk-s3 = { version = "1.58.0", features = ["rt-tokio"], optional = true }
+aws-sdk-s3 = { version = "1.58.0", features = ["rt-tokio","rustls"], optional = true }
 async-trait = "0.1.83"
 
 

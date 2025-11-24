@@ -7,9 +7,10 @@ use crate::domain::vo::rbac::SysRoleVO;
 use crate::error::Error;
 use crate::error::Result;
 use crate::{error_info, pool};
+use rbatis::Page;
 use rbatis::plugin::object_id::ObjectId;
 use rbatis::rbdc::DateTime;
-use rbatis::Page;
+use rbs::value;
 
 /// Role Resource Service
 pub struct RbacRolePermissionService {}
@@ -31,10 +32,10 @@ impl RbacRolePermissionService {
         &self,
         role_ids: &Vec<String>,
     ) -> Result<Vec<RbacRolePermission>> {
-        if role_ids.is_empty(){
+        if role_ids.is_empty() {
             return Ok(vec![]);
         }
-        let datas = RbacRolePermission::select_in_column(pool!(), "role_id", role_ids).await?;
+        let datas = RbacRolePermission::select_by_map(pool!(), value! {"role_id":role_ids}).await?;
         Ok(datas)
     }
 
@@ -43,7 +44,7 @@ impl RbacRolePermissionService {
             .rbac_role_service
             .add(RoleAddDTO::from(arg.clone()))
             .await?;
-        self.save_resources(&role_id, arg.resource_ids.clone())
+        self.save_resources(&role_id, arg.permission_ids.clone())
             .await
     }
 
@@ -56,13 +57,14 @@ impl RbacRolePermissionService {
             .rbac_role_service
             .edit(RoleEditDTO::from(arg.clone()))
             .await?;
-        self.save_resources(role_id, arg.resource_ids.clone()).await
+        self.save_resources(role_id, arg.permission_ids.clone())
+            .await
     }
 
-    async fn save_resources(&self, role_id: &str, resource_ids: Vec<String>) -> Result<u64> {
+    async fn save_resources(&self, role_id: &str, permission_ids: Vec<String>) -> Result<u64> {
         self.remove_by_role_id(role_id).await?;
-        let mut sys_role_permission = Vec::with_capacity(resource_ids.len());
-        for resource_id in resource_ids {
+        let mut sys_role_permission = Vec::with_capacity(permission_ids.len());
+        for resource_id in permission_ids {
             sys_role_permission.push(RbacRolePermission {
                 id: ObjectId::new().to_string().into(),
                 role_id: role_id.to_string().into(),
@@ -92,14 +94,14 @@ impl RbacRolePermissionService {
     }
 
     pub async fn remove(&self, id: &str) -> Result<u64> {
-        Ok(RbacRolePermission::delete_by_column(pool!(), "id", id)
+        Ok(RbacRolePermission::delete_by_map(pool!(), value! {"id":id})
             .await?
             .rows_affected)
     }
 
     pub async fn remove_by_permission_id(&self, permission_id: &str) -> Result<u64> {
         Ok(
-            RbacRolePermission::delete_by_column(pool!(), "permission_id", permission_id)
+            RbacRolePermission::delete_by_map(pool!(), value! {"permission_id": permission_id})
                 .await?
                 .rows_affected,
         )
@@ -107,7 +109,7 @@ impl RbacRolePermissionService {
 
     pub async fn remove_by_role_id(&self, role_id: &str) -> Result<u64> {
         Ok(
-            RbacRolePermission::delete_by_column(pool!(), "role_id", role_id)
+            RbacRolePermission::delete_by_map(pool!(), value! {"role_id": role_id})
                 .await?
                 .rows_affected,
         )

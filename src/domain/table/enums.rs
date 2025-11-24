@@ -9,7 +9,7 @@ pub enum LoginCheck {
     PhoneCodeCheck,
 }
 
-impl Default for LoginCheck{
+impl Default for LoginCheck {
     fn default() -> Self {
         LoginCheck::NoCheck
     }

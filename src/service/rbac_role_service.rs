@@ -1,13 +1,14 @@
 use crate::context::CONTEXT;
 use crate::domain::dto::rbac::{RoleAddDTO, RoleEditDTO, RolePageDTO};
+use crate::domain::table::rbac::IntoMap;
 use crate::domain::table::rbac::{RbacPermission, RbacRole, RbacRolePermission};
 use crate::domain::vo::rbac::RbacPermissionVO;
 use crate::domain::vo::rbac::SysRoleVO;
 use crate::error::Result;
 use crate::pool;
 use rbatis::{Page, PageRequest};
+use rbs::value;
 use std::collections::{HashMap, HashSet};
-use crate::domain::table::rbac::IntoMap;
 
 ///Role of service
 pub struct RbacRoleService {}
@@ -19,7 +20,7 @@ impl RbacRoleService {
             &PageRequest::from(arg),
             arg.name.as_deref().unwrap_or_default(),
         )
-            .await?;
+        .await?;
         let role_ids: Vec<String> = rbatis::table_field_set!(&data.records, id)
             .iter()
             .map(|v| v.to_string())
@@ -28,11 +29,15 @@ impl RbacRoleService {
             .rbac_role_permission_service
             .find_by_role_ids(&role_ids)
             .await?;
-        let perm_ids: Vec<String> = rbatis::table_field_set!(&role_perms, id)
+        let perm_ids: Vec<String> = rbatis::table_field_set!(&role_perms, permission_id)
             .iter()
             .map(|v| v.to_string())
             .collect();
-        let perm_map = CONTEXT.rbac_permission_service.finds(perm_ids).await?.into_map(|v|v.id.clone().unwrap_or_default());
+        let perm_map = CONTEXT
+            .rbac_permission_service
+            .finds(perm_ids)
+            .await?
+            .into_map(|v| v.id.clone().unwrap_or_default());
         let role_perms = {
             let mut map = HashMap::<String, HashSet<RbacPermission>>::new();
             for x in role_perms {
@@ -51,12 +56,16 @@ impl RbacRoleService {
         let mut page = Page::<SysRoleVO>::from(data);
         for vo in &mut page.records {
             if let Some(perms) = role_perms.get(vo.id.as_deref().unwrap_or_default()) {
-                vo.set_permissions(perms.iter().map(|v| RbacPermissionVO::from(v.clone())).collect());
+                vo.set_permissions(
+                    perms
+                        .iter()
+                        .map(|v| RbacPermissionVO::from(v.clone()))
+                        .collect(),
+                );
             }
         }
         Ok(page)
     }
-
 
     pub async fn add(&self, arg: RoleAddDTO) -> Result<(u64, String)> {
         let role = RbacRole::from(arg);
@@ -69,12 +78,12 @@ impl RbacRoleService {
 
     pub async fn edit(&self, arg: RoleEditDTO) -> Result<u64> {
         let role = RbacRole::from(arg);
-        let result = RbacRole::update_by_column(pool!(), &role, "id").await;
+        let result = RbacRole::update_by_map(pool!(), &role, value! {"id": &role.id}).await;
         Ok(result?.rows_affected)
     }
 
     pub async fn remove(&self, id: &str) -> Result<u64> {
-        let result = RbacRole::delete_by_column(pool!(), "id", id).await?;
+        let result = RbacRole::delete_by_map(pool!(), value! {"id": id}).await?;
         Ok(result.rows_affected)
     }
 
@@ -82,14 +91,14 @@ impl RbacRoleService {
         if ids.is_empty() {
             return Ok(vec![]);
         }
-        Ok(RbacRole::select_in_column(pool!(), "id", ids).await?)
+        Ok(RbacRole::select_by_map(pool!(), value! {"id":ids}).await?)
     }
 
     pub async fn find_role_res(&self, role_ids: &Vec<String>) -> Result<Vec<RbacRolePermission>> {
         if role_ids.is_empty() {
             return Ok(vec![]);
         }
-        Ok(RbacRolePermission::select_in_column(pool!(), "role_id", role_ids).await?)
+        Ok(RbacRolePermission::select_by_map(pool!(), value! {"role_id":role_ids}).await?)
     }
 
     pub async fn find_all(&self) -> Result<Vec<RbacRole>> {

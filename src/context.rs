@@ -1,9 +1,13 @@
+use crate::config::config::ApplicationConfig;
+use crate::service::{
+    CacheService, RbacPermissionService, RbacRolePermissionService, RbacRoleService,
+    RbacUserRoleService, StorageService, SysAuthService, SysDictService, SysTrashService,
+    SysUserService,
+};
+use rbatis::RBatis;
+use rbatis::intercept_log::LogInterceptor;
 use std::sync::{Arc, LazyLock};
 use std::time::Duration;
-use rbatis::intercept_log::LogInterceptor;
-use rbatis::RBatis;
-use crate::config::config::ApplicationConfig;
-use crate::service::{CacheService, StorageService, SysAuthService, SysDictService, RbacPermissionService, RbacRolePermissionService, RbacRoleService, SysTrashService, RbacUserRoleService, SysUserService};
 
 /// Service CONTEXT
 pub static CONTEXT: LazyLock<ServiceContext> = LazyLock::new(|| ServiceContext::default());
@@ -42,7 +46,10 @@ impl ServiceContext {
         self.rb.intercepts.push(Arc::new(SysTrashService::new()));
         let pool = self.rb.get_pool().unwrap();
         //level
-        self.rb.get_intercept::<LogInterceptor>().expect("rbatis LogInterceptor init fail!").set_level_filter(log::max_level());
+        self.rb
+            .get_intercept::<LogInterceptor>()
+            .expect("rbatis LogInterceptor init fail!")
+            .set_level_filter(log::max_level());
         //max connections
         pool.set_max_open_conns(self.config.db_pool_len as u64)
             .await;
@@ -50,7 +57,7 @@ impl ServiceContext {
         pool.set_timeout(Some(Duration::from_secs(
             self.config.db_pool_timeout as u64,
         )))
-            .await;
+        .await;
         log::info!(
             "[abs_admin] rbatis pool init success! pool state = {}",
             self.rb.get_pool().expect("pool not init!").state().await
@@ -60,17 +67,15 @@ impl ServiceContext {
 
 impl Default for ServiceContext {
     fn default() -> Self {
-        let mut config = ApplicationConfig::default();
+        let config = ApplicationConfig::default();
         ServiceContext {
             rb: {
                 let rb = RBatis::new();
-                if cfg!(debug_assertions) == false && config.debug.eq(&true) {
-                    config.debug = false;
-                }
                 rb
             },
             cache_service: CacheService::new(&config).unwrap(),
-            storage_service:  StorageService::new(&config.storage).expect("Failed to create storage service"),
+            storage_service: StorageService::new(&config.storage)
+                .expect("Failed to create storage service"),
             sys_user_service: SysUserService {},
             rbac_role_service: RbacRoleService {},
             rbac_permission_service: RbacPermissionService {},

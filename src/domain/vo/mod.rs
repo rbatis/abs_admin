@@ -1,16 +1,15 @@
-pub mod sys_dict;
 pub mod jwt;
-pub mod sign_in;
-pub mod sys_user;
 pub mod rbac;
+pub mod sign_in;
+pub mod sys_dict;
+pub mod sys_user;
 
-use axum::response::{IntoResponse, Response};
-pub use sys_dict::*;
 pub use jwt::*;
 pub use sign_in::*;
+pub use sys_dict::*;
 
-use crate::error::Error;
 use crate::context::CONTEXT;
+use crate::error::Error;
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 
@@ -71,11 +70,5 @@ where
 {
     fn to_string(&self) -> String {
         serde_json::to_string(self).unwrap()
-    }
-}
-
-impl<T: Serialize + DeserializeOwned> IntoResponse for RespVO<T> {
-    fn into_response(self) -> Response {
-        axum::Json(self).into_response()
     }
 }

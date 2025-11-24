@@ -1,18 +1,18 @@
 use crate::domain::table::rbac::{RbacPermission, RbacRole, RbacUserRole};
+use rbatis::PageRequest;
 use rbatis::object_id::ObjectId;
 use rbatis::rbdc::DateTime;
-use rbatis::PageRequest;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
-pub struct ResPageDTO {
+pub struct PermissionPageDTO {
     pub page_no: Option<u64>,
     pub page_size: Option<u64>,
     pub name: Option<String>,
 }
 
-impl From<&ResPageDTO> for PageRequest {
-    fn from(arg: &ResPageDTO) -> Self {
+impl From<&PermissionPageDTO> for PageRequest {
+    fn from(arg: &PermissionPageDTO) -> Self {
         PageRequest::new(arg.page_no.unwrap_or(1), arg.page_size.unwrap_or(10))
     }
 }
@@ -58,7 +58,6 @@ impl From<&ResEditDTO> for RbacPermission {
     }
 }
 
-
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct RolePageDTO {
     pub page_no: Option<u64>,
@@ -94,7 +93,7 @@ pub struct RoleEditDTO {
     pub id: Option<String>,
     pub name: Option<String>,
     pub parent_id: Option<String>,
-    pub resource_ids: Vec<String>,
+    pub permission_ids: Vec<String>,
 }
 
 impl From<RoleEditDTO> for RbacRole {
@@ -113,7 +112,7 @@ pub struct SysRoleResAddDTO {
     //father id(可空)
     pub parent_id: Option<String>,
     //resource id vec
-    pub resource_ids: Vec<String>,
+    pub permission_ids: Vec<String>,
 }
 
 impl From<SysRoleResAddDTO> for RoleAddDTO {
@@ -131,7 +130,7 @@ pub struct SysRoleResUpdateDTO {
     pub name: Option<String>,
     pub parent_id: Option<String>,
     //resource id vec
-    pub resource_ids: Vec<String>,
+    pub permission_ids: Vec<String>,
 }
 
 impl From<SysRoleResUpdateDTO> for RoleEditDTO {
@@ -139,7 +138,7 @@ impl From<SysRoleResUpdateDTO> for RoleEditDTO {
         Self {
             id: arg.id,
             name: arg.name,
-            resource_ids: arg.resource_ids,
+            permission_ids: arg.permission_ids,
             parent_id: arg.parent_id,
         }
     }
@@ -157,7 +156,6 @@ impl From<&SysRoleResPageDTO> for PageRequest {
         PageRequest::new(arg.page_no.unwrap_or(1), arg.page_size.unwrap_or(10))
     }
 }
-
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct UserRoleAddDTO {

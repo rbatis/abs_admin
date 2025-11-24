@@ -2,24 +2,25 @@ use crate::context::CONTEXT;
 use fast_log::config::Config;
 use fast_log::consts::LogSize;
 use fast_log::plugin::file_split::{DateType, KeepType, Packer, Rolling, RollingType};
-use std::time::Duration;
 use rbatis::rbdc::DateTime;
+use std::time::Duration;
 
 pub fn init_log() {
     //init fast log
     let mut cfg = Config::new()
         .chan_len(CONTEXT.config.log_chan_len)
         .level(parse_log_level(&CONTEXT.config.log_level))
-        .file_split(&CONTEXT.config.log_dir,
-                         Rolling::new(parse_rolling_type(CONTEXT.config.log_rolling.as_str())),
-                         parse_keep_type(&CONTEXT.config.log_keep_type),
-                         parse_packer(&CONTEXT.config.log_pack_compress),
-    );
-    if CONTEXT.config.debug {
+        .file_split(
+            &CONTEXT.config.log_dir,
+            Rolling::new(parse_rolling_type(CONTEXT.config.log_rolling.as_str())),
+            parse_keep_type(&CONTEXT.config.log_keep_type),
+            parse_packer(&CONTEXT.config.log_pack_compress),
+        );
+    if CONTEXT.config.debug() {
         cfg = cfg.console();
     }
     let _ = fast_log::init(cfg);
-    if CONTEXT.config.debug == false {
+    if CONTEXT.config.debug() == false {
         println!("[abs_admin] release_mode is up! [file_log] open,[console_log] disabled!");
     }
 }
@@ -31,7 +32,8 @@ fn parse_rolling_type(log_rolling: &str) -> RollingType {
         rolling_type = RollingType::BySize(parse_log_size(&CONTEXT.config.log_rolling));
     } else if lower.as_str().ends_with("minute")
         || lower.as_str().ends_with("hour")
-        || lower.as_str().ends_with("day") {
+        || lower.as_str().ends_with("day")
+    {
         match lower.as_str() {
             "minute" => {
                 rolling_type = RollingType::ByDate(DateType::Minute);
@@ -44,14 +46,32 @@ fn parse_rolling_type(log_rolling: &str) -> RollingType {
             }
             _ => {
                 if lower.ends_with("minute") {
-                    let value: u64 = lower.trim_end_matches("minute").parse().expect("parse number fail");
-                    rolling_type = RollingType::ByDuration((DateTime::now().0, Duration::from_secs(value * 60)));
+                    let value: u64 = lower
+                        .trim_end_matches("minute")
+                        .parse()
+                        .expect("parse number fail");
+                    rolling_type = RollingType::ByDuration((
+                        DateTime::now().0,
+                        Duration::from_secs(value * 60),
+                    ));
                 } else if lower.ends_with("hour") {
-                    let value: u64 = lower.trim_end_matches("hour").parse().expect("parse number fail");
-                    rolling_type = RollingType::ByDuration((DateTime::now().0, Duration::from_secs(value * 60 * 60)));
+                    let value: u64 = lower
+                        .trim_end_matches("hour")
+                        .parse()
+                        .expect("parse number fail");
+                    rolling_type = RollingType::ByDuration((
+                        DateTime::now().0,
+                        Duration::from_secs(value * 60 * 60),
+                    ));
                 } else if lower.ends_with("day") {
-                    let value: u64 = lower.trim_end_matches("day").parse().expect("parse number fail");
-                    rolling_type = RollingType::ByDuration((DateTime::now().0, Duration::from_secs(value * 24 * 60 * 60)));
+                    let value: u64 = lower
+                        .trim_end_matches("day")
+                        .parse()
+                        .expect("parse number fail");
+                    rolling_type = RollingType::ByDuration((
+                        DateTime::now().0,
+                        Duration::from_secs(value * 24 * 60 * 60),
+                    ));
                 } else {
                     panic!("unknown log_rolling '{}'", log_rolling);
                 }
@@ -105,9 +125,7 @@ fn parse_keep_type(arg: &str) -> KeepType {
             let num = arg["KeepTime(".len()..end].to_string();
             KeepType::KeepTime(Duration::from_secs(num.parse::<u64>().unwrap()))
         }
-        arg if arg.to_uppercase().as_str() == "ALL" => {
-            KeepType::All
-        }
+        arg if arg.to_uppercase().as_str() == "ALL" => KeepType::All,
         _ => {
             panic!("unknown keep_type '{}'", arg)
         }

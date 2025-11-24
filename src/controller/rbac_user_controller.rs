@@ -1,12 +1,12 @@
+use axum::Json;
 use axum::extract::Request;
 use axum::response::IntoResponse;
-use axum::Json;
 
+use crate::context::CONTEXT;
 use crate::domain::dto::{IdDTO, SignInDTO, UserAddDTO, UserEditDTO, UserRolePageDTO};
 use crate::domain::vo::{JWTToken, RespVO, SignInVO};
 use crate::error::Error;
 use crate::error_info;
-use crate::context::CONTEXT;
 use crate::middleware::auth_axum::TOKEN_KEY;
 
 pub async fn login(arg: Json<SignInDTO>) -> impl IntoResponse {
@@ -54,8 +54,7 @@ pub async fn update(arg: Json<UserEditDTO>) -> impl IntoResponse {
         if account == "00000000000" && *state == 0 {
             return RespVO::<u64>::from_result(Err(Error::from(error_info!(
                 "cannot_disable_admin"
-            ))))
-            ;
+            ))));
         }
     }
     let vo = CONTEXT.sys_user_service.edit(arg.0).await;

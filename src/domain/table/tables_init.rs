@@ -1,15 +1,18 @@
-use log::LevelFilter;
-use rbatis::dark_std::defer;
-use rbatis::intercept_log::LogInterceptor;
-use rbatis::RBatis;
-use rbatis::rbdc::DateTime;
-use rbatis::table_sync::{ColumnMapper, MssqlTableMapper, MysqlTableMapper, PGTableMapper, SqliteTableMapper};
-use crate::domain::table::sys_dict::SysDict;
 use crate::domain::table::LoginCheck::PasswordCheck;
 use crate::domain::table::rbac;
 use crate::domain::table::rbac::{RbacPermission, RbacRole, RbacRolePermission, RbacUserRole};
+use crate::domain::table::sys_dict::SysDict;
 use crate::domain::table::sys_trash::SysTrash;
 use crate::domain::table::sys_user::SysUser;
+use log::LevelFilter;
+use rbatis::RBatis;
+use rbatis::dark_std::defer;
+use rbatis::intercept_log::LogInterceptor;
+use rbatis::rbdc::DateTime;
+use rbatis::table_sync::{
+    ColumnMapper, MssqlTableMapper, MysqlTableMapper, PGTableMapper, SqliteTableMapper,
+};
+use rbs::value;
 
 pub async fn sync_tables(rb: &RBatis) {
     //disable log
@@ -32,8 +35,8 @@ pub async fn sync_tables(rb: &RBatis) {
     };
     let conn = rb.acquire().await.expect("connection database fail");
     // RBAC permission
-    crate::domain::table::rbac::sync_tables(&conn,mapper).await;
-    
+    crate::domain::table::rbac::sync_tables(&conn, mapper).await;
+
     let table = SysUser {
         id: Some(Default::default()),
         account: Some(Default::default()),
@@ -63,10 +66,9 @@ pub async fn sync_tables(rb: &RBatis) {
     let _ = rbac::sync_tables(&conn, mapper).await;
 }
 
-
 pub async fn sync_tables_data(rb: &RBatis) {
     let conn = rb.acquire().await.expect("init data fail");
-    if let Ok(v) = SysUser::select_by_column(&conn, "id", "1").await {
+    if let Ok(v) = SysUser::select_by_map(&conn, value! {"id":"1"}).await {
         if v.len() > 0 {
             //if user exists,return
             return;
@@ -84,7 +86,7 @@ pub async fn sync_tables_data(rb: &RBatis) {
             create_date: Some(DateTime::now()),
         },
     )
-        .await;
+    .await;
 
     let _ = RbacRole::insert(
         &conn,
@@ -94,7 +96,7 @@ pub async fn sync_tables_data(rb: &RBatis) {
             create_date: Some(DateTime::now()),
         },
     )
-        .await;
+    .await;
 
     let _ = RbacUserRole::insert(
         &conn,
@@ -105,7 +107,7 @@ pub async fn sync_tables_data(rb: &RBatis) {
             create_date: Some(DateTime::now()),
         },
     )
-        .await;
+    .await;
 
     let sys_permissions = vec![
         RbacPermission {
