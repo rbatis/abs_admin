@@ -15,6 +15,7 @@ use crate::{error_info, pool};
 use std::time::Duration;
 use crate::domain::table::sys_user::SysUser;
 
+
 const CACHE_KEY_RETRY: &'static str = "login:login_retry";
 
 ///Background User Service
@@ -24,7 +25,7 @@ impl SysUserService {
     pub async fn role_page(&self, dto: &UserRolePageDTO) -> Result<Page<SysUserVO>> {
         let mut vo = CONTEXT
             .sys_user_service
-            .page(&UserPageDTO::from(dto))
+            .page(UserPageDTO::from(dto))
             .await?;
         let mut roles = Vec::with_capacity(vo.records.len());
         for x in &vo.records {
@@ -44,14 +45,8 @@ impl SysUserService {
 }
 
 impl SysUserService {
-    pub async fn page(&self, arg: &UserPageDTO) -> Result<Page<SysUserVO>> {
-        let sys_user_page: Page<SysUser> = SysUser::select_page(
-            pool!(),
-            &PageRequest::from(arg),
-            arg.name.as_deref().unwrap_or_default(),
-            arg.account.as_deref().unwrap_or_default(),
-        )
-        .await?;
+    pub async fn page(&self, arg: UserPageDTO) -> Result<Page<SysUserVO>> {
+        let sys_user_page = SysUser::select_page(pool!(),&PageRequest::from(arg.clone()),arg).await?;
         let page = Page::<SysUserVO>::from(sys_user_page);
         Ok(page)
     }

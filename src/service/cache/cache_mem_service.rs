@@ -41,7 +41,7 @@ impl Default for MemCacheService {
 }
 
 impl ICacheService for MemCacheService {
-    fn set_string(&self, k: &str, v: &str) -> BoxFuture<Result<String>> {
+    fn set_string(&self, k: &str, v: &str) -> BoxFuture<'_, Result<String>> {
         self.recycling();
         let k = k.to_string();
         let v = v.to_string();
@@ -51,7 +51,7 @@ impl ICacheService for MemCacheService {
         })
     }
 
-    fn get_string(&self, k: &str) -> BoxFuture<Result<String>> {
+    fn get_string(&self, k: &str) -> BoxFuture<'_, Result<String>> {
         self.recycling();
         let k = k.to_string();
         let mut v = String::new();
@@ -61,7 +61,7 @@ impl ICacheService for MemCacheService {
         Box::pin(async move { Ok(v) })
     }
 
-    fn set_string_ex(&self, k: &str, v: &str, t: Option<Duration>) -> BoxFuture<Result<String>> {
+    fn set_string_ex(&self, k: &str, v: &str, t: Option<Duration>) -> BoxFuture<'_, Result<String>> {
         self.recycling();
         let k = k.to_string();
         let v = v.to_string();
@@ -75,7 +75,7 @@ impl ICacheService for MemCacheService {
         })
     }
 
-    fn ttl(&self, k: &str) -> BoxFuture<Result<i64>> {
+    fn ttl(&self, k: &str) -> BoxFuture<'_, Result<i64>> {
         self.recycling();
         let v = self.cache.get(k).cloned();
         let v = match v {

@@ -9,16 +9,16 @@ use std::time::Duration;
 
 pub trait ICacheService: Sync + Send + Debug {
     /// set key-value
-    fn set_string(&self, k: &str, v: &str) -> BoxFuture<Result<String>>;
+    fn set_string(&self, k: &str, v: &str) -> BoxFuture<'_, Result<String>>;
 
     /// get value from key
-    fn get_string(&self, k: &str) -> BoxFuture<Result<String>>;
+    fn get_string(&self, k: &str) -> BoxFuture<'_, Result<String>>;
 
     /// set key  Time To Live(Duration)
-    fn set_string_ex(&self, k: &str, v: &str, ex: Option<Duration>) -> BoxFuture<Result<String>>;
+    fn set_string_ex(&self, k: &str, v: &str, ex: Option<Duration>) -> BoxFuture<'_, Result<String>>;
 
     /// get key  Time To Live(secs)
-    fn ttl(&self, k: &str) -> BoxFuture<Result<i64>>;
+    fn ttl(&self, k: &str) -> BoxFuture<'_, Result<i64>>;
 }
 
 pub struct CacheService {

@@ -5,10 +5,10 @@ use std::fmt::Debug;
 use std::ops::Deref;
 
 pub trait IStorageService: Sync + Send + Debug {
-    fn upload(&self, name: String, data: Vec<u8>) -> BoxFuture<Result<String>>;
-    fn download(&self, name: String) -> BoxFuture<Result<Vec<u8>>>;
-    fn list(&self, name: String) -> BoxFuture<Result<Vec<String>>>;
-    fn remove(&self, name: String) -> BoxFuture<Result<()>>;
+    fn upload(&self, name: String, data: Vec<u8>) -> BoxFuture<'_, Result<String>>;
+    fn download(&self, name: String) -> BoxFuture<'_, Result<Vec<u8>>>;
+    fn list(&self, name: String) -> BoxFuture<'_, Result<Vec<String>>>;
+    fn remove(&self, name: String) -> BoxFuture<'_, Result<()>>;
 }
 
 pub struct StorageService {

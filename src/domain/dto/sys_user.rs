@@ -63,8 +63,8 @@ pub struct UserPageDTO {
     pub name: Option<String>,
 }
 
-impl From<&UserPageDTO> for PageRequest {
-    fn from(arg: &UserPageDTO) -> Self {
+impl From<UserPageDTO> for PageRequest {
+    fn from(arg: UserPageDTO) -> Self {
         PageRequest::new(arg.page_no.unwrap_or(1), arg.page_size.unwrap_or(10))
     }
 }

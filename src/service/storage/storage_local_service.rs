@@ -15,7 +15,7 @@ impl FileLocalService {
 }
 
 impl IStorageService for FileLocalService {
-    fn upload(&self, name: String, data: Vec<u8>) -> BoxFuture<Result<String>> {
+    fn upload(&self, name: String, data: Vec<u8>) -> BoxFuture<'_, Result<String>> {
         let name = PathBuf::from(name);
         Box::pin(async move {
             if let Some(parent) = name.parent() {
@@ -28,7 +28,7 @@ impl IStorageService for FileLocalService {
         })
     }
 
-    fn download(&self, name: String) -> BoxFuture<Result<Vec<u8>>> {
+    fn download(&self, name: String) -> BoxFuture<'_, Result<Vec<u8>>> {
         let name = PathBuf::from(name);
         Box::pin(async move {
             if let Some(parent) = name.parent() {
@@ -41,7 +41,7 @@ impl IStorageService for FileLocalService {
         })
     }
 
-    fn list(&self, name: String) -> BoxFuture<Result<Vec<String>>> {
+    fn list(&self, name: String) -> BoxFuture<'_, Result<Vec<String>>> {
         let name = PathBuf::from(name);
         Box::pin(async move {
             let mut rd = tokio::fs::read_dir(&name).await?;
@@ -57,7 +57,7 @@ impl IStorageService for FileLocalService {
         })
     }
 
-    fn remove(&self, name: String) -> BoxFuture<Result<()>> {
+    fn remove(&self, name: String) -> BoxFuture<'_, Result<()>> {
         let name = PathBuf::from(name);
         Box::pin(async move {
             let f = tokio::fs::remove_file(&name).await?;

@@ -1,6 +1,7 @@
-use rbatis::{crud, impl_select_page};
+use rbatis::{crud, htmlsql_select_page};
 use crate::domain::table::LoginCheck;
 use rbatis::rbdc::DateTime;
+use crate::domain::dto::sys_user::UserPageDTO;
 
 ///Background user table
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
@@ -16,11 +17,6 @@ pub struct SysUser {
 
 crud!(SysUser {});
 
-impl_select_page!(SysUser{select_page(name:&str,account:&str)=>
-    "` where 0 = 0 `
-    if name != '':
-      ` and name like #{'%'+name+'%'}`
-    if account != '':
-      ` and account like #{'%'+account+'%'}`
-    if do_count == false:
-     ` order by create_date desc`"});
+impl SysUser {
+    htmlsql_select_page!(select_page(dto:UserPageDTO) -> SysUser => "src/domain/table/sys_user.html");
+}
