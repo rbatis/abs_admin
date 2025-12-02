@@ -51,8 +51,6 @@ where
         let code = CONTEXT
             .config
             .error_infos
-            .as_ref()
-            .unwrap()
             .get(&error)
             .map(|v| v.to_string())
             .unwrap_or_else(|| CODE_FAIL.to_string());
@@ -69,6 +67,6 @@ where
     T: Serialize + DeserializeOwned + Clone,
 {
     fn to_string(&self) -> String {
-        serde_json::to_string(self).unwrap()
+        serde_json::to_string(self).unwrap_or_default()
     }
 }

@@ -26,7 +26,8 @@ pub struct ApplicationConfig {
     pub trash_recycle_days: u64,
     pub datetime_format: String,
     pub errors: HashMap<String, String>,
-    pub error_infos: Option<HashMap<String, String>>,
+    #[serde(default)]
+    pub error_infos: HashMap<String, String>,
 }
 
 impl Default for ApplicationConfig {
@@ -55,16 +56,13 @@ impl ApplicationConfig {
     }
 
     pub fn init_infos(&mut self) {
-        self.error_infos = Some(HashMap::new());
+        self.error_infos = HashMap::new();
         for (k, error) in &self.errors {
             let mut error = error.to_string();
             if error.contains(",") {
                 error = error[0..error.find(",").unwrap_or_default()].to_string();
             }
-            self.error_infos
-                .as_mut()
-                .expect("error_infos is none")
-                .insert(error, k.to_string());
+            self.error_infos.insert(error, k.to_string());
         }
     }
 

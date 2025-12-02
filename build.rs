@@ -40,12 +40,17 @@ fn main() {
     f.flush().unwrap();
 
     //unwrap check
-    unwrap_check();
+    unwrap_check("src/controller");
+    unwrap_check("src/domain/dto");
+    unwrap_check("src/domain/vo");
+    unwrap_check("src/middleware");
+    unwrap_check("src/service");
+    unwrap_check("src/util");
 }
 
 //check server code have .unwrap()
-fn unwrap_check() {
-    let walk = WalkDir::new("src/service");
+fn unwrap_check(dir:&str) {
+    let walk = WalkDir::new(dir);
     for item in walk {
         if let Ok(item) = item {
             let path = item.path().to_str().unwrap_or_default();
@@ -55,13 +60,13 @@ fn unwrap_check() {
                     let mut data = String::new();
                     _ = f.read_to_string(&mut data);
                     if data.contains(".unwrap()") {
-                        panic!("find file='{}' have .unwrap(),please check code", name);
+                        panic!("find file='{}' have .unwrap(),please check code", path);
                     }
                     if data.contains("panic!") {
-                        panic!("find file='{}' have panic!(),please check code", name);
+                        panic!("find file='{}' have panic!(),please check code", path);
                     }
                     if data.contains(".expect(") {
-                        panic!("find file='{}' have .expect(),please check code", name);
+                        panic!("find file='{}' have .expect(),please check code", path);
                     }
                 }
             }
