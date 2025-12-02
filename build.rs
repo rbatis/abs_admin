@@ -1,5 +1,5 @@
 use std::fs::{File, OpenOptions};
-use std::io::{Read, Write};
+use std::io::{BufRead, BufReader, Read, Write};
 use walkdir::WalkDir;
 
 //choose driver struct(Cargo.toml must add like 'rbdc-*** = { version = "4.5" }')
@@ -48,27 +48,61 @@ fn main() {
     unwrap_check("src/util");
 }
 
+//format print
+fn emit_rust_error(path: &str, line_no: usize, col: usize, line: &str, msg: &str) {
+    println!("error: {}", msg);
+    println!("  --> {}:{}:{}", path, line_no, col);
+    println!("   |");
+    println!("{:>3} | {}", line_no, line);
+    // underline line
+    print!("   | ");
+    // print (col-1) spaces
+    for _ in 0..col {
+        print!(" ");
+    }
+    // caret underline
+    println!("^---- {}", msg);
+}
+
 //check server code have .unwrap()
-fn unwrap_check(dir:&str) {
-    let walk = WalkDir::new(dir);
-    for item in walk {
-        if let Ok(item) = item {
-            let path = item.path().to_str().unwrap_or_default();
-            let name = item.file_name().to_str().unwrap_or_default();
-            if name.ends_with(".rs") {
-                if let Ok(mut f) = File::open(path) {
-                    let mut data = String::new();
-                    _ = f.read_to_string(&mut data);
-                    if data.contains(".unwrap()") {
-                        panic!("find file='{}' have .unwrap(),please check code", path);
-                    }
-                    if data.contains("panic!") {
-                        panic!("find file='{}' have panic!(),please check code", path);
-                    }
-                    if data.contains(".expect(") {
-                        panic!("find file='{}' have .expect(),please check code", path);
-                    }
-                }
+fn unwrap_check(dir: &str) {
+    for entry in WalkDir::new(dir) {
+        let entry = match entry {
+            Ok(e) => e,
+            Err(_) => continue,
+        };
+
+        let path = entry.path();
+        if !path.is_file() || path.extension().and_then(|s| s.to_str()) != Some("rs") {
+            continue;
+        }
+
+        let path_str = path.to_string_lossy().to_string();
+
+        let file = match File::open(path) {
+            Ok(f) => f,
+            Err(_) => continue,
+        };
+
+        let reader = BufReader::new(file);
+
+        for (line_no, line) in reader.lines().enumerate() {
+            let line_no = line_no + 1;
+            let line = line.unwrap_or_default();
+
+            if let Some(col) = line.find(".unwrap()") {
+                emit_rust_error(&path_str, line_no, col + 1, &line, "found .unwrap()");
+                std::process::exit(1);
+            }
+
+            if let Some(col) = line.find("panic!(") {
+                emit_rust_error(&path_str, line_no, col + 1, &line, "found panic!()");
+                std::process::exit(1);
+            }
+
+            if let Some(col) = line.find(".expect(") {
+                emit_rust_error(&path_str, line_no, col + 1, &line, "found .expect()");
+                std::process::exit(1);
             }
         }
     }
