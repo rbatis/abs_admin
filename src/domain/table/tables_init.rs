@@ -16,14 +16,14 @@ use rbs::value;
 
 pub async fn sync_tables(rb: &RBatis) {
     //disable log
-    let log_intercept = rb.get_intercept::<LogInterceptor>().unwrap();
+    let log_intercept = rb.get_intercept::<LogInterceptor>().expect("not find log interceptor");
     let level = log_intercept.get_level_filter().clone();
     log_intercept.set_level_filter(LevelFilter::Off);
     defer!(|| {
         log_intercept.set_level_filter(level);
     });
     let mapper: &dyn ColumnMapper = {
-        match rb.driver_type().unwrap() {
+        match rb.driver_type().unwrap_or_default() {
             "sqlite" => &SqliteTableMapper {},
             "mssql" => &MssqlTableMapper {},
             "mysql" => &MysqlTableMapper {},

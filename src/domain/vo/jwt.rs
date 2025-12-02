@@ -4,7 +4,7 @@ use jsonwebtoken::{DecodingKey, EncodingKey, Header, Validation, decode, encode}
 use serde::{Deserialize, Serialize};
 
 /// JWT authentication Token structure
-#[derive(Debug, Serialize, Deserialize, Clone, Eq, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, Clone, Eq, PartialEq,Default)]
 pub struct JWTToken {
     pub id: String,
     pub account: String,
@@ -59,18 +59,20 @@ mod test {
     use rbatis::rbdc::types::DateTime;
     use std::thread::sleep;
     use std::time::Duration;
+    use crate::error::Error;
 
     #[test]
-    fn test_jwt() {
+    fn test_jwt() -> Result<(),Error>{
         let j = JWTToken {
             id: "1".to_string(),
             account: "189".to_string(),
             permissions: vec![],
             role_ids: vec![],
-            exp: DateTime::now().unix_timestamp() as usize,
+            exp: DateTime::now().unix_timestamp() as usize + 10,
         };
         sleep(Duration::from_secs(5));
-        let token = j.create_token("ssss").unwrap();
-        assert_eq!(JWTToken::verify("ssss", &token).unwrap(), j);
+        let token = j.create_token("ssss")?;
+        assert_eq!(JWTToken::verify("ssss", &token)?, j);
+        Ok(())
     }
 }

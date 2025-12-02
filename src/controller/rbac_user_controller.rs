@@ -21,12 +21,12 @@ pub async fn info(req: Request) -> impl IntoResponse {
         Some(token) => {
             let token = token.to_str().unwrap_or("");
             let token = JWTToken::verify(&CONTEXT.config.jwt_secret, token);
-            if token.is_err() {
-                return RespVO::<SignInVO>::from_error(token.err().unwrap().to_string());
+            if let Err(e) = &token {
+                return RespVO::<SignInVO>::from_error(e.to_string());
             }
             let user_data = CONTEXT
                 .sys_user_service
-                .get_user_info_by_token(&token.unwrap())
+                .get_user_info_by_token(&token.unwrap_or_default())
                 .await;
             RespVO::from_result(user_data)
         }

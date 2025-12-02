@@ -95,19 +95,19 @@ fn parse_packer(packer: &str) -> Box<dyn Packer> {
 fn parse_log_size(arg: &str) -> LogSize {
     match arg {
         arg if arg.ends_with("MB") => {
-            let end = arg.find("MB").unwrap();
+            let end = arg.find("MB").unwrap_or_default();
             let num = arg[0..end].to_string();
-            LogSize::MB(num.parse::<usize>().unwrap())
+            LogSize::MB(num.parse::<usize>().unwrap_or_default())
         }
         arg if arg.ends_with("KB") => {
-            let end = arg.find("KB").unwrap();
+            let end = arg.find("KB").unwrap_or_default();
             let num = arg[0..end].to_string();
-            LogSize::KB(num.parse::<usize>().unwrap())
+            LogSize::KB(num.parse::<usize>().unwrap_or_default())
         }
         arg if arg.ends_with("GB") => {
-            let end = arg.find("GB").unwrap();
+            let end = arg.find("GB").unwrap_or_default();
             let num = arg[0..end].to_string();
-            LogSize::GB(num.parse::<usize>().unwrap())
+            LogSize::GB(num.parse::<usize>().unwrap_or_default())
         }
         _ => LogSize::MB(100),
     }
@@ -116,14 +116,14 @@ fn parse_log_size(arg: &str) -> LogSize {
 fn parse_keep_type(arg: &str) -> KeepType {
     match arg {
         arg if arg.starts_with("KeepNum(") => {
-            let end = arg.find(")").unwrap();
+            let end = arg.find(")").unwrap_or_default();
             let num = arg["KeepNum(".len()..end].to_string();
-            KeepType::KeepNum(num.parse::<i64>().unwrap())
+            KeepType::KeepNum(num.parse::<i64>().unwrap_or_default())
         }
         arg if arg.starts_with("KeepTime(") => {
-            let end = arg.find(")").unwrap();
+            let end = arg.find(")").unwrap_or_default();
             let num = arg["KeepTime(".len()..end].to_string();
-            KeepType::KeepTime(Duration::from_secs(num.parse::<u64>().unwrap()))
+            KeepType::KeepTime(Duration::from_secs(num.parse::<u64>().unwrap_or_default()))
         }
         arg if arg.to_uppercase().as_str() == "ALL" => KeepType::All,
         _ => {

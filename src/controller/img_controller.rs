@@ -20,18 +20,18 @@ pub async fn captcha(arg: Query<CatpchaDTO>) -> impl IntoResponse {
             .header("Cache-Control", "no-cache")
             .header("Content-Type", "json")
             .body(Body::from(error_info!("account_empty")))
-            .unwrap();
+            .unwrap_or_default();
         return resp;
     }
     let (png, code) = make();
     if CONTEXT.config.debug() {
-        log::info!("account:{},captcha:{}", arg.account.as_ref().unwrap(), code);
+        log::info!("account:{},captcha:{}", arg.account.as_deref().unwrap_or_default(), code);
     }
     if arg.account.is_some() {
         let result = CONTEXT
             .cache_service
             .set_string(
-                &format!("captch:account_{}", arg.account.as_ref().unwrap()),
+                &format!("captch:account_{}", arg.account.as_deref().unwrap_or_default()),
                 code.as_str(),
             )
             .await;
@@ -44,7 +44,7 @@ pub async fn captcha(arg: Query<CatpchaDTO>) -> impl IntoResponse {
                     .header("Cache-Control", "no-cache")
                     .header("Content-Type", "json")
                     .body(Body::from(e.to_string()))
-                    .unwrap();
+                    .unwrap_or_default();
                 return resp;
             }
         }
@@ -54,7 +54,7 @@ pub async fn captcha(arg: Query<CatpchaDTO>) -> impl IntoResponse {
         .header("Cache-Control", "no-cache")
         .header("Content-Type", "image/png")
         .body(Body::from(png))
-        .unwrap();
+        .unwrap_or_default();
     resp.into()
 }
 
@@ -67,7 +67,7 @@ fn make() -> (Vec<u8>, String) {
         // .apply_filter(Wave::new(2.0, 20.0).vertical())
         .view(160, 60)
         .apply_filter(Dots::new(4));
-    let png = captcha.as_png().unwrap();
+    let png = captcha.as_png().unwrap_or_default();
     let captcha_str = captcha.chars_as_string().to_lowercase();
     (png, captcha_str)
 }

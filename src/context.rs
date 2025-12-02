@@ -44,7 +44,7 @@ impl ServiceContext {
             .await
             .expect("[abs_admin] rbatis pool init fail!");
         self.rb.intercepts.push(Arc::new(SysTrashService::new()));
-        let pool = self.rb.get_pool().unwrap();
+        let pool = self.rb.get_pool().expect("[abs_admin] rbatis pool init fail!");
         //level
         self.rb
             .get_intercept::<LogInterceptor>()
@@ -73,7 +73,7 @@ impl Default for ServiceContext {
                 let rb = RBatis::new();
                 rb
             },
-            cache_service: CacheService::new(&config).unwrap(),
+            cache_service: CacheService::new(&config).expect("[abs_admin] cache service init fail!"),
             storage_service: StorageService::new(&config.storage)
                 .expect("Failed to create storage service"),
             sys_user_service: SysUserService {},

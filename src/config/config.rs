@@ -59,11 +59,11 @@ impl ApplicationConfig {
         for (k, error) in &self.errors {
             let mut error = error.to_string();
             if error.contains(",") {
-                error = error[0..error.find(",").unwrap()].to_string();
+                error = error[0..error.find(",").unwrap_or_default()].to_string();
             }
             self.error_infos
                 .as_mut()
-                .unwrap()
+                .expect("error_infos is none")
                 .insert(error, k.to_string());
         }
     }
