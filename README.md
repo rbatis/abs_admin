@@ -1,110 +1,137 @@
-![demo2](demo1.jpg)
+![demo](demo1.jpg)
 
-[Chinese](README_CH.md)
+# abs_admin
 
-- Rock solid (Rust language), high performance, no GC, no memory leaks, no coroutine contention
+Enterprise-level Admin Backend Solution built with [Rust](https://www.rust-lang.org/)
 
-DDD domain driver,Mysql,Redis, general middleware and database, general enterprise-level framework selection
+[中文文档](#中文文档)
 
-- [rbatis - orm] (https://github.com/rbatis/rbatis) and the same use Mybatis - Plus, concise, easy to extend the orm framework
+## Features
 
-- [fast_log] (https://github.com/rbatis/fast_log) super quick asynchronous logging framework, support for zip, cutting
+- Rock solid (Rust), high performance, no GC, no memory leaks
+- DDD (Domain Driven Design) architecture
+- Frontend-backend separation
+- RBAC (5-tables) permission control
+- JWT authentication
 
-- [axum](https://github.com/tokio-rs/axum) tokio Web library
+## Tech Stack
 
-The separation - both before and after the end, based on [Vue - JS] + [Vue - AntDesign] (https://cn.vuejs.org/) (https://www.antdv.com/docs/vue/introduce-cn/) + [Vue-AntDesign-Pro](https://pro.antdv.com/)
+**Backend:**
+- [axum](https://github.com/tokio-rs/axum) - Web framework
+- [rbatis](https://github.com/rbatis/rbatis) - ORM framework
+- [fast_log](https://github.com/rbatis/fast_log) - Async logging
+- Database: SQLite (default) / MySQL / PostgreSQL
+- Cache: Redis (optional)
 
-- RBAC(5-tables) permission control, including JwtToken authentication login, graphic verification code login, TWO-DIMENSIONAL code scan login, and basic permission management
+**Frontend:**
+- [Vue.js](https://cn.vuejs.org/) + [Ant Design Vue](https://www.antdv.com/)
+- Repo: https://github.com/rbatis/abs_admin_vue
 
+## Progress
 
+| Feature | Status |
+| --- | --- |
+| Dynamic menu | √ |
+| JWT auth | √ |
+| Permission management | √ |
+| Role management | √ |
+| Account management | √ |
+| Dictionary management | √ |
+| Captcha | √ |
+| File upload/download | √ |
+| Storage (Local/OSS) | √ |
+| Cache (Memory/Redis) | √ |
 
-# Progress, functional modules (including (including web front-end and RUST backend))
+## Quick Start
 
-
-
-| function (including the web front end and rust back-end) | support |
-| -------------------------------------------------------- | ------------------ |
-| dynamic menu (routing table permissions dynamically generated menu) | √ |
-| JWT interceptor check | √ |
-| JWT account password | √ |
-| set permissions/management (father and son, permissions + menu button permissions, cache redis) | √ |
-| Settings/role management (father and son, hierarchical level authority tree, cache redis) | √ |
-| Settings/account management background (hierarchical role tree) | √ |
-| Settings/keys to constant management | √ |
-| JWT graphical verification code + password |  x |
-| JWT text login (based on redis SMS message) |  x |
-
-
-
-# The significance of this project
-
-
-
-- high performance, as fast as C++, ultra low memory footprint, support for low-cost servers
-
-- Stable, smooth deployment, no memory leakage, and no flash rollback
-
-- Out of the box
-
-
-
-# (Rust Server-Side Installation) Quick Installation Tutorial
-
-* 1 Start abs_admin command by using `cargo run` or `cargo build` to compile the executable file and execute it.
-* (Optional) Use the docker command to quickly start redis: `docker run -it -d --name redis -p 6379:6379 redis`
-* (Optional, default database is SQLite, if using MySQL, add rdbc_mysql dependency to Cargo.toml and modify db_url in application.json5) Use the docker command to quickly start MySQL. For production, it is recommended to deploy the HTTP service and not use docker to deploy the database. `docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 --name mysql -e TZ=Asia/Shanghai mysql:5.7`
-* cmd or terminal run command  `cargo run`
-
-# (Front-end Node service installation) Quick installation tutorial
-
-
-
-- 1 (front) read and front-end cloning project at https://github.com/rbatis/abs_admin_vue , and install nodejs
-
-
-
-- 2. (front-end installation) Use `yarn install` to install dependencies  and run the `yarn serve` command to start the web front-end
-
-
-
-- 3. (Front-end installation) Open the browser http://localhost:8001 to log in to the background
-
-
-
-# (Postman import) tutorial
-
-
-
-- 1. (Postman installation) Install postman. Import postman.json to Postman to use the written request
-
-
-
-```cmd
-
-Open postman and import postman.json
-
-```
-
-
-
-- 2. (Postman installation) Import the ABS_admin project using the Clion clone, click main.rs and click the button to run. Or execute a command:
-
-
-
-```cmd
-
-cargo update
-
+```bash
+git clone https://github.com/rbatis/abs_admin.git
+cd abs_admin
 cargo run
-
 ```
 
+Open: http://localhost:8000
 
+Frontend source: https://github.com/rbatis/abs_admin_vue
 
-# module(module)
+## Configuration
 
+Edit `application.json5` for database connection and other settings.
 
+Default account: `admin` / `123456`
 
-- JWT token Auth(Permission authentication based on JWT token)
+## Test API
 
-- Role,User,Reource (Role,User, permission)
+Import `postman.json` to Postman for API testing.
+
+## License
+
+Apache-2.0
+
+---
+
+# 中文文档
+
+[Rust](https://www.rust-lang.org/) 企业级一站式后台管理系统
+
+## 特性
+
+- 坚如磐石（Rust 语言），高性能，无 GC，无内存泄漏
+- DDD 领域驱动设计
+- 前后端分离
+- RBAC (5表) 权限控制
+- JWT 认证
+
+## 技术栈
+
+**后端:**
+- [axum](https://github.com/tokio-rs/axum) - Web 框架
+- [rbatis](https://github.com/rbatis/rbatis) - ORM 框架
+- [fast_log](https://github.com/rbatis/fast_log) - 异步日志
+- 数据库: SQLite (默认) / MySQL / PostgreSQL
+- 缓存: Redis (可选)
+
+**前端:**
+- [Vue.js](https://cn.vuejs.org/) + [Ant Design Vue](https://www.antdv.com/)
+- 仓库: https://github.com/rbatis/abs_admin_vue
+
+## 功能进度
+
+| 功能 | 状态 |
+| --- | --- |
+| 动态菜单 | √ |
+| JWT 认证 | √ |
+| 权限管理 | √ |
+| 角色管理 | √ |
+| 账号管理 | √ |
+| 字典管理 | √ |
+| 图片验证码 | √ |
+| 文件上传/下载 | √ |
+| 存储服务（本地/OSS） | √ |
+| 缓存服务（内存/Redis） | √ |
+
+## 快速开始
+
+```bash
+git clone https://github.com/rbatis/abs_admin.git
+cd abs_admin
+cargo run
+```
+
+访问: http://localhost:8000
+
+前端源码: https://github.com/rbatis/abs_admin_vue
+
+## 配置
+
+编辑 `application.json5` 配置数据库连接等参数。
+
+默认账号: `admin` / `123456`
+
+## 测试 API
+
+导入 `postman.json` 到 Postman 进行接口测试。
+
+## License
+
+Apache-2.0

@@ -7,6 +7,8 @@
   //storage: "local",
   //storage: "s3://{\"bucket\":\"test\",\"endpoint\":\"http://127.0.0.1:9000\",\"access_key\":\"minioadmin\",\"secret_key\":\"minioadmin\",\"region\":\"\"}",
   storage: "local",
+  //must be set to oss host or api server host
+  storage_host: "http://localhost:8000/admin/download?name=",
   //choose database (need add `rbdc-<database> = { version = "*" }` of Cargo.toml)
   //db_url: "sqlite://target/sqlite.db",
   //db_url: "mysql://root:123456@localhost:3306/test",

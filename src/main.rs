@@ -1,7 +1,7 @@
 use abs_admin::context::CONTEXT;
 use abs_admin::controller::{
     img_controller, rbac_permission_controller, rbac_role_controller, rbac_user_controller,
-    sys_auth_controller, sys_dict_controller,
+    sys_auth_controller, sys_dict_controller,file_controller,
 };
 use abs_admin::domain::table;
 use abs_admin::domain::vo::RespVO;
@@ -46,7 +46,9 @@ async fn main() -> std::io::Result<()> {
         )
         .route("/admin/sys_login", post(rbac_user_controller::login))
         .route("/admin/auth/check", post(sys_auth_controller::check))
-        .route("/admin/captcha", get(img_controller::captcha));
+        .route("/admin/captcha", get(img_controller::captcha))
+        .route("/admin/upload",post(file_controller::upload))
+        .route("/admin/download",get(file_controller::download));
     let auth_router = Router::new()
         .route("/admin/sys_user_info", post(rbac_user_controller::info))
         .route("/admin/sys_user_detail", post(rbac_user_controller::detail))
