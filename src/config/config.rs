@@ -21,6 +21,7 @@ pub struct ApplicationConfig {
     pub jwt_refresh_token: usize,
     pub cache: String,
     pub storage: String,
+    pub storage_host: String,
     pub login_fail_retry: u64,
     pub login_fail_retry_wait_sec: u64,
     pub trash_recycle_days: u64,

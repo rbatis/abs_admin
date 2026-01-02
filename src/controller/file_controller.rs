@@ -29,9 +29,9 @@ pub async fn upload(jwt_auth: JwtAuth, mut multipart: Multipart) -> impl IntoRes
 
     let path = CONTEXT
         .storage_service
-        .upload(format!("/upload/{}/{}", jwt_auth.id, filename), data.to_vec())
+        .upload(format!("target/upload/{}/{}", jwt_auth.id, filename), data.to_vec())
         .await
-        .map(|v| format!("{}{}", CONTEXT.config.storage, v));
+        .map(|v| format!("{}{}", CONTEXT.config.storage_host, v));
     RespVO::from_result(path)
 }
 
