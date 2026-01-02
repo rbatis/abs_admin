@@ -4,6 +4,7 @@
     <select id="select_page">
         ` select * from sys_user `
         <where>
+            ` deleted = 0 `
             <if test="dto.name != null && dto.name != ''">
                 ` and name like #{'%'+dto.name+'%'}`
             </if>

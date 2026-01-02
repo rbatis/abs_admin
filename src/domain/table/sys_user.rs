@@ -12,6 +12,8 @@ pub struct SysUser {
     pub name: Option<String>,
     pub login_check: Option<LoginCheck>,
     pub state: Option<i32>,
+    /// Deletion flag, 0: normal, 1: deleted
+    pub deleted: Option<i32>,
     pub create_date: Option<DateTime>,
 }
 

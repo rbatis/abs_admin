@@ -43,6 +43,7 @@ pub async fn sync_tables(rb: &RBatis) {
         name: Some(Default::default()),
         login_check: Some(Default::default()),
         state: Some(Default::default()),
+        deleted: Some(Default::default()),
         create_date: Some(Default::default()),
     };
     let _ = RBatis::sync(&conn, mapper, &table, "sys_user").await;
@@ -75,6 +76,7 @@ pub async fn sync_tables_data(rb: &RBatis) {
             name: Some("admin".to_string()),
             login_check: Some(PasswordCheck),
             state: Some(1),
+            deleted: Some(0),
             create_date: Some(DateTime::now()),
         },
     )

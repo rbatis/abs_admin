@@ -25,6 +25,7 @@ impl From<UserAddDTO> for SysUser {
             name: arg.name.clone(),
             login_check: arg.login_check.clone(),
             state: Some(arg.state.unwrap_or(1)),
+            deleted: Some(0),
             create_date: DateTime::now().into(),
         }
     }
@@ -50,6 +51,7 @@ impl From<UserEditDTO> for SysUser {
             name: arg.name,
             login_check: arg.login_check,
             state: arg.state,
+            deleted: None,
             create_date: None,
         }
     }
