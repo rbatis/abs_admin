@@ -39,29 +39,13 @@ Enterprise-level Admin Backend Solution built with [Rust](https://www.rust-lang.
 
 ## Quick Start
 
-**Start dependencies (optional):**
-```bash
-# Redis
-docker run -d --name redis -p 6379:6379 redis
-
-# MySQL (optional, SQLite used by default)
-docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 --name mysql -e TZ=Asia/Shanghai mysql:5.7
-```
-
-**Start backend:**
 ```bash
 cargo run
 ```
 
-**Start frontend:**
-```bash
-git clone https://github.com/rbatis/abs_admin_vue
-cd abs_admin_vue
-yarn install
-yarn serve
-```
+Open: http://localhost:8000
 
-Open: http://localhost:8001
+Frontend source: https://github.com/rbatis/abs_admin_vue
 
 ## Configuration
 
@@ -116,29 +100,13 @@ Apache-2.0
 
 ## 快速开始
 
-**启动依赖服务（可选）:**
-```bash
-# Redis
-docker run -d --name redis -p 6379:6379 redis
-
-# MySQL（可选，默认使用 SQLite）
-docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 --name mysql -e TZ=Asia/Shanghai mysql:5.7
-```
-
-**启动后端:**
 ```bash
 cargo run
 ```
 
-**启动前端:**
-```bash
-git clone https://github.com/rbatis/abs_admin_vue
-cd abs_admin_vue
-yarn install
-yarn serve
-```
+访问: http://localhost:8000
 
-访问: http://localhost:8001
+前端源码: https://github.com/rbatis/abs_admin_vue
 
 ## 配置
 
