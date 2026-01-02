@@ -36,6 +36,11 @@ Enterprise-level Admin Backend Solution built with [Rust](https://www.rust-lang.
 | Permission management | √ |
 | Role management | √ |
 | Account management | √ |
+| Dictionary management | √ |
+| Captcha | √ |
+| File upload/download | √ |
+| Storage (Local/OSS) | √ |
+| Cache (Memory/Redis) | √ |
 
 ## Quick Start
 
@@ -99,6 +104,11 @@ Apache-2.0
 | 权限管理 | √ |
 | 角色管理 | √ |
 | 账号管理 | √ |
+| 字典管理 | √ |
+| 图片验证码 | √ |
+| 文件上传/下载 | √ |
+| 存储服务（本地/OSS） | √ |
+| 缓存服务（内存/Redis） | √ |
 
 ## 快速开始
 
