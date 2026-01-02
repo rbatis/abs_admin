@@ -4,7 +4,7 @@ use rbatis::{crud, htmlsql_select_page};
 use crate::domain::dto::UserPageDTO;
 
 ///Background user table
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize,Default)]
 pub struct SysUser {
     pub id: Option<String>,
     pub account: Option<String>,

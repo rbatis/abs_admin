@@ -329,7 +329,10 @@ impl SysUserService {
         if id.is_empty() {
             return Err(Error::from(error_info!("id_empty")));
         }
-        let r = SysUser::delete_by_map(pool!(), value! {"id": id}).await?;
+        let mut table = SysUser::default();
+        table.id = Some(id.to_string());
+        table.deleted = Some(1);
+        let r = SysUser::update_by_map(pool!(), &table,value! {"id": id}).await?;
         CONTEXT.rbac_user_role_service.remove_by_user_id(id).await?;
         Ok(r.rows_affected)
     }
