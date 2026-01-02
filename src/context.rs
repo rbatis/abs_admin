@@ -1,12 +1,12 @@
 use crate::config::config::ApplicationConfig;
 use crate::service::{
     CacheService, RbacPermissionService, RbacRolePermissionService, RbacRoleService,
-    RbacUserRoleService, StorageService, SysAuthService, SysDictService, SysTrashService,
+    RbacUserRoleService, StorageService, SysAuthService, SysDictService,
     SysUserService,
 };
 use rbatis::RBatis;
 use rbatis::intercept_log::LogInterceptor;
-use std::sync::{Arc, LazyLock};
+use std::sync::LazyLock;
 use std::time::Duration;
 
 /// Service CONTEXT
@@ -31,7 +31,6 @@ pub struct ServiceContext {
     pub rbac_user_role_service: RbacUserRoleService,
     pub sys_dict_service: SysDictService,
     pub sys_auth_service: SysAuthService,
-    pub sys_trash_service: SysTrashService,
 }
 
 impl ServiceContext {
@@ -43,7 +42,6 @@ impl ServiceContext {
             .link(include!("../target/driver.rs"), &self.config.db_url)
             .await
             .expect("[abs_admin] rbatis pool init fail!");
-        self.rb.intercepts.push(Arc::new(SysTrashService::new()));
         let pool = self.rb.get_pool().expect("[abs_admin] rbatis pool init fail!");
         //level
         self.rb
@@ -83,7 +81,6 @@ impl Default for ServiceContext {
             rbac_user_role_service: RbacUserRoleService {},
             sys_dict_service: SysDictService {},
             sys_auth_service: SysAuthService {},
-            sys_trash_service: SysTrashService::new(),
             config,
         }
     }

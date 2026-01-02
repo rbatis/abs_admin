@@ -2,7 +2,6 @@ use crate::domain::table::LoginCheck::PasswordCheck;
 use crate::domain::table::rbac;
 use crate::domain::table::rbac::{RbacPermission, RbacRole, RbacRolePermission, RbacUserRole};
 use crate::domain::table::sys_dict::SysDict;
-use crate::domain::table::sys_trash::SysTrash;
 use crate::domain::table::sys_user::SysUser;
 use log::LevelFilter;
 use rbatis::RBatis;
@@ -55,13 +54,6 @@ pub async fn sync_tables(rb: &RBatis) {
         create_date: Some(Default::default()),
     };
     let _ = RBatis::sync(&conn, mapper, &table, "sys_dict").await;
-    let table = SysTrash {
-        id: Some(Default::default()),
-        table_name: Some(Default::default()),
-        data: Some(Default::default()),
-        create_date: Some(Default::default()),
-    };
-    let _ = RBatis::sync(&conn, mapper, &table, "sys_trash").await;
 
     let _ = rbac::sync_tables(&conn, mapper).await;
 }

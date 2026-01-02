@@ -9,7 +9,6 @@ mod storage_service;
 mod sys_auth_service;
 mod sys_dict_service;
 mod sys_sms_service;
-mod sys_trash_service;
 mod sys_user_service;
 
 pub use cache_service::*;
@@ -24,5 +23,4 @@ pub use storage_service::*;
 pub use sys_auth_service::*;
 pub use sys_dict_service::*;
 pub use sys_sms_service::*;
-pub use sys_trash_service::*;
 pub use sys_user_service::*;
