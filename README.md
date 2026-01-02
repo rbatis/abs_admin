@@ -40,6 +40,8 @@ Enterprise-level Admin Backend Solution built with [Rust](https://www.rust-lang.
 ## Quick Start
 
 ```bash
+git clone https://github.com/rbatis/abs_admin.git
+cd abs_admin
 cargo run
 ```
 
@@ -101,6 +103,8 @@ Apache-2.0
 ## 快速开始
 
 ```bash
+git clone https://github.com/rbatis/abs_admin.git
+cd abs_admin
 cargo run
 ```
 
