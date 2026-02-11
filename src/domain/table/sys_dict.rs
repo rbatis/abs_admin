@@ -16,5 +16,5 @@ crud!(SysDict {});
 
 #[html_sql("src/domain/table/sys_dict.html")]
 impl SysDict {
-    pub async fn select_page(conn: &dyn Executor, page_request: &dyn PageRequest, dto: &DictPageDTO) -> rbatis::Result<Page<SysDict>> { impled!() }
+    pub async fn select_page(conn: &dyn rbatis::Executor, page_request: &rbatis::PageRequest, dto: &DictPageDTO) -> rbatis::Result<Page<SysDict>> { impled!() }
 }
