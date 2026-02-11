@@ -1,7 +1,7 @@
+use crate::domain::dto::UserPageDTO;
 use crate::domain::table::LoginCheck;
 use rbatis::rbdc::DateTime;
-use rbatis::{crud, htmlsql_select_page};
-use crate::domain::dto::UserPageDTO;
+use rbatis::{crud, html_sql};
 
 ///Background user table
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize,Default)]
@@ -19,6 +19,7 @@ pub struct SysUser {
 
 crud!(SysUser {});
 
+#[html_sql("src/domain/table/sys_user.html")]
 impl SysUser {
-    htmlsql_select_page!(select_page(dto:&UserPageDTO) -> SysUser => "src/domain/table/sys_user.html");
+    pub async fn select_page(conn: &dyn Executor, page_request: &dyn PageRequest, dto: &UserPageDTO) -> rbatis::Result<Page<SysUser>> { impled!() }
 }
