@@ -64,7 +64,7 @@ impl RbacPermissionService {
     }
 
     pub async fn finds_all(&self) -> Result<Vec<RbacPermission>> {
-        let data = RbacPermission::select_all(pool!()).await?;
+        let data = RbacPermission::select_by_map(pool!(),value! {}).await?;
         Ok(data)
     }
 }

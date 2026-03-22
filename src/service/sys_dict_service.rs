@@ -55,7 +55,7 @@ impl SysDictService {
 
     /// update for all cache
     pub async fn update_cache(&self) -> Result<()> {
-        let all = SysDict::select_all(pool!()).await?;
+        let all = SysDict::select_by_map(pool!(),value! {}).await?;
         CONTEXT.cache_service.set_json(DICT_KEY, &all).await?;
         Ok(())
     }
