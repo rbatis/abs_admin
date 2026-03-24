@@ -1,4 +1,4 @@
-use crate::domain::table::LoginCheck;
+use crate::domain::table::sys_user::LoginCheck;
 use crate::domain::table::sys_user::SysUser;
 use crate::util::password_encoder::PasswordEncoder;
 use rbatis::PageRequest;

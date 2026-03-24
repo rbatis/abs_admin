@@ -1,4 +1,4 @@
-use crate::domain::table::LoginCheck;
+use crate::domain::table::sys_user::LoginCheck;
 
 use crate::context::CONTEXT;
 use crate::domain::table::sys_user::SysUser;

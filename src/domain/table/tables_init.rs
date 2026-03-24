@@ -1,4 +1,4 @@
-use crate::domain::table::LoginCheck::PasswordCheck;
+use crate::domain::table::sys_user::LoginCheck::PasswordCheck;
 use crate::domain::table::rbac;
 use crate::domain::table::rbac::{RbacPermission, RbacRole, RbacRolePermission, RbacUserRole};
 use crate::domain::table::sys_dict::SysDict;

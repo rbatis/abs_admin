@@ -6,7 +6,7 @@ use rbatis::rbdc::DateTime;
 
 use crate::domain::dto::rbac::UserRoleAddDTO;
 use crate::domain::dto::{IdDTO, SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO, UserRolePageDTO};
-use crate::domain::table::LoginCheck;
+use crate::domain::table::sys_user::LoginCheck;
 use crate::domain::table::sys_user::SysUser;
 use crate::domain::vo::sys_user::SysUserVO;
 use crate::domain::vo::{JWTToken, SignInVO};
