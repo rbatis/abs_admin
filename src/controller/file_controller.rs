@@ -40,6 +40,12 @@ pub struct QueryParams {
     pub name: String,
 }
 
+///删除文件
+pub async fn delete(Query(param): Query<QueryParams>) -> impl IntoResponse {
+    let result = CONTEXT.storage_service.remove(param.name).await;
+    RespVO::from_result(result)
+}
+
 ///内网流量下载
 pub async fn download(Query(param): Query<QueryParams>) -> impl IntoResponse {
     let data = CONTEXT.storage_service.download(param.name).await;

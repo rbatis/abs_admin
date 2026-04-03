@@ -48,7 +48,8 @@ async fn main() -> std::io::Result<()> {
         .route("/admin/auth/check", post(sys_auth_controller::check))
         .route("/admin/captcha", get(img_controller::captcha))
         .route("/admin/upload",post(file_controller::upload))
-        .route("/admin/download",get(file_controller::download));
+        .route("/admin/download",get(file_controller::download))
+        .route("/admin/delete",get(file_controller::delete));
     let auth_router = Router::new()
         .route("/admin/sys_user_info", post(rbac_user_controller::info))
         .route("/admin/sys_user_detail", post(rbac_user_controller::detail))
