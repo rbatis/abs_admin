@@ -126,6 +126,15 @@ impl SysUserService {
                 .await?
                 .into_iter()
                 .next();
+        let user = if user.is_none() {
+            // 如果 account 查询不到，尝试用 name 查询
+            SysUser::select_by_map(pool!(), value! {"name": &arg.account})
+                .await?
+                .into_iter()
+                .next()
+        } else {
+            user
+        };
         let user = user.ok_or_else(|| {
             Error::from(format!(
                 "{}={}",
@@ -204,16 +213,16 @@ impl SysUserService {
     }
 
     ///is need to wait
-    pub async fn is_need_wait_login_ex(&self, account: &str) -> Result<()> {
+    pub async fn is_need_wait_login_ex(&self, key: &str) -> Result<()> {
         if CONTEXT.config.login_fail_retry > 0 {
             let num: Option<u64> = CONTEXT
                 .cache_service
-                .get_json(&format!("{}{}", CACHE_KEY_RETRY, account))
+                .get_json(&format!("{}{}", CACHE_KEY_RETRY, key))
                 .await?;
             if num.unwrap_or(0) >= CONTEXT.config.login_fail_retry {
                 let wait_sec: i64 = CONTEXT
                     .cache_service
-                    .ttl(&format!("{}{}", CACHE_KEY_RETRY, account))
+                    .ttl(&format!("{}{}", CACHE_KEY_RETRY, key))
                     .await?;
                 if wait_sec > 0 {
                     let mut e = error_info!("req_frequently");
