@@ -1,11 +1,11 @@
-use axum::body::Body;
-use axum::extract::Query;
-use axum::response::{IntoResponse, Response};
-use axum::extract::Multipart;
-use serde::Deserialize;
 use crate::context::CONTEXT;
 use crate::domain::vo::RespVO;
 use crate::middleware::auth_axum::JwtAuth;
+use axum::body::Body;
+use axum::extract::Multipart;
+use axum::extract::Query;
+use axum::response::{IntoResponse, Response};
+use serde::Deserialize;
 
 ///上传，返回外网访问地址
 pub async fn upload(jwt_auth: JwtAuth, mut multipart: Multipart) -> impl IntoResponse {
@@ -29,7 +29,10 @@ pub async fn upload(jwt_auth: JwtAuth, mut multipart: Multipart) -> impl IntoRes
 
     let path = CONTEXT
         .storage_service
-        .upload(format!("target/upload/{}/{}", jwt_auth.id, filename), data.to_vec())
+        .upload(
+            format!("target/upload/{}/{}", jwt_auth.id, filename),
+            data.to_vec(),
+        )
         .await
         .map(|v| format!("{}{}", CONTEXT.config.storage_host, v));
     RespVO::from_result(path)
@@ -60,12 +63,14 @@ pub async fn download(Query(param): Query<QueryParams>) -> impl IntoResponse {
                     serde_json::json!(&RespVO::<()>::from_error(e.to_string())).to_string(),
                 )) {
                 Ok(r) => r,
-                Err(_) => return Response::builder()
-                    .header("Access-Control-Allow-Origin", "*")
-                    .header("Cache-Control", "no-cache")
-                    .header("Content-Type", "json")
-                    .body(Body::from(r#"{"code":500,"msg":"internal error"}"#))
-                    .unwrap_or_else(|_| Response::new(Body::from("internal error"))),
+                Err(_) => {
+                    return Response::builder()
+                        .header("Access-Control-Allow-Origin", "*")
+                        .header("Cache-Control", "no-cache")
+                        .header("Content-Type", "json")
+                        .body(Body::from(r#"{"code":500,"msg":"internal error"}"#))
+                        .unwrap_or_else(|_| Response::new(Body::from("internal error")));
+                }
             };
             resp
         }

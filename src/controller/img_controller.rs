@@ -25,13 +25,20 @@ pub async fn captcha(arg: Query<CatpchaDTO>) -> impl IntoResponse {
     }
     let (png, code) = make();
     if CONTEXT.config.debug() {
-        log::info!("account:{},captcha:{}", arg.account.as_deref().unwrap_or_default(), code);
+        log::info!(
+            "account:{},captcha:{}",
+            arg.account.as_deref().unwrap_or_default(),
+            code
+        );
     }
     if arg.account.is_some() {
         let result = CONTEXT
             .cache_service
             .set_string(
-                &format!("captch:account_{}", arg.account.as_deref().unwrap_or_default()),
+                &format!(
+                    "captch:account_{}",
+                    arg.account.as_deref().unwrap_or_default()
+                ),
                 code.as_str(),
             )
             .await;

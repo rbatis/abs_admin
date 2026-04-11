@@ -4,7 +4,7 @@ use jsonwebtoken::{DecodingKey, EncodingKey, Header, Validation, decode, encode}
 use serde::{Deserialize, Serialize};
 
 /// JWT authentication Token structure
-#[derive(Debug, Serialize, Deserialize, Clone, Eq, PartialEq,Default)]
+#[derive(Debug, Serialize, Deserialize, Clone, Eq, PartialEq, Default)]
 pub struct JWTToken {
     pub id: String,
     pub account: String,
@@ -56,13 +56,13 @@ impl JWTToken {
 #[cfg(test)]
 mod test {
     use crate::domain::vo::JWTToken;
+    use crate::error::Error;
     use rbatis::rbdc::types::DateTime;
     use std::thread::sleep;
     use std::time::Duration;
-    use crate::error::Error;
 
     #[test]
-    fn test_jwt() -> Result<(),Error>{
+    fn test_jwt() -> Result<(), Error> {
         let j = JWTToken {
             id: "1".to_string(),
             account: "189".to_string(),

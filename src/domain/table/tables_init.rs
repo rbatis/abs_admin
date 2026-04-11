@@ -1,7 +1,7 @@
-use crate::domain::table::sys_user::LoginCheck::PasswordCheck;
 use crate::domain::table::rbac;
 use crate::domain::table::rbac::{RbacPermission, RbacRole, RbacRolePermission, RbacUserRole};
 use crate::domain::table::sys_dict::SysDict;
+use crate::domain::table::sys_user::LoginCheck::PasswordCheck;
 use crate::domain::table::sys_user::SysUser;
 use log::LevelFilter;
 use rbatis::RBatis;
@@ -15,7 +15,9 @@ use rbs::value;
 
 pub async fn sync_tables(rb: &RBatis) {
     //disable log
-    let log_intercept = rb.get_intercept::<LogInterceptor>().expect("not find log interceptor");
+    let log_intercept = rb
+        .get_intercept::<LogInterceptor>()
+        .expect("not find log interceptor");
     let level = log_intercept.get_level_filter().clone();
     log_intercept.set_level_filter(LevelFilter::Off);
     defer!(|| {

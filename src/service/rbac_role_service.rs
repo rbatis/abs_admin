@@ -102,6 +102,6 @@ impl RbacRoleService {
     }
 
     pub async fn find_all(&self) -> Result<Vec<RbacRole>> {
-        Ok(RbacRole::select_by_map(pool!(),value! {}).await?)
+        Ok(RbacRole::select_by_map(pool!(), value! {}).await?)
     }
 }

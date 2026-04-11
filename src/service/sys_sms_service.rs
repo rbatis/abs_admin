@@ -45,7 +45,7 @@ impl SysSmsService {
 
     ///TODO do send sms
     async fn do_send_check_sms(&self, _phone_number: String, _code: String) -> Result<()> {
-       log::info!("Sending code to: {}, code: {}", _phone_number, _code);
-       Ok(())
+        log::info!("Sending code to: {}, code: {}", _phone_number, _code);
+        Ok(())
     }
 }

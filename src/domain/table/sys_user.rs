@@ -1,11 +1,11 @@
 use crate::domain::dto::UserPageDTO;
+use rbatis::rbdc::datetime::DateTime;
 use rbatis::{crud, html_sql};
 use serde::{Deserializer, Serializer};
 use std::fmt::{Debug, Display, Formatter};
-use rbatis::rbdc::datetime::DateTime;
 
 ///Background user table
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize,Default)]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize, Default)]
 pub struct SysUser {
     pub id: Option<String>,
     pub account: Option<String>,
@@ -22,9 +22,14 @@ crud!(SysUser {});
 
 #[html_sql("src/domain/table/sys_user.html")]
 impl SysUser {
-    pub async fn select_page(conn: &dyn rbatis::Executor, page_request: &rbatis::PageRequest, dto: &UserPageDTO) -> rbatis::Result<Page<SysUser>> { impled!() }
+    pub async fn select_page(
+        conn: &dyn rbatis::Executor,
+        page_request: &rbatis::PageRequest,
+        dto: &UserPageDTO,
+    ) -> rbatis::Result<Page<SysUser>> {
+        impled!()
+    }
 }
-
 
 #[derive(Clone)]
 pub enum LoginCheck {

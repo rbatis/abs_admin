@@ -1,8 +1,7 @@
 use crate::config::config::ApplicationConfig;
 use crate::service::{
     CacheService, RbacPermissionService, RbacRolePermissionService, RbacRoleService,
-    RbacUserRoleService, StorageService, SysAuthService, SysDictService,
-    SysUserService,
+    RbacUserRoleService, StorageService, SysAuthService, SysDictService, SysUserService,
 };
 use rbatis::RBatis;
 use rbatis::intercept_log::LogInterceptor;
@@ -42,7 +41,10 @@ impl ServiceContext {
             .link(include!("../target/driver.rs"), &self.config.db_url)
             .await
             .expect("[abs_admin] rbatis pool init fail!");
-        let pool = self.rb.get_pool().expect("[abs_admin] rbatis pool init fail!");
+        let pool = self
+            .rb
+            .get_pool()
+            .expect("[abs_admin] rbatis pool init fail!");
         //level
         self.rb
             .get_intercept::<LogInterceptor>()
@@ -71,7 +73,8 @@ impl Default for ServiceContext {
                 let rb = RBatis::new();
                 rb
             },
-            cache_service: CacheService::new(&config).expect("[abs_admin] cache service init fail!"),
+            cache_service: CacheService::new(&config)
+                .expect("[abs_admin] cache service init fail!"),
             storage_service: StorageService::new(&config.storage)
                 .expect("Failed to create storage service"),
             sys_user_service: SysUserService {},

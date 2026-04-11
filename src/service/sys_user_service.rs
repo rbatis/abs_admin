@@ -16,7 +16,6 @@ use crate::{error_info, pool};
 use rbs::value;
 use std::time::Duration;
 
-
 const CACHE_KEY_RETRY: &'static str = "login:login_retry";
 
 ///Background User Service
@@ -47,7 +46,8 @@ impl SysUserService {
 
 impl SysUserService {
     pub async fn page(&self, arg: UserPageDTO) -> Result<Page<SysUserVO>> {
-        let sys_user_page = SysUser::select_page(pool!(),&PageRequest::from(arg.clone()),&arg).await?;
+        let sys_user_page =
+            SysUser::select_page(pool!(), &PageRequest::from(arg.clone()), &arg).await?;
         let page = Page::<SysUserVO>::from(sys_user_page);
         Ok(page)
     }
@@ -341,7 +341,7 @@ impl SysUserService {
         let mut table = SysUser::default();
         table.id = Some(id.to_string());
         table.deleted = Some(1);
-        let r = SysUser::update_by_map(pool!(), &table,value! {"id": id}).await?;
+        let r = SysUser::update_by_map(pool!(), &table, value! {"id": id}).await?;
         CONTEXT.rbac_user_role_service.remove_by_user_id(id).await?;
         Ok(r.rows_affected)
     }

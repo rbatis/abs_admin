@@ -1,10 +1,10 @@
 use crate::domain::dto::rbac::PermissionPageDTO;
+use rbatis::executor::Executor;
 use rbatis::rbdc::DateTime;
 use rbatis::table_sync::ColumnMapper;
 use rbatis::{RBatis, crud, html_sql};
 use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
-use rbatis::executor::Executor;
 
 ///Permission Resource Table
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize, Hash, Eq, PartialEq)]
@@ -22,9 +22,25 @@ crud!(RbacPermission {});
 
 #[html_sql("src/domain/table/rbac.html")]
 impl RbacPermission {
-    pub async fn select_page(conn: &dyn Executor,request:&rbatis::PageRequest,dto: &PermissionPageDTO) -> rbatis::Result<Page<RbacPermission>> { impled!() }
-    pub async fn select_by_permission_or_name(conn: &dyn Executor,permission:&str,name:&str) -> rbatis::Result<Vec<RbacPermission>> { impled!() }
-    pub async fn select_by_parent_id_null(conn: &dyn Executor) -> rbatis::Result<Vec<RbacPermission>> { impled!() }
+    pub async fn select_page(
+        conn: &dyn Executor,
+        request: &rbatis::PageRequest,
+        dto: &PermissionPageDTO,
+    ) -> rbatis::Result<Page<RbacPermission>> {
+        impled!()
+    }
+    pub async fn select_by_permission_or_name(
+        conn: &dyn Executor,
+        permission: &str,
+        name: &str,
+    ) -> rbatis::Result<Vec<RbacPermission>> {
+        impled!()
+    }
+    pub async fn select_by_parent_id_null(
+        conn: &dyn Executor,
+    ) -> rbatis::Result<Vec<RbacPermission>> {
+        impled!()
+    }
 }
 
 ///RoleTable
@@ -39,7 +55,13 @@ crud!(RbacRole {});
 
 #[html_sql("src/domain/table/rbac.html")]
 impl RbacRole {
-    pub async fn select_page_by_name(conn: &dyn Executor, page_request: &dyn PageRequest, name: &str) -> rbatis::Result<Page<RbacRole>> { impled!() }
+    pub async fn select_page_by_name(
+        conn: &dyn Executor,
+        page_request: &dyn PageRequest,
+        name: &str,
+    ) -> rbatis::Result<Page<RbacRole>> {
+        impled!()
+    }
 }
 
 ///Role Permission relational tables (relational tables do not use logical deletion)
