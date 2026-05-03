@@ -8,9 +8,6 @@ use rbatis::RBatis;
 use rbatis::dark_std::defer;
 use rbatis::intercept_log::LogInterceptor;
 use rbatis::rbdc::DateTime;
-use rbatis::table_sync::{
-    ColumnMapper, MssqlTableMapper, MysqlTableMapper, PGTableMapper, SqliteTableMapper,
-};
 use rbs::value;
 
 pub async fn sync_tables(rb: &RBatis) {
@@ -23,20 +20,9 @@ pub async fn sync_tables(rb: &RBatis) {
     defer!(|| {
         log_intercept.set_level_filter(level);
     });
-    let mapper: &dyn ColumnMapper = {
-        match rb.driver_type().unwrap_or_default() {
-            "sqlite" => &SqliteTableMapper {},
-            "mssql" => &MssqlTableMapper {},
-            "mysql" => &MysqlTableMapper {},
-            "postgres" => &PGTableMapper {},
-            _ => {
-                panic!("not find driver mapper")
-            }
-        }
-    };
     let conn = rb.acquire().await.expect("connection database fail");
     // RBAC permission
-    crate::domain::table::rbac::sync_tables(&conn, mapper).await;
+    crate::domain::table::rbac::sync_tables(&conn, rb).await;
 
     let table = SysUser {
         id: Some(Default::default()),
@@ -48,7 +34,7 @@ pub async fn sync_tables(rb: &RBatis) {
         deleted: Some(Default::default()),
         create_date: Some(Default::default()),
     };
-    let _ = RBatis::sync(&conn, mapper, &table, "sys_user").await;
+    let _ = RBatis::sync(&conn, rb, &table, "sys_user").await;
     let table = SysDict {
         id: Some(Default::default()),
         name: Some(Default::default()),
@@ -56,9 +42,9 @@ pub async fn sync_tables(rb: &RBatis) {
         state: Some(Default::default()),
         create_date: Some(Default::default()),
     };
-    let _ = RBatis::sync(&conn, mapper, &table, "sys_dict").await;
+    let _ = RBatis::sync(&conn, rb, &table, "sys_dict").await;
 
-    let _ = rbac::sync_tables(&conn, mapper).await;
+    let _ = rbac::sync_tables(&conn, rb).await;
 }
 
 pub async fn sync_tables_data(rb: &RBatis) {
