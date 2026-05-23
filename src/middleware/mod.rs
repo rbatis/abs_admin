@@ -1,2 +1,2 @@
 pub mod auth;
-pub mod auth_axum;
+pub mod auth_actix;

@@ -1,31 +1,30 @@
 use crate::context::CONTEXT;
-use crate::domain::dto::IdDTO;
 use crate::domain::dto::rbac::{SysRoleResAddDTO, SysRoleResPageDTO, SysRoleResUpdateDTO};
+use crate::domain::dto::IdDTO;
 use crate::domain::vo::RespVO;
-use axum::Json;
-use axum::response::IntoResponse;
+use actix_web::web;
 
-pub async fn layer_top() -> impl IntoResponse {
+pub async fn layer_top() -> RespVO<serde_json::Value> {
     let vo = CONTEXT.rbac_role_service.find_all().await;
-    RespVO::from_result(vo)
+    RespVO::from_result(vo.map(|v| serde_json::to_value(v).unwrap_or_default()))
 }
 
-pub async fn add(arg: Json<SysRoleResAddDTO>) -> impl IntoResponse {
+pub async fn add(arg: web::Json<SysRoleResAddDTO>) -> RespVO<serde_json::Value> {
     let vo = CONTEXT.rbac_role_permission_service.add(&arg.0).await;
-    RespVO::from_result(vo)
+    RespVO::from_result(vo.map(|v| serde_json::to_value(v).unwrap_or_default()))
 }
 
-pub async fn page(arg: Json<SysRoleResPageDTO>) -> impl IntoResponse {
+pub async fn page(arg: web::Json<SysRoleResPageDTO>) -> RespVO<serde_json::Value> {
     let vo = CONTEXT.rbac_role_permission_service.page(&arg.0).await;
-    RespVO::from_result(vo)
+    RespVO::from_result(vo.map(|v| serde_json::to_value(v).unwrap_or_default()))
 }
 
-pub async fn update(arg: Json<SysRoleResUpdateDTO>) -> impl IntoResponse {
+pub async fn update(arg: web::Json<SysRoleResUpdateDTO>) -> RespVO<u64> {
     let vo = CONTEXT.rbac_role_permission_service.edit(&arg.0).await;
     RespVO::from_result(vo)
 }
 
-pub async fn remove(arg: Json<IdDTO>) -> impl IntoResponse {
+pub async fn remove(arg: web::Json<IdDTO>) -> RespVO<u64> {
     let role_id = arg.0.id.unwrap_or_default();
     let vo = CONTEXT
         .rbac_role_permission_service

@@ -1,7 +1,7 @@
-use crate::domain::vo::RespVO;
-use axum::response::{IntoResponse, Response};
+use actix_web::body::BoxBody;
+use actix_web::{HttpRequest, HttpResponse, Responder};
 use serde::Serialize;
-use serde::de::DeserializeOwned;
+use crate::domain::vo::RespVO;
 
 pub mod file_controller;
 pub mod img_controller;
@@ -11,8 +11,10 @@ pub mod rbac_user_controller;
 pub mod sys_auth_controller;
 pub mod sys_dict_controller;
 
-impl<T: Serialize + DeserializeOwned> IntoResponse for RespVO<T> {
-    fn into_response(self) -> Response {
-        axum::Json(self).into_response()
+impl<T: Serialize> Responder for RespVO<T> {
+    type Body = BoxBody;
+
+    fn respond_to(self, _req: &HttpRequest) -> HttpResponse<Self::Body> {
+        HttpResponse::Ok().json(self)
     }
 }

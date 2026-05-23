@@ -1,28 +1,27 @@
 use crate::context::CONTEXT;
-use crate::domain::dto::IdDTO;
 use crate::domain::dto::rbac::{PermissionAddDTO, PermissionPageDTO, ResEditDTO};
+use crate::domain::dto::IdDTO;
 use crate::domain::table::rbac::RbacPermission;
 use crate::domain::vo::RespVO;
 use crate::error_info;
-use axum::Json;
-use axum::response::IntoResponse;
+use actix_web::web;
 
-pub async fn layer_top() -> impl IntoResponse {
+pub async fn layer_top() -> RespVO<serde_json::Value> {
     let data = CONTEXT.rbac_permission_service.finds_all().await;
-    RespVO::from_result(data)
+    RespVO::from_result(data.map(|v| serde_json::to_value(v).unwrap_or_default()))
 }
 
-pub async fn page(page: Json<PermissionPageDTO>) -> impl IntoResponse {
+pub async fn page(page: web::Json<PermissionPageDTO>) -> RespVO<serde_json::Value> {
     let data = CONTEXT.rbac_permission_service.page(&page.0).await;
-    RespVO::from_result(data)
+    RespVO::from_result(data.map(|v| serde_json::to_value(v).unwrap_or_default()))
 }
 
-pub async fn add(mut arg: Json<PermissionAddDTO>) -> impl IntoResponse {
+pub async fn add(mut arg: web::Json<PermissionAddDTO>) -> RespVO<u64> {
     if arg.name.is_none() {
-        return RespVO::<u64>::from_error(error_info!("arg.name_empty"));
+        return RespVO::from_error(error_info!("arg.name_empty"));
     }
     if arg.permission.is_none() {
-        return RespVO::<u64>::from_error(error_info!("arg.permission_empty"));
+        return RespVO::from_error(error_info!("arg.permission_empty"));
     }
     if arg.path.is_none() {
         arg.path = Some("".to_string());
@@ -32,12 +31,12 @@ pub async fn add(mut arg: Json<PermissionAddDTO>) -> impl IntoResponse {
     RespVO::from_result(data)
 }
 
-pub async fn update(arg: Json<ResEditDTO>) -> impl IntoResponse {
+pub async fn update(arg: web::Json<ResEditDTO>) -> RespVO<u64> {
     let data = CONTEXT.rbac_permission_service.edit(&arg.0).await;
     RespVO::from_result(data)
 }
 
-pub async fn remove(arg: Json<IdDTO>) -> impl IntoResponse {
+pub async fn remove(arg: web::Json<IdDTO>) -> RespVO<u64> {
     let data = CONTEXT
         .rbac_permission_service
         .remove(&arg.0.id.unwrap_or_default())
