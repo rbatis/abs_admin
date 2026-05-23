@@ -3,20 +3,21 @@ use crate::domain::dto::rbac::{SysRoleResAddDTO, SysRoleResPageDTO, SysRoleResUp
 use crate::domain::dto::IdDTO;
 use crate::domain::vo::RespVO;
 use actix_web::web;
+use serde::Serialize;
 
-pub async fn layer_top() -> RespVO<serde_json::Value> {
+pub async fn layer_top() -> RespVO<impl Serialize> {
     let vo = CONTEXT.rbac_role_service.find_all().await;
-    RespVO::from_result(vo.map(|v| serde_json::to_value(v).unwrap_or_default()))
+    RespVO::from_result(vo)
 }
 
-pub async fn add(arg: web::Json<SysRoleResAddDTO>) -> RespVO<serde_json::Value> {
+pub async fn add(arg: web::Json<SysRoleResAddDTO>) -> RespVO<impl Serialize> {
     let vo = CONTEXT.rbac_role_permission_service.add(&arg.0).await;
-    RespVO::from_result(vo.map(|v| serde_json::to_value(v).unwrap_or_default()))
+   RespVO::from_result(vo)
 }
 
-pub async fn page(arg: web::Json<SysRoleResPageDTO>) -> RespVO<serde_json::Value> {
+pub async fn page(arg: web::Json<SysRoleResPageDTO>) -> RespVO<impl Serialize> {
     let vo = CONTEXT.rbac_role_permission_service.page(&arg.0).await;
-    RespVO::from_result(vo.map(|v| serde_json::to_value(v).unwrap_or_default()))
+   RespVO::from_result(vo)
 }
 
 pub async fn update(arg: web::Json<SysRoleResUpdateDTO>) -> RespVO<u64> {

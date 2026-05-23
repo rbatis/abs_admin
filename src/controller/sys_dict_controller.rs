@@ -4,10 +4,11 @@ use crate::domain::table::sys_dict::SysDict;
 use crate::domain::vo::RespVO;
 use crate::error_info;
 use actix_web::web;
+use serde::Serialize;
 
-pub async fn page(page: web::Json<DictPageDTO>) -> RespVO<serde_json::Value> {
+pub async fn page(page: web::Json<DictPageDTO>) -> RespVO<impl Serialize> {
     let data = CONTEXT.sys_dict_service.page(&page.0).await;
-    RespVO::from_result(data.map(|v| serde_json::to_value(v).unwrap_or_default()))
+    RespVO::from_result(data)
 }
 
 pub async fn add(mut arg: web::Json<DictAddDTO>) -> RespVO<u64> {

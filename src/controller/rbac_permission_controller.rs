@@ -5,15 +5,16 @@ use crate::domain::table::rbac::RbacPermission;
 use crate::domain::vo::RespVO;
 use crate::error_info;
 use actix_web::web;
+use serde::Serialize;
 
-pub async fn layer_top() -> RespVO<serde_json::Value> {
+pub async fn layer_top() -> RespVO<impl Serialize> {
     let data = CONTEXT.rbac_permission_service.finds_all().await;
-    RespVO::from_result(data.map(|v| serde_json::to_value(v).unwrap_or_default()))
+    RespVO::from_result(data)
 }
 
-pub async fn page(page: web::Json<PermissionPageDTO>) -> RespVO<serde_json::Value> {
+pub async fn page(page: web::Json<PermissionPageDTO>) -> RespVO<impl Serialize> {
     let data = CONTEXT.rbac_permission_service.page(&page.0).await;
-    RespVO::from_result(data.map(|v| serde_json::to_value(v).unwrap_or_default()))
+    RespVO::from_result(data)
 }
 
 pub async fn add(mut arg: web::Json<PermissionAddDTO>) -> RespVO<u64> {

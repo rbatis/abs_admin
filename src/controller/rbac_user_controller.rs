@@ -1,5 +1,6 @@
 use actix_web::web;
 use actix_web::HttpRequest;
+use serde::Serialize;
 
 use crate::context::CONTEXT;
 use crate::domain::dto::{IdDTO, SignInDTO, UserAddDTO, UserEditDTO, UserRolePageDTO};
@@ -38,14 +39,14 @@ pub async fn add(arg: web::Json<UserAddDTO>) -> RespVO<u64> {
     RespVO::from_result(vo)
 }
 
-pub async fn page(arg: web::Json<UserRolePageDTO>) -> RespVO<serde_json::Value> {
+pub async fn page(arg: web::Json<UserRolePageDTO>) -> RespVO<impl Serialize> {
     let vo = CONTEXT.sys_user_service.role_page(&arg.0).await;
-    RespVO::from_result(vo.map(|v| serde_json::to_value(v).unwrap_or_default()))
+    RespVO::from_result(vo)
 }
 
-pub async fn detail(arg: web::Json<IdDTO>) -> RespVO<serde_json::Value> {
+pub async fn detail(arg: web::Json<IdDTO>) -> RespVO<impl Serialize> {
     let vo = CONTEXT.sys_user_service.detail(&arg.0).await;
-    RespVO::from_result(vo.map(|v| serde_json::to_value(v).unwrap_or_default()))
+    RespVO::from_result(vo)
 }
 
 pub async fn update(arg: web::Json<UserEditDTO>) -> RespVO<u64> {
