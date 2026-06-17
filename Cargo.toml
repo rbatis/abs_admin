@@ -1,4 +1,4 @@
-[package]
+﻿[package]
 name = "abs_admin"
 version = "0.1.0"
 authors = ["zhuxiujia <zhuxiujia@qq.com>"]
@@ -23,19 +23,16 @@ rbdc-sqlite = { version = "4.9" }
 #rbdc-mssql = { version = "4.9" }
 
 tokio = { version = "1", features = ["macros"] }
-
-actix-web = "4.13"
-actix-files = "0.6"
-actix-cors = "0.7"
-actix-service = "2.0"
 #serde and json
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 #log
 log = "0.4"
-#fast_log
+#fast_log enable features = ["lz4", "zip", "gzip"], and edit src/config/log.rs fn choose_packer(),edit application.json5 add log_pack_compress: "zip"
 fast_log = { version = "1.7" }
 
+axum = { version = "0.8.7", features = ["macros", "multipart"] }
+tower-http = { version = "0.6.8", features = ["fs","cors","limit"] }
 #redis
 redis = { version = "1.0.1", features = ["tokio-comp"] ,optional = true}
 #jwt

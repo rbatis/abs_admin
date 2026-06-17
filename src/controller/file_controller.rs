@@ -1,48 +1,78 @@
-use crate::context::CONTEXT;
+﻿use crate::context::CONTEXT;
 use crate::domain::vo::RespVO;
-use crate::middleware::auth_actix::JwtAuth;
-use actix_web::web;
-use actix_web::HttpResponse;
+use crate::middleware::auth_axum::JwtAuth;
+use axum::body::Body;
+use axum::extract::Multipart;
+use axum::extract::Query;
+use axum::response::{IntoResponse, Response};
 use serde::Deserialize;
 
-#[derive(Deserialize)]
-pub struct QueryParams {
-    pub name: String,
+///上传，返回外网访问地址
+pub async fn upload(jwt_auth: JwtAuth, mut multipart: Multipart) -> impl IntoResponse {
+    let file_opt = match multipart.next_field().await {
+        Ok(f) => f,
+        Err(e) => return RespVO::from_error(format!("read multipart error: {}", e)),
+    };
 
-    #[serde(default)]
-    pub filename: Option<String>,
-}
+    let Some(file) = file_opt else {
+        return RespVO::from_error("no file".to_string());
+    };
 
-pub async fn upload(
-    jwt_auth: JwtAuth,
-    query: web::Query<QueryParams>,
-    body: web::Bytes,
-) -> RespVO<String> {
-    let filename = query.filename.clone().unwrap_or_else(|| "upload".to_string());
+    let Some(filename) = file.file_name().map(|s| s.to_string()) else {
+        return RespVO::from_error("no filename".to_string());
+    };
+
+    let data = match file.bytes().await {
+        Ok(d) => d,
+        Err(e) => return RespVO::from_error(format!("read bytes error: {}", e)),
+    };
+
     let path = CONTEXT
         .storage_service
         .upload(
             format!("target/upload/{}/{}", jwt_auth.id, filename),
-            body.to_vec(),
+            data.to_vec(),
         )
         .await
         .map(|v| format!("{}{}", CONTEXT.config.storage_host, v));
     RespVO::from_result(path)
 }
 
-pub async fn delete(query: web::Query<QueryParams>) -> RespVO<()> {
-    let result = CONTEXT.storage_service.remove(query.name.clone()).await;
+#[derive(Deserialize)]
+pub struct QueryParams {
+    pub name: String,
+}
+
+///删除文件
+pub async fn delete(Query(param): Query<QueryParams>) -> impl IntoResponse {
+    let result = CONTEXT.storage_service.remove(param.name).await;
     RespVO::from_result(result)
 }
 
-pub async fn download(query: web::Query<QueryParams>) -> HttpResponse {
-    let data = CONTEXT.storage_service.download(query.name.clone()).await;
+///内网流量下载
+pub async fn download(Query(param): Query<QueryParams>) -> impl IntoResponse {
+    let data = CONTEXT.storage_service.download(param.name).await;
     match data {
-        Ok(data) => HttpResponse::Ok()
-            .content_type("application/octet-stream")
-            .body(data),
-        Err(e) => HttpResponse::Ok()
-            .content_type("json")
-            .body(serde_json::json!(&RespVO::<()>::from_error(e.to_string())).to_string()),
+        Ok(data) => Response::new(Body::from(data)).into_response(),
+        Err(e) => {
+            let resp = match Response::builder()
+                .header("Access-Control-Allow-Origin", "*")
+                .header("Cache-Control", "no-cache")
+                .header("Content-Type", "json")
+                .body(Body::from(
+                    serde_json::json!(&RespVO::<()>::from_error(e.to_string())).to_string(),
+                )) {
+                Ok(r) => r,
+                Err(_) => {
+                    return Response::builder()
+                        .header("Access-Control-Allow-Origin", "*")
+                        .header("Cache-Control", "no-cache")
+                        .header("Content-Type", "json")
+                        .body(Body::from(r#"{"code":500,"msg":"internal error"}"#))
+                        .unwrap_or_else(|_| Response::new(Body::from("internal error")));
+                }
+            };
+            resp
+        }
     }
 }
